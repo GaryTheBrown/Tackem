@@ -1,0 +1,8 @@
+__pycache__/
+bin/*
+.vscode
+temp
+*.py[cod]
+*.log
+*.ini
+Library/

@@ -1,0 +1,126 @@
+body {
+  background-color: black;
+}
+
+/* FOOTER */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  color: white;
+  background-color: black;
+  border-top-color: white;
+  border-top-width: 2px;
+  border-top-style: solid;
+  width: 100%;
+  text-align: center;
+  line-height: 25px;
+  height: 25px;
+}
+
+/* NAVBAR */
+.navbar {
+  background-color: #222222;
+  border-radius: 0px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar a {
+  color: white !important;
+  text-decoration: none;
+  padding: 0;
+}
+
+.navbar a:focus, .navbar a:hover {
+  color: #aaaaaa !important;
+}
+
+.navbar .navbar-brand {
+  background-color: white;
+  color: black !important;
+  padding: 5px 0 0 10px;
+  height: 50px;
+  line-height: 40px;
+  width: 110px;
+  margin-right: 0;
+}
+
+.navbar .navbar-brand:focus, .navbar .navbar-brand:hover {
+  background-color: white;
+  color: black !important;
+}
+
+.navbar .navbar-brand > img {
+  display: inline-block;
+  width: 25%;
+}
+
+.navbar .navbar-toggler {
+  color: white;
+}
+
+.navbar .nav > li > a:focus, .navbar .nav > li > a:hover {
+  text-decoration: none;
+}
+
+.navbar .nav-item {
+  min-width: 100px;
+  line-height: 50px;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.navbar .dropdown-menu {
+  border-radius: 0;
+  border: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background-color: #222222;
+}
+
+.navbar .dropdown-item {
+  padding-left: 15px;
+}
+
+.navbar .dropdown-item:focus, .navbar .dropdown-item:hover {
+  text-decoration: none;
+  background-color: #222222;
+}
+
+.navbar .dropdown-item.active, .navbar .dropdown-item:active {
+  background-color: #666666;
+}
+
+/* BODY HERE */
+#body {
+  padding-top: 50px;
+  background-color: black;
+  color: white;
+}
+
+#body .homepagelogo {
+  width: 90%;
+  height: 90%;
+  margin: 5%;
+}
+
+.w45, .toggle.btn {
+  min-width: 45px !important;
+  width: 45px !important;
+}
+
+.toggle-off.btn {
+  padding-left: 11px !important;
+}
+
+.modal-content {
+  color: black;
+}
+
+a.nav-link {
+  color: lightgray;
+}
+/*# sourceMappingURL=style.css.map */

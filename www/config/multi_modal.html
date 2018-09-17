@@ -1,0 +1,27 @@
+<div class="modal fade" id="%%PLUGINNAME%%_modal" tabindex="-1" role="dialog" aria-labelledby="%%PLUGINNAME%%_modal_label"
+ aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="%%PLUGINNAME%%_modal_label">Add %%TITLE%%</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<label for="name">Please choose a Name:</label>
+				<input type="text" class="form-control" name="name" id="%%PLUGINNAME%%_name">
+				<div class="alert alert-danger" id="%%PLUGINNAME%%_name_empty" role="alert" style="display:none;">
+					Please Enter A Name
+				</div>
+				<div class="alert alert-danger" id="%%PLUGINNAME%%_name_duplicate" role="alert" style="display:none;">
+					This Name Is already Taken please choose a different name
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onclick="AddMulti('%%PLUGINNAME%%')">Add</button>
+			</div>
+		</div>
+	</div>
+</div>

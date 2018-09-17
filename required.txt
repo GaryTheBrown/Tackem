@@ -1,0 +1,25 @@
+
+## NEEDED APPS
+MakeMKV
+blockdev
+blkid
+discid inside flactag
+
+PIP Installs
+cherryPI
+pip3 install git+https://github.com/alberanid/imdbpy
+
+
+
+####look at this list
+cherrypy
+Cheetah
+simplejson
+tvdb_api
+ConfigObj
+SABnzbd+
+jQuery
+Python GNTP
+SocksiPy
+python-dateutil
+jsonrpclib
