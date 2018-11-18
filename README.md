@@ -3,6 +3,7 @@
 BASE INSTALLATION (ubuntu/debian):
 
 sudo apt install python3 python3-pip
+
 pip install configobj cherrypy
 
 RUNNING:
