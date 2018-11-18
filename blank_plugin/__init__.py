@@ -1,5 +1,6 @@
 '''sabnzbd controller init'''
 from glob import glob
+import sys
 from configobj import ConfigObj
 from validate import Validator
 from libs.plugin_base import PluginBaseClass
@@ -13,7 +14,7 @@ SETTINGS = {
     'api':False, # IF THIS SYSTEM WORKS WITH API CONTROLS
     'type':'library', # library, downloader, searcher
 }
-CONFIG = ConfigList()
+CONFIG = ConfigList("", sys.modules[__name__])
 
 class Plugin(PluginBaseClass):
     '''Main Class to create an instance of the plugin'''

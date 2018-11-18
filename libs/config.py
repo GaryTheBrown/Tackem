@@ -84,14 +84,14 @@ CONFIG.append(
                  default="tackem", section="mysql", help_text="The database Name"))
 CONFIG.append(ConfigObject("enabled", "Enabled", "boolean", config_group="api", default=False,
                            toggle_section="api", input_type="switch"))
-CONFIG.append(ConfigObject("masterkey", "API Key", "string", config_group="api", default='',
+CONFIG.append(ConfigObject("masterkey", "Master API Key", "string", config_group="api", default='',
                            button="Generate API Key",
                            button_onclick="GenerateAPIKey('api_masterkey');",
                            help_text="The master API key for slaves to access"))
-CONFIG.append(ConfigObject("userkey", "API Key", "string", config_group="api", default='',
+CONFIG.append(ConfigObject("userkey", "User API Key", "string", config_group="api", default='',
                            button="Generate API Key",
                            button_onclick="GenerateAPIKey('api_userkey');",
-                           help_text="The master API key for slaves to access"))
+                           help_text="The user API key for slaves to access"))
 #<br><small>Leave blank to work on per plugin API's for extra security</small>
 
 CONFIG.append(ConfigObject("enabled", "Enabled", "boolean", config_group="webui", default=True,
@@ -100,7 +100,7 @@ CONFIG.append(
     ConfigObject("port", "Port", "integer", config_group="webui",
                  minimum=1001, maximum=65535, default=8081, help_text="The port for the WebUI"))
 CONFIG.append(
-    ConfigObject("baseurl", "Master API", "string", config_group="webui",
+    ConfigObject("baseurl", "Base Url", "string", config_group="webui",
                  default="", help_text="The Base URL"))
 
 def config_load(path, plugin_configs):

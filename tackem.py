@@ -129,7 +129,7 @@ class Tackem:
         if Tackem.started:
             print("SHUTDOWN STARTED")
             #stop the WebUI AND/OR API
-            if Tackem.webserver != None:
+            if Tackem.webserver is not None:
                 print("Stopping Web Services")
                 Tackem.webserver.stop()
 
@@ -146,7 +146,7 @@ class Tackem:
                         break
             print("All systems Shutdown")
 
-            if Tackem.sql != None:
+            if Tackem.sql is not None:
                 Tackem.sql.stop_thread()
 
             if not Tackem.first_run:
@@ -176,7 +176,7 @@ class Tackem:
 
 
 ##############################################
-##ctrl + c event
+# Catching the ctrl + c event and doing a clean shutdown
 def ctrl_c(_, __):
     '''Function to call once ctrl + c is pressed'''
     print(" caught Shutting Down Cleanly...")
