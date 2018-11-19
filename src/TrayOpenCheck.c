@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <linux/cdrom.h>
 
 int main(int argc,char **argv) {

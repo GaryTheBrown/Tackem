@@ -35,7 +35,7 @@ class Httpd():
             }
         }
         if first_run:
-            cherrypy.tree.mount(first_run_root("First Run Script",
+            cherrypy.tree.mount(first_run_root("Setup System",
                                                self._systems,
                                                self._plugins,
                                                self._config),
@@ -48,11 +48,12 @@ class Httpd():
                                     conf_root)
                 for key in self._systems:
                     #load system root
+                    key_url = key.replace("_", "")
                     cherrypy.tree.mount(
                         self._plugins[self._systems[key].plugin_link()].www.Root(key, self._systems,
                                                                                  self._plugins,
                                                                                  self._config),
-                        self._config['webui']['baseurl'] + "/" + key + "/",
+                        self._config['webui']['baseurl'] + "/" + key_url + "/",
                         self._plugins[self._systems[key].plugin_link()].www.CFG)
 
             if self._config['api']['enabled']:

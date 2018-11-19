@@ -260,12 +260,11 @@ def _get_plugin_configs_page(plugins, config):
     plugin_types = []
     for key in sorted_plugins:
         plugin = ""
-        settings = plugins[key].SETTINGS
-        plugin_type = settings['type']
+        plugin_type = plugins[key].SETTINGS['type']
         if not plugin_type in plugin_types:
             plugin_types.append(plugin_type)
         plugins[key].CONFIG.sort_config()
-        if settings['single_instance']:
+        if plugins[key].SETTINGS['single_instance']:
             plugin = plugins[key].CONFIG.single_instance_load(config.get(key, {}))
         else:
             plugin = plugins[key].CONFIG.multi_instance_load()
@@ -314,8 +313,7 @@ def get_multi_setup(plugins, plugin, config, name=""):
     data = plugins[plugin].CONFIG.get_multi_html_options(config)
     data = data.replace("%%NAME%%", name)
     data = data.replace("%%PLUGIN%%", plugin)
-    plugin_type = plugins[plugin].SETTINGS['type']
-    data = data.replace("%%PLUGINTYPE%%", plugin_type)
+    data = data.replace("%%PLUGINTYPE%%", plugins[plugin].SETTINGS['type'])
     data = data.replace("%%VARNAME%%", name.replace(" ", ""))
     data = data.replace("%%TITLE%%", name.capitalize())
     data = data.replace("%%SCRIPT%%", "")

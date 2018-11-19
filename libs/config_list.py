@@ -363,7 +363,7 @@ class ConfigList:
                         return config_value
             else:
                 section_controller = obj.enabled_by_controller(key, config_value, default_value)
-                if section_controller != None:
+                if section_controller is not None:
                     return section_controller
         return True # any problen return true so section is displayed
 

@@ -22,7 +22,7 @@ CONFIG.append(
                  help_text="Is the System Enabled", script=True)
 )
 CONFIG.append(
-    ConfigObject("downloadlocation", "Download Location", "string", default="Library/Movies/",
+    ConfigObject("downloadlocation", "Download Location", "string", default="downloads/",
                  help_text="Where is the completed download location?")
 )
 CONFIG.append(

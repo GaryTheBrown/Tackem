@@ -26,7 +26,6 @@ class MoviesLibrary():
 
         self._thread = threading.Thread(target=self.run, args=())
         self._thread.setName("Movies Library:" + self.name)
-        print(self._thread.getName())
 
         db.table_check(self._thread.getName(),
                        name,

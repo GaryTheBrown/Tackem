@@ -1,4 +1,4 @@
-'''Ripper init'''
+'''Ripper Linux init'''
 from glob import glob
 import sys
 from configobj import ConfigObj
@@ -10,12 +10,13 @@ from .drive_control import Drive
 from . import www
 
 #TODO SPLIT THIS UP INTO PARTS OF THE SYSTEM FOR MORE CUSTOMIZABILITY
+#TODO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
 
 SETTINGS = {
     'single_instance':True,
     'webui':True,
     'api':True,
-    'type':'ripper',
+    'type':'ripping',
     'platform': ['Linux']#, 'Darwin', 'Windows']
 }
 
@@ -23,7 +24,7 @@ def check_enabled():
     '''plugin check for if plugin should be enabled'''
     return bool(glob('/dev/sr*'))
 
-CONFIG = ConfigList("ripper", sys.modules[__name__])
+CONFIG = ConfigList("ripper_linux", sys.modules[__name__])
 CONFIG.append(
     ConfigObject("enabled", "Enabled", "boolean", default=False, input_type="switch",
                  help_text="Is the System Enabled", script=True)

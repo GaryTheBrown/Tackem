@@ -102,7 +102,7 @@ class ConfigObject(ConfigBase):
                     return_string += ", "
                 return_string += option.name()
                 variable_count += 1
-        if self._default != None:
+        if self._default is not None:
             return_string += " default="
             if isinstance(self._default, list) and self._type == self._types[2]:
                 list_count = 0

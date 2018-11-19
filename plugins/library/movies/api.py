@@ -1,5 +1,5 @@
 '''API FOR PLUGIN'''
 def api(kwargs, apimode):
-    '''Ripper api'''
+    '''Movie Library api'''
 
     return "MOVIE API"

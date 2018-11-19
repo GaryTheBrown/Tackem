@@ -52,17 +52,21 @@ class Tackem:
                 self._setup_systems()
 
             Tackem.setup_done = True
+            #Setup signal to watch for ctrl + c command
             signal.signal(signal.SIGINT, ctrl_c)
 
     def _setup_plugins(self):
         '''Setup the Plugins'''
         plugin_cfg = ""
         print("Loading Plugins...")
-        for folder in glob("plugins/*/"):
+        for folder in glob("plugins/*/*/"):
             if not "__pycache__" in folder:
-                name = folder.split("/")[-2]
-                print("Loading Plugin " + name + "...")
-                temp_plugin = importlib.import_module("plugins." + name)
+                folder_split = folder.split("/")
+                name = folder_split[-2]
+                print_name = name.replace("_", " ").capitalize()
+                plugin_type = folder_split[-3]
+                print("Loading " + plugin_type.capitalize() + ":" + print_name.capitalize() + "...")
+                temp_plugin = importlib.import_module("plugins." + plugin_type + "." + name)
                 plugin_platforms = temp_plugin.SETTINGS.get("platforms", ['Linux',
                                                                           'Darwin',
                                                                           'Windows'])
@@ -85,8 +89,9 @@ class Tackem:
         '''setup the systems section'''
         for key in Tackem.plugins:
             if Tackem.plugins[key].SETTINGS['single_instance']:
+                plugin_type = Tackem.plugins[key].SETTINGS['type']
                 if Tackem.config['plugins'][key]['enabled']:
-                    print("Loading " + key)
+                    print("Loading " + key + " (" + plugin_type + ")")
                     Tackem.systems[key] = Tackem.plugins[key].Plugin(key, key,
                                                                      Tackem.config['plugins'][key],
                                                                      Tackem.sql)
@@ -95,7 +100,7 @@ class Tackem:
                     partal = Tackem.config.get('plugins', {}).get(key, {})
                     if partal.get(inst, {}).get('enabled', True):
                         print("Loading " + inst + " (" + key + ")")
-                        name = key + inst
+                        name = inst + "_" + key
                         config_inst = Tackem.config['plugins'][key][inst]
                         Tackem.systems[name] = Tackem.plugins[key].Plugin(key, name,
                                                                           config_inst, Tackem.sql)
@@ -105,7 +110,8 @@ class Tackem:
         if not Tackem.started:
             temp_keys = []
             for key in Tackem.systems:
-                print("Starting " + key)
+                clean_key = key.replace("_", " ")
+                print("Starting " + clean_key)
                 started, message = Tackem.systems[key].startup()
                 if not started:
                     print(Tackem.systems[key].name() + " Failed to start because " + message)

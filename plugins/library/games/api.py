@@ -1,5 +1,5 @@
 '''API FOR PLUGIN'''
 def api(kwargs, apimode):
-    '''Ripper api'''
+    '''Games Library api'''
 
     return "GAMES API"
