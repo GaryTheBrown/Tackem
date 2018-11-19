@@ -10,7 +10,7 @@ def parse():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--home',
                         help="Change the home folder location",
-                        default=os.path.expanduser("~/" + PROGRAMNAME + "/")
+                        default=os.path.expanduser("~/." + PROGRAMNAME + "/")
                        )
     parser.add_argument('--name',
                         help="Change the Programs Name",
