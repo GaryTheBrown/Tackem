@@ -24,7 +24,7 @@ def check_enabled():
     '''plugin check for if plugin should be enabled'''
     return bool(glob('/dev/sr*'))
 
-CONFIG = ConfigList("ripper_linux", sys.modules[__name__])
+CONFIG = ConfigList("ripper", sys.modules[__name__])
 CONFIG.append(
     ConfigObject("enabled", "Enabled", "boolean", default=False, input_type="switch",
                  help_text="Is the System Enabled", script=True)
