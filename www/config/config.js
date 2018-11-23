@@ -27,6 +27,13 @@ function EnableDisable(section, disable, set){
         $('#' + section + '_enabled').prop('checked', set);
     }
 }
+function Switch(section){
+    if($('#'+ section).is(':checked')){
+        $('#h_'+ section).val("True");
+    }else{
+        $('#h_'+ section).val("False");
+    }
+}
 
 function ToggleSection(section){
     if($('#'+ section + '_enabled').is(':checked')){

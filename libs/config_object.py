@@ -280,6 +280,11 @@ class ConfigObject(ConfigBase):
         if switch:
             switch_str = str(open("www/html/inputs/switchoptions.html", "r").read())
             string = string.replace("%%SWITCH%%", switch_str)
+            if script is None:
+                script = "onchange=''"
+            script2 = script[:-1] + 'Switch("%%VARNAME%%");' + script[-1:]
+            script = script2
+            #TODO add in the switch JS here but maybe keep the %%SCRIPT%% so other scripts can be added
         else:
             string = string.replace(" %%SWITCH%%", '')
         return self._html_input(string, value, script)
