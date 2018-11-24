@@ -323,6 +323,11 @@ class ConfigObject(ConfigBase):
                 return 0
             return float(variable)
         if self._type == self._types[3]:
+            if isinstance(variable, str):
+                if variable.lower() == "true":
+                    return True
+                else:
+                    return False
             return bool(variable)
         return None
 
@@ -391,3 +396,13 @@ class ConfigObject(ConfigBase):
                     if isinstance(value, bool):
                         return value
         return None
+
+    def post_var_name(self, plugin_name=None):
+        '''returns the var name for looking in post variables'''
+        var_name = "cs_"
+        if plugin_name is not None:
+            var_name += plugin_name + "_"
+        if self._config_group is not None:
+            var_name += self._config_group + "_"
+        var_name += self._name
+        return var_name
