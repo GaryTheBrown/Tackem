@@ -108,7 +108,7 @@ def config_load(path, plugin_configs):
     _spec = CONFIG.get_cfg("").replace("$$PLUGIN_CONFIGS$$", plugin_configs, 1).split("\n")
     config = ConfigObj(path, configspec=_spec)
     validator = Validator()
-    config.validate(validator)#, copy=True)
+    config.validate(validator, copy=True)
     config.filename = path
     return config
 
