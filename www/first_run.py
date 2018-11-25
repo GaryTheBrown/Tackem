@@ -45,7 +45,7 @@ class Root(HTMLTEMPLATE):
                 self._config.write()
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
-            RootEvent().reboot()
+            RootEvent().set_event("reboot")
             html = """RESTARTING NOW... refreshing in 10 seconds...
 <script>
     window.setTimeout(function() {

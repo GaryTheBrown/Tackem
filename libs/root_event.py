@@ -1,46 +1,30 @@
 '''Event to control the loop function'''
 from threading import Event
-from time import sleep
+
 class RootEvent:
     '''Event to control the loop function'''
-    _shutdown = False
-    _reboot = False
-    _wait_time = 0
+    _event_type = False
+    _event_variable = False
     _event = Event()
 
-    def shutdown(self, wait_time=0):
-        '''Shutdown command'''
-        if not RootEvent._reboot and not RootEvent._shutdown:
-            RootEvent._shutdown = True
-            RootEvent._wait_time = wait_time
+    def set_event(self, event_type, event_variable=False):
+        '''Set an event for the root thread to do'''
+        if RootEvent._event_type is False:
+            RootEvent._event_type = event_type
+            RootEvent._event_variable = event_variable
             RootEvent._event.set()
-
-    def reboot(self, wait_time=0):
-        '''reboot command'''
-        if not RootEvent._reboot and not RootEvent._shutdown:
-            RootEvent._reboot = True
-            RootEvent._wait_time = wait_time
-            RootEvent._event.set()
+            return True
+        else:
+            return False
 
 class RootEventMaster(RootEvent):
     '''Event to wait for the command and then return what to do.'''
-    def wait(self):
-        '''function to wait for the event'''
+    def wait_and_get_event(self):
+        '''waits for an event and returns it to root thread cleaning the event if needed'''
         RootEvent._event.wait()
-        if RootEvent._wait_time > 0:
-            print("waiting " + str(RootEvent._wait_time) + "seconds to shutdown")
-            sleep(float(RootEvent._wait_time))
-
-    def check_shutdown(self):
-        '''returns if the command is shutdown'''
-        return RootEvent._shutdown
-
-    def check_reboot(self):
-        '''returns if the command is reboot'''
-        return RootEvent._reboot
-
-    def clear_event(self):
-        '''Reset the Event if set to reboot'''
-        if RootEvent._reboot and not RootEvent._shutdown:
-            RootEvent._reboot = False
-            RootEvent._event.clear()
+        event_type = RootEvent._event_type
+        event_variable = RootEvent._event_variable
+        RootEvent._event_type = False
+        RootEvent._event_variable = False
+        RootEvent._event.clear()
+        return event_type, event_variable

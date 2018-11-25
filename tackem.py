@@ -162,23 +162,57 @@ class Tackem:
                     print("ERROR WRITING CONFIG FILE")
             Tackem.started = False
 
+    def system_start(self, system_name):
+        '''Start up an invidual plugin system'''
+        print("Starting " + system_name)
+        started, message = Tackem.systems[system_name].startup()
+        if not started:
+            print(Tackem.systems[system_name].name() + " Failed to start because " + message)
+            del Tackem.systems[system_name]
+
+    def system_stop(self, system_name):
+        '''Stop up an invidual plugin system'''
+        Tackem.systems[system_name].shutdown()
+        while True:
+            if not Tackem.systems[system_name].running():
+                print(system_name + " Stopped")
+                del Tackem.systems[system_name]
+                break
+
     def run(self):
         '''Looping function'''
+        self.setup()
+        self.start()
         while True:
-            self.setup()
-            self.start()
-            Tackem.root_event.wait()
-            self.shutdown()
+            event_type, event_variable = Tackem.root_event.wait_and_get_event()
 
-            if Tackem.root_event.check_shutdown():
+            if event_type is False:
+                continue
+            elif event_type == "shutdown":
+                self.shutdown()
                 break
-            elif Tackem.root_event.check_reboot():
-                Tackem.root_event.clear_event()
+            elif event_type == "reboot":
+                self.shutdown()
                 Tackem.setup_done = False
                 Tackem.first_run = False
+                self.setup()
+                self.start()
+            elif event_type == "start system":
+                if event_variable is False:
+                    continue
+                self.system_start(event_variable)
+            elif event_type == "stop system":
+                if event_variable is False:
+                    continue
+                self.system_stop(event_variable)
+            elif event_type == "restart system":
+                if event_variable is False:
+                    continue
+                self.system_stop(event_variable)
+                self.system_start(event_variable)
             else:
-                print("!!!ERROR!!! HOW DID YOU GET HERE??? !!!ERROR!!! QUITTING NOW")
-                break
+                print("Event Not Recognised Ignoring")
+                continue
 
 
 ##############################################
@@ -186,7 +220,7 @@ class Tackem:
 def ctrl_c(_, __):
     '''Function to call once ctrl + c is pressed'''
     print(" caught Shutting Down Cleanly...")
-    RootEvent().shutdown()
+    RootEvent().set_event("shutdown")
 ##############################################
 
 if __name__ == "__main__":
