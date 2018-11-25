@@ -35,10 +35,8 @@ class Root(HTMLTEMPLATE):
                 except OSError:
                     print("ERROR WRITING CONFIG FILE")
                 RootEvent().set_event("reboot")
-                return """RESTARTING NOW... refreshing in 10 seconds...
-<script>
-window.setTimeout(function() {window.location.href = '/welcome';return false;}, 10000);
-</script>"""
+                page = str(open("www/html/reboot.html", "r").read())
+                return self._template(page, False)
         index_page = full_config_page(self._config, self._plugins)
         javascript = self._config.get("webui", {}).get("baseurl", "") + "/config_javascript"
         return self._template(index_page, javascript=javascript)

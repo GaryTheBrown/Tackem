@@ -46,12 +46,5 @@ class Root(HTMLTEMPLATE):
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
             RootEvent().set_event("reboot")
-            html = """RESTARTING NOW... refreshing in 10 seconds...
-<script>
-    window.setTimeout(function() {
-        window.location.href = '/welcome';
-        return false;
-    }, 10000);
-</script>"""
-
-            return self._template(html, False)
+            page = str(open("www/html/reboot.html", "r").read())
+            return self._template(page, False)
