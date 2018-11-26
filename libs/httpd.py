@@ -48,7 +48,6 @@ class Httpd():
                                     conf_root)
                 for key in self._systems:
                     #load system root
-                    print("mount", key)
                     cherrypy.tree.mount(
                         self._plugins[self._systems[key].plugin_link()].www.Root(key, self._systems,
                                                                                  self._plugins,
