@@ -100,7 +100,7 @@ class Tackem:
                     partal = Tackem.config.get('plugins', {}).get(key, {})
                     if partal.get(inst, {}).get('enabled', True):
                         print("Loading " + inst + " (" + key + ")")
-                        name = inst + "_" + key
+                        name = key + "_" + inst
                         config_inst = Tackem.config['plugins'][key][inst]
                         Tackem.systems[name] = Tackem.plugins[key].Plugin(key, name,
                                                                           config_inst, Tackem.sql)

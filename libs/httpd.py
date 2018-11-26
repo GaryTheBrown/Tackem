@@ -48,12 +48,12 @@ class Httpd():
                                     conf_root)
                 for key in self._systems:
                     #load system root
-                    key_url = key.replace("_", "")
+                    print("mount", key)
                     cherrypy.tree.mount(
                         self._plugins[self._systems[key].plugin_link()].www.Root(key, self._systems,
                                                                                  self._plugins,
                                                                                  self._config),
-                        self._config['webui']['baseurl'] + "/" + key_url + "/",
+                        self._config['webui']['baseurl'] + "/" + key + "/",
                         self._plugins[self._systems[key].plugin_link()].www.CFG)
 
             if self._config['api']['enabled']:
