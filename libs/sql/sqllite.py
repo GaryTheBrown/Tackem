@@ -1,6 +1,6 @@
 '''SQLLite System'''
 import sqlite3
-from libs.startup_arguments import ARGS, PROGRAMNAME
+from libs.startup_arguments import ARGS
 from .baseclass import MysqlBaseClass
 
 class SqlLite(MysqlBaseClass):
@@ -10,7 +10,7 @@ class SqlLite(MysqlBaseClass):
 
     def _startup(self):
         '''Setup SQLlite Here'''
-        self._conn = sqlite3.connect(ARGS.home + '/' + PROGRAMNAME + '.db')
+        self._conn = sqlite3.connect(ARGS.home + '/Tackem.db')
         self._sql = self._conn.cursor()
 
     def _shutdown(self):

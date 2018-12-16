@@ -1,5 +1,4 @@
 '''MariaDB System'''
-from libs.startup_arguments import PROGRAMNAME
 from .baseclass import MysqlBaseClass
 
 class MySql(MysqlBaseClass):
@@ -23,7 +22,7 @@ class MySql(MysqlBaseClass):
 
     def _check_version_table_exists(self):
         '''returns if the table_version exists'''
-        command = 'SELECT * FROM ' + PROGRAMNAME
+        command = 'SELECT * FROM Tackem'
         command += '.INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = "table_version"'
         return bool(self._trusted_get(command))
 

@@ -57,7 +57,8 @@ class Tackem:
 
     def _setup_plugins(self):
         '''Setup the Plugins'''
-        plugin_cfg = ""
+        cfg = ""
+        Tackem.plugins = {}
         print("Loading Plugins...")
         for folder in glob("plugins/*/*/"):
             if not "__pycache__" in folder:
@@ -66,44 +67,54 @@ class Tackem:
                 print_name = name.replace("_", " ").capitalize()
                 plugin_type = folder_split[-3]
                 print("Loading " + plugin_type.capitalize() + ":" + print_name.capitalize() + "...")
-                temp_plugin = importlib.import_module("plugins." + plugin_type + "." + name)
-                plugin_platforms = temp_plugin.SETTINGS.get("platforms", ['Linux',
-                                                                          'Darwin',
-                                                                          'Windows'])
+                plugin = importlib.import_module("plugins." + plugin_type + "." + name)
+                plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux',
+                                                                     'Darwin',
+                                                                     'Windows'])
                 if not platform.system() in plugin_platforms:
                     continue
-                if hasattr(temp_plugin, "check_disabled") and temp_plugin.check_disabled():
+                if hasattr(plugin, "check_disabled") and plugin.check_disabled():
                     continue
-                if hasattr(temp_plugin, "check_enabled") and not temp_plugin.check_enabled():
+                if hasattr(plugin, "check_enabled") and not plugin.check_enabled():
                     continue
 
-                Tackem.plugins[name] = temp_plugin
-
-                if isinstance(Tackem.plugins[name].CONFIG, ConfigList):
-                    plugin_cfg += Tackem.plugins[name].CONFIG.get_cfg(name)
+                if not plugin_type in Tackem.plugins:
+                    Tackem.plugins[plugin_type] = {}
+                Tackem.plugins[plugin_type][name] = plugin
+        for plugin_type in Tackem.plugins:
+            cfg += "    [[" + plugin_type + "]]\n"
+            for plugin in Tackem.plugins[plugin_type]:
+                temp_plugin = Tackem.plugins[plugin_type][plugin]
+                if isinstance(temp_plugin.CONFIG, ConfigList):
+                    single_instance = temp_plugin.SETTINGS.get("single_instance", False)
+                    cfg += temp_plugin.CONFIG.get_plugin_spec(single_instance)
                 else:
-                    plugin_cfg += Tackem.plugins[name].CFG
-        return plugin_cfg
+                    cfg += temp_plugin.CFG
+        return cfg
 
     def _setup_systems(self):
         '''setup the systems section'''
-        for key in Tackem.plugins:
-            if Tackem.plugins[key].SETTINGS['single_instance']:
-                plugin_type = Tackem.plugins[key].SETTINGS['type']
-                if Tackem.config['plugins'][key]['enabled']:
-                    print("Loading " + key + " (" + plugin_type + ")")
-                    Tackem.systems[key] = Tackem.plugins[key].Plugin(key, key,
-                                                                     Tackem.config['plugins'][key],
-                                                                     Tackem.sql)
-            else:
-                for inst in Tackem.config['plugins'][key]:
-                    partal = Tackem.config.get('plugins', {}).get(key, {})
-                    if partal.get(inst, {}).get('enabled', True):
-                        print("Loading " + inst + " (" + key + ")")
-                        name = key + "_" + inst
-                        config_inst = Tackem.config['plugins'][key][inst]
-                        Tackem.systems[name] = Tackem.plugins[key].Plugin(key, name,
-                                                                          config_inst, Tackem.sql)
+        for plugin_type in Tackem.plugins:
+            for plugin_name in Tackem.plugins[plugin_type]:
+                temp_plugin = Tackem.plugins[plugin_type][plugin_name]
+                temp_config = Tackem.config['plugins'][plugin_type][plugin_name]
+                plugin_full_name = plugin_type + " " + plugin_name
+                if temp_plugin.SETTINGS['single_instance']:
+                    if temp_config.get('enabled', True):
+                        print("Loading " + plugin_full_name)
+                        Tackem.systems[plugin_full_name] = temp_plugin.Plugin(temp_plugin,
+                                                                              plugin_full_name,
+                                                                              temp_config,
+                                                                              Tackem.sql)
+                else:
+                    for inst in temp_config:
+                        full_name = plugin_full_name + " " + inst
+                        if temp_config.get(inst, {}).get('enabled', True):
+                            print("Loading " + full_name)
+                            Tackem.systems[full_name] = temp_plugin.Plugin(temp_plugin,
+                                                                           full_name,
+                                                                           temp_config[inst],
+                                                                           Tackem.sql)
 
     def start(self):
         '''Startup Of the systems'''
@@ -213,7 +224,6 @@ class Tackem:
             else:
                 print("Event Not Recognised Ignoring")
                 continue
-
 
 ##############################################
 # Catching the ctrl + c event and doing a clean shutdown

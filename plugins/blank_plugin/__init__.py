@@ -27,11 +27,3 @@ class Plugin(PluginBaseClass):
         '''stop the plugin'''
         self._running = False
         return True
-
-##TMP TV CONFIG INFO
-TV_CFG = '''
-    [[tvshows]]
-        [[[__many__]]]
-            enabled = boolean(default=False)
-            [[[[locations]]]]
-'''

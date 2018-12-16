@@ -17,16 +17,10 @@ SETTINGS = {
     'platform': ['Linux', 'Darwin', 'Windows']
 }
 
-CONFIG = ConfigList("movies", sys.modules[__name__])
-# CONFIG.append(
-#     ConfigObject("enabled", "Enabled", "boolean", config_group="__many__", default=True,
-#                  input_type="switch", help_text="Is the System Enabled", script=True)
-# )
-CONFIG.append(
-    ConfigObject("location", "Movies Location", "string", config_group="__many__",
-                 default="Library/Movies/",
+CONFIG = ConfigList("movies", sys.modules[__name__], objects=[
+    ConfigObject("location", "Movies Location", "string", default="Library/Movies/",
                  help_text="Where is the library stored?")
-)
+])
 
 class Plugin(PluginBaseClass):
     '''Main Class to create an instance of the plugin'''

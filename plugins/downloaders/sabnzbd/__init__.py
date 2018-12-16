@@ -16,23 +16,20 @@ SETTINGS = {
     'platform': ['Linux', 'Darwin', 'Windows']
 }
 
-CONFIG = ConfigList("sabnzbd", sys.modules[__name__])
-CONFIG.append(
+CONFIG = ConfigList("sabnzbd", sys.modules[__name__], objects=[
     ConfigObject("enabled", "Enabled", "boolean", default=False, input_type="switch",
-                 help_text="Is the System Enabled", script=True)
-)
-CONFIG.append(
+                 help_text="Is the System Enabled", script=True),
+
     ConfigObject("downloadlocation", "Download Location", "string", default="downloads/",
-                 help_text="Where is the completed download location?")
-)
-CONFIG.append(
+                 help_text="Where is the completed download location?"),
+
     ConfigObject("host", "Host Location", "string", default="localhost",
-                 help_text="Where is the sabnzbd website?")
-)
-CONFIG.append(
+                 help_text="Where is the sabnzbd website?"),
+
     ConfigObject("port", "Host Port", "integer", minimum=1001, maximum=65535, default=8080,
-                 help_text="The Port where the host is located")
-)
+                 help_text="The Port where the host is located"),
+])
+
 
 class Plugin(PluginBaseClass):
     '''Main Class to create an instance of the plugin'''

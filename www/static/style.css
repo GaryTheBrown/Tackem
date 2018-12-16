@@ -94,6 +94,10 @@ footer {
   background-color: #666666;
 }
 
+.dropdown:hover>.dropdown-menu, .dropright:hover>.dropdown-menu {
+  display: block;
+}
+
 /* BODY HERE */
 #body {
   padding-top: 50px;

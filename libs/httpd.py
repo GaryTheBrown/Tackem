@@ -49,11 +49,11 @@ class Httpd():
                 for key in self._systems:
                     #load system root
                     cherrypy.tree.mount(
-                        self._plugins[self._systems[key].plugin_link()].www.Root(key, self._systems,
-                                                                                 self._plugins,
-                                                                                 self._config),
-                        self._config['webui']['baseurl'] + "/" + key + "/",
-                        self._plugins[self._systems[key].plugin_link()].www.CFG)
+                        self._systems[key].plugin_link().www.Root(key, self._systems,
+                                                                  self._plugins,
+                                                                  self._config),
+                        self._config['webui']['baseurl'] + "/" + key.replace(" ", "/") + "/",
+                        self._systems[key].plugin_link().www.CFG)
 
             if self._config['api']['enabled']:
                 cherrypy.tree.mount(API(self._systems, self._plugins, self._config),

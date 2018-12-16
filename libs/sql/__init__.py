@@ -6,9 +6,9 @@ from .sqllite import SqlLite
 def setup_db(config):
     '''basic function to load up the DB'''
     sql = None
-    if config['mode'] == 'SQLite3':
+    if config['mode'].lower() == 'sqlite3':
         sql = SqlLite()
-    # elif config['mode'] == 'MYSQL':
+    # elif config['mode'].lower() == 'mysql':
     #     sql = MySql()
     else:
         print(config['mode'])

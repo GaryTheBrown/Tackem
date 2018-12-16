@@ -68,7 +68,7 @@ function AddMulti(plugin){
     var name = $('#' + plugin + '_modal').find('#' + plugin + '_name').val();
     name = name.replace(/\s/g, '');
     if (name != "" && name != null) {
-        var save_name = name + "_" + plugin + "_section";
+        var save_name = plugin + "_" + name + "_delete_section";
         if(contains(save_list, save_name)){
             $('#' + plugin + '_modal').find('#' + plugin + '_name').val('');
             $('#' + plugin + "_name_empty" ).hide();

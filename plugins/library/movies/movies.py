@@ -21,14 +21,14 @@ class MoviesLibrary():
 
     def __init__(self, name, config, db):
         self._config = config
-        self.name = name
+        self.name = name.split(" ")[-1]
+        self._db_name = "movies_" + name.split(" ")[-1]
         self._db = db
 
         self._thread = threading.Thread(target=self.run, args=())
         self._thread.setName("Movies Library:" + self.name)
-
         db.table_check(self._thread.getName(),
-                       name,
+                       self._db_name,
                        self._DB_VARIABLES,
                        self._DB_VERSION)
 
@@ -38,7 +38,7 @@ class MoviesLibrary():
         glob_movie_list.sort()
         for full_path_movie in glob_movie_list:
             movie = full_path_movie.replace(self._config['location'], "")
-            if self._db.table_has_row(self.name, {"filename":movie}):
+            if self._db.table_has_row(self._db_name, {"filename":movie}):
                 continue
             print(movie + " Not in DB ADDING")
 
@@ -48,6 +48,6 @@ class MoviesLibrary():
         #inital run of information check
         self.scan_folder()
 
-        # while self._thread_run:
-        #     if not self._thread_run:
-        #         return
+        while self._thread_run:
+            if not self._thread_run:
+                return

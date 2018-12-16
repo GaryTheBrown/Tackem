@@ -1,15 +1,15 @@
 '''Object for holding variables for the config object but is also a base class of the config_object
    becasue of shared code and functions'''
 from libs.config_base import ConfigBase
-
+import libs.html_parts as html_part
 
 class ConfigOption(ConfigBase):
     '''Class to hold variables for options'''
 
-    def __init__(self, name, priority=0, script=None, hide_from_html=False, readonly=False,
+    def __init__(self, name, label, priority=0, script=None, hide_from_html=False, read_only=False,
                  disabled=False, show=None, hide=None, toggle_section=None, toggle_sections=None,
                  enable_disable=None, section_controller=None):
-        super().__init__(name, priority, script, hide_from_html, readonly, disabled, show,
+        super().__init__(name, label, priority, script, hide_from_html, read_only, disabled, show,
                          hide, toggle_section, toggle_sections, enable_disable, section_controller)
 
     def name(self):
@@ -18,15 +18,19 @@ class ConfigOption(ConfigBase):
 
     def html_option(self, value=None):
         ''' returns a html option'''
-        return self._html_input(str(open("www/html/inputs/option.html", "r").read()), value)
+        return html_part.select_box_option(self._name, self._label, value == self._name,
+                                           read_only=self._read_only, disabled=self._disabled,
+                                           script=self._script_create("onchange"))
 
-    def html_radio(self, value=None):
+    def html_radio(self, variable_name, value=None):
         ''' returns a html radio button'''
-        return self._html_input(str(open("www/html/inputs/radio.html", "r").read()), value)
+        return html_part.radio_option(variable_name, self._name, self._label, value == self._name,
+                                      disabled=self._disabled, read_only=self._read_only,
+                                      script=self._script_create("onchange"))
 
-    def html_checkbox(self, value=None):
+    def html_checkbox(self, variable_name, checked=False):
         '''returns a checkbox'''
-        checkbox_html = str(open("www/html/inputs/checkbox.html", "r").read())
-        single_checkbox_html = str(open("www/html/inputs/singlecheckbox.html", "r").read())
-        html = checkbox_html.replace("%%SINGLECHECKBOX%%", single_checkbox_html)
-        return self._html_input(html, value)
+        return html_part.checkbox_single(self._name, self._label, variable_name + "_" + self._name,
+                                         checked=checked, disabled=self._disabled,
+                                         read_only=self._read_only,
+                                         script=self._script_create("onchange"))

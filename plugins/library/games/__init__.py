@@ -21,16 +21,10 @@ SETTINGS = {
     ]
 }
 
-CONFIG = ConfigList("games", sys.modules[__name__])
-# CONFIG.append(
-#     ConfigObject("enabled", "Enabled", "boolean", config_group="__many__", default=True,
-#                  input_type="switch", help_text="Is the System Enabled", script=True)
-# )
-CONFIG.append(
-    ConfigObject("location", "Game Location", "string", config_group="__many__",
-                 default="Library/Games/",
+CONFIG = ConfigList("games", sys.modules[__name__], objects=[
+    ConfigObject("location", "Game Location", "string", default="Library/Games/",
                  help_text="Where is the library stored?")
-)
+])
 
 class Plugin(PluginBaseClass):
     '''Main Class to create an instance of the plugin'''

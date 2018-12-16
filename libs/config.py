@@ -1,324 +1,226 @@
 '''Config File Setup'''
-from collections import OrderedDict
 from configobj import ConfigObj
 from validate import Validator
 from libs.config_list import ConfigList
 from libs.config_object import ConfigObject
 from libs.config_option import ConfigOption
+import libs.html_parts as html_part
 
-#TODO PULL ALL HTML CODE OUT AND PUT IT INTO INDIVIDUAL FILES SO THEY CAN BE CHANGED in Theming
-#TODO ADD A WAY OF RELOADING OR EVEN ADDING AN INSTANCE OF THE PLUGIN TO THE SYSTEM
-#TODO ALSO MAKE IT POSSIBLE TO SHUTDOWN THE PLUGIN
+# TO DO PULL ALL HTML CODE OUT AND PUT IT INTO INDIVIDUAL FILES SO THEY CAN BE CHANGED in Theming
+# TO DO ADD A WAY OF RELOADING OR EVEN ADDING AN INSTANCE OF THE PLUGIN TO THE SYSTEM
+# TO DO ALSO MAKE IT POSSIBLE TO SHUTDOWN THE PLUGIN
 
-CONFIG = ConfigList("root", None)
-CONFIG.append(ConfigObject("", "", "", config_group="plugins"))
+CONFIG = ConfigList("root")
 CONFIG.append(
-    ConfigObject("operationmode", "Operation Mode", "option",
-                 config_group="system",
-                 default='SINGLE',
-                 input_type='radio',
-                 options=[ConfigOption("SINGLE",
-                                       toggle_sections=([], ['master', 'slave']),
-                                       enable_disable=[('webui', False, None),
-                                                       ('api', False, None)]),
-                          ConfigOption("MASTER",
-                                       toggle_sections=(['master'], ['slave']),
-                                       enable_disable=[('webui', True, True),
-                                                       ('api', True, True)],
-                                       disabled=True),
-                          ConfigOption("SLAVE",
-                                       toggle_sections=(['slave'], ['master']),
-                                       enable_disable=[('webui', True, False),
-                                                       ('api', True, True)],
-                                       disabled=True)],
-                 help_text="""
-Is this program running alone or acting as part of a multi computer setup<br>
-<i>DISABLED OPTIONS AS NOT IMPLEMENTED YET</i>"""))
-
-#Master Only
+    ConfigList("system", objects=[
+        ConfigObject("operationmode", "Operation Mode", "option", default='single',
+                     input_type='radio', options=[
+                         ConfigOption("single", "SINGLE",
+                                      toggle_sections=([], ['system_master', 'system_slave'])),
+                         ConfigOption("master", "MASTER",
+                                      toggle_sections=(['system_master'], ['system_slave'])),
+                         ConfigOption("slave", "SLAVE",
+                                      toggle_sections=(['system_slave'], ['system_master']))
+                     ],
+                     help_text="""
+Is this program running alone or acting as part of a multi computer setup"""),
+        #Master Only
+        ConfigList("master", objects=[
+            ConfigObject("portrangefrom", "Port Range From", "integer", minimum=1001, maximum=65535,
+                         default=50000, help_text="""
+    The Min range of allowed ports for communication between systems"""),
+            ConfigObject("portrangeto", "Port Range To", "integer", minimum=1001, maximum=65535,
+                         default=50100, help_text="""
+    The Max range of allowed ports for communication between systems""")
+        ], is_section=True, section_link=["system", "operationmode"]),
+        #Slave Only
+        ConfigList("slave", objects=[
+            ConfigObject("masteraddress", "Master Address", "string", default="",
+                         help_text="The master systems address or mastername"),
+            ConfigObject("masterport", "Master Port", "integer", minimum=1001, maximum=65535,
+                         default=8081, help_text="The master systems API/WebUI port"),
+            ConfigObject("masterapikey", "Master API Key", "string", default="",
+                         help_text="The master systems API key")
+        ], is_section=True, section_link=["system", "operationmode"])
+    ])
+)
 CONFIG.append(
-    ConfigObject("portrangefrom", "Port Range From", "integer", config_group="system",
-                 minimum=1001, maximum=65535, default=50000, section="master", help_text="""
-The Min range of allowed ports for communication between systems"""))
+    ConfigList("database", objects=[
+        ConfigObject("mode", "Database System", "option", default='sqlite3', input_type='radio',
+                     options=[ConfigOption("sqlite3", "SQLite3", hide="database_mysql"),
+                              ConfigOption("mysql", "MYSQL", show="database_mysql")],
+                     help_text="Is this The Database Connection used for the software"),
+        ConfigList("mysql", objects=[
+            ConfigObject("address", "Database Address", "string", default="localhost",
+                         help_text="The database address or mastername"),
+            ConfigObject("port", "Database Port", "integer", minimum=1001, maximum=65535,
+                         default=3306, help_text="The database port"),
+            ConfigObject("username", "Database Username", "string", default="",
+                         help_text="The database username"),
+            ConfigObject("password", "Database Password", "password", default="",
+                         help_text="The database password"),
+            ConfigObject("name", "Database Name", "string", default="tackem",
+                         help_text="The database Name")
+        ], is_section=True, section_link=["database", "mode"])
+    ])
+)
 CONFIG.append(
-    ConfigObject("portrangeto", "Port Range To", "integer", config_group="system",
-                 minimum=1001, maximum=65535, default=50100, section="master", help_text="""
-The Max range of allowed ports for communication between systems"""))
-#Slave Only
+    ConfigList("api", objects=[
+        ConfigObject("enabled", "Enabled", "boolean", default=True, toggle_section="api",
+                     input_type="switch"),
+        ConfigObject("masterkey", "Master API Key", "string", default='', button="Generate API Key",
+                     button_onclick="GenerateAPIKey('api_masterkey');",
+                     help_text="The master API key for slaves to access"),
+        ConfigObject("userkey", "User API Key", "string", default='', button="Generate API Key",
+                     button_onclick="GenerateAPIKey('api_userkey');",
+                     help_text="The user API key for slaves to access")
+    ])
+)
 CONFIG.append(
-    ConfigObject("masteraddress", "Master Address", "string", config_group="system",
-                 default="", section="slave", help_text="The master systems address or mastername"))
-CONFIG.append(
-    ConfigObject("masterport", "Master Port", "integer", config_group="system",
-                 minimum=1001, maximum=65535, default=8081, section="slave", help_text="""
-The master systems API/WebUI port"""))
-CONFIG.append(
-    ConfigObject("masterapikey", "Master API Key", "string", config_group="system",
-                 default="", section="slave", help_text="The master systems API key"))
-
-CONFIG.append(
-    ConfigObject("mode", "Database System", "option",
-                 config_group="database",
-                 default='SQLite3',
-                 input_type='radio',
-                 options=[ConfigOption("SQLite3", hide="mysql"),
-                          ConfigOption("MYSQL", show="mysql", disabled=True)], help_text="""
-Is this The Database Connection used for the software<br>
-<i>DISABLED OPTIONS AS NOT IMPLEMENTED YET</i>"""))
-CONFIG.append(
-    ConfigObject("address", "Database Address", "string", config_group="database",
-                 default="localhost", section="mysql", help_text="""
-The database address or mastername"""))
-CONFIG.append(
-    ConfigObject("port", "Database Port", "integer", config_group="database",
-                 minimum=1001, maximum=65535, default=3306, section="mysql", help_text="""
-The database port"""))
-CONFIG.append(
-    ConfigObject("username", "Database Username", "string", config_group="database",
-                 default="", section="mysql", help_text="The database username"))
-CONFIG.append(
-    ConfigObject("password", "Database Password", "password", config_group="database",
-                 default="", section="mysql", help_text="The database password"))
-CONFIG.append(
-    ConfigObject("name", "Database Name", "string", config_group="database",
-                 default="tackem", section="mysql", help_text="The database Name"))
-CONFIG.append(ConfigObject("enabled", "Enabled", "boolean", config_group="api", default=False,
-                           toggle_section="api", input_type="switch"))
-CONFIG.append(ConfigObject("masterkey", "Master API Key", "string", config_group="api", default='',
-                           button="Generate API Key",
-                           button_onclick="GenerateAPIKey('api_masterkey');",
-                           help_text="The master API key for slaves to access"))
-CONFIG.append(ConfigObject("userkey", "User API Key", "string", config_group="api", default='',
-                           button="Generate API Key",
-                           button_onclick="GenerateAPIKey('api_userkey');",
-                           help_text="The user API key for slaves to access"))
-#<br><small>Leave blank to work on per plugin API's for extra security</small>
-
-CONFIG.append(ConfigObject("enabled", "Enabled", "boolean", config_group="webui", default=True,
-                           toggle_section="webui", input_type="switch"))
-CONFIG.append(
-    ConfigObject("port", "Port", "integer", config_group="webui",
-                 minimum=1001, maximum=65535, default=8081, help_text="The port for the WebUI"))
-CONFIG.append(
-    ConfigObject("baseurl", "Base Url", "string", config_group="webui",
-                 default="", help_text="The Base URL"))
+    ConfigList("webui", objects=[
+        ConfigObject("enabled", "Enabled", "boolean", default=True, toggle_section="webui",
+                     input_type="switch"),
+        ConfigObject("port", "Port", "integer", minimum=1001, maximum=65535, default=8081,
+                     help_text="The port for the WebUI"),
+        ConfigObject("baseurl", "Base Url", "string", default="", help_text="The Base URL")
+    ])
+)
+CONFIG.append(ConfigList("plugins"))# keep this one at the end of the config section
 
 def config_load(path, plugin_configs):
     """Create a config file using a configspec and validate it against a Validator object"""
-    _spec = CONFIG.get_cfg("").replace("$$PLUGIN_CONFIGS$$", plugin_configs, 1).split("\n")
+    temp_spec = CONFIG.get_root_spec() + plugin_configs
+    _spec = temp_spec.split("\n")
     config = ConfigObj(path, configspec=_spec)
     validator = Validator()
     config.validate(validator, copy=True)
     config.filename = path
     return config
 
+def javascript():
+    '''Javascript File'''
+    return str(open("www/javascript/config.js", "r").read())
+
 def post_config_settings(kwargs, config, plugins):
     '''Fills in the config dict with the settings based on its name'''
     for key in kwargs:
         key_list = key.split("_")
         if key_list[0] == "cs":
-            val = ""
-            location = ""
-            if key_list[1] in plugins:
-                if plugins[key_list[1]].SETTINGS['single_instance']:
-                    location = "single"
-                    val = plugins[key_list[1]].CONFIG.convert_var(None,
-                                                                  key_list[2], kwargs[key])
-                else:
-                    location = "multi"
-                    val = plugins[key_list[1]].CONFIG.convert_var("__many__",
-                                                                  key_list[3], kwargs[key])
+            value = None
+            if key_list[1] == "plugins":
+                if key_list[2] in plugins and key_list[3] in plugins[key_list[2]]:
+                    plugin = plugins[key_list[2]][key_list[3]]
+                    if plugin.SETTINGS['single_instance']:
+                        value = plugin.CONFIG.convert_var(key_list[4:], kwargs[key])
+                    else:
+                        value = plugin.CONFIG.convert_var(key_list[5:], kwargs[key])
             else:
-                location = "root"
-                val = CONFIG.convert_var(key_list[1], key_list[2], kwargs[key])
-            if val is None:
-                continue
-            if location == "root":
-                config[key_list[1]][key_list[2]] = val
-            elif location == "multi":
-                if not key_list[2] in config["plugins"][key_list[1]]:
-                    config["plugins"][key_list[1]][key_list[2]] = {}
-                config["plugins"][key_list[1]][key_list[2]][key_list[3]] = val
-            elif location == "single":
-                if len(key_list) == 2:
-                    config["plugins"][key_list[1]] = val
-                elif len(key_list) == 3:
-                    config["plugins"][key_list[1]][key_list[2]] = val
-                elif len(key_list) == 4:
-                    config["plugins"][key_list[1]][key_list[2]][key_list[3]] = val
-                elif len(key_list) == 5:
-                    config["plugins"][key_list[1]][key_list[2]][key_list[3]][key_list[4]] = val
+                value = CONFIG.convert_var(key_list[1:], kwargs[key])
+            if value is not None:
+                add_val_to_config(config, key_list[1:], value)
 
-def full_config_page(config_dict, plugins):
-    '''returns a full config page layout for all systems'''
+def add_val_to_config(config, key_list, value):
+    '''recursive way of adding value into the config'''
+    if len(key_list) is 1:
+        config[key_list[0]] = value
+    else:
+        if not config:
+            config[key_list[0]] = {}
+        add_val_to_config(config[key_list[0]], key_list[1:], value)
 
-    root_string = _get_root_configs_page(config_dict)
-    replace_data = CONFIG.get_list_of_vars_and_values(config_dict)
-    for key in replace_data:
-        root_string = root_string.replace(key, str(replace_data[key]))
+def root_config_page(config):
+    '''get the full root config setup page into a form'''
+    return html_part.form("/", html_part.hidden_page_index(2), "Next", _root_config_page(config))
 
-    groups = CONFIG.get_groups()
-    for group in groups:
-        value = config_dict.get(group, {}).get('enabled', None)
-        default = CONFIG.get_default(group, 'enabled')
+def plugin_config_page(config, plugins):
+    '''setup for Libraries into a form'''
+    return html_part.form("/", html_part.hidden_page_index(3), "Save & Restart",
+                          _plugin_config_page(config, plugins))
 
-        replace_hidden = ""
-        if value is False or (value is None and default is False):
-            replace_hidden = 'style="display:none"'
-        root_string = root_string.replace("%%" + group.upper() + "ENABLED%%", replace_hidden)
+def full_config_page(config, plugins):
+    '''get the full config setup page into a form'''
+    baseurl = config.get("webui", {}).get("baseurl", "")
+    return html_part.form(baseurl + "/config", "", "Save & Restart",
+                          _root_config_page(config) + _plugin_config_page(config, plugins))
 
-    plugin_string = _get_plugin_configs_page(plugins, config_dict.get("plugins", {}))
-    replace_data = {}
-    plugin_config = config_dict.get('plugins', {})
-    for key in plugins:
-        config_part = plugin_config.get(key, {})
-        if not plugins[key].SETTINGS['single_instance']:
-            if not config_part:
-                plugin_string = plugin_string.replace("%%" + key.upper() + "SECTION%%", '')
-                continue
-            plugin_groups = plugins[key].CONFIG.get_groups()
-            section_html = ""
-            for item in config_part:
-                if isinstance(config_part[item], dict):
-                    if not item in plugin_groups:
-                        section_html += get_multi_setup(plugins, key, config_part, item)
-            plugin_string = plugin_string.replace("%%" + key.upper() + "SECTION%%", section_html)
-    for key in replace_data:
-        plugin_string = plugin_string.replace(key, str(replace_data[key]))
+def _root_config_page(config):
+    '''get the full root config setup page'''
+    return html_part.root_config_page(CONFIG.get_config_html(config))
 
-    baseurl = config_dict.get("webui", {}).get("baseurl", "")
-
-    page = root_string + plugin_string
-
-    form_html = str(open("www/html/inputs/form.html", "r").read())
-    form_html = form_html.replace("%%RETURNURL%%", baseurl + "/config")
-    hidden_html = str(open("www/html/inputs/hiddenpageindex.html", "r").read())
-    hidden_html = hidden_html.replace("%%PAGEINDEX%%", "RESTART")
-    form_html = form_html.replace("%%HIDDEN%%", hidden_html)
-    form_html = form_html.replace("%%BUTTONLABEL%%", "Save")
-    form_html = form_html.replace("%%PAGE%%", page)
-    return form_html
-
-def root_config_page():
+def _plugin_config_page(config, plugins):
     '''setup for Libraries'''
-    form_html = str(open("www/html/inputs/form.html", "r").read())
-    form_html = form_html.replace("%%RETURNURL%%", "/")
-    hidden_html = str(open("www/html/inputs/hiddenpageindex.html", "r").read())
-    hidden_html = hidden_html.replace("%%PAGEINDEX%%", "2")
-    form_html = form_html.replace("%%HIDDEN%%", hidden_html)
-    form_html = form_html.replace("%%BUTTONLABEL%%", "Next")
-    form_html = form_html.replace("%%PAGE%%", _get_root_configs_page({}))
+    plugin_tabs_html = ""
+    plugin_panes_html = ""
+    first_type = True
+    for plugin_type in plugins:
+        plugin_pane_html = ""
+        plugin_tabs_html += html_part.tab_bar_item(plugin_type, first_type)
+        for plugin in plugins[plugin_type]:
+            temp_plugin = plugins[plugin_type][plugin]
+            temp_config = config["plugins"][plugin_type][plugin]
+            variable_name = "plugins_" + plugin_type + "_" + plugin + "_"
+            if temp_plugin.SETTINGS.get("single_instance", True):
+                plugin_pane_html += _single_plugin_config_page(plugin, temp_plugin, temp_config,
+                                                               variable_name)
+            else:
+                plugin_pane_html += _multi_plugin_config_page(plugin, temp_plugin, temp_config,
+                                                              variable_name)
+        plugin_panes_html += html_part.tab_pane(plugin_type, plugin_pane_html, first_type)
+        if first_type:
+            first_type = False
+    return html_part.plugin_config_page(html_part.tab_bar(plugin_tabs_html), plugin_panes_html)
 
-    replace_data = CONFIG.get_list_of_vars_and_defaults()
-    for key in replace_data:
-        form_html = form_html.replace(key, replace_data[key])
+def _single_plugin_config_page(plugin_name, plugin, config, variable_name):
+    '''returns the single plugin pane'''
+    section_enabled = not plugin.CONFIG.check_if_section_is_hidden(config)
+    control_html = ""
+    if plugin.CONFIG.search_for_object_by_name("enabled"):
+        control_html = html_part.checkbox_switch("enabled",
+                                                 variable_name,
+                                                 section_enabled, script=True)
+    plugin_html = plugin.CONFIG.get_config_html(config, variable_name)
+    return html_part.panel(plugin_name, control_html, "", variable_name[:-1], plugin_html,
+                           section_enabled)
 
-    groups = CONFIG.get_groups()
-    for group in groups:
-        if CONFIG.get_default(group, 'enabled', True):
-            form_html = form_html.replace("%%" + group.upper() + "ENABLED%%", '')
-        else:
-            form_html = form_html.replace("%%" + group.upper() + "ENABLED%%",
-                                          'style="display:none"')
-    return form_html
+def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
+    '''returns the multi plugin pane'''
+    section_enabled = not plugin.CONFIG.check_if_section_is_hidden(config)
+    #add instance button
+    control_html = html_part.add_instance_button(variable_name[:-1])
+    modal = ""
+    if 'list_of_options' in plugin.SETTINGS:
+        options_html = ""
+        for option in plugin.SETTINGS['list_of_options']:
+            options_html += html_part.select_box_option(option, option)
+        select_html = html_part.select_box(variable_name + "name", None, options_html)
+        modal = html_part.list_modal(plugin_name, variable_name[:-1], select_html)
+    else:
+        modal = html_part.multi_modal(plugin_name, variable_name[:-1])
+    modal = modal.replace("cs_", "")
+    plugin_html = ""
+    if config:
+        for name in config:
+            plugin_html = multi_plugin_config_section(plugin, config, variable_name[:-1], name)
 
-def _get_root_configs_page(config):
-    '''setup for Libraries'''
-    sections = CONFIG.get_only_html_options(config)
-    page = str(open("www/config/root_config_page.html", "r").read())
-    page = page.replace("%%PLUGINLIST%%", sections)
-    page = page.replace("%%PLUGIN%%_", "")
-    page = page.replace("root_", "")
-    page = page.replace("%%PLUGIN%%", "")
-    return page
+    return html_part.panel(plugin_name, control_html, modal, variable_name[:-1], plugin_html,
+                           section_enabled)
 
-def plugin_config_page(plugins):
-    '''setup for Libraries'''
-    form_html = str(open("www/html/inputs/form.html", "r").read())
-    form_html = form_html.replace("%%RETURNURL%%", "/")
-    hidden_html = str(open("www/html/inputs/hiddenpageindex.html", "r").read())
-    hidden_html = hidden_html.replace("%%PAGEINDEX%%", "3")
-    form_html = form_html.replace("%%HIDDEN%%", hidden_html)
-    form_html = form_html.replace("%%BUTTONLABEL%%", "Save & Restart")
-    form_html = form_html.replace("%%PAGE%%", _get_plugin_configs_page(plugins, {}))
+def multi_plugin_config_section(plugin, config, variable_name, name):
+    '''returns a section of a multi plugin'''
+    section_enabled = not plugin.CONFIG.check_if_section_is_hidden(config)
+    enable_option = ""
+    if plugin.CONFIG.search_for_object_by_name("enabled"):
+        enable_option = html_part.checkbox_switch("enabled",
+                                                  variable_name,
+                                                  section_enabled, script=True)
+    delete_option = html_part.delete_instance_button(variable_name, name)
+    section_html = plugin.CONFIG.get_config_html(config, variable_name + "_" + name + "_")
+    return html_part.multi_panel(variable_name, name, enable_option, delete_option,
+                                 section_html, section_enabled)
 
-    replace_data = {}
-    for key in plugins:
-        if plugins[key].SETTINGS['single_instance']:
-            replace_data.update(plugins[key].CONFIG.get_list_of_vars_and_defaults(key))
-        else:
-            form_html = form_html.replace("%%" + key.upper() + "SECTION%%", "")
-    for key in replace_data:
-        form_html = form_html.replace(key, replace_data[key])
-
-    return form_html
-
-def _get_plugin_configs_page(plugins, config):
-    '''setup for Libraries'''
-    plugin_lists = []
-    sorted_plugins = OrderedDict(sorted(plugins.items()))
-    plugin_types = []
-    for key in sorted_plugins:
-        plugin = ""
-        plugin_type = plugins[key].SETTINGS['type']
-        if not plugin_type in plugin_types:
-            plugin_types.append(plugin_type)
-        plugins[key].CONFIG.sort_config()
-        if plugins[key].SETTINGS['single_instance']:
-            plugin = plugins[key].CONFIG.single_instance_load(config.get(key, {}))
-        else:
-            plugin = plugins[key].CONFIG.multi_instance_load()
-        plugin = plugin.replace("%%PLUGINNAME%%", key)
-        if plugin != "":
-            plugin_lists.append((plugin_type, plugin))
-
-    navlink_html, plugins_html = _plugin_panel_and_nav_create(plugin_lists, plugin_types)
-
-    page = str(open("www/config/plugin_config_page.html", "r").read())
-    return page.replace("%%PANELTABS%%", navlink_html).replace("%%PLUGINLIST%%", plugins_html)
-
-def _plugin_panel_and_nav_create(plugins, plugin_types):
-    '''create and return plugin section and its navigation'''
-    tabbar_html = str(open("www/html/inputs/tabbar.html", "r").read())
-    tabbar_item_html = str(open("www/html/inputs/tabbaritem.html", "r").read())
-    tabpane_item_html = str(open("www/html/inputs/tabpane.html", "r").read())
-    tabbar_items_html = ""
-    tabpanes_html = ""
-    first_window = True
-    for plugin_type in plugin_types:
-        tabbar_item = tabbar_item_html.replace("%%PLUGINTYPE%%", plugin_type)
-        tabbar_item = tabbar_item.replace("%%PLUGINTYPECAPITALIZE%%", plugin_type.capitalize())
-        tabpane_item = tabpane_item_html.replace("%%PLUGINTYPE%%", plugin_type)
-        if first_window:
-            tabbar_item = tabbar_item.replace("%%ACTIVE%%", 'active')
-            tabpane_item = tabpane_item.replace("%%ACTIVE%%", 'active')
-            first_window = False
-        else:
-            tabbar_item = tabbar_item.replace(" %%ACTIVE%%", '')
-            tabpane_item = tabpane_item.replace(" %%ACTIVE%%", '')
-        tabbar_items_html += tabbar_item
-        plugins_html = ''
-        for plugin in plugins:
-            if plugin[0] == plugin_type:
-                plugins_html += plugin[1]
-        tabpanes_html += tabpane_item.replace("%%PLUGIN%%", plugins_html)
-
-    tabbar_html = tabbar_html.replace("%%TABBARITEMS%%", tabbar_items_html)
-    return tabbar_html, tabpanes_html
-
-def get_multi_setup(plugins, plugin, config, name=""):
+def get_config_multi_setup(plugins, plugin_path, full_config, name=""):
     '''Return the information needed for the setup of the plugin'''
-    if plugins[plugin].SETTINGS['single_instance']:
-        return "<BAD>"
-    data = plugins[plugin].CONFIG.get_multi_html_options(config)
-    data = data.replace("%%NAME%%", name)
-    data = data.replace("%%PLUGIN%%", plugin)
-    data = data.replace("%%PLUGINTYPE%%", plugins[plugin].SETTINGS['type'])
-    data = data.replace("%%VARNAME%%", name.replace(" ", ""))
-    data = data.replace("%%TITLE%%", name.capitalize())
-    data = data.replace("%%SCRIPT%%", "")
-    return data
-
-def javascript():
-    '''Javascript File'''
-    return str(open("www/config/config.js", "r").read())
+    plugin_location = plugin_path.split("_")
+    plugin = plugins[plugin_location[1]][plugin_location[2]]
+    config = full_config[plugin_location[0]][plugin_location[1]][plugin_location[2]]
+    return multi_plugin_config_section(plugin, config, plugin_path, name)

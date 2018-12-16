@@ -1,5 +1,7 @@
 '''Class Controller for a single Config Object'''
 from libs.config_base import ConfigBase
+import libs.html_parts as html_part
+
 class ConfigObject(ConfigBase):
     '''Class Controller for a single Config Object'''
 
@@ -14,14 +16,13 @@ class ConfigObject(ConfigBase):
                             "radio", "range", "text", "time", "url",
                            ]
 
-    def __init__(self, name, label, variable_type, config_group=None, default=None,
+    def __init__(self, name, label, variable_type, default=None,
                  replace_default_in_files=True, minimum=None, maximum=None, options=None,
                  input_type=None, help_text=None, script=False, button=None, button_onclick=None,
-                 hide_from_html=False, readonly=False, disabled=False, priority=0, show=None,
+                 hide_from_html=False, read_only=False, disabled=False, priority=0, show=None,
                  hide=None, toggle_section=None, toggle_sections=None, enable_disable=None,
-                 section=None, section_controller=None):
+                 section_controller=None):
         '''initalise the object'''
-        self._label = label
         self._variable_name = name.replace(" ", "").lower()
         if isinstance(variable_type, str) and variable_type in self._types:
             self._type = variable_type
@@ -29,7 +30,6 @@ class ConfigObject(ConfigBase):
             self._type = self._types[variable_type]
         else:
             self._type = "string"
-        self._config_group = config_group
         self._default = default
         self._replace_default_in_files = bool(replace_default_in_files)
         self._minimum = minimum
@@ -39,27 +39,13 @@ class ConfigObject(ConfigBase):
         self._help_text = help_text
         self._button = button
         self._button_onclick = button_onclick
-        if isinstance(section, str):
-            self._section = section
-        else:
-            self._section = ""
 
-        super().__init__(name, priority, script, hide_from_html, readonly, disabled, show,
+        super().__init__(name, label, priority, script, hide_from_html, read_only, disabled, show,
                          hide, toggle_section, toggle_sections, enable_disable, section_controller)
 
-    def config_group(self, nonetostr=False):
-        '''return config group'''
-        if nonetostr and self._config_group is None:
-            return self._name
-        return self._config_group
-
-    def section(self, nonetostr=False):
-        '''return config group'''
-        if nonetostr and self._section is None:
-            if self._config_group is None:
-                return self._name
-            return self._config_group
-        return self._section
+    def __repr__(self):
+        '''print return'''
+        return "ConfigObject(" + self._name + ")"
 
     def default(self):
         '''return default'''
@@ -69,18 +55,12 @@ class ConfigObject(ConfigBase):
         '''return variable name'''
         return self._name
 
-    def label(self):
-        '''return label'''
-        return self._label
-
     def var_type(self):
         '''return variable type'''
         return self._type
 
-    def get_config_section(self):
+    def get_config_spec(self):
         '''Returns the line for the config option'''
-        if self._name is "" and self._config_group is "plugins":
-            return "$$PLUGIN_CONFIGS$$"
         variable_count = 0
         return_string = self._name + " = "
         if self._type == self._types[6]:
@@ -131,182 +111,114 @@ class ConfigObject(ConfigBase):
             elif isinstance(self._default, str):
                 return_string += '"' + self._default + '"'
         return_string += ")\n"
-
         return return_string
 
-    def get_input_html(self, value=None, html_hide_override=False):
-        '''returns the input html for each option'''
-        if self._hide_on_html and not html_hide_override:
+    def get_config_html(self, variable_name, value):
+        '''returns the config_html'''
+        if self._hide_on_html:
             return ""
+        variable_name += self._name
+        if value is None:
+            value = str(self._default)
+        return html_part.item(variable_name, self._label, self._help_text,
+                              self.get_input_html(variable_name, value))
 
-        item_html = str(open("www/html/inputs/item.html", "r").read())
-        item_html = item_html.replace("%%LABEL%%", self._label)
-        if isinstance(self._help_text, str):
-            item_html = item_html.replace("%%HELP%%", self._help_text)
-        else:
-            item_html = item_html.replace("%%HELP%%", '')
-        item_html = item_html.replace("%%INPUT%%", self.get_only_input_html(value))
-        var_name = self.get_html_var_name()
-        item_html = item_html.replace("%%VARNAME%%", var_name)
-        return item_html
-
-    def get_only_input_html(self, value=None, html_hide_override=False, script=None):
+    def get_input_html(self, variable_name, value):
         '''Returns the Input portion of the system'''
-        if self._hide_on_html and not html_hide_override:
+        if self._hide_on_html:
             return ""
         if value is None:
             value = self._default
+        if self._button is None:
+            button_html = ""
+        else:
+            button_html = html_part.input_button(self._button, self._button_onclick)
         if self._type == self._types[0]:
             #String
-            return self._input(self._input_types[0], value)
+            return html_part.input_box(self._input_types[0], variable_name, value,
+                                       script=self._script_create("onchange"),
+                                       max_length=self._maximum, button=button_html,
+                                       read_only=self._read_only, disabled=self._disabled)
         elif self._type == self._types[1]:
             #Float
-            return self._input(self._input_types[1], value)
+            return html_part.input_box(self._input_types[1], variable_name, value,
+                                       script=self._script_create("onchange"),
+                                       minimum=self._minimum, maximum=self._maximum,
+                                       button=button_html, read_only=self._read_only,
+                                       disabled=self._disabled)
         elif self._type == self._types[2]:
             #String List (multi select or dropdown multi or checkboxes)
             if self._input_type is None or self._input_type == self._input_types[6]:
-                return self._select_box(True), 6
+                self._select_box(variable_name, value, True)
             elif self._input_type == self._input_types[2]:
-                return self._select_box(True)
+                self._select_box(variable_name, value, True)
             elif self._input_type == self._input_types[5]:
-                return self._multi_checkbox(value)
+                return self._multi_checkbox(variable_name, value)
         elif self._type == self._types[3]:
             #Boolean (radio or checkbox)
             if self._input_type is None or self._input_type == self._input_types[3]:
-                return self._radio(value)
+                return self._radio(variable_name, value)
             elif self._input_type == self._input_types[5]:
-                return self._single_checkbox(value, False, script)
+                return html_part.checkbox_single("", variable_name,
+                                                 checked=True,
+                                                 disabled=self._disabled,
+                                                 read_only=self._read_only,
+                                                 script=self._script_create("onchange"))
             elif self._input_type == self._input_types[7]:
-                return self._single_checkbox(value, True, script)
+                return html_part.checkbox_switch("", variable_name,
+                                                 checked=True,
+                                                 disabled=self._disabled,
+                                                 read_only=self._read_only,
+                                                 script=self._script_create("onchange"))
         elif self._type == self._types[4]:
             #Options (dropdown single or radio)
             if self._input_type is None or self._input_type == self._input_types[2]:
-                return self._select_box(value)
+                self._select_box(variable_name, value)
             elif self._input_type == self._input_types[3]:
-                return self._radio(value)
+                return self._radio(variable_name, value)
         elif self._type == self._types[5]:
             #Integer
-            return self._input(self._input_types[1], value)
+            return html_part.input_box(self._input_types[1], variable_name, value,
+                                       script=self._script_create("onchange"),
+                                       max_length=self._maximum, button=button_html,
+                                       read_only=self._read_only, disabled=self._disabled)
         elif self._type == self._types[6]:
             #password
-            return self._input(self._input_types[4], value)
-        elif self._type == self._types[7]:
-            #IP Address (input ipaddr])
-            pass
-        else:
-            return "<<BROKEN OPTION " + self._name + ">>"
+            return html_part.input_box(self._input_types[4], variable_name, value,
+                                       script=self._script_create("onchange"),
+                                       button=button_html, read_only=self._read_only,
+                                       disabled=self._disabled)
+        # elif self._type == self._types[7]:
+        #     #IP Address (input ipaddr])
+        #     pass
 
-    def _input(self, input_type, value):
-        '''A Standard input field'''
-        input_html = str(open("www/html/inputs/input.html", "r").read())
-        input_html = input_html.replace("%%INPUTTYPE%%", input_type)
+        return "[BROKEN OPTION " + self._name + "]"
 
-        value_html = ""
-        if input_type == self._input_types[0] or input_type == self._input_types[5]:
-            if isinstance(self._maximum, int):
-                maxlength_html = ' maxlength="' + str(self._maximum) + '"'
-                input_html = input_html.replace("%%MAXLENGTH%%", maxlength_html)
-
-        elif input_type == self._input_types[1]:
-            if isinstance(self._minimum, int):
-                min_html = ' min="' + str(self._minimum) + '"'
-                input_html = input_html.replace("%%MIN%%", min_html)
-            if isinstance(self._maximum, int):
-                max_html = ' max="' + str(self._maximum) + '"'
-                input_html = input_html.replace("%%MAX%%", max_html)
-        if isinstance(value, str):
-            value_html = ' value="' + value + '"'
-        elif isinstance(value, (float, int)):
-            value_html = ' value="' + str(value) + '"'
-        elif isinstance(self._default, str) and not input_type == self._input_types[4]:
-            value_html = ' value="' + self._default + '"'
-        elif isinstance(self._default, (float, int)) and not input_type == self._input_types[4]:
-            value_html = ' value="' + str(self._default) + '"'
-
-        if value != "":
-            input_html = input_html.replace("%%VALUE%%", value_html)
-
-        #button stuff
-
-
-        if self._button is None:
-            input_html = input_html.replace(" %%BUTTON%%", "")
-        else:
-            button_html = str(open("www/html/inputs/inputbutton.html", "r").read())
-            button_html = button_html.replace("%%BUTTONVALUE%%", self._button)
-            button_html = button_html.replace("%%BUTTONONCLICK%%", self._button_onclick)
-            input_html = input_html.replace("%%BUTTON%%", button_html)
-
-        input_html = input_html.replace(" %%MAXLENGTH%%", "")
-        input_html = input_html.replace(" %%MIN%%", "")
-        input_html = input_html.replace(" %%MAX%%", "")
-        input_html = input_html.replace(" %%VALUE%%", "")
-        return self._html_input(input_html)
-
-    def _select_box(self, value, multiple=False, box_size=0):
-        '''Makes A select box'''
-        box_html = str(open("www/html/inputs/blankselectedoption.html", "r").read())
-
-        if multiple:
-            box_html = box_html.replace('%%MULTIPLE%%', 'multiple')
-        else:
-            box_html = box_html.replace(' %%MULTIPLE%%', '')
-        if box_size > 1:
-            box_html = box_html.replace('%%SIZE%%', 'size="' + box_size + '"')
-        else:
-            box_html = box_html.replace(' %%SIZE%%', '')
-
-        if value is None:
-            options_html = str(open("www/html/inputs/blankselectedoption.html", "r").read())
-        else:
-            options_html = str(open("www/html/inputs/blankoption.html", "r").read())
+    def _select_box(self, variable_name, value, multiple=False):
+        '''select box code'''
+        options_html = ""
         for option in self._options:
             options_html += option.html_option(value)
+        return html_part.select_box(variable_name, value, options_html,
+                                    read_only=self._read_only, disabled=self._disabled,
+                                    multiple=multiple)
 
-        box_html = box_html.replace("%%OPTIONS%%", options_html)
-
-        return self._html_input(box_html, value)
-
-    def _radio(self, value):
+    def _radio(self, variable_name, value):
         '''Returns radio buttons'''
         return_string = ""
         for option in self._options:
-            return_string += option.html_radio(value)
+            return_string += option.html_radio(variable_name, value)
         return return_string
 
-    def _single_checkbox(self, value, switch=False, script=None):
-        '''returns a single checkbox'''
-        string = str(open("www/html/inputs/singlecheckbox.html", "r").read())
-        if switch:
-            switch_str = str(open("www/html/inputs/switchoptions.html", "r").read())
-            string = string.replace("%%SWITCH%%", switch_str)
-            if script is None:
-                script = "onchange=''"
-            script2 = script[:-1] + 'Switch("%%VARNAME%%");' + script[-1:]
-            script = script2
-            #TODO add in the switch JS here but maybe keep the %%SCRIPT%% so other scripts can be added
-        else:
-            string = string.replace(" %%SWITCH%%", '')
-        return self._html_input(string, value, script)
-
-
-    def _multi_checkbox(self, value):
-        '''returns a single checkbox'''
-        return_string = ''
+    def _multi_checkbox(self, variable_name, values):
+        '''returns multiple checkboxes'''
+        checkboxes_html = ""
         for option in self._options:
-            return_string += option.html_checkbox(value)
-        return return_string
-
-    def get_html_var_name(self):
-        '''Returns the variable name for the html input'''
-        var_name = "%%PLUGIN%%_"
-        if isinstance(self._config_group, str) and "__" in self._config_group:
-            var_name += "%%VARNAME%%_"
-        else:
-            if isinstance(self._config_group, str):
-                var_name += self._config_group.replace(" ", "") + "_"
-        var_name += self._name.replace(" ", "")
-        return var_name
+            if option.name() in values:
+                checkboxes_html += option.html_checkbox(variable_name, True)
+            else:
+                checkboxes_html += option.html_checkbox(variable_name, False)
+        return html_part.checkbox(self._label, variable_name, checkboxes_html)
 
     def convert_var(self, variable):
         '''Convert the variable passed in based on the type here'''
@@ -330,79 +242,3 @@ class ConfigObject(ConfigBase):
                     return False
             return bool(variable)
         return None
-
-    def get_value_var(self, plugin='', name='', instance=''):
-        '''returns the uppercase var name for str.replace to use'''
-        if self._type == self._types[4]:
-            if self._options is None:
-                return ''
-            return_strings = []
-            for i, _ in enumerate(self._options):
-                return_string = "%%"
-                return_string += plugin.upper()
-                return_string += instance.upper()
-                return_string += name.upper()
-                if self._config_group:
-                    return_string += self._config_group.replace(" ", "").upper()
-                return_string += self._name.upper()
-                return_string += "VALUE"
-                return_string += str(i+1)
-                return_string += "%%"
-                return_strings.append(return_string)
-            return return_strings
-        else:
-            return_string = "%%"
-            return_string += plugin.upper()
-            return_string += name.upper()
-            if self._config_group:
-                return_string += self._config_group.replace(" ", "").upper()
-            return_string += self._name.upper()
-            return_string += "VALUE%%"
-            return return_string
-
-    def get_default_string(self):
-        '''returns the default value as a string'''
-        if self._default is None:
-            return ''
-        if isinstance(self._default, str):
-            return self._default
-        if isinstance(self._default, (int, float)):
-            return str(self._default)
-        if isinstance(self._default, bool):
-            if self._default:
-                return "True"
-            return "False"
-        if isinstance(self._default, list):
-            return ", ".join(self._default)
-        return ""
-
-    def get_option(self, index):
-        '''returns an option'''
-        return self._options[index]
-
-    def enabled_by_controller(self, key, config_value, default_value):
-        '''Search by the controller'''
-        if self._options is None:
-            return None
-        for obj in self._options:
-            if isinstance(config_value, str):
-                if config_value == obj.name():
-                    value = obj.show_or_hide(key)
-                    if isinstance(value, bool):
-                        return value
-            else:
-                if default_value == obj.name():
-                    value = obj.show_or_hide(key)
-                    if isinstance(value, bool):
-                        return value
-        return None
-
-    def post_var_name(self, plugin_name=None):
-        '''returns the var name for looking in post variables'''
-        var_name = "cs_"
-        if plugin_name is not None:
-            var_name += plugin_name + "_"
-        if self._config_group is not None:
-            var_name += self._config_group + "_"
-        var_name += self._name
-        return var_name
