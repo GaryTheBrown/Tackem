@@ -9,7 +9,7 @@ class ConfigRules:
         self._for_each = None
 
         #Setup Group Rules bellow
-        if isinstance(for_each, (list)):
+        if isinstance(for_each, (list, dict)):
             self._for_each = for_each
             self._many = True
 

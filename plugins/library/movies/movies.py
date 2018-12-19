@@ -2,6 +2,7 @@
 from glob import glob
 import threading
 from libs.sql.column import Column
+
 class MoviesLibrary():
     '''Movie Library Class'''
 
@@ -17,7 +18,7 @@ class MoviesLibrary():
         Column("added", "datetime", not_null=True, default="CURRENT_TIMESTAMP", default_raw=True),
         Column("imdb", "varchar(9)", default="NULL", default_raw=True)
     ]
-    _DB_VERSION = 2
+    _DB_VERSION = 1
 
     def __init__(self, name, config, db):
         self._config = config
@@ -41,7 +42,6 @@ class MoviesLibrary():
             if self._db.table_has_row(self._db_name, {"filename":movie}):
                 continue
             print(movie + " Not in DB ADDING")
-
 
     def run(self):
         '''threadded run'''

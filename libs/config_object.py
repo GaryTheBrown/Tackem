@@ -21,7 +21,7 @@ class ConfigObject(ConfigBase):
                  input_type=None, help_text=None, script=False, button=None, button_onclick=None,
                  hide_from_html=False, read_only=False, disabled=False, priority=0, show=None,
                  hide=None, toggle_section=None, toggle_sections=None, enable_disable=None,
-                 section_controller=None):
+                 section_controller=None, not_in_config=False, value_link=None):
         '''initalise the object'''
         self._variable_name = name.replace(" ", "").lower()
         if isinstance(variable_type, str) and variable_type in self._types:
@@ -39,6 +39,8 @@ class ConfigObject(ConfigBase):
         self._help_text = help_text
         self._button = button
         self._button_onclick = button_onclick
+        self._not_in_config = not_in_config
+        self._value_link = value_link
 
         super().__init__(name, label, priority, script, hide_from_html, read_only, disabled, show,
                          hide, toggle_section, toggle_sections, enable_disable, section_controller)
@@ -61,6 +63,8 @@ class ConfigObject(ConfigBase):
 
     def get_config_spec(self):
         '''Returns the line for the config option'''
+        if self._not_in_config:
+            return ""
         variable_count = 0
         return_string = self._name + " = "
         if self._type == self._types[6]:
@@ -113,15 +117,18 @@ class ConfigObject(ConfigBase):
         return_string += ")\n"
         return return_string
 
-    def get_config_html(self, variable_name, value):
+    def get_config_html(self, variable_name, value, link=None):
         '''returns the config_html'''
         if self._hide_on_html:
             return ""
         variable_name += self._name
         if value is None:
-            value = str(self._default)
+            if self._value_link and link:
+                value = self._value_link[link][self._name]
+            else:
+                value = str(self._default)
         return html_part.item(variable_name, self._label, self._help_text,
-                              self.get_input_html(variable_name, value))
+                              self.get_input_html(variable_name, value), self._not_in_config)
 
     def get_input_html(self, variable_name, value):
         '''Returns the Input portion of the system'''

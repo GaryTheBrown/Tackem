@@ -44,7 +44,6 @@ class Root(HTMLTEMPLATE):
                 print("ERROR WRITING CONFIG FILE")
             RootEvent().set_event("reboot")
             page = str(open("www/html/reboot.html", "r").read())
-            page = "DONE"
             return self._template(page, False)
         else:
             return self._template("TODO", False)

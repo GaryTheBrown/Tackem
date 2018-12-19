@@ -105,6 +105,7 @@ class Tackem:
                         Tackem.systems[plugin_full_name] = temp_plugin.Plugin(temp_plugin,
                                                                               plugin_full_name,
                                                                               temp_config,
+                                                                              Tackem.config,
                                                                               Tackem.sql)
                 else:
                     for inst in temp_config:
@@ -114,6 +115,7 @@ class Tackem:
                             Tackem.systems[full_name] = temp_plugin.Plugin(temp_plugin,
                                                                            full_name,
                                                                            temp_config[inst],
+                                                                           Tackem.config,
                                                                            Tackem.sql)
 
     def start(self):

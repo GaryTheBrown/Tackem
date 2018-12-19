@@ -166,7 +166,7 @@ class ConfigList:
             return not enabled_object.default()
         return not config.get("default", True)
 
-    def get_config_html(self, config, variable_name=""):
+    def get_config_html(self, config, variable_name="", link=None):
         '''returns the config_html'''
         return_html = ""
         for obj in self._objects:
@@ -174,7 +174,7 @@ class ConfigList:
             value = config.get(obj.name(), None)
             if isinstance(obj, ConfigObject):
                 if obj.name() is not "enabled":
-                    return_html += obj.get_config_html(variable_name_loop, value)
+                    return_html += obj.get_config_html(variable_name_loop, value, link)
             elif isinstance(obj, ConfigList):
                 if obj.name() is not "plugins":
                     variable_name_loop += obj.name() + "_"
@@ -213,23 +213,43 @@ class ConfigList:
         many_html = ""
         for_each = obj.rules().for_each()
         if for_each:
-            for i, item in enumerate(for_each):
-                variable_name_loop = variable_name + str(i) + "_"
-                control_html = ""
-                enabled = True
-                enabled_check = obj.search_for_object_by_name("enabled")
-                if enabled_check is not None:
-                    if item in config:
-                        enabled = config[item].get("enabled", enabled_check)
-                    control_html = html_part.checkbox_switch("enabled",
-                                                             variable_name_loop,
-                                                             enabled, script=True)
+            if isinstance(for_each, list):
+                for item in for_each:
+                    variable_name_loop = variable_name + item + "_"
+                    control_html = ""
+                    enabled = True
+                    enabled_check = obj.search_for_object_by_name("enabled")
+                    if enabled_check is not None:
+                        if item in config:
+                            enabled = config[item].get("enabled", enabled_check)
+                        control_html = html_part.checkbox_switch("enabled",
+                                                                 variable_name_loop,
+                                                                 enabled, script=True)
 
+                    label = item
+                    many_html += html_part.panel(label, control_html, "", variable_name_loop[:-1],
+                                                 obj.get_config_html(config,
+                                                                     variable_name_loop),
+                                                 enabled)
+            elif isinstance(for_each, dict):
+                for key in for_each:
+                    variable_name_loop = variable_name + key + "_"
+                    control_html = ""
+                    enabled = True
+                    enabled_check = obj.search_for_object_by_name("enabled")
+                    if enabled_check is not None:
+                        if key in config:
+                            enabled = config[key].get("enabled", enabled_check)
+                        control_html = html_part.checkbox_switch("enabled",
+                                                                 variable_name_loop,
+                                                                 enabled, script=True)
 
-                many_html += html_part.panel(item, control_html, "", variable_name_loop[:-1],
-                                             obj.get_config_html(config,
-                                                                 variable_name),
-                                             enabled)
+                    label = key
+                    if 'label' in for_each[key]:
+                        label = for_each[key]['label']
+                    many_html += html_part.panel(label, control_html, "", variable_name_loop[:-1],
+                                                 obj.get_config_html(config, variable_name_loop,
+                                                                     key), enabled)
         return many_html
 
     def config_find(self, config, section_link):

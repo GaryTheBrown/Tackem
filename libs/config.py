@@ -126,6 +126,8 @@ def add_val_to_config(config, key_list, value):
     else:
         if not config:
             config[key_list[0]] = {}
+        elif key_list[0] not in config:
+            config[key_list[0]] = {}
         add_val_to_config(config[key_list[0]], key_list[1:], value)
 
 def root_config_page(config):

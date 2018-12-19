@@ -71,7 +71,7 @@ def form(return_url, hidden, button_label, page):
     form_html = form_html.replace("%%BUTTONLABEL%%", button_label)
     return form_html.replace("%%PAGE%%", page)
 
-def item(variable_name, label, help_text, input_html):
+def item(variable_name, label, help_text, input_html, not_in_config=False):
     ''' The whole section for each Config Object'''
     item_html = str(open("www/html/sections/item.html", "r").read())
     item_html = item_html.replace("%%VARNAME%%", variable_name)
@@ -80,7 +80,10 @@ def item(variable_name, label, help_text, input_html):
         item_html = item_html.replace("%%HELP%%", help_text)
     else:
         item_html = item_html.replace("%%HELP%%", '')
-    return item_html.replace("%%INPUT%%", input_html)
+    item_html = item_html.replace("%%INPUT%%", input_html)
+    if not_in_config:
+        item_html = item_html.replace("cs_", "")
+    return item_html
 
 def list_modal(title, variable_name, option_list):
     ''' Returnas a modal for a list of options for adding a multi plugin'''
