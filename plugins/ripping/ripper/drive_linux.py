@@ -151,8 +151,6 @@ class DriveLinux(Drive):
         except OSError:
             pass
 
-
-
 def get_hwinfo_linux():
     '''issues the hwinfo command and passes the info back in a dict'''
     process = Popen(["hwinfo", "--cdrom"], stdout=PIPE, stderr=DEVNULL)

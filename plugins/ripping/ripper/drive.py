@@ -5,25 +5,26 @@ import time
 import json
 from libs.sql.column import Column
 
-DB_INFO = {
-    "VIDEOINFOTABLE":
-    {
-        "name": "ripper_video_info",
-        "data":
-            [
-                Column("id", "integer", primary_key=True, not_null=True),
-                Column("uuid", "varchar(16)", not_null=True),
-                Column("label", "text", not_null=True),
-                Column("makemkv_info", "json"),
-                Column("rip_data", "json"),
-            ],
-        "version": 1
-    }
-}
+
 
 class Drive(object, metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
 
+    _DB_INFO = {
+        "VIDEOINFOTABLE":
+        {
+            "name": "ripper_video_info",
+            "data":
+                [
+                    Column("id", "integer", primary_key=True, not_null=True),
+                    Column("uuid", "varchar(16)", not_null=True),
+                    Column("label", "text", not_null=True),
+                    Column("makemkv_info", "json"),
+                    Column("rip_data", "json"),
+                ],
+            "version": 1
+        }
+    }
     def __init__(self, device_info, config, db):
         self._device_info = device_info
         self._device = device_info['link']
@@ -46,11 +47,11 @@ class Drive(object, metaclass=ABCMeta):
         self._disc_rip_info = False
         self._disc_rip_info_lock = threading.Lock()
 
-        for key in DB_INFO:
+        for key in self._DB_INFO:
             self._db.table_check(self._thread.getName(),
-                                 DB_INFO[key]["name"],
-                                 DB_INFO[key]["data"],
-                                 DB_INFO[key]["version"])
+                                 self._DB_INFO[key]["name"],
+                                 self._DB_INFO[key]["data"],
+                                 self._DB_INFO[key]["version"])
 
 ###########
 ##SETTERS##
@@ -350,7 +351,7 @@ class Drive(object, metaclass=ABCMeta):
                 check = {"uuid":self._disc_info['UUID'],
                          "label":self._disc_info['Label']}
                 row_id = self._db.table_has_row(self._thread.getName(),
-                                                DB_INFO["VIDEOTABLE"]["NAME"],
+                                                self._DB_INFO["VIDEOTABLE"]["NAME"],
                                                 check)
 
                 row = {"uuid":self._disc_info['UUID'],
@@ -362,11 +363,11 @@ class Drive(object, metaclass=ABCMeta):
 
                 if row_id == 0:
                     self._db.insert(self._thread.getName(),
-                                    DB_INFO["VIDEOTABLE"]["NAME"],
+                                    self._DB_INFO["VIDEOTABLE"]["NAME"],
                                     row)
                 else:
                     self._db.update(self._thread.getName(),
-                                    DB_INFO["VIDEOTABLE"]["NAME"],
+                                    self._DB_INFO["VIDEOTABLE"]["NAME"],
                                     row_id, row)
 
     def _check_and_return_from_video_db(self):
@@ -376,10 +377,10 @@ class Drive(object, metaclass=ABCMeta):
                      "label":self._disc_info['Label']}
             return_data = None
             if self._db.table_has_row(self._thread.getName(),
-                                      DB_INFO["VIDEOTABLE"]["NAME"],
+                                      self._DB_INFO["VIDEOTABLE"]["NAME"],
                                       check):
                 return_data = self._db.select(self._thread.getName(),
-                                              DB_INFO["VIDEOTABLE"]["NAME"],
+                                              self._DB_INFO["VIDEOTABLE"]["NAME"],
                                               check, ["rip_data"])
                 with self._disc_rip_info_lock:
                     self._disc_rip_info = json.loads(return_data[0][0])
