@@ -69,7 +69,7 @@ class Plugin(PluginBaseClass):
     def startup(self):
         '''Ripper Startup Script'''
         # if platform.system() == 'Linux':
-        #     self._drives = [DriveLinux(d, self._db) for d in DRIVES]
+        #     self._drives = [DriveLinux(d, self._config, self._db) for d in DRIVES]
 
         # #Check if Devices Exist and if not it will stop the plugin from loading
         # if not self._drives:

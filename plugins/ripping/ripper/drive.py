@@ -6,9 +6,9 @@ import json
 from libs.sql.column import Column
 
 DB_INFO = {
-    "DVDBLURAYINFOTABLE":
+    "VIDEOINFOTABLE":
     {
-        "name": "ripper_dvdbluray_info",
+        "name": "ripper_video_info",
         "data":
             [
                 Column("id", "integer", primary_key=True, not_null=True),
@@ -159,6 +159,122 @@ class Drive(object, metaclass=ABCMeta):
         '''Will return the size of the disc or false if no disc in the drive'''
         pass
 
+    @abstractmethod
+    def _check_disc_information(self):
+        '''Will return if disc is in drive (setting the UUID and label) or it will return False'''
+        pass
+
+    @abstractmethod
+    def _check_audio_disc_information(self):
+        '''Will return if drive is open or it will return a string of the error'''
+        pass
+
+################
+##TRAYCONTROLS##
+################
+
+    @abstractmethod
+    def open_tray(self):
+        '''Send Command to open the tray'''
+        pass
+
+    @abstractmethod
+    def close_tray(self):
+        '''Send Command to close the tray'''
+        pass
+
+    @abstractmethod
+    def lock_tray(self):
+        '''Send Command to lock the tray'''
+        pass
+
+    @abstractmethod
+    def unlock_tray(self):
+        '''Send Command to unlock the tray'''
+        pass
+
+#############################
+##EXTERNAL APPS THREAD SAFE##
+#############################
+    def call_makemkv_info(self):
+        '''run the _ function Thread Safe'''
+        rdict = {}
+        rdict['track_count'] = 0
+        rdict['cinfo'] = {}
+        rdict['Tracks'] = []
+        values = [
+            'unknown', 'Type', 'Name', 'LangCode', 'LangName', 'CodecId', 'CodecShort',
+            'CodecLong', 'ChapterCount', 'Duration', 'DiskSize', 'DiskSizeBytes',
+            'StreamTypeExtension', 'Bitrate', 'AudioChannelsCount', 'AngleInfo',
+            'SourceFileName', 'AudioSampleRate', 'AudioSampleSize', 'VideoSize',
+            'VideoAspectRatio', 'VideoFrameRate', 'StreamFlags', 'DateTime',
+            'OriginalTitleId', 'SegmentsCount', 'SegmentsMap', 'OutputFileName',
+            'MetadataLanguageCode', 'MetadataLanguageName', 'TreeInfo', 'PanelTitle',
+            'VolumeName', 'OrderWeight', 'OutputFormat', 'OutputFormatDescription',
+            'SeamlessInfo', 'PanelText', 'MkvFlags', 'MkvFlagsText', 'AudioChannelLayoutName',
+            'OutputCodecShort', 'OutputConversionType', 'OutputAudioSampleRate',
+            'OutputAudioSampleSize', 'OutputAudioChannelsCount', 'OutputAudioChannelLayoutName',
+            'OutputAudioChannelLayout', 'OutputAudioMixDescription', 'Comment', 'OffsetSequenceId'
+        ]
+        if self.get_tray_status() == "loaded":
+            return
+        with self._drive_lock:
+            returned_message = self._makemkv_info_from_disc()
+            for line in returned_message:
+                first_split_line = line.split(":", 1)
+                if first_split_line[0] == "TCOUNT":
+                    rdict['track_count'] = int(line.split(":")[-1])
+                    rdict['Tracks'] = [dict() for x in range(rdict['track_count'])]
+                elif first_split_line[0] == "CINFO":
+                    new_line = first_split_line[1].split(",", 2)
+                    id_value = int(new_line[0])
+                    value = new_line[2].replace('"', "").replace("<b>", "").replace("</b><br>", "")
+                    rdict[values[id_value]] = value
+                elif first_split_line[0] == "Tracks":
+                    new_line = first_split_line[1].split(",", 3)
+                    track_id = int(new_line[0])
+                    id_value = int(new_line[1])
+                    value = new_line[3].replace('"', "").replace("<b>", "").replace("</b><br>", "")
+                    rdict['Tracks'][track_id][values[id_value]] = value
+                elif first_split_line[0] == "SINFO":
+                    new_line = first_split_line[1].split(",", 4)
+                    track_id = int(new_line[0])
+                    track_sub_id = int(new_line[1])
+                    id_value = int(new_line[2])
+                    value = new_line[4].replace('"', "").replace("<b>", "").replace("</b><br>", "")
+                    #setup sinfo if not already there
+                    if not "sinfo" in  rdict['Tracks'][track_id]:
+                        rdict['Tracks'][track_id]['sinfo'] = []
+                    #Get sub array size matching for current number
+                    while len(rdict['Tracks'][track_id]['sinfo']) <= track_sub_id:
+                        tempdict = {}
+                        rdict['Tracks'][track_id]['sinfo'].append(tempdict)
+                    rdict['Tracks'][track_id]['sinfo'][track_sub_id][values[id_value]] = value
+            self._set_disc_info_key('Info', rdict)
+
+    def call_makemkv_backup(self):
+        '''run the makemkv backup function thread safe'''
+        if self.get_tray_status() == "loaded":
+            return
+        temp_dir = "temp/" + self.get_disc_info()['Label'].replace(" ", "_")
+        with self._drive_lock:
+            if isinstance(self._disc_rip_info, list):
+                for idx, track in enumerate(self._disc_rip_info):
+                    if not isinstance(track, bool):
+                        self._makemkv_backup_from_disc(temp_dir, idx)
+            elif isinstance(self._disc_rip_info, bool):
+                self._makemkv_backup_from_disc(self._device, temp_dir)
+
+    @abstractmethod
+    def _makemkv_info_from_disc(self):
+        '''Get info from within makemkv from disc'''
+        pass
+
+    @abstractmethod
+    def _makemkv_backup_from_disc(self, temp_dir, index=-1):
+        '''Do the mkv Backup from disc'''
+        pass
+
 ##########
 ##Thread##
 ##########
@@ -227,14 +343,14 @@ class Drive(object, metaclass=ABCMeta):
 ############
 ##DATABASE##
 ############
-    def _save_to_db(self):
+    def _save_to_video_db(self):
         '''Function to save data to DB'''
         with self._disc_info_lock:
             with self._disc_rip_info_lock:
                 check = {"uuid":self._disc_info['UUID'],
                          "label":self._disc_info['Label']}
                 row_id = self._db.table_has_row(self._thread.getName(),
-                                                DB_INFO["DVDBLURAYTABLE"]["NAME"],
+                                                DB_INFO["VIDEOTABLE"]["NAME"],
                                                 check)
 
                 row = {"uuid":self._disc_info['UUID'],
@@ -246,24 +362,24 @@ class Drive(object, metaclass=ABCMeta):
 
                 if row_id == 0:
                     self._db.insert(self._thread.getName(),
-                                    DB_INFO["DVDBLURAYTABLE"]["NAME"],
+                                    DB_INFO["VIDEOTABLE"]["NAME"],
                                     row)
                 else:
                     self._db.update(self._thread.getName(),
-                                    DB_INFO["DVDBLURAYTABLE"]["NAME"],
+                                    DB_INFO["VIDEOTABLE"]["NAME"],
                                     row_id, row)
 
-    def _check_and_return_from_db(self):
+    def _check_and_return_from_video_db(self):
         '''check for disc in DB and return it's info if found'''
         with self._disc_info_lock:
             check = {"uuid":self._disc_info['UUID'],
                      "label":self._disc_info['Label']}
             return_data = None
             if self._db.table_has_row(self._thread.getName(),
-                                      DB_INFO["DVDBLURAYTABLE"]["NAME"],
+                                      DB_INFO["VIDEOTABLE"]["NAME"],
                                       check):
                 return_data = self._db.select(self._thread.getName(),
-                                              DB_INFO["DVDBLURAYTABLE"]["NAME"],
+                                              DB_INFO["VIDEOTABLE"]["NAME"],
                                               check, ["rip_data"])
                 with self._disc_rip_info_lock:
                     self._disc_rip_info = json.loads(return_data[0][0])
@@ -295,3 +411,27 @@ class Drive(object, metaclass=ABCMeta):
                 if not self._thread_run:
                     return
                 continue
+            if self.get_is_disc_cd():
+                self.audio_rip()
+            else:
+                self.video_rip()
+
+            #END OF LOOP
+            self.open_tray()
+            if not self._thread_run:
+                return
+
+    def audio_rip(self):
+        '''script to rip an audio cd'''
+        self._check_audio_disc_information()
+        #TODO AUDIO CD RIPPING HERE
+
+    def video_rip(self):
+        '''script to rip video disc'''
+        self._check_disc_information()
+        if not self._check_and_return_from_video_db():
+            if not self._check_disc_id():
+                makemkv_info_temp = self._makemkv_info_from_disc()
+                with self._disc_info_lock:
+                    self._disc_info['makemkv_info'] = makemkv_info_temp
+            self._save_to_video_db()
