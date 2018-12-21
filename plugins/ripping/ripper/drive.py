@@ -397,6 +397,8 @@ class Drive(object, metaclass=ABCMeta):
         while self.get_tray_status() != "loaded":
             if count >= timeout:
                 return False
+            if not self._thread_run:
+                return False
             time.sleep(float(sleep_time))
             count += 1
         self._check_disc_size()

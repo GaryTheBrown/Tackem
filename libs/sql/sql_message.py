@@ -18,6 +18,13 @@ class SQLMessage:
         #OUTPUTS
         self._return_data = return_data #area to store any data to return from the data class
 
+    def __repr__(self):
+        '''print return'''
+        return_string = "SQLMessage(" + self._system_name + ", " + self._special_command + ")\n"
+        return_string += "\t" + str(self._command) + ", " + str(self._table_name)
+        return_string += ", " + str(self._version)
+        return return_string
+
     def system_name(self):
         '''Return system Name'''
         with self._lock:

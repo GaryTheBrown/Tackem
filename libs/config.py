@@ -17,9 +17,9 @@ CONFIG.append(
                      input_type='radio', options=[
                          ConfigOption("single", "SINGLE",
                                       toggle_sections=([], ['system_master', 'system_slave'])),
-                         ConfigOption("master", "MASTER",
+                         ConfigOption("master", "MASTER", disabled=True,
                                       toggle_sections=(['system_master'], ['system_slave'])),
-                         ConfigOption("slave", "SLAVE",
+                         ConfigOption("slave", "SLAVE", disabled=True,
                                       toggle_sections=(['system_slave'], ['system_master']))
                      ],
                      help_text="""
@@ -48,7 +48,7 @@ CONFIG.append(
     ConfigList("database", objects=[
         ConfigObject("mode", "Database System", "option", default='sqlite3', input_type='radio',
                      options=[ConfigOption("sqlite3", "SQLite3", hide="database_mysql"),
-                              ConfigOption("mysql", "MYSQL", show="database_mysql")],
+                              ConfigOption("mysql", "MYSQL", show="database_mysql", disabled=True)],
                      help_text="Is this The Database Connection used for the software"),
         ConfigList("mysql", objects=[
             ConfigObject("address", "Database Address", "string", default="localhost",

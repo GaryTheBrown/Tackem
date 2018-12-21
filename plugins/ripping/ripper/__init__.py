@@ -68,22 +68,22 @@ class Plugin(PluginBaseClass):
 
     def startup(self):
         '''Ripper Startup Script'''
-        # if platform.system() == 'Linux':
-        #     self._drives = [DriveLinux(d, self._config, self._db) for d in DRIVES]
+        if platform.system() == 'Linux':
+            self._drives = [DriveLinux(DRIVES[d], self._config, self._db) for d in DRIVES]
 
-        # #Check if Devices Exist and if not it will stop the plugin from loading
-        # if not self._drives:
-        #     return False, "No Optical Devices Found"
+        #Check if Devices Exist and if not it will stop the plugin from loading
+        if not self._drives:
+            return False, "No Optical Devices Found"
 
-        # #Start the threads
-        # for drive in self._drives:
-        #     drive.start_thread()
+        #Start the threads
+        for drive in self._drives:
+            drive.start_thread()
 
         self._running = True
         return True, ""
 
     def shutdown(self):
         '''stop the plugin'''
-        # for drive in self._drives:
-        #     drive.stop_thread()
+        for drive in self._drives:
+            drive.stop_thread()
         self._running = False

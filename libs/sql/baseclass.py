@@ -173,7 +173,7 @@ class MysqlBaseClass(object, metaclass=ABCMeta):
                 with self._event_list_lock:
                     job = self._event_list.pop()
                 if isinstance(job, SQLMessage):
-                    if job.special_command() is None:
+                    if job.special_command() is not None:
                         if job.special_command() == "tablecheck":
                             job.set_return_data(self._table_check(job.table_name(),
                                                                   job.data(),

@@ -29,6 +29,9 @@ class Column:
             self.primary_key = bool(name[5])
             self.not_null = bool(name[3])
             self.default = name[4]
+    def __repr__(self):
+        '''print return'''
+        return "Column(" + self.to_string() + ")"
 
     def to_string(self):
         '''turns Column info into a string for commands'''
