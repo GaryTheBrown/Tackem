@@ -11,7 +11,7 @@ from libs.config_rules import ConfigRules
 from libs.sql.column import Column
 from . import www
 from .drive_linux import DriveLinux, get_hwinfo_linux
-
+from .video import VIDEO_DB_INFO
 #TO DO SPLIT THIS UP INTO PARTS OF THE SYSTEM FOR MORE CUSTOMIZABILITY
 #TO DO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
 #TO DO add in other options for individual drives including what it can read.
@@ -38,9 +38,6 @@ def check_enabled():
 CONFIG = ConfigList("ripper", sys.modules[__name__], objects=[
     ConfigObject("enabled", "Enabled", "boolean", default=False, input_type="switch",
                  help_text="Is the System Enabled", script=True),
-    ConfigObject("ripfromdisc", "Rip From Disc", "boolean", default=True, input_type="switch",
-                 help_text="""Do you want the ripper to rip straight from the disc.
-Turn this off if you want it to rip the disc to an ISO on the drive before ripping the files"""),
     ConfigList("locations", objects=[
         ConfigObject("ripping", "Ripping Location", "string", default="ripping/", help_text="""
 Where do you want to store discs while ripping them?"""),
@@ -65,11 +62,18 @@ class Plugin(PluginBaseClass):
     def __init__(self, plugin_link, name, config, root_config, db):
         super().__init__(plugin_link, name, config, root_config, db)
         self._drives = []
+        self._db.table_check("Ripper",
+                             VIDEO_DB_INFO["name"],
+                             VIDEO_DB_INFO["data"],
+                             VIDEO_DB_INFO["version"])
 
     def startup(self):
         '''Ripper Startup Script'''
         if platform.system() == 'Linux':
-            self._drives = [DriveLinux(DRIVES[d], self._config, self._db) for d in DRIVES]
+            for drive in DRIVES:
+                if drive in self._config['drives']:
+                    if self._config['drives'][drive]["enabled"]:
+                        self._drives.append(DriveLinux(DRIVES[drive], self._config, self._db))
 
         #Check if Devices Exist and if not it will stop the plugin from loading
         if not self._drives:

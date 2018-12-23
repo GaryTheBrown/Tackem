@@ -5,7 +5,7 @@ from libs.startup_arguments import PROGRAMVERSION
 #################
 def master_template(title, body, javascript_extra, baseurl, navbar):
     '''head section of the template'''
-    head_page = str(open("www/html/template.html", "r").read())
+    head_page = str(open("www/html/pages/template.html", "r").read())
     head_page = head_page.replace("%%JAVASCRIPTEXTRA%%", javascript_extra)
     head_page = head_page.replace("%%NAVBAR%%", navbar)
     head_page = head_page.replace("%%BODY%%", body)
@@ -51,13 +51,13 @@ def navbar_master(nav_bar_items):
 #######
 def plugin_config_page(tab_bar_tabs, sections):
     '''Plugin config page'''
-    page = str(open("www/html/pages/plugin_config_page.html", "r").read())
+    page = str(open("www/html/pages/pluginconfigpage.html", "r").read())
     page = page.replace("%%PANELTABS%%", tab_bar_tabs)
     return page.replace("%%PLUGINLIST%%", sections)
 
 def root_config_page(sections):
     '''Root config page'''
-    page = str(open("www/html/pages/root_config_page.html", "r").read())
+    page = str(open("www/html/pages/rootconfigpage.html", "r").read())
     return page.replace("%%PLUGINLIST%%", sections)
 
 ##########

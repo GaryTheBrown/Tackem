@@ -15,7 +15,7 @@ class Root(HTMLTEMPLATE):
             if "page_index" in kwargs:
                 return self._post_action(kwargs)
 
-        page = str(open("www/first_run/index.html", "r").read())
+        page = str(open("www/html/pages/firstrunindex.html", "r").read())
         return self._template(page, False)
 
     @cherrypy.expose

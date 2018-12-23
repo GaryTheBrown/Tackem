@@ -14,13 +14,13 @@ class Root(HTMLTEMPLATE):
         if kwargs:
             #first startup message add here
             pass
-        index_page = str(open("www/html/welcome.html", "r").read())
+        index_page = str(open("www/html/pages/welcome.html", "r").read())
         return self._template(index_page)
 
     @cherrypy.expose
     def index(self):
         '''Index Page'''
-        index_page = str(open("www/html/homepage.html", "r").read())
+        index_page = str(open("www/html/pages/homepage.html", "r").read())
 
         return self._template(index_page)
 

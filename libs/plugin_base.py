@@ -1,7 +1,7 @@
 '''MySQL Abstract Class System'''
 from abc import ABCMeta, abstractmethod
 
-class PluginBaseClass(object, metaclass=ABCMeta):
+class PluginBaseClass(metaclass=ABCMeta):
     '''base class of the plugins'''
 
     def __init__(self, plugin_link, name, config, root_config, db):

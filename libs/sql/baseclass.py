@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from .column import Column
 from .sql_message import SQLMessage
 
-class MysqlBaseClass(object, metaclass=ABCMeta):
+class MysqlBaseClass(metaclass=ABCMeta):
     '''base class of database access'''
 
     _event_lock = threading.Event()
@@ -73,10 +73,11 @@ class MysqlBaseClass(object, metaclass=ABCMeta):
         command = "SELECT id FROM " + table_name
         command += " WHERE " + " AND ".join(queries) + ";"
         return_value = self._call(SQLMessage(system_name, command=command, return_data=[]))
-        if isinstance(return_value, list):
-            if isinstance(return_value[0], tuple):
-                if len(return_value[0]) == 1:
-                    return return_value[0][0]
+        if return_value:
+            if isinstance(return_value, list):
+                if isinstance(return_value[0], tuple):
+                    if len(return_value[0]) == 1:
+                        return return_value[0][0]
         return 0
 
     def insert(self, system_name, table_name, dict_of_values):
