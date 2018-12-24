@@ -16,9 +16,9 @@ SETTINGS = {
     'platform': ['Linux', 'Darwin', 'Windows']
 }
 
-CONFIG = ConfigList("sabnzbd", sys.modules[__name__], objects=[
+CONFIG = ConfigList("sabnzbd", plugin=sys.modules[__name__], objects=[
     ConfigObject("enabled", "Enabled", "boolean", default=False, input_type="switch",
-                 help_text="Is the System Enabled", script=True),
+                 script=True),
 
     ConfigObject("downloadlocation", "Download Location", "string", default="downloads/",
                  help_text="Where is the completed download location?"),

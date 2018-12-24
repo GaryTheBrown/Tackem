@@ -21,7 +21,7 @@ SETTINGS = {
     ]
 }
 
-CONFIG = ConfigList("games", sys.modules[__name__], objects=[
+CONFIG = ConfigList("games", plugin=sys.modules[__name__], objects=[
     ConfigObject("location", "Game Location", "string", default="Library/Games/",
                  help_text="Where is the library stored?")
 ])

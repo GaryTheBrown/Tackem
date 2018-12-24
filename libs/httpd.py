@@ -53,7 +53,7 @@ class Httpd():
                                                                   self._plugins,
                                                                   self._config),
                         self._config['webui']['baseurl'] + "/" + key.replace(" ", "/") + "/",
-                        self._systems[key].plugin_link().www.CFG)
+                        self._systems[key].plugin_link().www.cfg(self._config))
 
             if self._config['api']['enabled']:
                 cherrypy.tree.mount(API(self._systems, self._plugins, self._config),

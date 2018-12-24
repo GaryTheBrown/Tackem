@@ -14,7 +14,7 @@ SETTINGS = {
     'api':False, # IF THIS SYSTEM WORKS WITH API CONTROLS
     'type':'library', # library, downloader, searcher
 }
-CONFIG = ConfigList("", sys.modules[__name__])
+CONFIG = ConfigList("", plugin=sys.modules[__name__])
 
 class Plugin(PluginBaseClass):
     '''Main Class to create an instance of the plugin'''

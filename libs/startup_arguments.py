@@ -1,12 +1,9 @@
 '''Startup Arguments Setup'''
 import argparse
 import os.path
-import sys
+HOMEFOLDER = os.path.expanduser("~")
 PROGRAMVERSION = "ALPHA"
-PROGRAMCONFIGLOCATION = "~/.Tackem/"
-
-if sys.platform == "win32":
-    PROGRAMCONFIGLOCATION = os.environ['APPDATA'] + "/Tackem/"
+PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
 
 def parse():
     '''parses the command line arguments'''

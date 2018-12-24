@@ -17,7 +17,7 @@ SETTINGS = {
     'platform': ['Linux', 'Darwin', 'Windows']
 }
 
-CONFIG = ConfigList("movies", sys.modules[__name__], objects=[
+CONFIG = ConfigList("movies", plugin=sys.modules[__name__], objects=[
     ConfigObject("location", "Movies Location", "string", default="Library/Movies/",
                  help_text="Where is the library stored?")
 ])

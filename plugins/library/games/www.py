@@ -3,7 +3,9 @@ import cherrypy
 from libs.htmltemplate import HTMLTEMPLATE
 
 LAYOUT = {}
-CFG = {}
+def cfg(config):
+    '''generate the cherrypy conf'''
+    return {}
 
 class Root(HTMLTEMPLATE):
     '''ROOT OF PLUGINS WEBUI HERE'''

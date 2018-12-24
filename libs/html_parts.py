@@ -110,10 +110,11 @@ def multi_panel(variable_name, name, enable_option, delete_option, section_html,
         return multi_panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return multi_panel_html.replace("%%SECTIONHIDE%%", "")
 
-def panel(name, control, modal, variable_name, section_html, section_visible):
+def panel(name, title, control, modal, variable_name, section_html, section_visible):
     '''A Panel for plugins or sections'''
     panel_html = str(open("www/html/sections/panel.html", "r").read())
     panel_html = panel_html.replace("%%NAME%%", name)
+    panel_html = panel_html.replace("%%TITLE%%", title)
     panel_html = panel_html.replace("%%CONTROL%%", control)
     panel_html = panel_html.replace("%%MODAL%%", modal)
     panel_html = panel_html.replace("%%VARIABLENAME%%", variable_name)
@@ -122,10 +123,11 @@ def panel(name, control, modal, variable_name, section_html, section_visible):
         return panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return panel_html.replace("%%SECTIONHIDE%%", "")
 
-def section(section_name, section_html, section_visible):
+def section(section_name, title, section_html, section_visible):
     '''A Panel for plugins or sections'''
     panel_html = str(open("www/html/sections/section.html", "r").read())
     panel_html = panel_html.replace("%%SECTIONNAME%%", section_name)
+    panel_html = panel_html.replace("%%TITLE%%", title)
     panel_html = panel_html.replace("%%SECTION%%", section_html)
     if not section_visible:
         return panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
@@ -216,6 +218,7 @@ def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only
     single_checkbox_html = str(open("www/html/inputs/singlecheckbox.html", "r").read())
     switch_html = str(open("www/html/inputs/switchoptions.html", "r").read())
     checkbox_switch_html = single_checkbox_html.replace("%%SWITCH%%", switch_html)
+    enabled = str(checked)
     if checked:
         checked = "checked"
     else:
@@ -229,6 +232,7 @@ def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only
     else:
         read_only = ""
     checkbox_switch_html = checkbox_switch_html.replace("%%CHECKED%%", checked)
+    checkbox_switch_html = checkbox_switch_html.replace("%%ENABLED%%", enabled)
     checkbox_switch_html = checkbox_switch_html.replace("%%DISABLED%%", disabled)
     checkbox_switch_html = checkbox_switch_html.replace("%%READONLY%%", read_only)
     if script is None:

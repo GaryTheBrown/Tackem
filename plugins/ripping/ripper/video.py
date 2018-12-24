@@ -2,6 +2,7 @@
 from abc import ABCMeta, abstractmethod
 import threading
 import json
+from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.sql.column import Column
 
 VIDEO_DB_INFO = {
@@ -140,14 +141,17 @@ class Video(metaclass=ABCMeta):
                 rdict['Tracks'][track_id]['sinfo'][track_sub_id][values[id_value]] = value
             self._set_makemkv_info(rdict)
 
-    def call_makemkv_backup(self):
+    def _call_makemkv_backup(self):
         '''run the makemkv backup function thread safe'''
-        temp_dir = "temp/" + self.get_disc_info_label()
+        temp_location = self._config['locations']['videoripping']
+        if temp_location[0] != "/":
+            temp_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
+        temp_dir = temp_location + self.get_disc_info_label()
         if isinstance(self._disc_rip_info, list):
             for idx, track in enumerate(self._disc_rip_info):
                 if not isinstance(track, bool):
                     self._makemkv_backup_from_disc(temp_dir, idx)
-        elif isinstance(self._disc_rip_info, bool):
+        elif self._disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir)
 
     @abstractmethod
@@ -239,7 +243,8 @@ class Video(metaclass=ABCMeta):
         if self._db.table_has_row(self._thread_name, VIDEO_DB_INFO["name"], check):
             return_data = self._db.select(self._thread_name, VIDEO_DB_INFO["name"],
                                           check, ["rip_data"])
-            self._set_disc_rip_info(json.loads(return_data[0][0]))
+            if return_data[0][0] is not None:
+                self._set_disc_rip_info(json.loads(return_data[0][0]))
         if not return_data:
             return False
         return True
@@ -250,9 +255,14 @@ class Video(metaclass=ABCMeta):
     def run(self):
         '''script to rip video disc'''
         self._check_disc_information()
+        #get the information of the "tracks" on disc
+        print("check info")
         if not self._check_and_return_from_video_db():
             if not self._check_disc_id_on_api():
                 self._call_makemkv_info()
                 #need user input of disc ripping sections here
             self._save_to_video_db()
-
+        #rip the tracks or all tracks now
+        print("Rip Disc")
+        self._call_makemkv_backup()
+        print("Rip Disc Finished")

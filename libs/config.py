@@ -50,7 +50,7 @@ CONFIG.append(
                      options=[ConfigOption("sqlite3", "SQLite3", hide="database_mysql"),
                               ConfigOption("mysql", "MYSQL", show="database_mysql", disabled=True)],
                      help_text="Is this The Database Connection used for the software"),
-        ConfigList("mysql", objects=[
+        ConfigList("mysql", "MYSQL", objects=[
             ConfigObject("address", "Database Address", "string", default="localhost",
                          help_text="The database address or mastername"),
             ConfigObject("port", "Database Port", "integer", minimum=1001, maximum=65535,
@@ -65,7 +65,7 @@ CONFIG.append(
     ])
 )
 CONFIG.append(
-    ConfigList("api", objects=[
+    ConfigList("api", "API Interface", objects=[
         ConfigObject("enabled", "Enabled", "boolean", default=True, toggle_section="api",
                      input_type="switch"),
         ConfigObject("masterkey", "Master API Key", "string", default='', button="Generate API Key",
@@ -77,7 +77,7 @@ CONFIG.append(
     ])
 )
 CONFIG.append(
-    ConfigList("webui", objects=[
+    ConfigList("webui", "Web Interface", objects=[
         ConfigObject("enabled", "Enabled", "boolean", default=True, toggle_section="webui",
                      input_type="switch"),
         ConfigObject("port", "Port", "integer", minimum=1001, maximum=65535, default=8081,
@@ -174,19 +174,19 @@ def _plugin_config_page(config, plugins):
 
 def _single_plugin_config_page(plugin_name, plugin, config, variable_name):
     '''returns the single plugin pane'''
-    section_enabled = not plugin.CONFIG.check_if_section_is_hidden(config)
+    section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
     control_html = ""
     if plugin.CONFIG.search_for_object_by_name("enabled"):
         control_html = html_part.checkbox_switch("enabled",
                                                  variable_name,
                                                  section_enabled, script=True)
     plugin_html = plugin.CONFIG.get_config_html(config, variable_name)
-    return html_part.panel(plugin_name, control_html, "", variable_name[:-1], plugin_html,
-                           section_enabled)
+    return html_part.panel(plugin_name, plugin_name, control_html, "", variable_name[:-1],
+                           plugin_html, section_enabled)
 
 def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
     '''returns the multi plugin pane'''
-    section_enabled = not plugin.CONFIG.check_if_section_is_hidden(config)
+    section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
     #add instance button
     control_html = html_part.add_instance_button(variable_name[:-1])
     modal = ""
@@ -204,12 +204,12 @@ def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
         for name in config:
             plugin_html = multi_plugin_config_section(plugin, config, variable_name[:-1], name)
 
-    return html_part.panel(plugin_name, control_html, modal, variable_name[:-1], plugin_html,
-                           section_enabled)
+    return html_part.panel(plugin_name, plugin_name, control_html, modal, variable_name[:-1],
+                           plugin_html, section_enabled)
 
 def multi_plugin_config_section(plugin, config, variable_name, name):
     '''returns a section of a multi plugin'''
-    section_enabled = not plugin.CONFIG.check_if_section_is_hidden(config)
+    section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
     enable_option = ""
     if plugin.CONFIG.search_for_object_by_name("enabled"):
         enable_option = html_part.checkbox_switch("enabled",

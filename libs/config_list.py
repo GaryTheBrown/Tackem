@@ -5,10 +5,14 @@ import libs.html_parts as html_part
 
 class ConfigList:
     '''Class Controller for Config Object list'''
-    def __init__(self, name, plugin=None, objects=None, rules=None, javascripts=None,
+    def __init__(self, name, label=None, plugin=None, objects=None, rules=None, javascripts=None,
                  is_section=False, section_link=None):
         if isinstance(name, str):
             self._name = name
+        if isinstance(label, str):
+            self._label = label
+        else:
+            self._label = name
         if isinstance(plugin, str):
             self._plugin = plugin
         self._objects = []
@@ -44,6 +48,10 @@ class ConfigList:
     def name(self):
         '''get name'''
         return self._name
+
+    def label(self):
+        '''get label'''
+        return self._label
 
     def objects(self):
         '''get objects'''
@@ -157,14 +165,17 @@ class ConfigList:
                     return obj
         return None
 
-    def check_if_section_is_hidden(self, config=None):
+    def check_if_section_is_enabled(self, config=None):
         '''checks if the list has an enabled object returns its default value if it does'''
-        if config is None:
-            enabled_object = self.search_for_object_by_name("enabled")
-            if enabled_object is None:
-                return False
-            return not enabled_object.default()
-        return not config.get("default", True)
+        if config is not None:
+            config = config.get("enabled", None)
+        if config is not None:
+            return config
+        enabled_object = self.search_for_object_by_name("enabled")
+        if enabled_object is None:
+            return True
+        return enabled_object.default()
+
 
     def get_config_html(self, config, variable_name="", link=None):
         '''returns the config_html'''
@@ -181,7 +192,7 @@ class ConfigList:
                     temp_config = None
                     if isinstance(config, dict):
                         temp_config = config[obj.name()]
-                    section_enabled = not obj.check_if_section_is_hidden(temp_config)
+                    section_enabled = obj.check_if_section_is_enabled(temp_config)
                     control_html = ""
                     if obj.search_for_object_by_name("enabled"):
                         control_html = html_part.checkbox_switch("enabled",
@@ -190,18 +201,19 @@ class ConfigList:
                     if obj.is_section():
                         visible = self.config_find(config, obj.section_link()) == obj.name()
                         return_html += html_part.section(variable_name_loop[:-1],
+                                                         obj.label(),
                                                          obj.get_config_html(temp_config,
                                                                              variable_name_loop),
                                                          visible)
                     elif isinstance(obj.rules(), ConfigRules) and obj.rules().many():
                         many_html = self._many_section(obj, temp_config, variable_name_loop)
 
-                        return_html += html_part.panel(obj.name(), "", "",
+                        return_html += html_part.panel(obj.name(), obj.label(), "", "",
                                                        variable_name_loop[:-1],
                                                        many_html,
                                                        True)
                     else:
-                        return_html += html_part.panel(obj.name(), control_html, "",
+                        return_html += html_part.panel(obj.name(), obj.label(), control_html, "",
                                                        variable_name_loop[:-1],
                                                        obj.get_config_html(temp_config,
                                                                            variable_name_loop),
@@ -217,17 +229,14 @@ class ConfigList:
                 for item in for_each:
                     variable_name_loop = variable_name + item + "_"
                     control_html = ""
-                    enabled = True
-                    enabled_check = obj.search_for_object_by_name("enabled")
-                    if enabled_check is not None:
-                        if item in config:
-                            enabled = config[item].get("enabled", enabled_check)
+                    enabled = obj.check_if_section_is_enabled(config.get(item, None))
+                    if obj.search_for_object_by_name("enabled") is not None:
                         control_html = html_part.checkbox_switch("enabled",
                                                                  variable_name_loop,
                                                                  enabled, script=True)
 
-                    label = item
-                    many_html += html_part.panel(label, control_html, "", variable_name_loop[:-1],
+                    many_html += html_part.panel(item, item, control_html, "",
+                                                 variable_name_loop[:-1],
                                                  obj.get_config_html(config,
                                                                      variable_name_loop),
                                                  enabled)
@@ -235,11 +244,8 @@ class ConfigList:
                 for key in for_each:
                     variable_name_loop = variable_name + key + "_"
                     control_html = ""
-                    enabled = True
-                    enabled_check = obj.search_for_object_by_name("enabled")
-                    if enabled_check is not None:
-                        if key in config:
-                            enabled = config[key].get("enabled", enabled_check)
+                    enabled = obj.check_if_section_is_enabled(config.get(key, None))
+                    if obj.search_for_object_by_name("enabled") is not None:
                         control_html = html_part.checkbox_switch("enabled",
                                                                  variable_name_loop,
                                                                  enabled, script=True)
@@ -247,7 +253,8 @@ class ConfigList:
                     label = key
                     if 'label' in for_each[key]:
                         label = for_each[key]['label']
-                    many_html += html_part.panel(label, control_html, "", variable_name_loop[:-1],
+                    many_html += html_part.panel(label, label, control_html, "",
+                                                 variable_name_loop[:-1],
                                                  obj.get_config_html(config, variable_name_loop,
                                                                      key), enabled)
         return many_html
