@@ -1,22 +1,35 @@
 
 ## NEEDED APPS
+
+###Ripper Apps
 MakeMKV
-blockdev
+java JRE
+CCExtractor
+
+####Ripper Apps Linux
+eject
+lsblk
+hwinfo
 blkid
+
+cdrdao
+
+
 discid inside flactag
 
 PIP Installs
-cherryPI
+ConfigObj
+
+
 pip3 install git+https://github.com/alberanid/imdbpy
 
 
 
 ####look at this list
-cherrypy
 Cheetah
 simplejson
 tvdb_api
-ConfigObj
+
 SABnzbd+
 jQuery
 Python GNTP

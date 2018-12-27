@@ -51,20 +51,24 @@ class API():
         if system_name == "config":
             return self._config_api(kwargs, apimode)
         #SEND TO A SYSTEM OR PLUGIN
-        if plugin_name != None:
-            plugin = self._plugins.get(plugin_name, None)
+        if plugin_name is not None:
+            plugin = None
+            for plugin_type in self._plugins:
+                plugin = self._plugins[plugin_type].get(plugin_name, None)
+                if plugin is not None:
+                    break
             if plugin is None:
                 return "plugin " + plugin_name + " not found"
             single_instance_plugin = plugin.SETTINGS['single_instance']
         if single_instance_plugin:
-            if system_name != None:
+            if system_name is not None:
                 system = self._systems.get(system_name, None)
                 if system is None:
                     return "system " + system_name + " not found"
                 #TODO pass to the plugins api single mode
                 return system_name + ": passing to system api"
         else:
-            if system_name != None and plugin_name != None:
+            if system_name is not None and plugin_name is not None:
                 system_full_name = plugin_name + system_name
                 system = self._systems.get(system_full_name, None)
                 if system is None:
@@ -84,12 +88,10 @@ class API():
         '''all actions for the api here'''
         if kwargs is None:
             kwargs = {}
-        root_event = RootEvent()
         if action is "shutdown":
-            root_event.shutdown()
-
-        if action is "reboot":
-            root_event.reboot()
+            RootEvent().set_event("shutdown")
+        elif action is "reboot":
+            RootEvent().set_event("reboot")
 
     def _config_api(self, kwargs, apimode):
         '''section for the config api'''
