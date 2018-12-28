@@ -126,7 +126,13 @@ class ConfigObject(ConfigBase):
             if self._value_link and link:
                 value = self._value_link[link][self._name]
             else:
-                value = str(self._default)
+                if isinstance(self._default, list):
+                    temp_default = []
+                    for default in self._default:
+                        temp_default.append(str(default))
+                    value = temp_default
+                else:
+                    value = str(self._default)
         return html_part.item(variable_name, self._label, self._help_text,
                               self.get_input_html(variable_name, value), self._not_in_config)
 
@@ -156,9 +162,9 @@ class ConfigObject(ConfigBase):
         elif self._type == self._types[2]:
             #String List (multi select or dropdown multi or checkboxes)
             if self._input_type is None or self._input_type == self._input_types[6]:
-                self._select_box(variable_name, value, True)
+                return self._select_box(variable_name, value, True)
             elif self._input_type == self._input_types[2]:
-                self._select_box(variable_name, value, True)
+                return self._select_box(variable_name, value, True)
             elif self._input_type == self._input_types[5]:
                 return self._multi_checkbox(variable_name, value)
         elif self._type == self._types[3]:
@@ -225,7 +231,7 @@ class ConfigObject(ConfigBase):
                 checkboxes_html += option.html_checkbox(variable_name, True)
             else:
                 checkboxes_html += option.html_checkbox(variable_name, False)
-        return html_part.checkbox(self._label, variable_name, checkboxes_html)
+        return checkboxes_html
 
     def convert_var(self, variable):
         '''Convert the variable passed in based on the type here'''

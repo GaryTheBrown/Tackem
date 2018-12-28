@@ -30,7 +30,7 @@ class ConfigOption(ConfigBase):
 
     def html_checkbox(self, variable_name, checked=False):
         '''returns a checkbox'''
-        return html_part.checkbox_single(self._name, variable_name + "_" + self._name,
-                                         checked=checked, disabled=self._disabled,
-                                         read_only=self._read_only,
-                                         script=self._script_create("onchange"))
+        return html_part.checkbox_multi(self._label, variable_name, self._name,
+                                        checked=checked, disabled=self._disabled,
+                                        read_only=self._read_only,
+                                        script=self._script_create("onchange"))

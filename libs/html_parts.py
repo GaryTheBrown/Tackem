@@ -184,6 +184,36 @@ def checkbox(name, variable_name, checkbox_html):
     checkbox_html = checkbox_html.replace("%%TITLE%%", name)
     return checkbox_html.replace("%%CHECKBOX%%", checkbox_html)
 
+def checkbox_multi(label, variable_name, value, checked=True, disabled=False, read_only=False,
+                    script=None):
+    '''returns a multi checkbox'''
+    multi_checkbox_html = str(open("www/html/inputs/multicheckbox.html", "r").read())
+    if checked:
+        checked = "checked"
+    else:
+        checked = ""
+    if disabled:
+        disabled = "disabled"
+    else:
+        disabled = ""
+    if read_only:
+        read_only = "readonly"
+    else:
+        read_only = ""
+    multi_checkbox_html = multi_checkbox_html.replace("%%CHECKED%%", checked)
+    multi_checkbox_html = multi_checkbox_html.replace("%%DISABLED%%", disabled)
+    multi_checkbox_html = multi_checkbox_html.replace("%%READONLY%%", read_only)
+    if script is None:
+        script = "onchange='" + 'Switch("' + variable_name +'");' + "'"
+    if script is True:
+        script = "onchange='" + 'Switch("' + variable_name +'");'
+        script += 'ToggleSection("' + variable_name[:-1] + '");' + "'"
+    multi_checkbox_html = multi_checkbox_html.replace("%%SCRIPT%%", script)
+    multi_checkbox_html = multi_checkbox_html.replace("%%SWITCH%%", "")
+    multi_checkbox_html = multi_checkbox_html.replace("%%VALUE%%", value)
+    multi_checkbox_html = multi_checkbox_html.replace("%%LABEL%%", label)
+    return multi_checkbox_html.replace("%%VARIABLENAME%%", variable_name)
+
 def checkbox_single(name, variable_name, checked=True, disabled=False, read_only=False,
                     script=None):
     '''returns a single checkbox'''
