@@ -82,7 +82,8 @@ CONFIG.append(
                      input_type="switch"),
         ConfigObject("port", "Port", "integer", minimum=1001, maximum=65535, default=8081,
                      help_text="The port for the WebUI"),
-        ConfigObject("baseurl", "Base Url", "string", default="", help_text="The Base URL")
+        ConfigObject("baseurl", "Base Url", "string", default="/", help_text="""The Base URL
+must start with '/'""")
     ])
 )
 CONFIG.append(ConfigList("plugins"))# keep this one at the end of the config section

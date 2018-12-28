@@ -39,26 +39,29 @@ class Httpd():
                                                self._systems,
                                                self._plugins,
                                                self._config),
-                                self._config['webui']['baseurl'] + '/',
+                                '/',
                                 conf_root)
         else:
+            baseurl = "/"
+            if self._config['webui']['baseurl'] == "":
+                self._config['webui']['baseurl'] = baseurl
+            if self._config['webui']['baseurl'] != baseurl:
+                baseurl = self._config['webui']['baseurl'] + "/"
             if self._config['webui']['enabled']:
                 cherrypy.tree.mount(main_root("", self._systems, self._plugins, self._config),
-                                    self._config['webui']['baseurl'] + '/',
-                                    conf_root)
+                                    baseurl, conf_root)
                 for key in self._systems:
                     #load system root
                     cherrypy.tree.mount(
                         self._systems[key].plugin_link().www.Root(key, self._systems,
                                                                   self._plugins,
                                                                   self._config),
-                        self._config['webui']['baseurl'] + "/" + key.replace(" ", "/") + "/",
+                        baseurl + key.replace(" ", "/") + "/",
                         self._systems[key].plugin_link().www.cfg(self._config))
 
             if self._config['api']['enabled']:
                 cherrypy.tree.mount(API(self._systems, self._plugins, self._config),
-                                    self._config['webui']['baseurl'] + "/api/",
-                                    conf_api)
+                                    baseurl + "api/", conf_api)
 
     def start(self):
         '''Start the server'''
