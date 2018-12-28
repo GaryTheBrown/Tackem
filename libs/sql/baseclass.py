@@ -104,9 +104,14 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command += ", " .join(values) + ");"
         return self._call(SQLMessage(system_name, command=command))
 
-    def select(self, system_name, table_name, dict_of_values, list_of_returns):
+    def select(self, system_name, table_name, dict_of_values, list_of_returns=None):
         '''insert data into a table'''
-        command = "SELECT " + ", ".join(list_of_returns) + " FROM " + table_name + " WHERE "
+        returns = "*"
+        if isinstance(list_of_returns, list):
+            returns = ", ".join(list_of_returns)
+        elif isinstance(list_of_returns, str):
+            returns = list_of_returns
+        command = "SELECT " + returns + " FROM " + table_name + " WHERE "
         values = []
         for key in dict_of_values:
             temp_value = ""
