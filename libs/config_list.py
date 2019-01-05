@@ -201,7 +201,6 @@ class ConfigList:
                     if obj.is_section():
                         visible = self.config_find(config, obj.section_link()) == obj.name()
                         return_html += html_part.section(variable_name_loop[:-1],
-                                                         obj.label(),
                                                          obj.get_config_html(temp_config,
                                                                              variable_name_loop),
                                                          visible)

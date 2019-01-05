@@ -123,11 +123,10 @@ def panel(name, title, control, modal, variable_name, section_html, section_visi
         return panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return panel_html.replace("%%SECTIONHIDE%%", "")
 
-def section(section_name, title, section_html, section_visible):
+def section(section_name, section_html, section_visible):
     '''A Panel for plugins or sections'''
     panel_html = str(open("www/html/sections/section.html", "r").read())
     panel_html = panel_html.replace("%%SECTIONNAME%%", section_name)
-    panel_html = panel_html.replace("%%TITLE%%", title)
     panel_html = panel_html.replace("%%SECTION%%", section_html)
     if not section_visible:
         return panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
@@ -185,7 +184,7 @@ def checkbox(name, variable_name, checkbox_html):
     return checkbox_html.replace("%%CHECKBOX%%", checkbox_html)
 
 def checkbox_multi(label, variable_name, value, checked=True, disabled=False, read_only=False,
-                    script=None):
+                   script=None):
     '''returns a multi checkbox'''
     multi_checkbox_html = str(open("www/html/inputs/multicheckbox.html", "r").read())
     if checked:
