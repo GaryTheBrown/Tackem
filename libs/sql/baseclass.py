@@ -30,8 +30,8 @@ class MysqlBaseClass(metaclass=ABCMeta):
     def stop_thread(self):
         '''stop the thread'''
         if self._thread.is_alive():
-            self._event_lock.set()
             self._thread_run = False
+            self._event_lock.set()
             self._thread.join()
 
     def get_thread_run(self):
