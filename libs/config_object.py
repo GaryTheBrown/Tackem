@@ -94,7 +94,7 @@ class ConfigObject(ConfigBase):
                 for item in self._default:
                     if list_count > 0:
                         return_string += ", "
-                    elif isinstance(item, bool):
+                    if isinstance(item, bool):
                         if item:
                             return_string += "True"
                         else:
