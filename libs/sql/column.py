@@ -52,7 +52,7 @@ class Column:
                 else:
                     return_string += "'" + self.default + "'"
             elif isinstance(self.default, int):
-                return_string += self.default
+                return_string += str(self.default)
             elif isinstance(self.default, bool):
                 if self.default:
                     return_string += "True"
