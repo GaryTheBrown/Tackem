@@ -405,6 +405,8 @@ def select_box(variable_name, value, options_html, multiple=False, box_size=0, s
         select_box_html = select_box_html.replace("%%SCRIPT%%", "")
     if value is None:
         blank_options_html = select_box_option(False, True, True)
+    else:
+        blank_options_html = ""
     return select_box_html.replace("%%OPTIONS%%", blank_options_html + options_html)
 
 ######
