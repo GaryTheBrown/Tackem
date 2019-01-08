@@ -127,4 +127,9 @@ footer {
 a.nav-link {
   color: lightgray;
 }
+
+.form-check-input{
+  margin-left: 0 !important;
+}
+
 /*# sourceMappingURL=style.css.map */
