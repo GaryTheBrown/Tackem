@@ -143,7 +143,7 @@ def plugin_config_page(config, plugins):
 def full_config_page(config, plugins):
     '''get the full config setup page into a form'''
     baseurl = config.get("webui", {}).get("baseurl", "")
-    return html_part.form(baseurl + "/config", "", "Save & Restart",
+    return html_part.form(baseurl + "config", "", "Save & Restart",
                           _root_config_page(config) + _plugin_config_page(config, plugins))
 
 def _root_config_page(config):

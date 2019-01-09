@@ -37,7 +37,7 @@ class Root(HTMLTEMPLATE):
             page = str(open("www/html/reboot.html", "r").read())
             return self._template(page, False)
         index_page = full_config_page(self._config, self._plugins)
-        javascript = self._config.get("webui", {}).get("baseurl", "") + "/config_javascript"
+        javascript = self._config.get("webui", {}).get("baseurl", "") + "config_javascript"
         return self._template(index_page, javascript=javascript)
 
     @cherrypy.expose
