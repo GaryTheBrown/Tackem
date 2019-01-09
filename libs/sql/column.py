@@ -55,9 +55,9 @@ class Column:
                 return_string += str(self.default)
             elif isinstance(self.default, bool):
                 if self.default:
-                    return_string += "True"
+                    return_string += '"True"'
                 else:
-                    return_string += "False"
+                    return_string += '"False"'
         return return_string
 
     def get_default_value(self):

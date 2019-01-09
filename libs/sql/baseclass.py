@@ -63,9 +63,9 @@ class MysqlBaseClass(metaclass=ABCMeta):
                 query += str(dict_of_queries[key])
             elif isinstance(dict_of_queries[key], bool):
                 if dict_of_queries[key]:
-                    query += "True"
+                    query += '"True"'
                 else:
-                    query += "False"
+                    query += '"False"'
             else:
                 query += '"' + dict_of_queries[key] + '"'
             queries.append(query)
@@ -95,9 +95,9 @@ class MysqlBaseClass(metaclass=ABCMeta):
                 temp_value = "NULL"
             elif isinstance(dict_of_values[key], bool):
                 if dict_of_values[key]:
-                    temp_value += "True"
+                    temp_value += '"True"'
                 else:
-                    temp_value += "False"
+                    temp_value += '"False"'
             elif isinstance(dict_of_values[key], (dict, list)):
                 temp_value = "'" + json.dumps(dict_of_values[key], ensure_ascii=False) + "'"
             values.append(temp_value)
@@ -115,17 +115,18 @@ class MysqlBaseClass(metaclass=ABCMeta):
         values = []
         for key in dict_of_values:
             temp_value = ""
-            if isinstance(dict_of_values[key], int):
+            if isinstance(dict_of_values[key], bool):
+                if dict_of_values[key]:
+                    temp_value += '"True"'
+                else:
+                    temp_value += '"False"'
+            elif isinstance(dict_of_values[key], int):
                 temp_value = str(dict_of_values[key])
             elif isinstance(dict_of_values[key], str):
                 temp_value = "'" + dict_of_values[key] + "'"
             elif dict_of_values[key] is None:
                 temp_value = "NULL"
-            elif isinstance(dict_of_values[key], bool):
-                if dict_of_values[key]:
-                    temp_value += "True"
-                else:
-                    temp_value += "False"
+
             elif isinstance(dict_of_values[key], dict):
                 temp_value = '"' + json.dumps(dict_of_values[key], ensure_ascii=False) + '"'
             values.append(key + "=" + temp_value)
@@ -146,9 +147,9 @@ class MysqlBaseClass(metaclass=ABCMeta):
                 temp_value = "NULL"
             elif isinstance(dict_of_values[key], bool):
                 if dict_of_values[key]:
-                    temp_value += "True"
+                    temp_value += '"True"'
                 else:
-                    temp_value += "False"
+                    temp_value += '"False"'
             elif isinstance(dict_of_values[key], dict):
                 temp_value = '"' + json.dumps(dict_of_values[key], ensure_ascii=False) + '"'
             values.append(key + "=" + temp_value)
