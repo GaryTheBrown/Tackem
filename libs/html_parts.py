@@ -219,8 +219,10 @@ def checkbox_single(name, variable_name, checked=True, disabled=False, read_only
     single_checkbox_html = str(open("www/html/inputs/singlecheckbox.html", "r").read())
     if checked:
         checked = "checked"
+        single_checkbox_html = single_checkbox_html.replace("%%ENABLED%%", "True")
     else:
         checked = ""
+        single_checkbox_html = single_checkbox_html.replace("%%ENABLED%%", "False")
     if disabled:
         disabled = "disabled"
     else:

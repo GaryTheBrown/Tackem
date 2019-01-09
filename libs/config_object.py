@@ -18,7 +18,7 @@ class ConfigObject(ConfigBase):
 
     def __init__(self, name, label, variable_type, default=None,
                  replace_default_in_files=True, minimum=None, maximum=None, options=None,
-                 input_type=None, help_text=None, script=False, button=None, button_onclick=None,
+                 input_type=None, help_text=None, script=None, button=None, button_onclick=None,
                  hide_from_html=False, read_only=False, disabled=False, priority=0, show=None,
                  hide=None, toggle_section=None, toggle_sections=None, enable_disable=None,
                  section_controller=None, not_in_config=False, value_link=None):
@@ -173,16 +173,16 @@ class ConfigObject(ConfigBase):
                 return self._radio(variable_name, value)
             elif self._input_type == self._input_types[5]:
                 return html_part.checkbox_single("", variable_name,
-                                                 checked=True,
+                                                 checked=value,
                                                  disabled=self._disabled,
                                                  read_only=self._read_only,
-                                                 script=self._script_create("onchange"))
+                                                 script=self._script)
             elif self._input_type == self._input_types[7]:
                 return html_part.checkbox_switch("", variable_name,
-                                                 checked=True,
+                                                 checked=value,
                                                  disabled=self._disabled,
                                                  read_only=self._read_only,
-                                                 script=self._script_create("onchange"))
+                                                 script=self._script)
         elif self._type == self._types[4]:
             #Options (dropdown single or radio)
             if self._input_type is None or self._input_type == self._input_types[2]:
