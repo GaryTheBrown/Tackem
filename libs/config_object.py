@@ -186,7 +186,7 @@ class ConfigObject(ConfigBase):
         elif self._type == self._types[4]:
             #Options (dropdown single or radio)
             if self._input_type is None or self._input_type == self._input_types[2]:
-                self._select_box(variable_name, value)
+                return self._select_box(variable_name, value)
             elif self._input_type == self._input_types[3]:
                 return self._radio(variable_name, value)
         elif self._type == self._types[5]:
