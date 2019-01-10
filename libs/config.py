@@ -96,6 +96,8 @@ def config_load(path, plugin_configs):
     validator = Validator()
     config.validate(validator, copy=True)
     config.filename = path
+    # line bellow for debugging
+    # print(config)
     return config
 
 def javascript():
@@ -105,7 +107,7 @@ def javascript():
 def post_config_settings(kwargs, config, plugins):
     '''Fills in the config dict with the settings based on its name'''
     for key in kwargs:
-        key_list = key.split("_")
+        key_list = key.replace("[]", "").split("_")
         if key_list[0] == "cs":
             value = None
             if key_list[1] == "plugins":
@@ -117,6 +119,7 @@ def post_config_settings(kwargs, config, plugins):
                         value = plugin.CONFIG.convert_var(key_list[5:], kwargs[key])
             else:
                 value = CONFIG.convert_var(key_list[1:], kwargs[key])
+
             if value is not None:
                 add_val_to_config(config, key_list[1:], value)
 

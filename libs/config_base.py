@@ -45,10 +45,10 @@ class ConfigBase:
             elif key in self._toggle_sections[1]:
                 return False
         elif self._show:
-            if key in self._show:
+            if self._show == key:
                 return True
         elif self._hide:
-            if key in self._hide:
+            if self._hide == key:
                 return False
         return None
 

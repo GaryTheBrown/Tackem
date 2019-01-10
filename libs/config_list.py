@@ -83,7 +83,10 @@ class ConfigList:
             return_string += self._tab(indent) + self._open_bracket(indent + 1)
             return_string += "__many__" + self._close_bracket(indent + 1) + "\n"
             indent += 1
-        return return_string + self._get_spec_part(self._objects, indent)
+        return_string += self._get_spec_part(self._objects, indent)
+        # line bellow for debugging
+        # print(return_string)
+        return return_string
 
     def _get_spec_part(self, config_list, indent):
         '''function for recursion of list'''
@@ -104,9 +107,12 @@ class ConfigList:
 
         for item in list_to_loop:
             if isinstance(item, ConfigList):
-                return_string += self._tab(indent) + self._open_bracket(indent + 1)
-                return_string += item.name() + self._close_bracket(indent + 1) + "\n"
-                return_string += self._get_spec_part(item, indent + 1)
+                if item.is_section():
+                    return_string += self._get_spec_part(item, indent)
+                else:
+                    return_string += self._tab(indent) + self._open_bracket(indent + 1)
+                    return_string += item.name() + self._close_bracket(indent + 1) + "\n"
+                    return_string += self._get_spec_part(item, indent + 1)
 
             elif isinstance(item, ConfigObject):
                 return_string += self._tab(indent) + item.get_config_spec()
@@ -155,14 +161,24 @@ class ConfigList:
             if isinstance(obj, ConfigObject):
                 if obj.name() == name:
                     return obj
+            elif isinstance(obj, ConfigList) and obj.is_section():
+                section_obj = obj.search_for_object_by_name(name)
+                if isinstance(section_obj, ConfigObject):
+                    if section_obj.name() == name:
+                        return section_obj
         return None
 
     def search_for_list_by_name(self, name):
         '''search by name and return key to use'''
         for obj in self._objects:
-            if isinstance(obj, ConfigList):
+            if isinstance(obj, ConfigList) and not obj.is_section():
                 if obj.name() == name:
                     return obj
+            elif isinstance(obj, ConfigList) and obj.is_section():
+                section_obj = obj.search_for_list_by_name(name)
+                if isinstance(section_obj, ConfigList):
+                    if section_obj.name() == name:
+                        return section_obj
         return None
 
     def check_if_section_is_enabled(self, config=None):
@@ -188,10 +204,13 @@ class ConfigList:
                     return_html += obj.get_config_html(variable_name_loop, value, link)
             elif isinstance(obj, ConfigList):
                 if obj.name() is not "plugins":
+                    variable_name_in = variable_name_loop
                     variable_name_loop += obj.name() + "_"
                     temp_config = None
                     if isinstance(config, dict):
-                        temp_config = config[obj.name()]
+                        temp_config = config
+                        if not obj.is_section():
+                            temp_config = config[obj.name()]
                     section_enabled = obj.check_if_section_is_enabled(temp_config)
                     control_html = ""
                     if obj.search_for_object_by_name("enabled"):
@@ -199,10 +218,11 @@ class ConfigList:
                                                                  variable_name_loop,
                                                                  section_enabled, script=True)
                     if obj.is_section():
-                        visible = self.config_find(config, obj.section_link()) == obj.name()
+                        visible = self.section_visible(variable_name_loop[:-1], config,
+                                                       obj.section_link())
                         return_html += html_part.section(variable_name_loop[:-1],
                                                          obj.get_config_html(temp_config,
-                                                                             variable_name_loop),
+                                                                             variable_name_in),
                                                          visible)
                     elif isinstance(obj.rules(), ConfigRules) and obj.rules().many():
                         many_html = self._many_section(obj, temp_config, variable_name_loop)
@@ -267,3 +287,10 @@ class ConfigList:
                 return self.config_find(config[section_link[0]], section_link[1:])
             return None
         return config[section_link]
+
+    def section_visible(self, variable_name_loop, config, section_link):
+        '''checks if the section should be shown or hidden'''
+        config_object = self.search_for_object_by_name(section_link[-1])
+        config_option_name = self.config_find(config, section_link[-1])
+        config_option = config_object.search_for_option_by_name(config_option_name)
+        return config_option.show_or_hide(variable_name_loop)

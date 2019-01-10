@@ -1,5 +1,6 @@
 '''Class Controller for a single Config Object'''
 from libs.config_base import ConfigBase
+from libs.config_option import ConfigOption
 import libs.html_parts as html_part
 
 class ConfigObject(ConfigBase):
@@ -86,7 +87,9 @@ class ConfigObject(ConfigBase):
                     return_string += ", "
                 return_string += option.name()
                 variable_count += 1
-        if self._default is not None:
+        if self._type == self._types[2] and self._default is None:
+            return_string += " default=list()"
+        elif self._default is not None:
             return_string += " default="
             if isinstance(self._default, list) and self._type == self._types[2]:
                 list_count = 0
@@ -235,7 +238,7 @@ class ConfigObject(ConfigBase):
 
     def convert_var(self, variable):
         '''Convert the variable passed in based on the type here'''
-        if self._type == self._types[0] or self._type == self._types[2]:
+        if self._type == self._types[0]:
             return variable
         if self._type == self._types[4] or self._type == self._types[6]:
             return variable
@@ -254,4 +257,22 @@ class ConfigObject(ConfigBase):
                 else:
                     return False
             return bool(variable)
+        if self._type == self._types[2]:
+            clean_variable_list = []
+            for var in variable:
+                if "," in var:
+                    split_list = var.split(",")
+                    for split_var in split_list:
+                        clean_variable_list.append(split_var)
+                else:
+                    clean_variable_list.append(var)
+            return clean_variable_list
+        return None
+
+    def search_for_option_by_name(self, name):
+        '''search option by name and return key to use'''
+        for obj in self._options:
+            if isinstance(obj, ConfigOption):
+                if obj.name() == name:
+                    return obj
         return None
