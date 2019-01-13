@@ -9,10 +9,10 @@ def cfg(config):
     '''generate the cherrypy conf'''
     temp_config = config['plugins']['ripping']['ripper']['locations']
     temp_video_location = temp_config['videoripping']
-    if temp_config['videoripping'] != "/":
+    if temp_config['videoripping'][0] != "/":
         temp_video_location = PROGRAMCONFIGLOCATION + temp_config['videoripping']
     temp_audio_location = temp_config['audioripping']
-    if temp_config['audioripping'] != "/":
+    if temp_config['audioripping'][0] != "/":
         temp_audio_location = PROGRAMCONFIGLOCATION + temp_config['audioripping']
 
     conf_root = {
