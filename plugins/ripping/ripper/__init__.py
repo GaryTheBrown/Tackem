@@ -36,7 +36,6 @@ from .renamer import Renamer
 # app_ExpertMode = "1"
 # app_Java = ""
 # app_ccextractor = "/usr/local/bin/ccextractor"
-# dvd_MinimumTitleLength = "0"
 SETTINGS = {
     'single_instance':True,
     'webui':True,
@@ -260,3 +259,7 @@ class Plugin(PluginBaseClass):
             self._events.renamer.set()
             self._renamer.stop_thread()
         self._running = False
+
+    def get_drives(self):
+        '''gets the drives'''
+        return self._drives

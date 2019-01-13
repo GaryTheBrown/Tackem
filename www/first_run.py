@@ -1,6 +1,6 @@
 '''Script For the first Run Of The System'''
 import cherrypy
-from libs.htmltemplate import HTMLTEMPLATE
+from libs.html_template import HTMLTEMPLATE
 from libs.config import post_config_settings, plugin_config_page
 from libs.config import root_config_page, get_config_multi_setup
 from libs.config import javascript as config_javascript

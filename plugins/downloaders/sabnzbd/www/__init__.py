@@ -1,6 +1,6 @@
 '''WEBUI FOR PLUGIN'''
 import cherrypy
-from libs.htmltemplate import HTMLTEMPLATE
+from libs.html_template import HTMLTEMPLATE
 
 LAYOUT = {}
 def cfg(config):

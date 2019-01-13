@@ -39,6 +39,7 @@ class VideoLinux(Video):
         prog_args = [
             "makemkvcon",
             "-r",
+            "--minlength=0",
             "--messages=-null",
             "--progress=-stdout",
             "mkv",

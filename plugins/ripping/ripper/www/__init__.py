@@ -2,7 +2,7 @@
 import json
 import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
-from libs.htmltemplate import HTMLTEMPLATE
+from libs.html_template import HTMLTEMPLATE
 
 LAYOUT = {}
 def cfg(config):
@@ -33,6 +33,18 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self):
         '''index of plugin'''
-        index_page = self._name + " ROOT<br>"
-        index_page += json.dumps(self._config['plugins']['ripping']['ripper'])
+        index_page = ""
+        for drive in self._system.get_drives():
+            index_page += "Name:" + drive.get_device() + "<br>"
+            index_page += "thread running:" + str(drive.get_thread_run()) + "<br>"
+            index_page += "tray status:" + str(drive.get_tray_status()) + "<br>"
+            index_page += "tray locked:" + str(drive.get_tray_locked()) + "<br>"
+            index_page += "disc type:" + str(drive.get_disc_type()) + "<br>"
+
+        index_page += "<br>"
+        index_page += "<br>"
+        index_page += json.dumps(self._lconfig)
+        index_page += "<br>"
+        index_page += "<br>"
+        index_page += json.dumps(self._plugin.SETTINGS)
         return self._template(index_page)

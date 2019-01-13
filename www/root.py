@@ -1,6 +1,6 @@
 '''Script For the Root Of The System'''
 import cherrypy
-from libs.htmltemplate import HTMLTEMPLATE
+from libs.html_template import HTMLTEMPLATE
 from libs.config import full_config_page, get_config_multi_setup, post_config_settings
 from libs.config import javascript as config_javascript
 from libs.root_event import RootEvent

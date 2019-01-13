@@ -3,12 +3,21 @@ import libs.html_parts as html_part
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-
     def __init__(self, name, systems=None, plugins=None, config=None):
         self._name = name
         self._systems = systems
         self._plugins = plugins
         self._config = config
+
+        if name != "":
+            self._system = systems[name]
+            split_name = name.split(" ")
+            self._plugin = plugins[split_name[0]][split_name[1]]
+            if len(split_name) == 2:
+                self._lconfig = config['plugins'][split_name[0]][split_name[1]]
+            elif len(split_name) == 3:
+                self._lconfig = config['plugins'][split_name[0]][split_name[1]][split_name[2]]
+        
 
     def _template(self, body, navbar=True, javascript=None):
         '''Create The Template Layout'''
