@@ -17,35 +17,15 @@ class VideoLinux(Video):
         process.wait()
         if not returned_message:
             return False
-        message = shlex.split(returned_message.decode('ascii').rstrip().split(": ")[1])
+        message = shlex.split(returned_message.decode('utf-8').rstrip().split(": ")[1])
         uuid = message[0].split("=")[1]
         label = message[1].split("=")[1]
         self._set_disc_info(uuid, label)
         return True
 
-###############
-#EXTERNAL APPS#
-###############
-    def _makemkv_info_from_disc(self):
-        '''Get info from within makemkv from disc'''
-        prog_args = [
-            "makemkvcon",
-            "-r",
-            "--messages=-stdout",
-            "--progress=-null",
-            "info",
-            "dev:" + self._device
-        ]
-        process = Popen(prog_args, stdout=PIPE, stderr=DEVNULL)
-        returned_message = process.communicate()[0].decode('utf-8').split("\n")
-        process.wait()
-        try:
-            os.remove("wget-log")
-            os.remove("wget-log.1")
-        except OSError:
-            pass
-        return returned_message
-
+################
+##MAKEMKV CALL##
+################
     def _makemkv_backup_from_disc(self, temp_dir, index=-1):
         '''Do the mkv Backup from disc'''
         try:

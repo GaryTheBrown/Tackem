@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 import threading
 import time
 
-
 class Drive(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
     def __init__(self, device_info, config, db):
