@@ -141,7 +141,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         elif isinstance(list_of_returns, str):
             returns = list_of_returns
         command = "SELECT " + returns + " FROM " + table_name + " WHERE id=" + str(row_id) + ";"
-        return self._call(SQLMessage(system_name, command=command, return_data=[]))
+        return self._call(SQLMessage(system_name, command=command, return_data=[]))[0]
 
     def update(self, system_name, table_name, row_id, dict_of_values):
         '''update a row'''
