@@ -17,7 +17,6 @@ class HTMLTEMPLATE():
                 self._lconfig = config['plugins'][split_name[0]][split_name[1]]
             elif len(split_name) == 3:
                 self._lconfig = config['plugins'][split_name[0]][split_name[1]][split_name[2]]
-        
 
     def _template(self, body, navbar=True, javascript=None):
         '''Create The Template Layout'''
