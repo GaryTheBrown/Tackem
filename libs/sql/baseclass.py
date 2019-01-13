@@ -105,7 +105,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         return self._call(SQLMessage(system_name, command=command))
 
     def select(self, system_name, table_name, dict_of_values, list_of_returns=None):
-        '''insert data into a table'''
+        '''select data from a table'''
         returns = "*"
         if isinstance(list_of_returns, list):
             returns = ", ".join(list_of_returns)
@@ -131,6 +131,16 @@ class MysqlBaseClass(metaclass=ABCMeta):
                 temp_value = '"' + json.dumps(dict_of_values[key], ensure_ascii=False) + '"'
             values.append(key + "=" + temp_value)
         command += " AND " .join(values) + ";"
+        return self._call(SQLMessage(system_name, command=command, return_data=[]))
+
+    def select_by_row(self, system_name, table_name, row_id, list_of_returns=None):
+        '''insert data into a table'''
+        returns = "*"
+        if isinstance(list_of_returns, list):
+            returns = ", ".join(list_of_returns)
+        elif isinstance(list_of_returns, str):
+            returns = list_of_returns
+        command = "SELECT " + returns + " FROM " + table_name + " WHERE id=" + row_id + ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
     def update(self, system_name, table_name, row_id, dict_of_values):
