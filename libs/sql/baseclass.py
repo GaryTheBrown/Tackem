@@ -268,7 +268,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         info = self._trusted_get(command)
         if not info:
             return 0
-        return info[0][0]
+        return info[0]['version']
 
     def _add_table(self, table_name, data, version, update_table=True):
         ''' Adds Table to the DB and then adds it into the table version DB'''

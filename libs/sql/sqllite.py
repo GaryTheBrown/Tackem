@@ -36,7 +36,16 @@ class SqlLite(MysqlBaseClass):
         self._conn.commit()
         self._sql.execute(call)
         self._conn.commit()
-        return self._sql.fetchall()
+
+        return_data = self._sql.fetchall()
+        col_name_list = [tuple[0] for tuple in self._sql.description]
+        full_return_data = []
+        for row in return_data:
+            return_dict = {}
+            for count, key in enumerate(col_name_list):
+                return_dict[key] = row[count]
+            full_return_data.append(return_dict)
+        return full_return_data
 
     def _update_table(self, table_name, data, version):
         '''Update the table with the informaiton provided'''
