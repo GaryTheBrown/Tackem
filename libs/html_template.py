@@ -9,7 +9,7 @@ class HTMLTEMPLATE():
         self._plugins = plugins
         self._config = config
 
-        if name != "":
+        if name != "" and name != "Setup System":
             self._system = systems[name]
             split_name = name.split(" ")
             self._plugin = plugins[split_name[0]][split_name[1]]
@@ -34,7 +34,7 @@ class HTMLTEMPLATE():
         baseurl = self._config.get("webui", {}).get("baseurl", "")
         title = ""
         if self._name is not "":
-            title = " - " + self._name.replace(" ", " - ").capitalize()
+            title = " - " + self._name.replace(" ", " - ").title()
         return html_part.master_template(title, body, javascript_extra_html, baseurl, navbar_html)
 
     def _navbar(self):

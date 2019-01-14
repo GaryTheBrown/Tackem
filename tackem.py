@@ -64,9 +64,9 @@ class Tackem:
             if not "__pycache__" in folder:
                 folder_split = folder.split("/")
                 name = folder_split[-2]
-                print_name = name.replace("_", " ").capitalize()
+                print_name = name.replace("_", " ").title()
                 plugin_type = folder_split[-3]
-                print("Loading " + plugin_type.capitalize() + ":" + print_name.capitalize() + "...")
+                print("Loading " + plugin_type.title() + ":" + print_name.title() + "...")
                 plugin = importlib.import_module("plugins." + plugin_type + "." + name)
                 plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux',
                                                                      'Darwin',

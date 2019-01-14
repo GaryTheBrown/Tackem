@@ -19,27 +19,27 @@ def master_template(title, body, javascript_extra, baseurl, navbar):
 def navbar_dropdown(title, dropdown_id, items):
     '''A Navber Item (not active)'''
     navbar_dropdown_html = str(open("www/html/navbar/dropdown.html", "r").read())
-    navbar_dropdown_html = navbar_dropdown_html.replace("%%TITLE%%", title.capitalize())
+    navbar_dropdown_html = navbar_dropdown_html.replace("%%TITLE%%", title.title())
     navbar_dropdown_html = navbar_dropdown_html.replace("%%DROPDOWNID%%", dropdown_id)
     return navbar_dropdown_html.replace("%%ITEMS%%", items)
 
 def navbar_dropdown_right(title, dropdown_id, items):
     '''A Navber Item (not active)'''
     navbar_dropdown_html = str(open("www/html/navbar/dropdownright.html", "r").read())
-    navbar_dropdown_html = navbar_dropdown_html.replace("%%TITLE%%", title.capitalize())
+    navbar_dropdown_html = navbar_dropdown_html.replace("%%TITLE%%", title.title())
     navbar_dropdown_html = navbar_dropdown_html.replace("%%DROPDOWNID%%", dropdown_id)
     return navbar_dropdown_html.replace("%%ITEMS%%", items)
 
 def navbar_item(title, url):
     '''A Navber Item (not active)'''
     navbar_item_html = str(open("www/html/navbar/item.html", "r").read())
-    navbar_item_html = navbar_item_html.replace("%%TITLE%%", title.capitalize())
+    navbar_item_html = navbar_item_html.replace("%%TITLE%%", title.title())
     return navbar_item_html.replace("%%URL%%", url.replace(" ", "/"))
 
 def navbar_item_active(title):
     '''A Navber Item (not active)'''
     navbar_item_html = str(open("www/html/navbar/itemactive.html", "r").read())
-    return navbar_item_html.replace("%%TITLE%%", title.capitalize())
+    return navbar_item_html.replace("%%TITLE%%", title.title())
 
 def navbar_master(nav_bar_items):
     '''master file for the navbar'''
@@ -88,14 +88,14 @@ def item(variable_name, label, help_text, input_html, not_in_config=False):
 def list_modal(title, variable_name, option_list):
     ''' Returnas a modal for a list of options for adding a multi plugin'''
     list_modal_html = str(open("www/html/sections/list_modal.html", "r").read())
-    list_modal_html = list_modal_html.replace("%%TITLE%%", title.capitalize())
+    list_modal_html = list_modal_html.replace("%%TITLE%%", title.title())
     list_modal_html = list_modal_html.replace("%%VARIABLENAME%%", variable_name)
     return list_modal_html.replace("%%LIST%%", option_list)
 
 def multi_modal(title, variable_name):
     '''Returnas a modal for adding a multi plugin'''
     multi_modal_html = str(open("www/html/sections/multi_modal.html", "r").read())
-    multi_modal_html = multi_modal_html.replace("%%TITLE%%", title.capitalize())
+    multi_modal_html = multi_modal_html.replace("%%TITLE%%", title.title())
     return multi_modal_html.replace("%%VARIABLENAME%%", variable_name)
 
 def multi_panel(variable_name, name, enable_option, delete_option, section_html, section_visible):
@@ -142,7 +142,7 @@ def tab_bar_item(plugin_name, active=False):
     tab_bar_item_html = str(open("www/html/sections/tabbaritem.html", "r").read())
     tab_bar_item_html = tab_bar_item_html.replace("%%PLUGINNAME%%", plugin_name)
     tab_bar_item_html = tab_bar_item_html.replace("%%PLUGINNAMECAPITALIZE%%",
-                                                  plugin_name.capitalize())
+                                                  plugin_name.title())
     if active:
         return tab_bar_item_html.replace("%%ACTIVE%%", "active")
     return tab_bar_item_html.replace("%%ACTIVE%%", "")
