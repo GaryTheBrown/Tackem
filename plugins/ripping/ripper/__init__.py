@@ -21,21 +21,18 @@ from .converter import Converter
 from .renamer import Renamer
 
 #REQUIRED
-# makemkv + java JRE + CCExtractor
+# makemkv + java JRE + CCExtractor libcss2
+# sudo apt install libdvd-pkg && sudo dpkg-reconfigure libdvd-pkg
 # https://github.com/CCExtractor/ccextractor/blob/master/docs/COMPILATION.MD
-#TODO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
-#for the ripping/keep use bellow to show the videos so user can say what it is.
-# <video controls width=800 autoplay>
-#     <source src="file path here">
-# </video>
-#makemkv info
-#https://www.makemkv.com/developers/usage.txt
-#settings.conf
-#https://makemkv.com/forum/viewtopic.php?f=10&t=18313
+# TODO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
+# for the ripping/keep use bellow to show the videos so user can say what it is.
+
+# makemkv settings.conf
 # app_DefaultOutputFileName = "{t:N2}"
 # app_ExpertMode = "1"
 # app_Java = ""
 # app_ccextractor = "/usr/local/bin/ccextractor"
+
 SETTINGS = {
     'single_instance':True,
     'webui':True,

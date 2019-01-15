@@ -11,7 +11,7 @@ from .data.events import RipperEvents
 
 class Video(metaclass=ABCMeta):
     '''video ripping controller'''
-    def __init__(self, device, config, db, thread_name):
+    def __init__(self, device, config, db, thread_name, disc_type, set_drive_status):
         self._device = device
         self._events = RipperEvents()
         self._config = config
@@ -20,20 +20,24 @@ class Video(metaclass=ABCMeta):
         self._disc_info_lock = threading.Lock()
         self._disc_info_uuid = None
         self._disc_info_label = None
+        self._disc_info_sha256 = None
         self._disc_rip_info = None
         self._db_id = None
+        self._disc_type = disc_type
+        self._set_drive_status = set_drive_status
 
 ###########
 ##SETTERS##
 ###########
-    def _set_disc_info(self, uuid=None, label=None):
+    def _set_disc_info(self, uuid=None, label=None, sha256=None):
         '''Threadded Safe Set disc info'''
         with self._disc_info_lock:
             if isinstance(uuid, str):
                 self._disc_info_uuid = uuid
             if isinstance(label, str):
                 self._disc_info_label = label
-
+            if isinstance(sha256, str):
+                self._disc_info_sha256 = sha256
 ###########
 ##GETTERS##
 ###########
@@ -49,6 +53,11 @@ class Video(metaclass=ABCMeta):
             label = self._disc_info_label
         return label
 
+    def get_disc_info_sha256(self):
+        '''returns the disc label'''
+        with self._disc_info_lock:
+            sha256 = self._disc_info_sha256
+        return sha256
 ##########
 ##CHECKS##
 ##########
@@ -64,19 +73,21 @@ class Video(metaclass=ABCMeta):
         '''checks the DB and API for the Disc info'''
         uuid = self.get_disc_info_uuid()
         label = self.get_disc_info_label()
-        basic_info = {"uuid":uuid, "label":label}
+        sha256 = self.get_disc_info_sha256()
+        basic_info = {"uuid":uuid, "label":label, "sha256": sha256}
         self._db_id = self._db.table_has_row(self._thread_name, INFO_DB["name"], basic_info)
         if self._db_id:
             return_data = self._db.select_by_row(self._thread_name, INFO_DB["name"], self._db_id)
-            rip_data_json = return_data[0][0]['rip_data']
+            rip_data_json = return_data['rip_data']
             self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
                             {"ripped":False, "ready_to_convert":False, "ready_to_rename":False,
                              "ready_for_library":False, "completed":False})
             if rip_data_json is not None:
                 self._disc_rip_info = make_disc_type(json.loads(rip_data_json))
                 return
-        self._db.insert(self._thread_name, INFO_DB["name"], basic_info)
-        self._db_id = self._db.table_has_row(self._thread_name, INFO_DB["name"], basic_info)
+        else:
+            self._db.insert(self._thread_name, INFO_DB["name"], basic_info)
+            self._db_id = self._db.table_has_row(self._thread_name, INFO_DB["name"], basic_info)
         rip_list = apiaccess_video_disc_id(uuid, label)
         if isinstance(rip_list, str):
             self._disc_rip_info = make_disc_type(json.loads(rip_list))
@@ -90,7 +101,7 @@ class Video(metaclass=ABCMeta):
         temp_location = self._config['locations']['videoripping']
         if temp_location[0] != "/":
             temp_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
-        temp_dir = temp_location + self.get_disc_info_label()
+        temp_dir = temp_location + str(self._db_id)
         if isinstance(self._disc_rip_info, list):
             for idx, track in enumerate(self._disc_rip_info):
                 if not isinstance(track, bool):
@@ -109,28 +120,34 @@ class Video(metaclass=ABCMeta):
 #######################
     def _send_to_next_system(self):
         '''method to send info to the next step in the process'''
-        if self._disc_rip_info:
-            if self._config['converter']['enabled']:
-                create_converter_row(self._db, self._thread_name, self.get_disc_info_uuid(),
-                                     self.get_disc_info_label(), self._disc_rip_info,
-                                     self._config['videoripping']['torip'])
-                self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
-                                {"ready_to_convert":True})
-                RipperEvents().converter.set()
-            else:
-                self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
-                                {"ready_to_rename":True})
-                RipperEvents().renamer.set()
+        if self._config['converter']['enabled']:
+            create_converter_row(self._db, self._thread_name, str(self._db_id),
+                                 self.get_disc_info_label(), self._disc_rip_info,
+                                 self._config['videoripping']['torip'])
+            self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
+                            {"ready_to_convert":True})
+            RipperEvents().converter.set()
+        else:
+            self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
+                            {"ready_to_rename":True})
+            RipperEvents().renamer.set()
 ##########
 ##Script##
 ##########
     def run(self):
         '''script to rip video disc'''
-        self._check_disc_information()
+        print("Get disc unique data:")
+        self._set_drive_status("Get disc unique data")
+        if not self._check_disc_information():
+            return
         label = self.get_disc_info_label()
-        print("check info for:", label)
+        uuid = self.get_disc_info_uuid()
+        print("check info for:", label, "(", uuid, ")")
+        self._set_drive_status("check info for")
         self._check_db_and_api_for_disc_info()
-        print("Rip Disc:", label)
+        print("Rip Disc:", label, "(", uuid, ")")
+        self._set_drive_status("Ripping Disc")
         self._call_makemkv_backup()
-        print("Rip Disc Finished:", label)
-        self._send_to_next_system()
+        print("Rip Disc Finished:", label, "(", uuid, ")")
+        if self._disc_rip_info:
+            self._send_to_next_system()

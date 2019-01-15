@@ -77,9 +77,9 @@ class Converter():
             RipperEvents().converter.wait()
             time.sleep(1.0)
 
-def create_converter_row(sql, thread_name, uuid, label, disc_rip_info, to_rip):
+def create_converter_row(sql, thread_name, uuid, folder, disc_rip_info, to_rip):
     '''Function to add tracks to Convertor DB'''
-    track_name = label + "/" + "t"
+    track_name = folder + "/" + "t"
     for i, track in enumerate(disc_rip_info.tracks()):
         if track.video_type() in to_rip:
             file_name = track_name + str(i).zfill(2) + ".mkv"

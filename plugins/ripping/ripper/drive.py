@@ -16,16 +16,23 @@ class Drive(metaclass=ABCMeta):
 
         self._thread_run = True
         self._drive_lock = threading.Lock()
+        self._drive_status = "idle"
+        self._drive_status_lock = threading.Lock()
         self._tray_status = "startup"
         self._tray_status_lock = threading.Lock()
         self._tray_locked = False
         self._tray_locked_lock = threading.Lock()
-        self._disc_type = None
+        self._disc_type = "None"
         self._disc_type_lock = threading.Lock()
 
 ###########
 ##SETTERS##
 ###########
+    def _set_drive_status(self, drive_status):
+        '''Threadded Safe Set drive open'''
+        with self._drive_status_lock:
+            self._drive_status = drive_status
+
     def _set_tray_status(self, tray_status):
         '''Threadded Safe Set tray open'''
         with self._tray_status_lock:
@@ -52,6 +59,12 @@ class Drive(metaclass=ABCMeta):
         '''return if thread is running'''
         return self._thread.is_alive()
 
+    def get_drive_status(self):
+        '''returns if the drive is open'''
+        with self._drive_status_lock:
+            drive_status = self._drive_status
+        return drive_status
+
     def get_tray_status(self):
         '''returns if the tray is open'''
         with self._tray_status_lock:
@@ -66,11 +79,9 @@ class Drive(metaclass=ABCMeta):
 
     def get_disc_type(self):
         '''returns the disc type if a disc is in the drive'''
-        if self.get_tray_status() == "loaded":
-            with self._disc_type_lock:
-                disc_type = self._disc_type
-            return disc_type
-        return False
+        with self._disc_type_lock:
+            disc_type = self._disc_type
+        return disc_type
 
 ##########
 ##CHECKS##
@@ -158,12 +169,14 @@ class Drive(metaclass=ABCMeta):
                 if not self._thread_run:
                     return
             if self._check_disc_type():
-                if self.get_disc_type() == "iso9660":
+                if self.get_disc_type() == "audiocd":
                     print("DISC IS AUDIO CD")
                     # self._audio_rip()
-                elif self.get_disc_type() == "udf":
+                elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                     with self._drive_lock:
+                        self._set_drive_status("ripping video disc")
                         self._video_rip()
+                        self._set_drive_status("idle")
 
                 #END OF LOOP
                 self.open_tray()

@@ -20,14 +20,18 @@ class DriveLinux(Drive):
             os.close(file_device)
             if return_value == 1: #no disk in tray
                 self._set_tray_status("empty")
+                self._set_disc_type("None")
             elif return_value == 2: #tray open
                 self._set_tray_status("open")
+                self._set_disc_type("None")
             elif return_value == 3: #reading tray
                 self._set_tray_status("reading")
+                self._set_disc_type("None")
             elif return_value == 4: #disk in tray
                 self._set_tray_status("loaded")
             else:
                 self._set_tray_status("unknown")
+                self._set_disc_type("None")
 
     def _check_disc_type(self, sleep_time=1.0):
         '''Will return the size of the disc'''
@@ -37,14 +41,30 @@ class DriveLinux(Drive):
                 if not self._thread_run:
                     return False
                 if self.get_tray_status() != "loaded":
+                    self._set_disc_type("None")
                     return False
+                self._set_drive_status("checking disc")
                 process = Popen(["lsblk", "-no", "FSTYPE", self._device],
                                 stdout=PIPE, stderr=DEVNULL)
                 returned_message = process.communicate()[0]
                 process.wait()
-                message = returned_message.decode('ascii').rstrip()
+                file_format = returned_message.decode('utf-8').rstrip()
                 time.sleep(float(sleep_time))
-        self._set_disc_type(message)
+                self._set_drive_status("idle")
+        if file_format == "udf":
+            udevadm_process = Popen(["udevadm", "info", "--query=all", "--name=" + self._device],
+                                    stdout=PIPE, stderr=DEVNULL)
+            grep_process = Popen(["grep", "ID_FS_VERSION="], stdin=udevadm_process.stdout, stdout=PIPE)
+            message = grep_process.communicate()[0]
+            process.wait()
+            udf_version_str = message.decode('utf-8').rstrip().split("=")[1]
+            udf_version_float = float(udf_version_str)
+            if udf_version_float == 1.02:
+                self._set_disc_type("dvd")
+            elif udf_version_float >= 2.50:
+                self._set_disc_type("bluray")
+        else:
+            self._set_disc_type("audiocd")
         return True
 
     # def _check_audio_disc_information(self):
@@ -54,7 +74,7 @@ class DriveLinux(Drive):
     #     with self._drive_lock:
     #         process = Popen(["cdrdao", "discid", "--device", self._device],
     #                         stdout=PIPE, stderr=DEVNULL)
-    #         returned_message = process.communicate()[0].decode('ascii').rstrip().split("\n")
+    #         returned_message = process.communicate()[0].decode('utf-8').rstrip().split("\n")
     #         process.wait()
     #     if not returned_message:
     #         return False
@@ -99,7 +119,8 @@ class DriveLinux(Drive):
 
     def _video_rip(self):
         '''script to rip video disc'''
-        video_ripper = VideoLinux(self.get_device(), self._config, self._db, self._thread.getName())
+        video_ripper = VideoLinux(self.get_device(), self._config, self._db, self._thread.getName(),
+                                  self.get_disc_type(), self._set_drive_status)
         video_ripper.run()
 
 ###############
@@ -110,7 +131,7 @@ def get_hwinfo_linux():
     process = Popen(["hwinfo", "--cdrom"], stdout=PIPE, stderr=DEVNULL)
     returned_message = process.communicate()[0]
     process.wait()
-    devices = returned_message.decode('ascii').rstrip().split("\n\n")
+    devices = returned_message.decode('utf-8').rstrip().split("\n\n")
     device_list = []
     for device in devices:
         device_single_list = {}
@@ -129,5 +150,11 @@ def get_hwinfo_linux():
         temp_list['link'] = hwinfo_item["device_files"].split(",")[0]
         temp_list['model'] = hwinfo_item["model"].replace('"', "")
         temp_list['features'] = hwinfo_item["features"].replace(" ", "").split(",")
-        drives[hwinfo_item["unique_id"].split(".")[1]] = temp_list
+        udevadm_process = Popen(["udevadm", "info", "--query=all", "--name=" + temp_list['link']],
+                                stdout=PIPE, stderr=DEVNULL)
+        grep_process = Popen(["grep", "ID_SERIAL="], stdin=udevadm_process.stdout, stdout=PIPE)
+        message = grep_process.communicate()[0]
+        process.wait()
+        unique_id = message.decode('utf-8').rstrip().split("=")[1].replace("-0:0", "").replace("_", "-")
+        drives[unique_id] = temp_list
     return drives
