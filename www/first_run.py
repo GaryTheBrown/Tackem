@@ -31,7 +31,7 @@ class Root(HTMLTEMPLATE):
     def _post_action(self, kwargs):
         '''the part of the script to do all of the pages & updates of the config'''
         post_config_settings(kwargs, self._config, self._plugins)
-        javascript = "/javascript"
+        javascript = "javascript"
         if kwargs["page_index"] == "1":
             return self._template(root_config_page(self._config), False, javascript=javascript)
         elif kwargs["page_index"] == "2":

@@ -3,10 +3,11 @@ from libs.startup_arguments import PROGRAMVERSION
 #################
 #MASTER TEMPLATE#
 #################
-def master_template(title, body, javascript_extra, baseurl, navbar):
+def master_template(title, body, javascript_extra, stylesheet_extra, baseurl, navbar):
     '''head section of the template'''
     head_page = str(open("www/html/pages/template.html", "r").read())
     head_page = head_page.replace("%%JAVASCRIPTEXTRA%%", javascript_extra)
+    head_page = head_page.replace("%%STYLESHEETEXTRA%%", stylesheet_extra)
     head_page = head_page.replace("%%NAVBAR%%", navbar)
     head_page = head_page.replace("%%BODY%%", body)
     head_page = head_page.replace("%%BASEURL%%", baseurl)
@@ -419,3 +420,8 @@ def script_link(location):
     '''returns a script link item'''
     script_link_html = str(open("www/html/tags/scriptlink.html", "r").read())
     return script_link_html.replace("%%LOCATION%%", location)
+
+def stylesheet_link(location):
+    '''returns a script link item'''
+    stylesheet_link_html = str(open("www/html/tags/stylesheetlink.html", "r").read())
+    return stylesheet_link_html.replace("%%LOCATION%%", location)
