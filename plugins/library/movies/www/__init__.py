@@ -3,10 +3,10 @@ import cherrypy
 from libs.html_template import HTMLTEMPLATE
 
 LAYOUT = {}
-def mounts(plugin_base_url, key, systems, plugins, config):
+def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
     cherrypy.tree.mount(Root(key, systems, plugins, config),
-                        plugin_base_url,
+                        config['webui']['baseurl'] + key.replace(" ", "/") + "/",
                         cfg(config))
 
 def cfg(config):

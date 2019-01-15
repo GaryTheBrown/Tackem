@@ -1,14 +1,17 @@
 '''WEBUI FOR PLUGIN'''
-import json
+import os
 import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
-from libs.html_template import HTMLTEMPLATE
+from .root import Root
+from .drives import Drives
 
 LAYOUT = {}
-def mounts(plugin_base_url, key, systems, plugins, config):
+def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
-    cherrypy.tree.mount(Root(key, systems, plugins, config, "Ripper"),
-                        plugin_base_url,
+    root = Root(key, systems, plugins, config, "Ripper")
+    root.drives = Drives(key, systems, plugins, config, "Ripper Drives")
+    cherrypy.tree.mount(root,
+                        config['webui']['baseurl'] + key.replace(" ", "/") + "/",
                         cfg(config))
 
 def cfg(config):
@@ -22,6 +25,10 @@ def cfg(config):
         temp_audio_location = PROGRAMCONFIGLOCATION + temp_config['audioripping']
 
     conf_root = {
+        '/static': {
+            'tools.staticdir.on': True,
+            'tools.staticdir.dir': os.path.dirname(__file__) + '/static/'
+        },
         '/tempvideo': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': temp_video_location
@@ -33,24 +40,3 @@ def cfg(config):
     }
 
     return conf_root
-
-class Root(HTMLTEMPLATE):
-    '''ROOT OF PLUGINS WEBUI HERE'''
-    @cherrypy.expose
-    def index(self):
-        '''index of plugin'''
-        index_page = ""
-        for drive in self._system.get_drives():
-            index_page += "Name:" + drive.get_device() + "<br>"
-            index_page += "thread running:" + str(drive.get_thread_run()) + "<br>"
-            index_page += "tray status:" + str(drive.get_tray_status()) + "<br>"
-            index_page += "tray locked:" + str(drive.get_tray_locked()) + "<br>"
-            index_page += "disc type:" + str(drive.get_disc_type()) + "<br>"
-
-        index_page += "<br>"
-        index_page += "<br>"
-        index_page += json.dumps(self._lconfig)
-        index_page += "<br>"
-        index_page += "<br>"
-        index_page += json.dumps(self._plugin.SETTINGS)
-        return self._template(index_page)

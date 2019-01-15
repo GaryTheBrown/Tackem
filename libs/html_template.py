@@ -10,7 +10,7 @@ class HTMLTEMPLATE():
         self._config = config
         self._name = name
 
-        if key != "" and key != "Setup System":
+        if key != "":
             self._system = systems[key]
             split_key = key.split(" ")
             self._plugin = plugins[split_key[0]][split_key[1]]
@@ -35,9 +35,9 @@ class HTMLTEMPLATE():
         stylesheet_extra_html = ""
         if isinstance(stylesheet, list):
             for key in stylesheet:
-                stylesheet_extra_html += html_part.script_link(key)
+                stylesheet_extra_html += html_part.stylesheet_link(key)
         elif isinstance(stylesheet, str):
-            stylesheet_extra_html = html_part.script_link(stylesheet)
+            stylesheet_extra_html = html_part.stylesheet_link(stylesheet)
         baseurl = self._config.get("webui", {}).get("baseurl", "")
         title = ""
         if self._key is not "":

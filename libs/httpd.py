@@ -34,26 +34,19 @@ class Httpd():
                 'tools.response_headers.headers': [('Content-Type', 'text/plain')]
             }
         }
+        baseurl = self._config['webui']['baseurl']
         if first_run:
-            cherrypy.tree.mount(first_run_root("Setup System",
-                                               self._systems,
-                                               self._plugins,
-                                               self._config),
-                                '/',
+            cherrypy.tree.mount(first_run_root("", self._systems, self._plugins,
+                                               self._config, "Setup System"),
+                                baseurl,
                                 conf_root)
         else:
-            baseurl = "/"
-            if self._config['webui']['baseurl'] == "":
-                self._config['webui']['baseurl'] = baseurl
-            if self._config['webui']['baseurl'] != baseurl:
-                baseurl = self._config['webui']['baseurl'] + "/"
             if self._config['webui']['enabled']:
                 cherrypy.tree.mount(main_root("", self._systems, self._plugins, self._config),
                                     baseurl, conf_root)
                 for key in self._systems:
                     #load system webpages into cherrypy
-                    plugin_base = baseurl + key.replace(" ", "/") + "/"
-                    self._systems[key].plugin_link().www.mounts(plugin_base, key, self._systems,
+                    self._systems[key].plugin_link().www.mounts(key, self._systems,
                                                                 self._plugins, self._config)
             if self._config['api']['enabled']:
                 cherrypy.tree.mount(API(self._systems, self._plugins, self._config),

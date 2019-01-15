@@ -94,7 +94,7 @@ footer {
   background-color: #666666;
 }
 
-.dropdown:hover>.dropdown-menu, .dropright:hover>.dropdown-menu {
+.dropdown:hover > .dropdown-menu, .dropright:hover > .dropdown-menu {
   display: block;
 }
 
@@ -128,8 +128,7 @@ a.nav-link {
   color: lightgray;
 }
 
-.form-check-input{
+.form-check-input {
   margin-left: 0 !important;
 }
-
 /*# sourceMappingURL=style.css.map */
