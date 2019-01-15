@@ -3,6 +3,12 @@ import cherrypy
 from libs.html_template import HTMLTEMPLATE
 
 LAYOUT = {}
+def mounts(plugin_base_url, key, systems, plugins, config):
+    '''where the system creates the cherrypy mounts'''
+    cherrypy.tree.mount(Root(key, systems, plugins, config),
+                        plugin_base_url,
+                        cfg(config))
+
 def cfg(config):
     '''generate the cherrypy conf'''
     return {}

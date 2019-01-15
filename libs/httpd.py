@@ -51,14 +51,10 @@ class Httpd():
                 cherrypy.tree.mount(main_root("", self._systems, self._plugins, self._config),
                                     baseurl, conf_root)
                 for key in self._systems:
-                    #load system root
-                    cherrypy.tree.mount(
-                        self._systems[key].plugin_link().www.Root(key, self._systems,
-                                                                  self._plugins,
-                                                                  self._config),
-                        baseurl + key.replace(" ", "/") + "/",
-                        self._systems[key].plugin_link().www.cfg(self._config))
-
+                    #load system webpages into cherrypy
+                    plugin_base = baseurl + key.replace(" ", "/") + "/"
+                    self._systems[key].plugin_link().www.mounts(plugin_base, key, self._systems,
+                                                                self._plugins, self._config)
             if self._config['api']['enabled']:
                 cherrypy.tree.mount(API(self._systems, self._plugins, self._config),
                                     baseurl + "api/", conf_api)

@@ -5,6 +5,12 @@ from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.html_template import HTMLTEMPLATE
 
 LAYOUT = {}
+def mounts(plugin_base_url, key, systems, plugins, config):
+    '''where the system creates the cherrypy mounts'''
+    cherrypy.tree.mount(Root(key, systems, plugins, config, "Ripper"),
+                        plugin_base_url,
+                        cfg(config))
+
 def cfg(config):
     '''generate the cherrypy conf'''
     temp_config = config['plugins']['ripping']['ripper']['locations']
