@@ -3,12 +3,15 @@ import libs.html_parts as html_part
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-    def __init__(self, key, systems=None, plugins=None, config=None, name=""):
+    def __init__(self, key, systems=None, plugins=None, config=None, name="",
+                 base_stylesheet=None, base_javascript=None):
         self._key = key
         self._systems = systems
         self._plugins = plugins
         self._config = config
         self._name = name
+        self._base_stylesheet = base_stylesheet
+        self._base_javascript = base_javascript
 
         if key != "":
             self._system = systems[key]
@@ -27,12 +30,22 @@ class HTMLTEMPLATE():
         elif navbar:
             navbar_html = self._navbar()
         javascript_extra_html = ""
+        if isinstance(self._base_javascript, list):
+            for key in self._base_javascript:
+                javascript_extra_html += html_part.script_link(key)
+        elif isinstance(self._base_javascript, str):
+            javascript_extra_html = html_part.script_link(self._base_javascript)
         if isinstance(javascript, list):
             for key in javascript:
                 javascript_extra_html += html_part.script_link(key)
         elif isinstance(javascript, str):
             javascript_extra_html = html_part.script_link(javascript)
         stylesheet_extra_html = ""
+        if isinstance(self._base_stylesheet, list):
+            for key in self._base_stylesheet:
+                stylesheet_extra_html += html_part.stylesheet_link(key)
+        elif isinstance(self._base_stylesheet, str):
+            stylesheet_extra_html = html_part.stylesheet_link(self._base_stylesheet)
         if isinstance(stylesheet, list):
             for key in stylesheet:
                 stylesheet_extra_html += html_part.stylesheet_link(key)

@@ -1,3 +1,13 @@
-<div class="drivebox">
-	<img src="%%IMAGE%%">
+<div class="drivebox" id="drive%%DRIVENUMBER%%">
+	<img src="%%IMAGE%%" class="driveimg">
+	<img class="drivelock" src="/ripping/ripper/static/images/locked.png" %%LOCKED%%>
+	<div class="font-weight-bold">%%NAME%%</div>
+	<div class="info">%%INFO%%</div>
+	<script type="text/javascript">
+		setInterval(function() {
+			$.ajax('single/%%DRIVENUMBER%%/traystatus/', {success: function(result) {$('#drive%%DRIVENUMBER%%').find('.driveimg').attr('src', result);}});
+			$.ajax('single/%%DRIVENUMBER%%/traylock/', {success: function(result) {if(result=="True"){$('#drive%%DRIVENUMBER%%').find('.drivelock').show();}else{$('#drive%%DRIVENUMBER%%').find('.drivelock').hide();}}});
+			$.ajax('single/%%DRIVENUMBER%%/drivestatus/', {success: function(result) {$('#drive%%DRIVENUMBER%%').find('.info').html(result);}});
+		}, 1000);
+	</script>
 </div>

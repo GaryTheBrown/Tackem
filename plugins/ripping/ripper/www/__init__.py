@@ -8,8 +8,9 @@ from .drives import Drives
 LAYOUT = {}
 def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
-    root = Root(key, systems, plugins, config, "Ripper")
-    root.drives = Drives(key, systems, plugins, config, "Ripper Drives")
+    stylesheet = key.replace(" ", "/") + "/static/style.css"
+    root = Root(key, systems, plugins, config, "Ripper", base_stylesheet=stylesheet)
+    root.drives = Drives(key, systems, plugins, config, "Ripper Drives", base_stylesheet=stylesheet)
     cherrypy.tree.mount(root,
                         config['webui']['baseurl'] + key.replace(" ", "/") + "/",
                         cfg(config))

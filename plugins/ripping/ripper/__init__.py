@@ -184,6 +184,8 @@ Do you want to keep the chapter points?"""),
     ConfigList("drives", "Drives", objects=[
         ConfigObject("enabled", "Enabled", "boolean", default=False, input_type="switch",
                      script=True),
+        ConfigObject("name", "Name", "string", default="",
+                     help_text="What do you want to call this drive?"),
         ConfigObject("link", "Drive Link", "string", read_only=True, disabled=True,
                      not_in_config=True, value_link=DRIVES,
                      help_text="Adderss of the drive"),
@@ -224,7 +226,8 @@ class Plugin(PluginBaseClass):
             for drive in DRIVES:
                 if drive in self._config['drives']:
                     if self._config['drives'][drive]["enabled"]:
-                        self._drives.append(DriveLinux(DRIVES[drive], self._config, self._db))
+                        self._drives.append(DriveLinux(drive, DRIVES[drive],
+                                                       self._config, self._db))
 
         #Check if Devices Exist and if not it will stop the plugin from loading
         if not self._drives:
@@ -248,6 +251,7 @@ class Plugin(PluginBaseClass):
     def shutdown(self):
         '''stop the plugin'''
         for drive in self._drives:
+            drive.unlock_tray()
             drive.stop_thread()
         if self._converter is not None:
             self._events.converter.set()

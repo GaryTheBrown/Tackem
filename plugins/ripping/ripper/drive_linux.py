@@ -20,52 +20,54 @@ class DriveLinux(Drive):
             os.close(file_device)
             if return_value == 1: #no disk in tray
                 self._set_tray_status("empty")
-                self._set_disc_type("None")
+                self._set_disc_type("none")
             elif return_value == 2: #tray open
                 self._set_tray_status("open")
-                self._set_disc_type("None")
+                self._set_disc_type("none")
             elif return_value == 3: #reading tray
                 self._set_tray_status("reading")
-                self._set_disc_type("None")
+                self._set_disc_type("none")
             elif return_value == 4: #disk in tray
                 self._set_tray_status("loaded")
             else:
                 self._set_tray_status("unknown")
-                self._set_disc_type("None")
+                self._set_disc_type("none")
 
     def _check_disc_type(self, sleep_time=1.0):
         '''Will return the size of the disc'''
-        message = ""
         with self._drive_lock:
+            if not self._thread_run:
+                return False
+            if self.get_tray_status() != "loaded":
+                self._set_disc_type("None")
+                return False
+            message = ""
             while message == "":
+                process1 = Popen(["udevadm", "info", "--query=all", "--name=" + self._device],
+                                 stdout=PIPE, stderr=DEVNULL)
+                process2 = Popen(["grep", "ID_FS_TYPE="], stdin=process1.stdout, stdout=PIPE)
+                message = process2.communicate()[0].decode('utf-8').replace("\n", "")
+                process2.wait()
                 if not self._thread_run:
+                    self.unlock_tray()
                     return False
-                if self.get_tray_status() != "loaded":
-                    self._set_disc_type("None")
-                    return False
-                self._set_drive_status("checking disc")
-                process = Popen(["lsblk", "-no", "FSTYPE", self._device],
-                                stdout=PIPE, stderr=DEVNULL)
-                returned_message = process.communicate()[0]
-                process.wait()
-                file_format = returned_message.decode('utf-8').rstrip()
                 time.sleep(float(sleep_time))
-                self._set_drive_status("idle")
-        if file_format == "udf":
-            udevadm_process = Popen(["udevadm", "info", "--query=all", "--name=" + self._device],
-                                    stdout=PIPE, stderr=DEVNULL)
-            grep_process = Popen(["grep", "ID_FS_VERSION="], stdin=udevadm_process.stdout, stdout=PIPE)
-            message = grep_process.communicate()[0]
-            process.wait()
-            udf_version_str = message.decode('utf-8').rstrip().split("=")[1]
-            udf_version_float = float(udf_version_str)
-            if udf_version_float == 1.02:
-                self._set_disc_type("dvd")
-            elif udf_version_float >= 2.50:
-                self._set_disc_type("bluray")
-        else:
-            self._set_disc_type("audiocd")
-        return True
+            file_format = message.rstrip().split("=")[1]
+            if file_format == "udf":
+                process3 = Popen(["udevadm", "info", "--query=all", "--name=" + self._device],
+                                 stdout=PIPE, stderr=DEVNULL)
+                process4 = Popen(["grep", "ID_FS_VERSION="], stdin=process3.stdout, stdout=PIPE)
+                message = process4.communicate()[0]
+                process4.wait()
+                udf_version_str = message.decode('utf-8').rstrip().split("=")[1]
+                udf_version_float = float(udf_version_str)
+                if udf_version_float == 1.02:
+                    self._set_disc_type("dvd")
+                elif udf_version_float >= 2.50:
+                    self._set_disc_type("bluray")
+            else:
+                self._set_disc_type("audiocd")
+            return True
 
     # def _check_audio_disc_information(self):
     #     '''Will return if drive is open or it will return a string of the error'''
@@ -91,22 +93,24 @@ class DriveLinux(Drive):
     def open_tray(self):
         '''Send Command to open the tray'''
         with self._drive_lock:
-            Popen(["eject", self._device]).wait()
+            Popen(["eject", self._device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def close_tray(self):
         '''Send Command to close the tray'''
         with self._drive_lock:
-            Popen(["eject", "-t", self._device]).wait()
+            Popen(["eject", "-t", self._device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def lock_tray(self):
         '''Send Command to lock the tray'''
         with self._drive_lock:
-            Popen(["eject", "-i1", self._device]).wait()
+            self._tray_locked = True
+            Popen(["eject", "-i1", self._device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def unlock_tray(self):
         '''Send Command to unlock the tray'''
         with self._drive_lock:
-            Popen(["eject", "-i0", self._device]).wait()
+            self._tray_locked = False
+            Popen(["eject", "-i0", self._device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
 
 ##########
@@ -155,6 +159,6 @@ def get_hwinfo_linux():
         grep_process = Popen(["grep", "ID_SERIAL="], stdin=udevadm_process.stdout, stdout=PIPE)
         message = grep_process.communicate()[0]
         process.wait()
-        unique_id = message.decode('utf-8').rstrip().split("=")[1].replace("-0:0", "").replace("_", "-")
-        drives[unique_id] = temp_list
+        uid = message.decode('utf-8').rstrip().split("=")[1].replace("-0:0", "").replace("_", "-")
+        drives[uid] = temp_list
     return drives

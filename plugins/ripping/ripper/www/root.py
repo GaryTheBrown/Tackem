@@ -10,5 +10,4 @@ class Root(HTMLTEMPLATE):
         '''index of plugin'''
         directory = os.path.dirname(__file__)
         index_page = str(open(directory + "/html/root.html", "r").read())
-        return self._template(index_page,
-                              stylesheet=self._key.replace(" ", "/") + "/static/style.css")
+        return self._template(index_page)

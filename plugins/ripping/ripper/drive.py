@@ -5,7 +5,8 @@ import time
 
 class Drive(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
-    def __init__(self, device_info, config, db):
+    def __init__(self, cfg_name, device_info, config, db):
+        self._cfg_name = cfg_name
         self._device_info = device_info
         self._device = device_info['link']
         self._config = config
@@ -22,7 +23,7 @@ class Drive(metaclass=ABCMeta):
         self._tray_status_lock = threading.Lock()
         self._tray_locked = False
         self._tray_locked_lock = threading.Lock()
-        self._disc_type = "None"
+        self._disc_type = "none"
         self._disc_type_lock = threading.Lock()
 
 ###########
@@ -51,8 +52,12 @@ class Drive(metaclass=ABCMeta):
 ###########
 ##GETTERS##
 ###########
+    def get_cfg_name(self):
+        '''returns device config name READ ONLY SO THREAD SAFE'''
+        return self._cfg_name
+
     def get_device(self):
-        '''returns device device READ ONLY SO THREAD SAFE'''
+        '''returns device READ ONLY SO THREAD SAFE'''
         return self._device
 
     def get_thread_run(self):
@@ -149,6 +154,10 @@ class Drive(metaclass=ABCMeta):
         '''waits for the disc info to be found'''
         count = 0
         while self.get_tray_status() != "loaded":
+            if self.get_tray_status() == "reading":
+                self._set_drive_status("loading disc")
+            else:
+                self._set_drive_status("idle")
             if count >= timeout:
                 return False
             if not self._thread_run:
@@ -168,18 +177,23 @@ class Drive(metaclass=ABCMeta):
             while not self._wait_for_disc(timeout=15):
                 if not self._thread_run:
                     return
+            self.lock_tray()
+            self._set_drive_status("checking disc type")
             if self._check_disc_type():
+                if not self._thread_run:
+                    self.unlock_tray()
+                    return
                 if self.get_disc_type() == "audiocd":
-                    print("DISC IS AUDIO CD")
-                    # self._audio_rip()
+                    self._audio_rip()
                 elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                     with self._drive_lock:
                         self._set_drive_status("ripping video disc")
-                        self._video_rip()
-                        self._set_drive_status("idle")
-
-                #END OF LOOP
+                        # self._video_rip()
                 self.open_tray()
+                self._set_tray_status("open")
+                self._set_disc_type("none")
+                self._set_drive_status("idle")
+            self.unlock_tray()
             if not self._thread_run:
                 return
 
