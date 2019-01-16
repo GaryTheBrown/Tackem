@@ -21,17 +21,21 @@ class DriveLinux(Drive):
             if return_value == 1: #no disk in tray
                 self._set_tray_status("empty")
                 self._set_disc_type("none")
+                self._set_drive_status("idle")
             elif return_value == 2: #tray open
                 self._set_tray_status("open")
                 self._set_disc_type("none")
+                self._set_drive_status("idle")
             elif return_value == 3: #reading tray
                 self._set_tray_status("reading")
                 self._set_disc_type("none")
+                self._set_drive_status("loading disc")
             elif return_value == 4: #disk in tray
                 self._set_tray_status("loaded")
             else:
                 self._set_tray_status("unknown")
                 self._set_disc_type("none")
+                self._set_drive_status("ERROR")
 
     def _check_disc_type(self, sleep_time=1.0):
         '''Will return the size of the disc'''

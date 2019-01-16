@@ -154,10 +154,6 @@ class Drive(metaclass=ABCMeta):
         '''waits for the disc info to be found'''
         count = 0
         while self.get_tray_status() != "loaded":
-            if self.get_tray_status() == "reading":
-                self._set_drive_status("loading disc")
-            else:
-                self._set_drive_status("idle")
             if count >= timeout:
                 return False
             if not self._thread_run:
@@ -180,19 +176,17 @@ class Drive(metaclass=ABCMeta):
             self.lock_tray()
             self._set_drive_status("checking disc type")
             if self._check_disc_type():
-                if not self._thread_run:
-                    self.unlock_tray()
-                    return
-                if self.get_disc_type() == "audiocd":
-                    self._audio_rip()
-                elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
-                    with self._drive_lock:
+                with self._drive_lock:
+                    if not self._thread_run:
+                        self.unlock_tray()
+                        return
+                    if self.get_disc_type() == "audiocd":
+                        self._audio_rip()
+                    elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
                         # self._video_rip()
-                self.open_tray()
-                self._set_tray_status("open")
-                self._set_disc_type("none")
-                self._set_drive_status("idle")
+                    self.open_tray()
+                    self.check_tray()
             self.unlock_tray()
             if not self._thread_run:
                 return
