@@ -5,7 +5,7 @@ from libs.html_template import HTMLTEMPLATE
 LAYOUT = {}
 def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
-    cherrypy.tree.mount(Root(key, systems, plugins, config),
+    cherrypy.tree.mount(Root("Sabnzbd", key, systems, plugins, config),
                         config['webui']['baseurl'] + key.replace(" ", "/") + "/",
                         cfg(config))
 

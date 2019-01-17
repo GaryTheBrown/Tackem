@@ -10,7 +10,7 @@ def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
     stylesheet = key.replace(" ", "/") + "/static/style.css"
     root = Root(key, systems, plugins, config, "Ripper", base_stylesheet=stylesheet)
-    root.drives = Drives(key, systems, plugins, config, "Ripper Drives", base_stylesheet=stylesheet)
+    root.drives = Drives("Ripper Drives", key, systems, plugins, config, base_stylesheet=stylesheet)
     cherrypy.tree.mount(root,
                         config['webui']['baseurl'] + key.replace(" ", "/") + "/",
                         cfg(config))

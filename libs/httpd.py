@@ -36,13 +36,13 @@ class Httpd():
         }
         baseurl = self._config['webui']['baseurl']
         if first_run:
-            cherrypy.tree.mount(first_run_root("", self._systems, self._plugins,
-                                               self._config, "Setup System"),
+            cherrypy.tree.mount(first_run_root("", "", self._systems, self._plugins, self._config),
                                 baseurl,
                                 conf_root)
         else:
             if self._config['webui']['enabled']:
-                cherrypy.tree.mount(main_root("", self._systems, self._plugins, self._config),
+                cherrypy.tree.mount(main_root("Setup System", "", self._systems, self._plugins,
+                                              self._config),
                                     baseurl, conf_root)
                 for key in self._systems:
                     #load system webpages into cherrypy

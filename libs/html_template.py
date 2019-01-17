@@ -3,12 +3,12 @@ import libs.html_parts as html_part
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-    def __init__(self, key, systems=None, plugins=None, config=None, name="",
+    def __init__(self, name, key, systems, plugins, config,
                  base_stylesheet=None, base_javascript=None):
         self._key = key
         self._systems = systems
         self._plugins = plugins
-        self._config = config
+        self._global_config = config
         self._name = name
         self._base_stylesheet = base_stylesheet
         self._base_javascript = base_javascript
@@ -18,9 +18,9 @@ class HTMLTEMPLATE():
             split_key = key.split(" ")
             self._plugin = plugins[split_key[0]][split_key[1]]
             if len(split_key) == 2:
-                self._lconfig = config['plugins'][split_key[0]][split_key[1]]
+                self._config = config['plugins'][split_key[0]][split_key[1]]
             elif len(split_key) == 3:
-                self._lconfig = config['plugins'][split_key[0]][split_key[1]][split_key[2]]
+                self._config = config['plugins'][split_key[0]][split_key[1]][split_key[2]]
 
     def _template(self, body, navbar=True, javascript=None, stylesheet=None):
         '''Create The Template Layout'''
@@ -51,7 +51,7 @@ class HTMLTEMPLATE():
                 stylesheet_extra_html += html_part.stylesheet_link(key)
         elif isinstance(stylesheet, str):
             stylesheet_extra_html = html_part.stylesheet_link(stylesheet)
-        baseurl = self._config.get("webui", {}).get("baseurl", "")
+        baseurl = self._global_config.get("webui", {}).get("baseurl", "")
         title = ""
         if self._key is not "":
             if self._name != "":
