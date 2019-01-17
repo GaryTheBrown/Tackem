@@ -151,10 +151,9 @@ def get_hwinfo_linux():
             device_single_list[title] = info
         device_list.append(device_single_list)
     drives = {}
-    for i, hwinfo_item in enumerate(device_list):
-        drive_address = hwinfo_item["device_files"].split(",")[0]
+    for hwinfo_item in device_list:
         temp_list = {}
-        temp_list['label'] = "Drive " + str(i + 1) + " (" + drive_address + ")"
+        temp_list['label'] = hwinfo_item["device_files"].split(",")[0]
         temp_list['link'] = hwinfo_item["device_files"].split(",")[0]
         temp_list['model'] = hwinfo_item["model"].replace('"', "")
         temp_list['features'] = hwinfo_item["features"].replace(" ", "").split(",")
