@@ -268,13 +268,15 @@ class ConfigList:
                         control_html = html_part.checkbox_switch("enabled",
                                                                  variable_name_loop,
                                                                  enabled, script=True)
-
+                    keyconfig = config[key]
                     label = key
-                    if 'label' in for_each[key]:
+                    if 'name' in config[key] and config[key]['name'] != "":
+                        label = keyconfig['name']
+                    elif 'label' in for_each[key]:
                         label = for_each[key]['label']
                     many_html += html_part.panel(label, label, control_html, "",
                                                  variable_name_loop[:-1],
-                                                 obj.get_config_html(config, variable_name_loop,
+                                                 obj.get_config_html(keyconfig, variable_name_loop,
                                                                      key), enabled)
         return many_html
 
