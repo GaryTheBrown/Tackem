@@ -1,7 +1,7 @@
 .drivebox {
     display: inline-block;
     position: relative;
-    width:192px;
+    width:128px;
     background-color: white;
     color:black;
     border: #aaaaaa solid 2px;
@@ -9,9 +9,10 @@
     margin:5px;
 
     .driveimg {
-        padding-top:32px;
-        padding-left:32px;
-        padding-right:32px;
+        padding-top:16.7%;
+        padding-left:16.7%;
+        padding-right:16.7%;
+        width:66.6%;
     }
 
     .drivelock {

@@ -184,7 +184,7 @@ class Drive(metaclass=ABCMeta):
                         self._audio_rip()
                     elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
-                        # self._video_rip()
+                        self._video_rip()
                     self.open_tray()
                     self.check_tray()
             self.unlock_tray()

@@ -5,9 +5,18 @@
 	<div class="info">%%INFO%%</div>
 	<script type="text/javascript">
 		setInterval(function() {
-			$.ajax('single/%%DRIVENUMBER%%/traystatus/', {success: function(result) {$('#drive%%DRIVENUMBER%%').find('.driveimg').attr('src', result);}});
-			$.ajax('single/%%DRIVENUMBER%%/traylock/', {success: function(result) {if(result=="True"){$('#drive%%DRIVENUMBER%%').find('.drivelock').show();}else{$('#drive%%DRIVENUMBER%%').find('.drivelock').hide();}}});
-			$.ajax('single/%%DRIVENUMBER%%/drivestatus/', {success: function(result) {$('#drive%%DRIVENUMBER%%').find('.info').html(result);}});
+			$.ajax('single/%%DRIVENUMBER%%/json/', {
+				dataType: 'json',
+				success: function(result) {
+					$('#drive%%DRIVENUMBER%%').find('.driveimg').attr('src', result.traystatus);
+					if(result.traylock == true){
+						$('#drive%%DRIVENUMBER%%').find('.drivelock').show();
+					}else{
+						$('#drive%%DRIVENUMBER%%').find('.drivelock').hide();
+					}
+					$('#drive%%DRIVENUMBER%%').find('.info').html(result.drivestatus);
+				}
+			})
 		}, 1000);
 	</script>
 </div>
