@@ -28,15 +28,15 @@ class Root(HTMLTEMPLATE):
     def config(self, **kwargs):
         '''Config System'''
         if kwargs:
-            post_config_settings(kwargs, self._config, self._plugins)
+            post_config_settings(kwargs, self._global_config, self._plugins)
             try:
-                self._config.write()
+                self._global_config.write()
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
             RootEvent().set_event("reboot")
             page = str(open("www/html/reboot.html", "r").read())
             return self._template(page, False)
-        index_page = full_config_page(self._config, self._plugins)
+        index_page = full_config_page(self._global_config, self._plugins)
         javascript = "config_javascript"
         return self._template(index_page, javascript=javascript)
 
@@ -51,5 +51,5 @@ class Root(HTMLTEMPLATE):
         if kwargs:
             plugin = kwargs.get("plugin")
             name = kwargs.get("name", "")
-            return get_config_multi_setup(self._plugins, plugin, self._config, name)
+            return get_config_multi_setup(self._plugins, plugin, self._global_config, name)
         return "ERROR YOU SHOULD NOT BE HERE"
