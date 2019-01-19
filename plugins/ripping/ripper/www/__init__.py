@@ -4,13 +4,16 @@ import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from .root import Root
 from .drives import Drives
+from .labeler import Labeler
 
 LAYOUT = {}
 def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
     stylesheet = key.replace(" ", "/") + "/static/style.css"
-    root = Root(key, systems, plugins, config, "Ripper", base_stylesheet=stylesheet)
+    root = Root("Ripper", key, systems, plugins, config, base_stylesheet=stylesheet)
     root.drives = Drives("Ripper Drives", key, systems, plugins, config, base_stylesheet=stylesheet)
+    root.labeler = Labeler("Ripper Labeler", key, systems, plugins, config,
+                           base_stylesheet=stylesheet)
     cherrypy.tree.mount(root,
                         config['webui']['baseurl'] + key.replace(" ", "/") + "/",
                         cfg(config))

@@ -22,8 +22,8 @@ class Video(metaclass=ABCMeta):
         self._disc_info_label = None
         self._disc_info_sha256 = None
         self._disc_rip_info = None
-        self._db_id = None
         self._disc_type = disc_type
+        self._db_id = None
         self._set_drive_status = set_drive_status
 
 ###########
@@ -58,6 +58,13 @@ class Video(metaclass=ABCMeta):
         with self._disc_info_lock:
             sha256 = self._disc_info_sha256
         return sha256
+
+    def get_disc_type(self):
+        '''returns the disc label'''
+        with self._disc_info_lock:
+            disc_type = self._disc_type
+        return disc_type
+
 ##########
 ##CHECKS##
 ##########
@@ -74,7 +81,8 @@ class Video(metaclass=ABCMeta):
         uuid = self.get_disc_info_uuid()
         label = self.get_disc_info_label()
         sha256 = self.get_disc_info_sha256()
-        basic_info = {"uuid":uuid, "label":label, "sha256": sha256}
+        disc_type = self.get_disc_type()
+        basic_info = {"uuid":uuid, "label":label, "sha256": sha256, "disc_type": disc_type}
         self._db_id = self._db.table_has_row(self._thread_name, INFO_DB["name"], basic_info)
         if self._db_id:
             return_data = self._db.select_by_row(self._thread_name, INFO_DB["name"], self._db_id)
@@ -108,6 +116,7 @@ class Video(metaclass=ABCMeta):
                     self._makemkv_backup_from_disc(temp_dir, idx)
         elif self._disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir)
+        self._set_drive_status("idle")
         self._db.update(self._thread_name, INFO_DB["name"], self._db_id, {"ripped":True})
 
     @abstractmethod
@@ -121,8 +130,7 @@ class Video(metaclass=ABCMeta):
     def _send_to_next_system(self):
         '''method to send info to the next step in the process'''
         if self._config['converter']['enabled']:
-            create_converter_row(self._db, self._thread_name, str(self._db_id),
-                                 self.get_disc_info_label(), self._disc_rip_info,
+            create_converter_row(self._db, self._thread_name, self._db_id, self._disc_rip_info,
                                  self._config['videoripping']['torip'])
             self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
                             {"ready_to_convert":True})
@@ -136,18 +144,12 @@ class Video(metaclass=ABCMeta):
 ##########
     def run(self):
         '''script to rip video disc'''
-        print("Get disc unique data:")
         self._set_drive_status("Get disc unique data")
         if not self._check_disc_information():
             return
-        label = self.get_disc_info_label()
-        uuid = self.get_disc_info_uuid()
-        print("check info for:", label, "(", uuid, ")")
         self._set_drive_status("check info for")
         self._check_db_and_api_for_disc_info()
-        print("Rip Disc:", label, "(", uuid, ")")
         self._set_drive_status("Ripping Disc")
         self._call_makemkv_backup()
-        print("Rip Disc Finished:", label, "(", uuid, ")")
         if self._disc_rip_info:
             self._send_to_next_system()

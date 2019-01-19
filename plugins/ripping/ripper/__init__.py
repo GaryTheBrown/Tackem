@@ -17,6 +17,7 @@ from . import www
 from .data import db_tables
 from .data.events import RipperEvents
 from .drive_linux import DriveLinux, get_hwinfo_linux
+from .labeler import Labeler
 from .converter import Converter
 from .renamer import Renamer
 
@@ -201,7 +202,7 @@ class Plugin(PluginBaseClass):
     def __init__(self, plugin_link, name, config, root_config, db):
         super().__init__(plugin_link, name, config, root_config, db)
         self._drives = []
-        self._events = RipperEvents()
+        self._labeler = Labeler(db, config)
         self._converter = None
         self._renamer = None
 
@@ -254,13 +255,17 @@ class Plugin(PluginBaseClass):
             drive.unlock_tray()
             drive.stop_thread()
         if self._converter is not None:
-            self._events.converter.set()
+            RipperEvents().converter.set()
             self._converter.stop_thread()
         if self._renamer is not None:
-            self._events.renamer.set()
+            RipperEvents().renamer.set()
             self._renamer.stop_thread()
         self._running = False
 
     def get_drives(self):
         '''gets the drives'''
         return self._drives
+
+    def get_labeler(self):
+        '''returns the labeler system'''
+        return self._labeler

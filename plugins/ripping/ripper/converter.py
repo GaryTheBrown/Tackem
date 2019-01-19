@@ -1,6 +1,7 @@
 '''Master Section for the Converter controller'''
 import threading
 import time
+import json
 from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
 from .converter_thread import ConverterThread
 from .data.events import RipperEvents
@@ -77,16 +78,17 @@ class Converter():
             RipperEvents().converter.wait()
             time.sleep(1.0)
 
-def create_converter_row(sql, thread_name, uuid, folder, disc_rip_info, to_rip):
+def create_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
     '''Function to add tracks to Convertor DB'''
-    track_name = folder + "/" + "t"
+    track_name = str(info_id) + "/" + "t"
+    disc_info = json.dumps(disc_rip_info.make_dict(no_tracks=True))
     for i, track in enumerate(disc_rip_info.tracks()):
         if track.video_type() in to_rip:
             file_name = track_name + str(i).zfill(2) + ".mkv"
             to_save = {
-                "disc_uuid":uuid,
+                "info_id":info_id,
                 "filename":file_name,
-                "disc_info":disc_rip_info.make_dict(no_tracks=True),
-                "rip_data":track.__dict__
+                "disc_info":disc_info,
+                "rip_data":json.dumps(track.__dict__)
             }
             sql.insert(thread_name, CONVERT_DB["name"], to_save)

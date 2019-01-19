@@ -2,6 +2,7 @@
 from abc import ABCMeta, abstractmethod
 import threading
 import time
+import json
 
 class Drive(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
@@ -185,8 +186,11 @@ class Drive(metaclass=ABCMeta):
                     elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
                         self._video_rip()
-                    self.open_tray()
-                    self.check_tray()
+                if not self._thread_run:
+                    self.unlock_tray()
+                    return
+                self.open_tray()
+                self.check_tray()
             self.unlock_tray()
             if not self._thread_run:
                 return
@@ -200,3 +204,33 @@ class Drive(metaclass=ABCMeta):
     def _video_rip(self):
         '''script to rip video disc'''
         pass
+
+##############
+##HTML STUFF##
+##############
+    def html_data(self, return_json=True):
+        '''returns the data as json or dict for html'''
+        return_dict = {}
+        image_folder = "/ripping/ripper/static/images/"
+        tray_status = self.get_tray_status()
+        if tray_status == "empty":
+            return_dict["traystatus"] = image_folder + "empty.png"
+        elif tray_status == "open":
+            return_dict["traystatus"] = image_folder + "open.png"
+        elif tray_status == "reading":
+            return_dict["traystatus"] = image_folder + "reading.gif"
+        elif tray_status == "loaded":
+            disc_type = self.get_disc_type()
+            if disc_type == "none":
+                return_dict["traystatus"] = image_folder + "reading.gif"
+            elif disc_type == "audiocd":
+                return_dict["traystatus"] = image_folder + "audiocd.png"
+            elif disc_type == "dvd":
+                return_dict["traystatus"] = image_folder + "dvd.png"
+            elif disc_type == "bluray":
+                return_dict["traystatus"] = image_folder + "bluray.png"
+        return_dict["drivestatus"] = self.get_drive_status()
+        return_dict["traylock"] = self.get_tray_locked()
+        if return_json:
+            return json.dumps(return_dict)
+        return return_dict

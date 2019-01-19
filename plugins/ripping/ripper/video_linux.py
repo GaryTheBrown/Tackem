@@ -32,6 +32,8 @@ class VideoLinux(Video):
         sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
         dd_process.wait()
         sha256sum_process.wait()
+        if sha256sum_process.returncode > 0:
+            return False
         self._set_disc_info(uuid, label, sha256)
         return True
 
