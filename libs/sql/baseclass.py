@@ -58,26 +58,15 @@ class MysqlBaseClass(metaclass=ABCMeta):
         '''Check if the Table has row by looking for all the queries'''
         queries = []
         for key in dict_of_queries:
-            query = key + "="
-            if isinstance(dict_of_queries[key], int):
-                query += str(dict_of_queries[key])
-            elif isinstance(dict_of_queries[key], bool):
-                if dict_of_queries[key]:
-                    query += '"True"'
-                else:
-                    query += '"False"'
-            else:
-                query += '"' + dict_of_queries[key] + '"'
-            queries.append(query)
+            queries.append(key + " = " + self._convert_var(dict_of_queries[key]))
 
         command = "SELECT id FROM " + table_name
         command += " WHERE " + " AND ".join(queries) + ";"
         return_value = self._call(SQLMessage(system_name, command=command, return_data=[]))
         if return_value:
-            if isinstance(return_value, list):
-                if isinstance(return_value[0], tuple):
-                    if len(return_value[0]) == 1:
-                        return return_value[0][0]
+            if isinstance(return_value, list) and len(return_value) == 1:
+                if isinstance(return_value[0], dict):
+                    return return_value[0]['id']
         return 0
 
     def insert(self, system_name, table_name, dict_of_values):
@@ -86,21 +75,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command = "INSERT INTO " + table_name + " (" + ", ".join(keys) + ") VALUES ("
         values = []
         for key in dict_of_values:
-            temp_value = ""
-            if isinstance(dict_of_values[key], int):
-                temp_value = str(dict_of_values[key])
-            elif isinstance(dict_of_values[key], str):
-                temp_value = "'" + dict_of_values[key] + "'"
-            elif dict_of_values[key] is None:
-                temp_value = "NULL"
-            elif isinstance(dict_of_values[key], bool):
-                if dict_of_values[key]:
-                    temp_value += '"True"'
-                else:
-                    temp_value += '"False"'
-            elif isinstance(dict_of_values[key], (dict, list)):
-                temp_value = "'" + json.dumps(dict_of_values[key], ensure_ascii=False) + "'"
-            values.append(temp_value)
+            values.append(self._convert_var(dict_of_values[key]))
         command += ", " .join(values) + ");"
         return self._call(SQLMessage(system_name, command=command))
 
@@ -114,22 +89,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command = "SELECT " + returns + " FROM " + table_name + " WHERE "
         values = []
         for key in dict_of_values:
-            temp_value = ""
-            if isinstance(dict_of_values[key], bool):
-                if dict_of_values[key]:
-                    temp_value += '"True"'
-                else:
-                    temp_value += '"False"'
-            elif isinstance(dict_of_values[key], int):
-                temp_value = str(dict_of_values[key])
-            elif isinstance(dict_of_values[key], str):
-                temp_value = "'" + dict_of_values[key] + "'"
-            elif dict_of_values[key] is None:
-                temp_value = "NULL"
-
-            elif isinstance(dict_of_values[key], dict):
-                temp_value = '"' + json.dumps(dict_of_values[key], ensure_ascii=False) + '"'
-            values.append(key + "=" + temp_value)
+            values.append(key + " = " + self._convert_var(dict_of_values[key]))
         command += " AND " .join(values) + ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
@@ -148,21 +108,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command = "UPDATE " + table_name + " SET "
         values = []
         for key in dict_of_values:
-            temp_value = ""
-            if isinstance(dict_of_values[key], int):
-                temp_value = str(dict_of_values[key])
-            elif isinstance(dict_of_values[key], str):
-                temp_value = "'" + dict_of_values[key] + "'"
-            elif dict_of_values[key] is None:
-                temp_value = "NULL"
-            elif isinstance(dict_of_values[key], bool):
-                if dict_of_values[key]:
-                    temp_value += '"True"'
-                else:
-                    temp_value += '"False"'
-            elif isinstance(dict_of_values[key], dict):
-                temp_value = '"' + json.dumps(dict_of_values[key], ensure_ascii=False) + '"'
-            values.append(key + "=" + temp_value)
+            values.append(key + " = " + self._convert_var(dict_of_values[key]))
         command += ", " .join(values) + " WHERE id=" + str(row_id) + ";"
         return self._call(SQLMessage(system_name, command=command))
 
@@ -172,10 +118,26 @@ class MysqlBaseClass(metaclass=ABCMeta):
             self._event_list.append(job)
         self._event_lock.set()
         job.event_wait()
-        if isinstance(job.return_data(), list):
+        if isinstance(job.return_data(), (list, dict)):
             return job.return_data()
         return True
 
+    def _convert_var(self, var):
+        '''convert the value'''
+        if isinstance(var, bool):
+            if var:
+                return '"True"'
+            else:
+                return '"False"'
+        elif isinstance(var, int):
+            return str(var)
+        elif isinstance(var, str):
+            return "'" + var + "'"
+        elif var is None:
+            return "NULL"
+
+        elif isinstance(var, dict):
+            return '"' + json.dumps(var, ensure_ascii=False) + '"'
 ##########
 ##THREAD##
 ##########
