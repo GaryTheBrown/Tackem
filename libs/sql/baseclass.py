@@ -94,13 +94,13 @@ class MysqlBaseClass(metaclass=ABCMeta):
         return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
 
-    def count_table(self, system_name, table_name):
+    def count(self, system_name, table_name):
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[],
                                      return_dict=False))[0][0]
 
-    def count_table_where(self, system_name, table_name, dict_of_values):
+    def count_where(self, system_name, table_name, dict_of_values):
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + " WHERE "
         values = []
