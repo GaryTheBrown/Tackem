@@ -23,7 +23,7 @@ class SqlLite(MysqlBaseClass):
     def _check_version_table_exists(self):
         '''returns if the table_version exists'''
         command = "SELECT name FROM sqlite_master WHERE type='table' AND name='table_version';"
-        return bool(self._trusted_get(command))
+        return bool(self._trusted_get(command, False))
 
     def _trusted_call(self, call):
         '''Trusted Calls can send the command in a string to here for execution'''
@@ -31,21 +31,23 @@ class SqlLite(MysqlBaseClass):
         self._sql.execute(call)
         self._conn.commit()
 
-    def _trusted_get(self, call):
+    def _trusted_get(self, call, return_dict=True):
         '''Grab a list of the tables'''
         self._conn.commit()
         self._sql.execute(call)
         self._conn.commit()
 
         return_data = self._sql.fetchall()
-        col_name_list = [tuple[0] for tuple in self._sql.description]
-        full_return_data = []
-        for row in return_data:
-            return_dict = {}
-            for count, key in enumerate(col_name_list):
-                return_dict[key] = row[count]
-            full_return_data.append(return_dict)
-        return full_return_data
+        if return_dict:
+            col_name_list = [tuple[0] for tuple in self._sql.description]
+            full_return_data = []
+            for row in return_data:
+                return_dict = {}
+                for count, key in enumerate(col_name_list):
+                    return_dict[key] = row[count]
+                full_return_data.append(return_dict)
+            return full_return_data
+        return return_data
 
     def _update_table(self, table_name, data, version):
         '''Update the table with the informaiton provided'''
@@ -59,9 +61,9 @@ class SqlLite(MysqlBaseClass):
 
         #move Data across to new table
         command_get_old_table_columns = "PRAGMA table_info(" + table_name + "_old);"
-        returned_data_temp_old = self._trusted_get(command_get_old_table_columns)
+        returned_data_temp_old = self._trusted_get(command_get_old_table_columns, False)
         command_get_new_table_columns = "PRAGMA table_info(" + table_name + ");"
-        returned_data_temp_new = self._trusted_get(command_get_new_table_columns)
+        returned_data_temp_new = self._trusted_get(command_get_new_table_columns, False)
 
         links = {}
         for new_column in returned_data_temp_new:
@@ -84,7 +86,7 @@ class SqlLite(MysqlBaseClass):
         insert = "INSERT INTO " + table_name + " (" + ", ".join(list(links.keys())) + ") VALUES "
 
         command_select_all_from_table = "SELECT * FROM " + table_name + "_old;"
-        rows = self._trusted_get(command_select_all_from_table)
+        rows = self._trusted_get(command_select_all_from_table, False)
         for row in rows:
             values = []
             for key in links:

@@ -93,6 +93,23 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command += " AND " .join(values) + ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
+
+    def count_table(self, system_name, table_name):
+        '''select data from a table'''
+        command = "SELECT COUNT(*) FROM " + table_name + ";"
+        return self._call(SQLMessage(system_name, command=command, return_data=[],
+                                     return_dict=False))[0][0]
+
+    def count_table_where(self, system_name, table_name, dict_of_values):
+        '''select data from a table'''
+        command = "SELECT COUNT(*) FROM " + table_name + " WHERE "
+        values = []
+        for key in dict_of_values:
+            values.append(key + " = " + self._convert_var(dict_of_values[key]))
+        command += " AND " .join(values) + ";"
+        return self._call(SQLMessage(system_name, command=command, return_data=[],
+                                     return_dict=False))[0][0]
+
     def select_by_row(self, system_name, table_name, row_id, list_of_returns=None):
         '''insert data into a table'''
         returns = "*"
@@ -135,9 +152,9 @@ class MysqlBaseClass(metaclass=ABCMeta):
             return "'" + var + "'"
         elif var is None:
             return "NULL"
-
         elif isinstance(var, dict):
             return '"' + json.dumps(var, ensure_ascii=False) + '"'
+
 ##########
 ##THREAD##
 ##########
@@ -160,7 +177,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
                     else: #None Special command just simple command
                         #Means command is simple command with or without return
                         if isinstance(job.return_data(), list):
-                            job.set_return_data(self._trusted_get(job.command()))
+                            job.set_return_data(self._trusted_get(job.command(), job.return_dict()))
                         else:
                             self._trusted_call(job.command())
 
@@ -194,7 +211,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _trusted_get(self, call):
+    def _trusted_get(self, call, return_dict=True):
         '''Grab a list of the tables'''
         pass
 

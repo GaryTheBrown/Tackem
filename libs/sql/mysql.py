@@ -24,13 +24,13 @@ class MySql(MysqlBaseClass):
         '''returns if the table_version exists'''
         command = 'SELECT * FROM Tackem'
         command += '.INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = "table_version"'
-        return bool(self._trusted_get(command))
+        return bool(self._trusted_get(command, False))
 
     def _trusted_call(self, call):
         '''Trusted Calls can send the command in a string to here for execution'''
         pass
 
-    def _trusted_get(self, call):
+    def _trusted_get(self, call, return_dict):
         '''Grab a list of the tables'''
         pass
 

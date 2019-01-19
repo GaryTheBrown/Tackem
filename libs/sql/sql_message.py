@@ -4,7 +4,7 @@ import threading
 class SQLMessage:
     '''Struct to hold the message for easier reading in here'''
     def __init__(self, system_name, special_command=None, command=None, table_name=None,
-                 return_data=None, data=None, version=None):
+                 return_data=None, data=None, version=None, return_dict=True):
         self._lock = threading.Lock()
         self._event_lock = threading.Event()
         #INPUTS
@@ -15,6 +15,7 @@ class SQLMessage:
         self._return_data = return_data
         self._data = data
         self._version = version
+        self._return_dict = return_dict
         #OUTPUTS
         self._return_data = return_data #area to store any data to return from the data class
 
@@ -49,6 +50,11 @@ class SQLMessage:
         '''Return version'''
         with self._lock:
             return self._version
+
+    def return_dict(self):
+        '''Return if return should be dict'''
+        with self._lock:
+            return self._return_dict
 
     def return_data(self):
         '''Return return data'''
