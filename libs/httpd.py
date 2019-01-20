@@ -34,7 +34,7 @@ class Httpd():
                 'tools.response_headers.headers': [('Content-Type', 'text/plain')]
             }
         }
-        baseurl = self._config['webui']['baseurl']
+        baseurl = self._config.get("webui", {}).get("baseurl", "/")
         if first_run:
             cherrypy.tree.mount(first_run_root("", "", self._systems, self._plugins, self._config),
                                 baseurl,

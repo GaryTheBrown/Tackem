@@ -223,12 +223,13 @@ class Plugin(PluginBaseClass):
 
     def startup(self):
         '''Ripper Startup Script'''
+        baseurl = self._root_config.get("webui", {}).get("baseurl", "/")
         if platform.system() == 'Linux':
             for drive in DRIVES:
                 if drive in self._config['drives']:
                     if self._config['drives'][drive]["enabled"]:
                         self._drives.append(DriveLinux(drive, DRIVES[drive],
-                                                       self._config, self._db))
+                                                       self._config, baseurl, self._db))
 
         #Check if Devices Exist and if not it will stop the plugin from loading
         if not self._drives:

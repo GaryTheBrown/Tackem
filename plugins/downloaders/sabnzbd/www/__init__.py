@@ -6,7 +6,7 @@ LAYOUT = {}
 def mounts(key, systems, plugins, config):
     '''where the system creates the cherrypy mounts'''
     cherrypy.tree.mount(Root("Sabnzbd", key, systems, plugins, config),
-                        config['webui']['baseurl'] + key.replace(" ", "/") + "/",
+                        config.get("webui", {}).get("baseurl", "/") + key.replace(" ", "/") + "/",
                         cfg(config))
 
 def cfg(config):
