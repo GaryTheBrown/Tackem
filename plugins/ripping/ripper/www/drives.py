@@ -8,7 +8,7 @@ class Drives(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self):
         '''index of Drives'''
-        index_html = html_parts.get_page("drives")
+        index_html = html_parts.get_page("drives/index", self._system)
         index_html = index_html.replace("%%DRIVES%%",
                                         html_parts.drives(self._system.get_drives(),
                                                           self._config['drives']))
@@ -16,7 +16,7 @@ class Drives(HTMLTEMPLATE):
 
     @cherrypy.expose
     def single(self, index=None):
-        '''index of Drives'''
+        '''get single Drive'''
         if index is None:
             return "FAILED No Index"
         try:

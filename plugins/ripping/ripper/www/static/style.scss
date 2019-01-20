@@ -21,3 +21,19 @@
         right:5px;
     }
 }
+
+.labeleritemvertical{
+
+    .typeimg{
+        height:4em;
+    }
+}
+
+.labeleritem{
+    width:256px;
+    display:inline-block;
+    position:relative;
+    .typeimg{
+        height:100%;
+    }
+}

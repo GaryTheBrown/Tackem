@@ -14,14 +14,30 @@ class Labeler():
 ##############
 ##HTML STUFF##
 ##############
-    def get_data(self, thread_name):
-        '''returns the data as json or dict for html'''
+
+    def get_count(self, thread_name):
+        '''returns the data as dict for html'''
         dict_of_values = {"ripped":True, "ready_to_convert":False, "ready_to_rename":False}
-        return self._db.select(thread_name, INFO_DB["name"], dict_of_values)
+        return self._db.count_where(thread_name, INFO_DB["name"], dict_of_values)
+
+    def get_ids(self, thread_name):
+        '''returns the data as dict for html'''
+        dict_of_values = {"ripped":True, "ready_to_convert":False, "ready_to_rename":False}
+        return_values = ["id"]
+        return_data = self._db.select(thread_name, INFO_DB["name"], dict_of_values, return_values)
+        return [item['id'] for item in return_data]
+
+    def get_data(self, thread_name):
+        '''returns the data as dict for html'''
+        dict_of_values = {"ripped":True, "ready_to_convert":False, "ready_to_rename":False}
+        return_values = ["id", "uuid", "label", "disc_type", "rip_data"]
+        return self._db.select(thread_name, INFO_DB["name"], dict_of_values, return_values)
 
     def get_data_by_id(self, thread_name, db_id):
-        '''returns the data as json or dict for html'''
+        '''returns the data by id as dict for html'''
         data = self._db.select_by_row(thread_name, INFO_DB["name"], db_id)
+        if data is False:
+            return False
         if data["ripped"] is False:
             return False
         if data["ready_to_convert"] is True:

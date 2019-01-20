@@ -1,5 +1,6 @@
 body {
     background-color: black;
+
 }
 
 /* FOOTER */
@@ -113,7 +114,13 @@ footer {
     }
 }
 
-
+a {
+    text-decoration: none !important;
+}
+.row{
+    margin-left:0 !important;
+    margin-right:0 !important;
+}
 .w45, .toggle.btn {
     min-width: 45px !important;
     width: 45px !important;

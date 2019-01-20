@@ -23,4 +23,18 @@
   top: 5px;
   right: 5px;
 }
+
+.labeleritemvertical .typeimg {
+  height: 4em;
+}
+
+.labeleritem {
+  width: 256px;
+  display: inline-block;
+  position: relative;
+}
+
+.labeleritem .typeimg {
+  height: 100%;
+}
 /*# sourceMappingURL=style.css.map */
