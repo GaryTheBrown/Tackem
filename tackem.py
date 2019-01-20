@@ -141,6 +141,7 @@ class Tackem:
                 Tackem.webserver.start()
 
             Tackem.started = True
+            print("Tackem has started")
 
 
     def shutdown(self):
