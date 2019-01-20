@@ -18,13 +18,13 @@ class Drives(HTMLTEMPLATE):
     def single(self, index=None):
         '''get single Drive'''
         if index is None:
-            return "FAILED No Index"
+            return self._redirect(self._baseurl + "ripping/ripper/drives/")
         try:
             index_int = int(index)
         except ValueError:
-            return "Failed Not an Index"
+            return self._redirect(self._baseurl + "ripping/ripper/drives/")
         drives = self._system.get_drives()
         if index_int > len(drives):
-            return "Failed Index Out Of Range"
+            return self._redirect(self._baseurl + "ripping/ripper/drives/")
         drive = self._system.get_drives()[index_int]
         return drive.html_data()

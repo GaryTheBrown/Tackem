@@ -12,6 +12,7 @@ class HTMLTEMPLATE():
         self._name = name
         self._base_stylesheet = base_stylesheet
         self._base_javascript = base_javascript
+        self._baseurl = self._global_config.get("webui", {}).get("baseurl", "/")
 
         if key != "":
             self._system = systems[key]
@@ -104,3 +105,7 @@ class HTMLTEMPLATE():
                         layer2 += html_part.navbar_dropdown_right(key2, key + key2, layer3)
                 nav_items_html += html_part.navbar_dropdown(key, key, layer2)
         return html_part.navbar_master(nav_items_html)
+
+    def _redirect(self, url):
+        '''redirects to different page'''
+        return str(open("www/html/redirect.html", "r").read()).replace("%%URL%%", url)
