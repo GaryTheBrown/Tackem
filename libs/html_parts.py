@@ -64,11 +64,11 @@ def root_config_page(sections):
 ##########
 #SECTIONS#
 ##########
-def form(return_url, hidden, button_label, page):
+def form(return_url, hidden_html, button_label, page):
     '''A form with return url, hidden section customizable button label'''
     form_html = str(open("www/html/sections/form.html", "r").read())
     form_html = form_html.replace("%%RETURNURL%%", return_url)
-    form_html = form_html.replace("%%HIDDEN%%", hidden)
+    form_html = form_html.replace("%%HIDDEN%%", hidden_html)
     form_html = form_html.replace("%%BUTTONLABEL%%", button_label)
     return form_html.replace("%%PAGE%%", page)
 
