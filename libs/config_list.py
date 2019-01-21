@@ -227,12 +227,12 @@ class ConfigList:
                     elif isinstance(obj.rules(), ConfigRules) and obj.rules().many():
                         many_html = self._many_section(obj, temp_config, variable_name_loop)
 
-                        return_html += html_part.panel(obj.name(), obj.label(), "", "",
+                        return_html += html_part.panel(obj.label(), "", "",
                                                        variable_name_loop[:-1],
                                                        many_html,
                                                        True)
                     else:
-                        return_html += html_part.panel(obj.name(), obj.label(), control_html, "",
+                        return_html += html_part.panel(obj.label(), control_html, "",
                                                        variable_name_loop[:-1],
                                                        obj.get_config_html(temp_config,
                                                                            variable_name_loop),
@@ -254,7 +254,7 @@ class ConfigList:
                                                                  variable_name_loop,
                                                                  enabled, script=True)
 
-                    many_html += html_part.panel(item, item, control_html, "",
+                    many_html += html_part.panel(item, control_html, "",
                                                  variable_name_loop[:-1],
                                                  obj.get_config_html(config,
                                                                      variable_name_loop),
@@ -274,7 +274,7 @@ class ConfigList:
                         label = keyconfig['name']
                     elif 'label' in for_each[key]:
                         label = for_each[key]['label']
-                    many_html += html_part.panel(label, label, control_html, "",
+                    many_html += html_part.panel(label, control_html, "",
                                                  variable_name_loop[:-1],
                                                  obj.get_config_html(keyconfig, variable_name_loop,
                                                                      key), enabled)

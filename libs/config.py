@@ -185,7 +185,7 @@ def _single_plugin_config_page(plugin_name, plugin, config, variable_name):
                                                  variable_name,
                                                  section_enabled, script=True)
     plugin_html = plugin.CONFIG.get_config_html(config, variable_name)
-    return html_part.panel(plugin_name, plugin_name, control_html, "", variable_name[:-1],
+    return html_part.panel(plugin_name, control_html, "", variable_name[:-1],
                            plugin_html, section_enabled)
 
 def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
@@ -208,7 +208,7 @@ def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
         for name in config:
             plugin_html = multi_plugin_config_section(plugin, config, variable_name[:-1], name)
 
-    return html_part.panel(plugin_name, plugin_name, control_html, modal, variable_name[:-1],
+    return html_part.panel(plugin_name, control_html, modal, variable_name[:-1],
                            plugin_html, section_enabled)
 
 def multi_plugin_config_section(plugin, config, variable_name, name):

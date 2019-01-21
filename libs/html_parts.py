@@ -111,14 +111,19 @@ def multi_panel(variable_name, name, enable_option, delete_option, section_html,
         return multi_panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return multi_panel_html.replace("%%SECTIONHIDE%%", "")
 
-def panel(name, title, control, modal, variable_name, section_html, section_visible):
+def panel(title, control, modal, variable_name, section_html, section_visible):
     '''A Panel for plugins or sections'''
     panel_html = str(open("www/html/sections/panel.html", "r").read())
-    panel_html = panel_html.replace("%%NAME%%", name)
     panel_html = panel_html.replace("%%TITLE%%", title)
-    panel_html = panel_html.replace("%%CONTROL%%", control)
+    if control == "":
+        panel_html = panel_html.replace("<div>%%CONTROL%%</div>", "")
+    else:
+        panel_html = panel_html.replace("%%CONTROL%%", control)
     panel_html = panel_html.replace("%%MODAL%%", modal)
-    panel_html = panel_html.replace("%%VARIABLENAME%%", variable_name)
+    if variable_name == "":
+        panel_html = panel_html.replace('id="%%VARIABLENAME%%_section"', variable_name)
+    else:
+        panel_html = panel_html.replace("%%VARIABLENAME%%", variable_name)
     panel_html = panel_html.replace("%%SECTION%%", section_html)
     if not section_visible:
         return panel_html.replace("%%SECTIONHIDE%%", 'style="display:none"')
@@ -275,6 +280,12 @@ def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only
     checkbox_switch_html = checkbox_switch_html.replace("%%SCRIPT%%", script)
     checkbox_switch_html = checkbox_switch_html.replace("%%VARIABLENAME%%", variable_name + name)
     return checkbox_switch_html
+
+def hidden(name, value):
+    '''A hidden field for the page index'''
+    hidden_html = str(open("www/html/inputs/hidden.html", "r").read())
+    hidden_html = hidden_html.replace("%%NAME%%", name)
+    return hidden_html.replace("%%VALUE%%", value)
 
 def hidden_page_index(page_index):
     '''A hidden field for the page index'''
