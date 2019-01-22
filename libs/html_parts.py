@@ -281,11 +281,14 @@ def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only
     checkbox_switch_html = checkbox_switch_html.replace("%%VARIABLENAME%%", variable_name + name)
     return checkbox_switch_html
 
-def hidden(name, value):
+def hidden(name, value, not_in_config=False):
     '''A hidden field for the page index'''
     hidden_html = str(open("www/html/inputs/hidden.html", "r").read())
     hidden_html = hidden_html.replace("%%NAME%%", name)
-    return hidden_html.replace("%%VALUE%%", value)
+    hidden_html = hidden_html.replace("%%VALUE%%", value)
+    if not_in_config:
+        hidden_html = hidden_html.replace("cs_", "")
+    return hidden_html
 
 def hidden_page_index(page_index):
     '''A hidden field for the page index'''
