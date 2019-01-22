@@ -24,17 +24,21 @@
   right: 5px;
 }
 
-.labeleritemvertical .typeimg {
+.labeler_itemvertical .typeimg {
   height: 4em;
 }
 
-.labeleritem {
+.labeler_item {
   width: 256px;
   display: inline-block;
   position: relative;
 }
 
-.labeleritem .typeimg {
+.labeler_item .typeimg {
   height: 100%;
+}
+
+.disctypesection .fas {
+  font-size: 500%;
 }
 /*# sourceMappingURL=style.css.map */

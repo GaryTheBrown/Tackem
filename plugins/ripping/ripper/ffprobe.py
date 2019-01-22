@@ -70,3 +70,7 @@ class FFprobe:
                 if stream["codec_type"] == 'subtitle':
                     subtitles.append(stream)
         return subtitles
+
+    def get_format_info(self):
+        '''returns the format information'''
+        return self._info['format']

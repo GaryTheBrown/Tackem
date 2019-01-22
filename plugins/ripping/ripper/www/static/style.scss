@@ -22,18 +22,24 @@
     }
 }
 
-.labeleritemvertical{
+.labeler_itemvertical{
 
     .typeimg{
         height:4em;
     }
 }
 
-.labeleritem{
+.labeler_item{
     width:256px;
     display:inline-block;
     position:relative;
     .typeimg{
         height:100%;
+    }
+}
+
+.disctypesection {
+    .fas{
+        font-size: 500%;
     }
 }

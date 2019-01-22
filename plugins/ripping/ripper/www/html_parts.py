@@ -1,7 +1,10 @@
 '''drives pages'''
 import os
+import json
+import datetime
 import cherrypy
-
+from libs import html_parts
+from ..data import disc_type
 DIR = os.path.dirname(__file__) + "/html/"
 
 def get_page(page, system=None):
@@ -52,7 +55,7 @@ def drives(drive_list, config_drives, vertical=False):
         drives_html += drive(drive_obj, drive_index, config_drives[cfg_name]['name'], vertical)
     return drives_html
 
-def labeleritem(data, baseurl, vertical=False):
+def labeler_item(data, baseurl, vertical=False):
     '''return html for labeler item'''
     if vertical:
         item_html = str(open(DIR + 'labeler/itemvertical.html', "r").read())
@@ -63,20 +66,86 @@ def labeleritem(data, baseurl, vertical=False):
     if data['rip_data'] is None:
         info = "NEW"
         label = data['label']
+    else:
+        rip_data = disc_type.make_disc_type(json.loads(data['rip_data']))
+        info = rip_data.info()
+        label = rip_data.name()
     item_html = item_html.replace("%%ITEMID%%", str(data['id']))
     item_html = item_html.replace("%%IMAGE%%", disc_type_img)
     item_html = item_html.replace("%%LABEL%%", label)
     item_html = item_html.replace("%%INFO%%", info)
     return item_html
 
-def labeleritems(data, baseurl, vertical=False):
+def labeler_items(data, baseurl, vertical=False):
     '''returns the group of labeler items html'''
     group_html = str(open(DIR + 'labeler/group.html', "r").read())
     data_html = ""
     for item in data:
-        data_html += labeleritem(item, baseurl, vertical)
+        data_html += labeler_item(item, baseurl, vertical)
     if vertical:
         group_html = group_html.replace("%%LAYOUT%%", "true/")
     else:
-        group_html = group_html.replace(" + '%%LAYOUT%%'", "")
+        group_html = group_html.replace("%%LAYOUT%%", "")
     return group_html.replace("%%ITEMS%%", data_html)
+
+def labeler_disctype_start():
+    '''labeler disc type starting section'''
+    disc_type_html = get_page("labeler/edit/disctype/start")
+    if len(disc_type.TYPES) < 5:
+        magic = 3
+    item_html = ""
+    for item in disc_type.TYPES:
+        item_html += labeler_disctype_start_item(item, disc_type.TYPES[item], magic)
+    return disc_type_html.replace("%%STARTLINKS%%", item_html)
+
+def labeler_disctype_start_item(item, icon, magic):
+    '''labeler disc type starting section'''
+    disc_type_html = get_page("labeler/edit/disctype/startitem")
+    disc_type_html = disc_type_html.replace("%%STARTSIZE%%", str(magic))
+    disc_type_html = disc_type_html.replace("%%STARTICON%%", icon)
+    disc_type_html = disc_type_html.replace("%%STARTTYPE%%", item)
+    return disc_type_html
+
+def labeler_disctype_template(label, disc_type_label, rip_data):
+    '''labeler disc type templated section'''
+    disc_type_html = get_page("labeler/edit/disctype/template")
+    disc_type_html = disc_type_html.replace("%%DISCTYPE%%", disc_type_label)
+    disc_type_html = disc_type_html.replace("%%DISCLABEL%%", label)
+    disc_type_html = disc_type_html.replace("%%PANEL%%", rip_data.get_edit_panel())
+    return disc_type_html
+
+def labeler_tracktype_section(disc_index, track_index, probe_info):
+    '''labeler disc type templated section'''
+    stream_counts = probe_info.stream_type_count()
+    format_info = probe_info.get_format_info()
+    length = str(datetime.timedelta(seconds=int(format_info["duration"].split(".")[0])))
+    video_url = "/".join(cherrypy.url().split("/")[:-3]) + "/tempvideo/"
+    video_url += str(disc_index) + "/" + str(track_index).zfill(2) + ".mkv"
+    if 'audio' in stream_counts:
+        audio_count = str(stream_counts['audio'])
+    else:
+        audio_count = "0"
+    if 'subtitle' in stream_counts:
+        subtitle_count = str(stream_counts['subtitle'])
+    else:
+        subtitle_count = "0"
+    if probe_info.has_chapters():
+        has_chapters = "Yes"
+    else:
+        has_chapters = "No"
+
+    panel_name_html = get_page("labeler/edit/tracktype/panelname")
+    panel_name_html = panel_name_html.replace("%%TRACK_INDEX%%", str(track_index))
+    panel_name_html = panel_name_html.replace("%%TRACKLENGTH%%", length)
+    panel_name_html = panel_name_html.replace("%%TRACKURL%%", video_url)
+    panel_name_html = panel_name_html.replace("%%AUDIOCOUNT%%", audio_count)
+    panel_name_html = panel_name_html.replace("%%SUBTITLECOUNT%%", subtitle_count)
+    panel_name_html = panel_name_html.replace("%%HASCHAPTERS%%", has_chapters)
+
+    section_html = ""
+
+    return html_parts.panel(panel_name_html, "", "", "", section_html, True)
+
+    # section_html = get_page("labeler/edit/tracktype/section")
+    # section_html = section_html.replace("%%DISCID%%", str(disc_index))
+    # section_html = section_html.replace("%%TRACKID%%", str(track_index).zfill(2))

@@ -5,8 +5,8 @@
 			dataType: 'json',
 			success: function(result) {
 				for (id in result){
-					if ($('#labeleritem' + result[id]).length == 0){
-						$.ajax('%%BASEURL%%ripping/ripper/labeler/single/' + result[id] + '/' + '%%LAYOUT%%', {
+					if ($('#labeler_item' + result[id]).length == 0){
+						$.ajax('%%BASEURL%%ripping/ripper/labeler/single/' + result[id] + '/%%LAYOUT%%', {
 							success: function(newitem) {
 								$('#labelergroup').append(newitem);
 							}

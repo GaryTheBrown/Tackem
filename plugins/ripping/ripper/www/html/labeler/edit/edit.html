@@ -1,0 +1,28 @@
+%%NAVBAR%%
+<form action="%%BASEURL%%ripping/ripper/labeler/editsave/" method="post">
+	<input type="hidden" name="discid" value="%%DISCID%%">
+	<div id="disctypesection">%%DISCTYPESECTION%%</div>
+	<div id="trackssection" class="p-2" %%VISIBILITY%%>%%TRACKS%%</div>
+	<script>
+		function disctype(name){
+			$.ajax('%%BASEURL%%ripping/ripper/labeler/editdisctype/%%DISCID%%/' + name + '/', {
+				success: function(newitem) {$('#disctypesection').html(newitem);}
+			})
+			if (name == "change"){
+				$('#trackssection').hide();
+				$('#submitsection').hide();
+			} else {
+				$('#trackssection').show();
+				$('#submitsection').show();
+			}
+		}
+	</script>
+	<div id="submitsection" class="row my-4" %%VISIBILITY%%>
+		<div class="col-sm-4 ml-auto col-12">
+			%%COMPLETECHECKBOX%%
+		</div>
+		<div class="col-sm-2 col-12">
+			<button type="submit" class="btn btn-success btn-block">Save</button>
+		</div>
+	</div>
+</form>

@@ -140,4 +140,8 @@ a.nav-link {
 .form-check-input {
   margin-left: 0 !important;
 }
+
+.onclick {
+  cursor: pointer;
+}
 /*# sourceMappingURL=style.css.map */

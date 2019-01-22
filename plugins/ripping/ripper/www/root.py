@@ -13,6 +13,6 @@ class Root(HTMLTEMPLATE):
         root_html = root_html.replace("%%DRIVES%%", html_parts.drives(self._system.get_drives(),
                                                                       self._config['drives'], True))
         data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
-        labeler_html = html_parts.labeleritems(data, baseurl, True)
+        labeler_html = html_parts.labeler_items(data, baseurl, True)
         root_html = root_html.replace("%%LABELERS%%", labeler_html)
         return self._template(root_html)

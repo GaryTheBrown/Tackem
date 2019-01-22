@@ -1,7 +1,7 @@
 '''video track type information'''
+import json
 from .stream_type import StreamType
-#TODO add in extra options to mark if track has commentary and the stream number that it is.
-#TODO add in forced info as well maybe.
+
 class VideoTrackType():
     '''Master Type'''
     _types = ["dontrip", "movie", "tvshow", "trailer", "extra", "other"]
@@ -92,3 +92,23 @@ class OtherTrackType(VideoTrackType):
     def other_type(self):
         '''returns other type'''
         return self._other_type
+
+def make_track_type(track):
+    '''transforms the track returned from the DB or API to the classes above'''
+    if isinstance(track, str):
+        track = json.loads(track)
+        if track is None:
+            return None
+        elif track['video_type'] == "dontrip":
+            return DONTRIPTrackType(track['reason'])
+        elif track['video_type'] == "movie":
+            return MovieTrackType()
+        elif track['video_type'] == "tvshow":
+            return TVShowTrackType(track['season_number'], track['episode_number'])
+        elif track['video_type'] == "trailer":
+            return TrailerTrackType(track['info'])
+        elif track['video_type'] == "extra":
+            return ExtraTrackType(track['name'])
+        elif track['video_type'] == "other":
+            return OtherTrackType(track['other_type'])
+    return None

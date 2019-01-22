@@ -48,18 +48,25 @@ class Labeler():
 
     def set_data(self, thread_name, db_id, data, finished=False):
         '''Sets Data Back in the Database'''
-        if isinstance(data, DiscType):
-            dict_for_db = {"rip_data":json.dumps(data.make_dict())}
-            if finished:
-                if self._config['converter']['enabled']:
-                    create_converter_row(self._db, thread_name, db_id, data,
-                                         self._config['videoripping']['torip'])
-                    dict_for_db["ready_to_convert"] = True
-                else:
-                    dict_for_db["ready_to_rename"] = True
+        if issubclass(type(data), DiscType):
+            rip_data = json.dumps(data.make_dict())
+        elif isinstance(data, dict):
+            rip_data = json.dumps(data)
+        else:
+            return
+        dict_for_db = {"rip_data":rip_data}
+        if finished:
+            if self._config['converter']['enabled']:
+                create_converter_row(self._db, thread_name, db_id, data,
+                                     self._config['videoripping']['torip'])
+                dict_for_db["ready_to_convert"] = True
+            else:
+                dict_for_db["ready_to_rename"] = True
 
-            if finished:
-                if self._config['converter']['enabled']:
-                    RipperEvents().converter.set()
-                else:
-                    RipperEvents().renamer.set()
+        self._db.update(thread_name, INFO_DB["name"], db_id, dict_for_db)
+
+        if finished:
+            if self._config['converter']['enabled']:
+                RipperEvents().converter.set()
+            else:
+                RipperEvents().renamer.set()
