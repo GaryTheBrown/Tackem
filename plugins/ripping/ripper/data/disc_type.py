@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 import datetime
 import json
 from libs import html_parts
+from .video_track_type import VideoTrackType
 from . import video_track_type as track_type
 TYPES = {"Movie":"film",
          "TV Show":"tv"
@@ -14,7 +15,7 @@ class DiscType(metaclass=ABCMeta):
         if disc_type in TYPES:
             self._disc_type = disc_type
         self._info = info
-        if isinstance(tracks, list):
+        if isinstance(tracks, list) and all(issubclass(type(x), VideoTrackType) for x in tracks):
             self._tracks = tracks
         if len(language) == 3 and isinstance(language, str):
             self._language = language
@@ -174,6 +175,14 @@ def make_disc_type(data):
         return MovieDiscType(data['name'], data['info'], data['year'], data['imdb_id'], tracks)
     if data['disc_type'].lower() == "tv show":
         return TVShowDiscType(data['name'], data['info'], data['tvdb_id'], tracks)
+    return None
+
+def make_blank_disc_type(disc_type_code):
+    '''make the blank disc type'''
+    if disc_type_code.lower() == "movie":
+        return MovieDiscType("", "", 0, "", None)
+    elif disc_type_code.lower() == "tv show":
+        return TVShowDiscType("", "", "", None)
     return None
 
 def save_html_to_disc_type(data):

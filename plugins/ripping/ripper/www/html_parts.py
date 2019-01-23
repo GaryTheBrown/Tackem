@@ -1,10 +1,8 @@
 '''drives pages'''
 import os
 import json
-import datetime
 import cherrypy
-from libs import html_parts
-from ..data import disc_type
+from ..data import disc_type, video_track_type
 DIR = os.path.dirname(__file__) + "/html/"
 
 def get_page(page, system=None):
@@ -91,8 +89,7 @@ def labeler_items(data, baseurl, vertical=False):
 def labeler_disctype_start():
     '''labeler disc type starting section'''
     disc_type_html = get_page("labeler/edit/disctype/start")
-    if len(disc_type.TYPES) < 5:
-        magic = 3
+    magic = 3
     item_html = ""
     for item in disc_type.TYPES:
         item_html += labeler_disctype_start_item(item, disc_type.TYPES[item], magic)
@@ -114,38 +111,36 @@ def labeler_disctype_template(label, disc_type_label, rip_data):
     disc_type_html = disc_type_html.replace("%%PANEL%%", rip_data.get_edit_panel())
     return disc_type_html
 
-def labeler_tracktype_section(disc_index, track_index, probe_info):
-    '''labeler disc type templated section'''
-    stream_counts = probe_info.stream_type_count()
-    format_info = probe_info.get_format_info()
-    length = str(datetime.timedelta(seconds=int(format_info["duration"].split(".")[0])))
-    video_url = "/".join(cherrypy.url().split("/")[:-3]) + "/tempvideo/"
-    video_url += str(disc_index) + "/" + str(track_index).zfill(2) + ".mkv"
-    if 'audio' in stream_counts:
-        audio_count = str(stream_counts['audio'])
-    else:
-        audio_count = "0"
-    if 'subtitle' in stream_counts:
-        subtitle_count = str(stream_counts['subtitle'])
-    else:
-        subtitle_count = "0"
-    if probe_info.has_chapters():
-        has_chapters = "Yes"
-    else:
-        has_chapters = "No"
+def labeler_tracktype_start():
+    '''labeler track type starting section'''
+    track_type_html = get_page("labeler/edit/tracktype/start")
+    magic = 2
+    item_html = ""
+    for item in video_track_type.TYPES:
+        item_html += labeler_tracktype_start_item(item, video_track_type.TYPES[item], magic)
+    return track_type_html.replace("%%STARTLINKS%%", item_html)
 
-    panel_name_html = get_page("labeler/edit/tracktype/panelname")
-    panel_name_html = panel_name_html.replace("%%TRACK_INDEX%%", str(track_index))
-    panel_name_html = panel_name_html.replace("%%TRACKLENGTH%%", length)
-    panel_name_html = panel_name_html.replace("%%TRACKURL%%", video_url)
-    panel_name_html = panel_name_html.replace("%%AUDIOCOUNT%%", audio_count)
-    panel_name_html = panel_name_html.replace("%%SUBTITLECOUNT%%", subtitle_count)
-    panel_name_html = panel_name_html.replace("%%HASCHAPTERS%%", has_chapters)
+def labeler_tracktype_start_item(item, icon, magic):
+    '''labeler track type starting section'''
+    track_type_html = get_page("labeler/edit/tracktype/startitem")
+    track_type_html = track_type_html.replace("%%STARTSIZE%%", str(magic))
+    track_type_html = track_type_html.replace("%%STARTICON%%", icon)
+    track_type_html = track_type_html.replace("%%STARTTYPE%%", item)
+    return track_type_html
 
-    section_html = ""
+def panel(panel_head, section_name, section_html):
+    '''A Panel for track sections'''
+    panel_html = get_page("labeler/edit/tracktype/panel")
+    panel_html = panel_html.replace("%%PANELHEAD%%", panel_head)
+    panel_html = panel_html.replace("%%SECTIONNAME%%", section_name)
+    return panel_html.replace("%%SECTION%%", section_html)
 
-    return html_parts.panel(panel_name_html, "", "", "", section_html, True)
-
-    # section_html = get_page("labeler/edit/tracktype/section")
-    # section_html = section_html.replace("%%DISCID%%", str(disc_index))
-    # section_html = section_html.replace("%%TRACKID%%", str(track_index).zfill(2))
+def labeler_tracktype_template(track_index, rip_data):
+    '''labeler track type templated section'''
+    track_type_html = get_page("labeler/edit/tracktype/template")
+    ##TODO Make this line look better
+    track_type_html = track_type_html.replace("%%TRACKTYPE%%", rip_data.video_type())
+    ##TODO Make this line look better 
+    track_type_html = track_type_html.replace("%%PANEL%%", rip_data.get_edit_panel())
+    track_type_html = track_type_html.replace("%%TRACKINDEX%%", str(track_index))
+    return track_type_html

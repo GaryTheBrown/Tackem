@@ -1,4 +1,5 @@
 '''Labeler pages'''
+import datetime
 import json
 from glob import glob
 import cherrypy
@@ -6,6 +7,7 @@ from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.html_template import HTMLTEMPLATE
 from . import html_parts
 from ..data import disc_type
+from ..data import video_track_type
 from ..ffprobe import FFprobe
 
 class Labeler(HTMLTEMPLATE):
@@ -76,12 +78,12 @@ class Labeler(HTMLTEMPLATE):
         track_files = glob(file_dir + "*.mkv")
         track_files.sort()
         tracks_html = ""
-        ffprobe_location = self._config['converter']['ffprobelocation']
         for track_index, track_file in enumerate(track_files):
-            probe_info = FFprobe(ffprobe_location, track_file)
-            tracks_html += html_parts.labeler_tracktype_section(data['id'], track_index, probe_info)
-            #get main track data
-            #grab individual track data to go inside of each track section
+            track_data = None
+            if "tracks" in data and isinstance(data["tracks"], list):
+                if len(data["tracks"]) >= track_index:
+                    track_data = data["tracks"][track_index]
+            tracks_html += self._tracktype_section(data['id'], track_index, track_file, track_data)
         edit_html = edit_html.replace("%%TRACKS%%", tracks_html)
         return self._template(edit_html)
 
@@ -116,11 +118,8 @@ class Labeler(HTMLTEMPLATE):
                 rip_data = data['rip_data']
             if rip_data is None:
                 label = data['label']
-                if disc_type_code.lower() == "movie":
-                    rip_data = disc_type.MovieDiscType("", "", 0, "", None)
-                elif disc_type_code.lower() == "tv show":
-                    rip_data = disc_type.TVShowDiscType("", "", "", None)
-                else:
+                rip_data = disc_type.make_blank_disc_type(disc_type_code)
+                if rip_data is None:
                     return self._redirect(self._baseurl + "ripping/ripper/labeler/")
             else:
                 label = rip_data.name()
@@ -134,42 +133,74 @@ class Labeler(HTMLTEMPLATE):
         disc_type_html = disc_type_html.replace("%%DISCID%%", str(data['id']))
         return disc_type_html
 
-    # @cherrypy.expose
-    # def edittracktype(self, disc_index=None, track_index=None, track_type_code=None):
-    #     '''gets the disc type html'''
-    #     if disc_index is None or track_index is None:
-    #         return self._redirect(self._baseurl + "ripping/ripper/labeler/")
-    #     try:
-    #         disc_index_int = int(disc_index)
-    #         track_index_int = int(track_index)
-    #     except ValueError:
-    #         return self._redirect(self._baseurl + "ripping/ripper/labeler/")
-    #     data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
-    #                                                      disc_index_int)
-    #     if data is False:
-    #         return self._redirect(self._baseurl + "ripping/ripper/labeler/")
-    #     if track_type_code is None:
-    #         return self._redirect(self._baseurl + "ripping/ripper/labeler/")
-    #     return self._edit_track_type_work(data, track_index_int, track_type_code)
+    def _tracktype_section(self, disc_index, track_index, track_file, track_data=None):
+        '''labeler disc type templated section'''
+        probe_info = FFprobe(self._config['converter']['ffprobelocation'], track_file)
+        stream_counts = probe_info.stream_type_count()
+        format_info = probe_info.get_format_info()
+        length = str(datetime.timedelta(seconds=int(format_info["duration"].split(".")[0])))
+        video_url = "/".join(cherrypy.url().split("/")[:-3]) + "/tempvideo/"
+        video_url += str(disc_index) + "/" + str(track_index).zfill(2) + ".mkv"
+        if 'audio' in stream_counts:
+            audio_count = str(stream_counts['audio'])
+        else:
+            audio_count = "0"
+        if 'subtitle' in stream_counts:
+            subtitle_count = str(stream_counts['subtitle'])
+        else:
+            subtitle_count = "0"
+        if probe_info.has_chapters():
+            has_chapters = "Yes"
+        else:
+            has_chapters = "No"
 
-    # def _edit_track_type_work(self, data, track_index, track_type_code):
-    #     '''work shared between two functions'''
-    #     if track_type_code.lower() == "change":
-    #         track_type_html = html_parts.labeler_tracktype_start()
-    #         rip_data = None
-    #     else:
-    #         if isinstance(data['rip_data'], str):
-    #             rip_data = disc_type.make_disc_type(json.loads(data['rip_data']))
-    #         elif isinstance(data['rip_data'], dict):
-    #             rip_data = disc_type.make_disc_type(data['rip_data'])
-    #         else:
-    #             rip_data = data['rip_data']
-    #         tracks = rip_data.tracks()
-    #         if not tracks:
-    #             return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+        panel_head_html = html_parts.get_page("labeler/edit/tracktype/panelname")
+        panel_head_html = panel_head_html.replace("%%TRACKLENGTH%%", length)
+        panel_head_html = panel_head_html.replace("%%TRACKURL%%", video_url)
+        panel_head_html = panel_head_html.replace("%%AUDIOCOUNT%%", audio_count)
+        panel_head_html = panel_head_html.replace("%%SUBTITLECOUNT%%", subtitle_count)
+        panel_head_html = panel_head_html.replace("%%HASCHAPTERS%%", has_chapters)
 
+        if track_data is None:
+            section_html = html_parts.labeler_tracktype_start()
+        else:
+            section_html = ""
 
+        track_panel = html_parts.panel(panel_head_html, "track_" + str(track_index), section_html)
+        track_panel = track_panel.replace("%%TRACK_INDEX%%", str(track_index))
+        return track_panel
 
+    @cherrypy.expose
+    def edittracktype(self, disc_index=None, track_index=None, track_type_code=None):
+        '''gets the disc type html'''
+        if disc_index is None or track_index is None:
+            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+        try:
+            disc_index_int = int(disc_index)
+            track_index_int = int(track_index)
+        except ValueError:
+            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+        data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
+                                                         disc_index_int)
+        if data is False:
+            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+        if track_type_code is None:
+            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+
+        track_data = None
+        if "tracks" in data and isinstance(data["tracks"], list):
+            if len(data["tracks"]) >= track_index:
+                track_data = data["tracks"][track_index]
+        return self._edit_track_type_work(track_data, track_index_int, track_type_code)
+
+    def _edit_track_type_work(self, track_data, track_index, track_type_code):
+        '''work shared between two functions'''
+        if track_type_code.lower() == "change":
+            return html_parts.labeler_tracktype_start()
+        elif track_data is None:
+            rip_data = video_track_type.make_blank_track_type(track_type_code)
+            return html_parts.labeler_tracktype_template(track_index, rip_data)
+        return html_parts.labeler_tracktype_template(track_index, track_data)
 
     @cherrypy.expose
     def editsave(self, **kwargs):

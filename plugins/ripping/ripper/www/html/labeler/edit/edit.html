@@ -1,7 +1,7 @@
 %%NAVBAR%%
 <form action="%%BASEURL%%ripping/ripper/labeler/editsave/" method="post">
 	<input type="hidden" name="discid" value="%%DISCID%%">
-	<div id="disctypesection">%%DISCTYPESECTION%%</div>
+	<div id="disctypesection" class="px-2">%%DISCTYPESECTION%%</div>
 	<div id="trackssection" class="p-2" %%VISIBILITY%%>%%TRACKS%%</div>
 	<script>
 		function disctype(name){
@@ -15,6 +15,11 @@
 				$('#trackssection').show();
 				$('#submitsection').show();
 			}
+		}
+		function tracktype(track, name){
+			$.ajax('%%BASEURL%%ripping/ripper/labeler/edittracktype/%%DISCID%%/' + track + "/" + name + '/', {
+				success: function(newitem) {$('#track_' + track + '_section').html(newitem);}
+			})
 		}
 	</script>
 	<div id="submitsection" class="row my-4" %%VISIBILITY%%>
