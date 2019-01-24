@@ -1,6 +1,6 @@
 <div id="labelergroup">%%ITEMS%%</div>
 <script type="text/javascript">
-	setInterval(function() {
+	var labelerTimer = setInterval(function() {
 		$.ajax('%%BASEURL%%ripping/ripper/labeler/getids/', {
 			dataType: 'json',
 			success: function(result) {
@@ -13,6 +13,9 @@
 						})
 					}
 				}
+			},
+			error: function(){
+				clearTimeout(labelerTimer);
 			}
 		})
 	}, 1000);
