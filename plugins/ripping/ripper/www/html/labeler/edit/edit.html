@@ -5,6 +5,10 @@
 	<div id="trackssection" class="p-2" %%VISIBILITY%%>%%TRACKS%%</div>
 	<script>
 		function disctype(name){
+			if (name == "change"){
+				var answer = confirm("Are you sure doing this will clear out all data");
+				if(answer == false) return;
+			}
 			$.ajax('%%BASEURL%%ripping/ripper/labeler/editdisctype/%%DISCID%%/' + name + '/', {
 				success: function(newitem) {$('#disctypesection').html(newitem);}
 			})
@@ -17,6 +21,10 @@
 			}
 		}
 		function tracktype(track, name){
+			if (name == "change"){
+				var answer = confirm("Are you sure doing this will clear out the track data");
+				if(answer == false) return;
+			}
 			$.ajax('%%BASEURL%%ripping/ripper/labeler/edittracktype/%%DISCID%%/' + track + "/" + name + '/', {
 				success: function(newitem) {$('#track_' + track + '_section').html(newitem);}
 			})

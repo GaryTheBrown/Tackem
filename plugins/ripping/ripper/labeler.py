@@ -70,3 +70,19 @@ class Labeler():
                 RipperEvents().converter.set()
             else:
                 RipperEvents().renamer.set()
+
+    def clear_rip_data(self, thread_name, db_id):
+        '''Clears the rip data from the database'''
+        self._db.update(thread_name, INFO_DB["name"], db_id, {"rip_data":None})
+
+    def clear_rip_track_data(self, thread_name, db_id, track_id):
+        '''Clears the rip data from the database'''
+        print("CLEAR TRACK DATA")
+        data = self._db.select_by_row(thread_name, INFO_DB["name"], db_id, ["rip_data"])
+        rip_data = json.loads(data['rip_data'])
+        if isinstance(rip_data, dict):
+            if "tracks" in rip_data and isinstance(rip_data["tracks"], list):
+                if len(rip_data["tracks"]) >= track_id:
+                    rip_data["tracks"][track_id] = None
+                    to_save = json.dumps(rip_data)
+                    self._db.update(thread_name, INFO_DB["name"], db_id, {"rip_data":to_save})

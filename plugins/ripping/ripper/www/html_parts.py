@@ -138,9 +138,7 @@ def panel(panel_head, section_name, section_html):
 def labeler_tracktype_template(track_index, rip_data):
     '''labeler track type templated section'''
     track_type_html = get_page("labeler/edit/tracktype/template")
-    ##TODO Make this line look better
     track_type_html = track_type_html.replace("%%TRACKTYPE%%", rip_data.video_type())
-    ##TODO Make this line look better 
     track_type_html = track_type_html.replace("%%PANEL%%", rip_data.get_edit_panel())
     track_type_html = track_type_html.replace("%%TRACKINDEX%%", str(track_index))
     return track_type_html

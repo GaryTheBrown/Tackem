@@ -17,12 +17,29 @@ class VideoTrackType(metaclass=ABCMeta):
     def __init__(self, video_type, streams):
         if video_type in TYPES:
             self._video_type = video_type
-        if isinstance(streams, list) and all(issubclass(type(x), StreamType) for x in streams):
+        if isinstance(streams, list):
             self._streams = streams
 
     def video_type(self):
         '''returns the type'''
         return self._video_type
+
+    def _title_html(self, title):
+        '''title line for sections'''
+        return '<h1 class="text-center">' + title + '</h1>'
+
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        super_dict["video_type"] = self._video_type
+        return super_dict
+
+    def _change_section_html(self, track):
+        '''change section code'''
+        html = "<div class=\"onclick topright\" onclick=\"tracktype(" + str(track)
+        html += ", 'change');\">(change)</div>"
+        return html
 
     @abstractmethod
     def get_edit_panel(self):
@@ -39,9 +56,18 @@ class DONTRIPTrackType(VideoTrackType):
         '''return the reason not to rip this track'''
         return self._reason
 
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        super_dict["reason"] = self._reason
+        return super().make_dict(super_dict)
+
     def get_edit_panel(self):
         '''returns the edit panel'''
-        section_html = html_parts.hidden("track_%%TRACKINDEX%%_type", "dontrip", True)
+        section_html = self._title_html("Don't Rip")
+        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+        section_html += html_parts.hidden("track_%%TRACKINDEX%%_video_type", "dontrip", True)
         section_html += html_parts.item("track_%%TRACKINDEX%%_reason", "Reason",
                                         "Enter the reason not to rip here",
                                         html_parts.input_box("text",
@@ -65,40 +91,58 @@ class MovieTrackType(VideoTrackType):
     #     '''return the tv show special number'''
     #     return self._tvshow_special_number
 
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        return super().make_dict(super_dict)
+
     def get_edit_panel(self):
         '''returns the edit panel'''
-        section_html = html_parts.hidden("track_%%TRACKINDEX%%_type", "movie", True)
+        section_html = self._title_html("Movie")
+        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+        section_html += html_parts.hidden("track_%%TRACKINDEX%%_video_type", "movie", True)
         return section_html
 
 class TVShowTrackType(VideoTrackType):
     '''TV Show Type'''
-    def __init__(self, season_number, episode_number, streams=None):
+    def __init__(self, season, episode, streams=None):
         super().__init__("tvshow", streams)
-        self._season_number = season_number
-        self._episode_number = episode_number
+        self._season = season
+        self._episode = episode
 
-    def season_number(self):
+    def season(self):
         '''returns tv show season number'''
-        return self._season_number
+        return self._season
 
-    def episode_number(self):
+    def episode(self):
         '''returns tv show episode number'''
-        return self._episode_number
+        return self._episode
+
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        super_dict["season"] = self._season
+        super_dict["episode"] = self._episode
+        return super().make_dict(super_dict)
 
     def get_edit_panel(self):
         '''returns the edit panel'''
-        section_html = html_parts.hidden("track_%%TRACKINDEX%%_type", "tvshow", True)
+        section_html = self._title_html("TV Show Episode")
+        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+        section_html += html_parts.hidden("track_%%TRACKINDEX%%_video_type", "tvshow", True)
         section_html += html_parts.item("track_%%TRACKINDEX%%_season", "Season Number",
                                         "Enter the Season Number here",
                                         html_parts.input_box("number",
                                                              "track_%%TRACKINDEX%%_season",
-                                                             self._season_number, minimum=0),
+                                                             self._season, minimum=0),
                                         True)
         section_html += html_parts.item("track_%%TRACKINDEX%%_episode", "Episode Number",
                                         "Enter the Episode Number here",
                                         html_parts.input_box("number",
                                                              "track_%%TRACKINDEX%%_episode",
-                                                             self._episode_number, minimum=0),
+                                                             self._episode, minimum=0),
                                         True)
         return section_html
 
@@ -112,6 +156,13 @@ class ExtraTrackType(VideoTrackType):
         '''returns extra name'''
         return self._name
 
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        super_dict["name"] = self._name
+        return super().make_dict(super_dict)
+
     # def tvshow_link(self):
     #     '''return the tv show name for linking'''
     #     return self._tvshow_link
@@ -122,7 +173,9 @@ class ExtraTrackType(VideoTrackType):
 
     def get_edit_panel(self):
         '''returns the edit panel'''
-        section_html = html_parts.hidden("track_%%TRACKINDEX%%_type", "extra", True)
+        section_html = self._title_html("Extra")
+        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+        section_html += html_parts.hidden("track_%%TRACKINDEX%%_video_type", "extra", True)
         section_html += html_parts.item("track_%%TRACKINDEX%%_name", "Name",
                                         "Enter the extra name",
                                         html_parts.input_box("text",
@@ -141,9 +194,18 @@ class TrailerTrackType(VideoTrackType):
         '''returns trailers movie info'''
         return self._info
 
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        super_dict["info"] = self._info
+        return super().make_dict(super_dict)
+
     def get_edit_panel(self):
         '''returns the edit panel'''
-        section_html = html_parts.hidden("track_%%TRACKINDEX%%_type", "trailer", True)
+        section_html = self._title_html("Trailer")
+        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+        section_html += html_parts.hidden("track_%%TRACKINDEX%%_video_type", "trailer", True)
         section_html += html_parts.item("track_%%TRACKINDEX%%_info", "Information",
                                         "Enter trailer information here",
                                         html_parts.input_box("text",
@@ -162,9 +224,18 @@ class OtherTrackType(VideoTrackType):
         '''returns other type'''
         return self._other_type
 
+    def make_dict(self, super_dict=None):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        super_dict["other_type"] = self._other_type
+        return super().make_dict(super_dict)
+
     def get_edit_panel(self):
         '''returns the edit panel'''
-        section_html = html_parts.hidden("track_%%TRACKINDEX%%_type", "other", True)
+        section_html = self._title_html("Other")
+        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+        section_html += html_parts.hidden("track_%%TRACKINDEX%%_video_type", "other", True)
         section_html += html_parts.item("track_%%TRACKINDEX%%_othertype", "Other Type",
                                         "What is it?",
                                         html_parts.input_box("text",
@@ -177,20 +248,20 @@ def make_track_type(track):
     '''transforms the track returned from the DB or API to the classes above'''
     if isinstance(track, str):
         track = json.loads(track)
-        if track is None:
-            return None
-        elif track['video_type'] == "dontrip":
-            return DONTRIPTrackType(track['reason'])
-        elif track['video_type'] == "movie":
-            return MovieTrackType()
-        elif track['video_type'] == "tvshow":
-            return TVShowTrackType(track['season_number'], track['episode_number'])
-        elif track['video_type'] == "trailer":
-            return TrailerTrackType(track['info'])
-        elif track['video_type'] == "extra":
-            return ExtraTrackType(track['name'])
-        elif track['video_type'] == "other":
-            return OtherTrackType(track['other_type'])
+    if track is None:
+        return None
+    elif track['video_type'] == "dontrip":
+        return DONTRIPTrackType(track['reason'])
+    elif track['video_type'] == "movie":
+        return MovieTrackType()
+    elif track['video_type'] == "tvshow":
+        return TVShowTrackType(track['season'], track['episode'])
+    elif track['video_type'] == "trailer":
+        return TrailerTrackType(track['info'])
+    elif track['video_type'] == "extra":
+        return ExtraTrackType(track['name'])
+    elif track['video_type'] == "other":
+        return OtherTrackType(track['other_type'])
     return None
 
 def make_blank_track_type(track_type_code):
