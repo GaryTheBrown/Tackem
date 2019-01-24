@@ -44,6 +44,14 @@ class FFprobe:
             return s_types
         return None
 
+    def get_streams_and_types(self):
+        '''returns a list of streams and there types'''
+        if 'streams' in self._info and self._info['streams']:
+            streams = []
+            for stream in self._info['streams']:
+                streams.append(stream["codec_type"])
+            return streams
+
     def get_video_info(self):
         '''returns the video stream information'''
         videos = []
