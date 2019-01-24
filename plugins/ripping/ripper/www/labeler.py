@@ -221,7 +221,8 @@ class Labeler(HTMLTEMPLATE):
         for item in kwargs:
             array = item.split("_")
             if len(array) <= 2:
-                data[item] = kwargs[item]
+                if item != "complete":
+                    data[item] = kwargs[item]
             elif array[0] == "track":
                 if not isinstance(data['tracks'][int(array[1])], dict):
                     data['tracks'][int(array[1])] = {}
@@ -233,8 +234,7 @@ class Labeler(HTMLTEMPLATE):
                 #section stuff here
         rip_data = disc_type.save_html_to_disc_type(data)
         #if complete text box ticked send to next system
-        finished = False
+        finished = "complete" in kwargs
         self._system.get_labeler().set_data("WWW" + cherrypy.request.remote.ip, kwargs['discid'],
                                             rip_data, finished)
-
         return self._redirect(self._baseurl + "ripping/ripper/labeler/")
