@@ -130,9 +130,13 @@ def labeler_tracktype_start_item(item, icon, magic):
 
 def panel(panel_head, section_name, section_html):
     '''A Panel for track sections'''
-    panel_html = get_page("labeler/edit/tracktype/panel")
+    if section_name == "":
+        panel_html = get_page("labeler/edit/sectiontype/panel")
+    else:
+        panel_html = get_page("labeler/edit/tracktype/panel")
     panel_html = panel_html.replace("%%PANELHEAD%%", panel_head)
-    panel_html = panel_html.replace("%%SECTIONNAME%%", section_name)
+    if section_name != "":
+        panel_html = panel_html.replace("%%SECTIONNAME%%", section_name)
     return panel_html.replace("%%SECTION%%", section_html)
 
 def labeler_tracktype_template(track_index, rip_data):

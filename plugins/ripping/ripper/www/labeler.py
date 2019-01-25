@@ -166,7 +166,8 @@ class Labeler(HTMLTEMPLATE):
         if track_data is None:
             section_html = html_parts.labeler_tracktype_start()
         else:
-            section_html = self._edit_track_type_work(track_data, track_data['video_type'])
+            section_html = self._edit_track_type_work(track_data, track_data['video_type'],
+                                                      probe_info)
 
         track_panel = html_parts.panel(panel_head_html, "track_" + str(track_index), section_html)
         track_panel = track_panel.replace("%%TRACKINDEX%%", str(track_index))
@@ -196,17 +197,22 @@ class Labeler(HTMLTEMPLATE):
         if track_data and track_type_code == "change":
             self._system.get_labeler().clear_rip_track_data("WWW" + cherrypy.request.remote.ip,
                                                             disc_index_int, track_index_int)
-        track_type_html = self._edit_track_type_work(track_data, track_type_code)
+        location = self._config['locations']['videoripping']
+        if location[0] != "/":
+            location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
+        track_file = location + "/" + str(disc_index) + "/" + str(track_index).zfill(2) + ".mkv"
+        probe_info = FFprobe(self._config['converter']['ffprobelocation'], track_file)
+        track_type_html = self._edit_track_type_work(track_data, track_type_code, probe_info)
         return track_type_html.replace("%%TRACKINDEX%%", str(track_index))
 
-    def _edit_track_type_work(self, track_data, track_type_code):
+    def _edit_track_type_work(self, track_data, track_type_code, probe_info):
         '''work shared between two functions'''
         if track_type_code == "change":
             return html_parts.labeler_tracktype_start()
         elif track_data is None:
             track_data = video_track_type.make_blank_track_type(track_type_code)
-            return track_data.get_edit_panel()
-        return video_track_type.make_track_type(track_data).get_edit_panel()
+            return track_data.get_edit_panel(probe_info)
+        return video_track_type.make_track_type(track_data).get_edit_panel(probe_info)
 
     @cherrypy.expose
     def editsave(self, **kwargs):
@@ -224,16 +230,21 @@ class Labeler(HTMLTEMPLATE):
                 if item != "complete":
                     data[item] = kwargs[item]
             elif array[0] == "track":
-                if not isinstance(data['tracks'][int(array[1])], dict):
-                    data['tracks'][int(array[1])] = {}
-                if array != "section":
-                    if len(array) == 3:
-                        data['tracks'][int(array[1])][array[2]] = kwargs[item]
-                    elif len(array) == 4:
-                        data['tracks'][int(array[1])][array[2] + "_" + array[3]] = kwargs[item]
-                #section stuff here
-        rip_data = disc_type.save_html_to_disc_type(data)
-        #if complete text box ticked send to next system
+                track_index = int(array[1])
+                if not isinstance(data['tracks'][track_index], dict):
+                    data['tracks'][track_index] = {}
+                if array[2] != "stream":
+                    data['tracks'][track_index]["_".join(array[2:])] = kwargs[item]
+                else:
+                    if "stream" not in data['tracks'][track_index]:
+                        probe_info = FFprobe(self._config['converter']['ffprobelocation'],
+                                             file_dir + array[1].zfill(2) + ".mkv")
+                        data['tracks'][track_index]["stream"] = [{}] * probe_info.stream_count()
+                    variable = "_".join(array[4:])
+                    data['tracks'][track_index]["stream"][int(array[3])][variable] = kwargs[item]
+        print(data)
+        rip_data = disc_type.make_disc_type(data)
+
         finished = "complete" in kwargs
         self._system.get_labeler().set_data("WWW" + cherrypy.request.remote.ip, kwargs['discid'],
                                             rip_data, finished)

@@ -31,6 +31,12 @@ class FFprobe:
             return len(self._info['streams'])
         return 0
 
+    def get_stream(self, index):
+        '''return a stream'''
+        if 'streams' in self._info and self._info['streams']:
+            return self._info['streams'][int(index)]
+        return None
+
     def stream_type_count(self):
         '''returns the stream types and how many'''
         if 'streams' in self._info and self._info['streams']:

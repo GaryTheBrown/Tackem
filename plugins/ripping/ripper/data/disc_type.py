@@ -196,15 +196,3 @@ def make_blank_disc_type(disc_type_code):
     elif disc_type_code.lower() == "tv show":
         return TVShowDiscType("", "", "", None)
     return None
-
-def save_html_to_disc_type(data):
-    '''transforms the data returned from the DB or API to the classes above'''
-    tracks = []
-    for track in data['tracks']:
-        tracks.append(track_type.make_track_type(track))
-
-    if data['disc_type'].lower() == "movie":
-        return MovieDiscType(data['name'], data['info'], data['year'], data['imdbid'], tracks)
-    if data['disc_type'].lower() == "tv show":
-        return TVShowDiscType(data['name'], data['info'], data['tvdbid'], tracks)
-    return None
