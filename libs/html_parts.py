@@ -439,3 +439,20 @@ def stylesheet_link(location):
     '''returns a script link item'''
     stylesheet_link_html = str(open("www/html/tags/stylesheetlink.html", "r").read())
     return stylesheet_link_html.replace("%%LOCATION%%", location)
+
+#########
+##OTHER##
+#########
+
+
+def quick_table(data):
+    '''creates a table from a dictionary'''
+    table_html = str(open("www/html/other/table.html", "r").read())
+    table_body_html = str(open("www/html/other/tablebody.html", "r").read())
+    table_head_html = str(open("www/html/other/tablehead.html", "r").read())
+    head_html = ""
+    body_html = ""
+    for key in data:
+        head_html += table_head_html.replace("%%HEADER%%", key)
+        body_html += table_body_html.replace("%%VALUE%%", str(data[key]))
+    return table_html.replace("%%HEADERS%%", head_html).replace("%%VALUES%%", body_html)
