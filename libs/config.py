@@ -4,6 +4,7 @@ from validate import Validator
 from libs.config_list import ConfigList
 from libs.config_object import ConfigObject
 from libs.config_option import ConfigOption
+from libs.data.locale_options import OPTIONS as locale_options
 import libs.html_parts as html_part
 
 # TO DO PULL ALL HTML CODE OUT AND PUT IT INTO INDIVIDUAL FILES SO THEY CAN BE CHANGED in Theming
@@ -84,6 +85,18 @@ CONFIG.append(
                      help_text="The port for the WebUI"),
         ConfigObject("baseurl", "Base Url", "string", default="/", help_text="""The Base URL
 must start with '/'""")
+    ])
+)
+CONFIG.append(
+    ConfigList("scraper", "Scraper (The Movie DB)", objects=[
+        ConfigObject("enabled", "Enabled", "boolean", default=False, toggle_section="scraper",
+                     input_type="switch"),
+        ConfigObject("apikey", "API Key", "string", default='',
+                     help_text="""
+The API key for TMDB API access goto http://www.themoviedb.org/ to grab your key"""),
+        ConfigObject("includeadult", "", "boolean", default=False, hide_from_html=True),
+        ConfigObject("language", "Language", "option", input_type="dropdown", default='en-GB',
+                     options=locale_options, help_text="language to use when scraping the data"),
     ])
 )
 CONFIG.append(ConfigList("plugins"))# keep this one at the end of the config section
