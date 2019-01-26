@@ -63,7 +63,10 @@ class ConverterThread():
         command.append("-i")
         command.append('"' + self._filename + '"')
 
-        #Deal with video title here
+        if con_config['videoinserttags']:
+            #Deal with tagging here
+            #https://kodi.wiki/view/Video_file_tagging#Title
+            pass
 
         #Deal with chapters here
         if probe_info.has_chapters():

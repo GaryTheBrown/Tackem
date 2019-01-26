@@ -94,6 +94,9 @@ Where do you want to move the audio cds to when completed""")
                      help_text="Where is FFprobe located?"),
         ConfigObject("threadcount", "How Many Instances?", "integer", minimum=1, maximum=5,
                      default=1, help_text="How Many Threads (Max of 5)"),
+        ConfigObject("videoinserttags", "Insert Tags", "boolean", default=True,
+                     input_type="checkbox", help_text="""
+Do you want to add in the tags to the Video Files?"""),
         ConfigObject("videoresolution", "Max Video Resolution", "option", default='keep',
                      input_type='radio',
                      options=[
