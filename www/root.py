@@ -35,6 +35,7 @@ class Root(HTMLTEMPLATE):
                 print("ERROR WRITING CONFIG FILE")
             RootEvent().set_event("reboot")
             page = str(open("www/html/reboot.html", "r").read())
+            page = page.replace("%%PAGE%%", "")
             return self._template(page, False)
         index_page = full_config_page(self._global_config, self._plugins)
         javascript = "config_javascript"
