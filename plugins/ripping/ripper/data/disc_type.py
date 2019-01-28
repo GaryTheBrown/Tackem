@@ -80,7 +80,9 @@ class MovieDiscType(DiscType):
         super().__init__("Movie", info, tracks, language)
         self._name = name
         current_year = int(datetime.date.today().year)
-        if year >= 1888 and year <= current_year:
+        if year == 0:
+            self._year = ""
+        elif year >= 1888 and year <= current_year:
             self._year = year
         elif year < 1888:
             self._year = 1888
@@ -112,24 +114,33 @@ class MovieDiscType(DiscType):
     def get_edit_panel(self):
         '''returns the edit panel'''
         section_html = html_parts.hidden("disc_type", "Movie", True)
-        section_html += html_parts.item("name", "Movie Title",
-                                        "Enter the name of the movie here",
-                                        html_parts.input_box("text", "name", self._name),
-                                        True)
         section_html += html_parts.item("info", "Disc Info",
                                         "Put some useful info in here for use during renaming",
                                         html_parts.input_box("text", "info", self._info),
                                         True)
-        section_html += html_parts.item("imdbid", "IMDB ID",
-                                        "Enter the IMDB ID here",
-                                        html_parts.input_box("text", "imdbid", self._imdbid,
-                                                             max_length=8),
+        section_html += html_parts.item("name", "Movie Title",
+                                        "Enter the name of the movie here",
+                                        html_parts.input_box("text", "name", self._name),
                                         True)
         max_year = int(datetime.date.today().year)
         section_html += html_parts.item("year", "Year",
                                         "Enter the year here",
                                         html_parts.input_box("number", "year", self._year,
                                                              minimum=1888, maximum=max_year),
+                                        True)
+        section_html += html_parts.item("blank", "",
+                                        "Search The Movie Database by Name (And year if known)",
+                                        html_parts.input_button("Search By Name",
+                                                                "ButtonSearchMovie();"),
+                                        True)
+        section_html += html_parts.item("imdbid", "IMDB ID",
+                                        "Enter the IMDB ID here",
+                                        html_parts.input_box("text", "imdbid", self._imdbid),
+                                        True)
+        section_html += html_parts.item("blank", "",
+                                        "Search The Movie Database by Name (And year if known)",
+                                        html_parts.input_button("Search By IMDB ID",
+                                                                "ButtonFindMovie();"),
                                         True)
         return html_parts.panel("Movie Information", self._change_section_html(), "", "",
                                 section_html, True)

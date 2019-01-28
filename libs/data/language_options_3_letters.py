@@ -1,4 +1,5 @@
 ''' Language options with 3 letter codes'''
+#https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 from libs.config_option import ConfigOption
 OPTIONS = [
     ConfigOption("ara", "Arabic"),

@@ -5,6 +5,7 @@ from glob import glob
 import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.html_template import HTMLTEMPLATE
+from libs import html_parts as ghtml_parts
 from . import html_parts
 from ..data import disc_type
 from ..data import video_track_type
@@ -58,8 +59,10 @@ class Labeler(HTMLTEMPLATE):
             return self._redirect(self._baseurl + "ripping/ripper/labeler/")
 
         edit_html = html_parts.get_page("labeler/edit/edit", self._system)
+        edit_html += ghtml_parts.search_modal()
         visibility = ""
         if data['rip_data'] is None:
+            rip_data = None
             disc_type_html = self._edit_disc_type_work(data, 'change')
             visibility = 'style="display:none;"'
         else:
@@ -81,12 +84,13 @@ class Labeler(HTMLTEMPLATE):
         tracks_html = ""
         for track_index, track_file in enumerate(track_files):
             track_data = None
-            if "tracks" in rip_data and isinstance(rip_data['tracks'], list):
-                if len(rip_data['tracks']) >= track_index:
-                    track_data = rip_data['tracks'][track_index]
+            if rip_data is not None:
+                if "tracks" in rip_data and isinstance(rip_data['tracks'], list):
+                    if len(rip_data['tracks']) >= track_index:
+                        track_data = rip_data['tracks'][track_index]
             tracks_html += self._tracktype_section(data['id'], track_index, track_file, track_data)
         edit_html = edit_html.replace("%%TRACKS%%", tracks_html)
-        return self._template(edit_html)
+        return self._template(edit_html, javascript="scraper/javascript")
 
     @cherrypy.expose
     def editdisctype(self, index=None, disc_type_code=None):

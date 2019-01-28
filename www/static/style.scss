@@ -151,3 +151,16 @@ a.nav-link {
     top: 10px;
     right: 10px;
 }
+
+#search_modal{
+    .modal-dialog {
+        width: 98% !important;
+        height: 98% !important;
+        margin: 1% !important;
+        max-width: 100% !important;
+    }
+
+    .modal-footer {
+        display: block !important;
+    }
+}
