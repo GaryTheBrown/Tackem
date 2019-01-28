@@ -11,7 +11,7 @@ from libs.config_list import ConfigList
 from libs.config_object import ConfigObject
 from libs.config_option import ConfigOption
 from libs.config_rules import ConfigRules
-from libs.data.language_options_3_letters import OPTIONS as language_options_3_letters
+from libs.data.languages import Languages
 from libs.data.audio_format_options import OPTIONS as audio_format_options
 from . import www
 from .data import db_tables
@@ -120,7 +120,7 @@ Do you want to add in the tags to the Video Files?"""),
         # think about being able to combine videos into 1 file
         # think about HDR -> https://forum.doom9.org/showthread.php?t=175227
         ConfigObject("defaultlanguage", "Default Language", "string",
-                     input_type="dropdown", options=language_options_3_letters,
+                     input_type="dropdown", options=Languages().config_option_3t(),
                      help_text="What is your main language?"),
         ConfigObject("originalordub", "Original or Dubbed Language", "option", default='all',
                      input_type='radio', options=[ConfigOption("original", "Original"),
@@ -142,7 +142,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                      help_text="What Audio Languages do you want to keep?"),
         ConfigList("audiolanglist", "Audio Language List", objects=[
             ConfigObject("audiolanguages", "Audio Languages", "string_list",
-                         input_type="checkbox", options=language_options_3_letters)],
+                         input_type="checkbox", options=Languages().config_option_3t())],
                    is_section=True, section_link=["plugins", "ripping", "ripper",
                                                   "converter", "audiolanguage"]),
         ConfigObject("audioformat", "Audio Format", "option", default='all',
@@ -179,7 +179,7 @@ Do you want to keep the chapter points?"""),
                      help_text="What subtitles do you want to keep?"),
         ConfigList("subtitleslist", "Subtitle List", objects=[
             ConfigObject("subtitlelanguages", "Subtitle Languages", "string_list",
-                         input_type="checkbox", options=language_options_3_letters)],
+                         input_type="checkbox", options=Languages().config_option_3t())],
                    is_section=True, section_link=["plugins", "ripping", "ripper",
                                                   "converter", "subtitle"]),
         ConfigObject("keepclosedcaptions", "Keep Closed Captions", "boolean", default=True,
