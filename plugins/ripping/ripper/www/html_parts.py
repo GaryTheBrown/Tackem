@@ -103,12 +103,12 @@ def labeler_disctype_start_item(item, icon, magic):
     disc_type_html = disc_type_html.replace("%%STARTTYPE%%", item)
     return disc_type_html
 
-def labeler_disctype_template(label, disc_type_label, rip_data):
+def labeler_disctype_template(label, disc_type_label, rip_data, search=True):
     '''labeler disc type templated section'''
     disc_type_html = get_page("labeler/edit/disctype/template")
     disc_type_html = disc_type_html.replace("%%DISCTYPE%%", disc_type_label)
     disc_type_html = disc_type_html.replace("%%DISCLABEL%%", label)
-    disc_type_html = disc_type_html.replace("%%PANEL%%", rip_data.get_edit_panel())
+    disc_type_html = disc_type_html.replace("%%PANEL%%", rip_data.get_edit_panel(search))
     return disc_type_html
 
 def labeler_tracktype_start():

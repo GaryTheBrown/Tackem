@@ -70,7 +70,7 @@ class DiscType(metaclass=ABCMeta):
         return "<div class=\"onclick topright\" onclick=\"disctype('change');\">(change)</div>"
 
     @abstractmethod
-    def get_edit_panel(self):
+    def get_edit_panel(self, search=True):
         '''returns the edit panel'''
         pass
 
@@ -111,7 +111,7 @@ class MovieDiscType(DiscType):
         super_dict["imdbid"] = self._imdbid
         return super().make_dict(super_dict, no_tracks)
 
-    def get_edit_panel(self):
+    def get_edit_panel(self, search=True):
         '''returns the edit panel'''
         section_html = html_parts.hidden("disc_type", "Movie", True)
         section_html += html_parts.item("info", "Disc Info",
@@ -128,20 +128,22 @@ class MovieDiscType(DiscType):
                                         html_parts.input_box("number", "year", self._year,
                                                              minimum=1888, maximum=max_year),
                                         True)
-        section_html += html_parts.item("blank", "",
-                                        "Search The Movie Database by Name (And year if known)",
-                                        html_parts.input_button("Search By Name",
-                                                                "ButtonSearchMovie();"),
-                                        True)
+        if search:
+            section_html += html_parts.item("blank", "",
+                                            "Search The Movie Database by Name (And year if known)",
+                                            html_parts.input_button("Search By Name",
+                                                                    "ButtonSearchMovie();"),
+                                            True)
         section_html += html_parts.item("imdbid", "IMDB ID",
                                         "Enter the IMDB ID here",
                                         html_parts.input_box("text", "imdbid", self._imdbid),
                                         True)
-        section_html += html_parts.item("blank", "",
-                                        "Search The Movie Database by Name (And year if known)",
-                                        html_parts.input_button("Search By IMDB ID",
-                                                                "ButtonFindMovie();"),
-                                        True)
+        if search:
+            section_html += html_parts.item("blank", "",
+                                            "Search The Movie Database by IMDB ID",
+                                            html_parts.input_button("Search By IMDB ID",
+                                                                    "ButtonFindMovie();"),
+                                            True)
         return html_parts.panel("Movie Information", self._change_section_html(), "", "",
                                 section_html, True)
 
@@ -168,7 +170,7 @@ class TVShowDiscType(DiscType):
         super_dict["tvdbid"] = self._tvdbid
         return super().make_dict(super_dict, no_tracks)
 
-    def get_edit_panel(self):
+    def get_edit_panel(self, search=True):
         '''returns the edit panel'''
         section_html = html_parts.hidden("disc_type", "TV Show", True)
         section_html += html_parts.item("name", "Tv Show Name",

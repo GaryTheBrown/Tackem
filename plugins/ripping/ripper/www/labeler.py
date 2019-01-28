@@ -130,8 +130,9 @@ class Labeler(HTMLTEMPLATE):
                     return self._redirect(self._baseurl + "ripping/ripper/labeler/")
             else:
                 label = rip_data.name()
+            search = self._global_config['scraper']['enabled']
             disc_type_html = html_parts.labeler_disctype_template(label, disc_type_code,
-                                                                  rip_data)
+                                                                  rip_data, search)
 
         if rip_data is not None and rip_data.name() != "":
             disc_type_html = disc_type_html.replace("%%DISCLABEL%%", rip_data.name())
