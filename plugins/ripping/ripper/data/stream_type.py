@@ -57,26 +57,26 @@ class VideoStreamType(StreamType):
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        self.check_hdr(section_info.get("color_space", ""), section_info.get("color_transfer", ""),
-                       section_info.get("color_primaries", ""))
         html = ghtml_parts.hidden(self._var_start() + "type", "video", True)
-
-
-        resolution = str(section_info.get("width", "???")) + "X"
-        resolution += str(section_info.get("height", "???"))
-        temp = section_info.get("r_frame_rate", "1/1").split("/")
-        frame_rate = str(float(int(temp[0]) / int(temp[1])))
-        html = ghtml_parts.quick_table({
-            "Codec Name":section_info.get("codec_long_name", ""),
-            "Codec Profile":section_info.get("profile", ""),
-            "Resolution":resolution,
-            "Aspect Ratio":section_info.get("display_aspect_ratio", ""),
-            "Frame Rate":frame_rate,
-            "Pixel Format":section_info.get("pix_fmt", ""),
-            "Colour Space":section_info.get("color_space", ""),
-            "Colour Transfer":section_info.get("color_transfer", ""),
-            "Colour Primaries":section_info.get("color_primaries", "")
-        })
+        if isinstance(section_info, dict):
+            self.check_hdr(section_info.get("color_space", ""),
+                           section_info.get("color_transfer", ""),
+                           section_info.get("color_primaries", ""))
+            resolution = str(section_info.get("width", "???")) + "X"
+            resolution += str(section_info.get("height", "???"))
+            temp = section_info.get("r_frame_rate", "1/1").split("/")
+            frame_rate = str(float(int(temp[0]) / int(temp[1])))
+            html = ghtml_parts.quick_table({
+                "Codec Name":section_info.get("codec_long_name", ""),
+                "Codec Profile":section_info.get("profile", ""),
+                "Resolution":resolution,
+                "Aspect Ratio":section_info.get("display_aspect_ratio", ""),
+                "Frame Rate":frame_rate,
+                "Pixel Format":section_info.get("pix_fmt", ""),
+                "Colour Space":section_info.get("color_space", ""),
+                "Colour Transfer":section_info.get("color_transfer", ""),
+                "Colour Primaries":section_info.get("color_primaries", "")
+            })
         html += ghtml_parts.item(self._var_start() + "hdr", "HDR",
                                  "Is the Video HDR",
                                  ghtml_parts.checkbox_single("",
@@ -137,21 +137,22 @@ class AudioStreamType(StreamType):
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        html = ghtml_parts.quick_table({
-            "Codec Name":section_info.get("codec_long_name", ""),
-            "Sample Rate":section_info.get("sample_rate", ""),
-            "Channels":section_info.get("channels", ""),
-            "Channel Layout":section_info.get("channel_layout", ""),
-            "Bit Rate":section_info.get("bit_rate", ""),
-            "Language":section_info.get("tags", {}).get("language", ""),
-            "Default":section_info.get("disposition", {}).get("default", ""),
-            "Dubbed":section_info.get("disposition", {}).get("dub", ""),
-            "Original":section_info.get("disposition", {}).get("original", ""),
-            "Commentary":section_info.get("disposition", {}).get("comment", ""),
-            "Karaoke":section_info.get("disposition", {}).get("karaoke", ""),
-            "Visual Impaired":section_info.get("disposition", {}).get("visual_impaired", "")
-        })
-        html += ghtml_parts.hidden(self._var_start() + "type", "audio", True)
+        html = ghtml_parts.hidden(self._var_start() + "type", "audio", True)
+        if isinstance(section_info, dict):
+            html += ghtml_parts.quick_table({
+                "Codec Name":section_info.get("codec_long_name", ""),
+                "Sample Rate":section_info.get("sample_rate", ""),
+                "Channels":section_info.get("channels", ""),
+                "Channel Layout":section_info.get("channel_layout", ""),
+                "Bit Rate":section_info.get("bit_rate", ""),
+                "Language":section_info.get("tags", {}).get("language", ""),
+                "Default":section_info.get("disposition", {}).get("default", ""),
+                "Dubbed":section_info.get("disposition", {}).get("dub", ""),
+                "Original":section_info.get("disposition", {}).get("original", ""),
+                "Commentary":section_info.get("disposition", {}).get("comment", ""),
+                "Karaoke":section_info.get("disposition", {}).get("karaoke", ""),
+                "Visual Impaired":section_info.get("disposition", {}).get("visual_impaired", "")
+            })
         html += ghtml_parts.item(self._var_start() + "dub", "Dubbed Audio",
                                  "Is this a Dubbed Audio Track",
                                  ghtml_parts.checkbox_single("",
@@ -222,14 +223,15 @@ class SubtitleStreamType(StreamType):
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        html = ghtml_parts.quick_table({
-            "Language":section_info.get("tags", {}).get("language", ""),
-            "Default":section_info.get("disposition", {}).get("default", ""),
-            "Forced":section_info.get("disposition", {}).get("forced", ""),
-            "Hearing Impaired":section_info.get("disposition", {}).get("hearing_impaired", ""),
-            "Lyrics":section_info.get("disposition", {}).get("lyrics", "")
-        })
-        html += ghtml_parts.hidden(self._var_start() + "type", "subtitle", True)
+        html = ghtml_parts.hidden(self._var_start() + "type", "subtitle", True)
+        if isinstance(section_info, dict):
+            html += ghtml_parts.quick_table({
+                "Language":section_info.get("tags", {}).get("language", ""),
+                "Default":section_info.get("disposition", {}).get("default", ""),
+                "Forced":section_info.get("disposition", {}).get("forced", ""),
+                "Hearing Impaired":section_info.get("disposition", {}).get("hearing_impaired", ""),
+                "Lyrics":section_info.get("disposition", {}).get("lyrics", "")
+            })
         html += ghtml_parts.item(self._var_start() + "forced", "Forced Subtitle",
                                  "Is this a Forced Subtitle Track",
                                  ghtml_parts.checkbox_single("",
