@@ -453,7 +453,13 @@ def select_box(variable_name, value, options_html, multiple=False, box_size=0, s
         blank_options_html = select_box_option(False, True, True)
     else:
         blank_options_html = ""
-    return html.replace("%%OPTIONS%%", blank_options_html + options_html)
+    if isinstance(options_html, str):
+        return html.replace("%%OPTIONS%%", blank_options_html + options_html)
+    else:
+        options_out_html = ""
+        for option in options_html:
+            options_out_html += option.html_option(value)
+        return html.replace("%%OPTIONS%%", blank_options_html + options_out_html)
 
 ######
 #TAGS#
