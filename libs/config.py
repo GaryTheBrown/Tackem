@@ -94,6 +94,9 @@ CONFIG.append(
         ConfigObject("apikey", "API Key", "string", default='',
                      help_text="""
 The API key for TMDB API access goto http://www.themoviedb.org/ to grab your key"""),
+        ConfigObject("url", "Base Url", "string", default='api.themoviedb.org',
+                     help_text="""
+The API base url for TMDB API access Leave alone unless you need to move this"""),
         ConfigObject("includeadult", "", "boolean", default=False, hide_from_html=True),
         ConfigObject("language", "Language", "option", input_type="dropdown", default='en-GB',
                      options=locale_options, help_text="language to use when scraping the data"),
