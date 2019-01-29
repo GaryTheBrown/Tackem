@@ -78,7 +78,7 @@ class VideoStreamType(StreamType):
                 "Colour Primaries":section_info.get("color_primaries", "")
             })
         html += ghtml_parts.item(self._var_start() + "hdr", "HDR",
-                                 "Is the Video HDR",
+                                 "Is the Video HDR (incase detection of hdr has failed)",
                                  ghtml_parts.checkbox_single("",
                                                              self._var_start() + "hdr",
                                                              self._hdr,
