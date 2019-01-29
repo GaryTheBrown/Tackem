@@ -50,7 +50,7 @@ class VideoTrackType(metaclass=ABCMeta):
             default = stream_data.get("disposition", {}).get("default", 0) == 1
             temp_stream_type = stream_type.make_blank_stream_type(stream_index, stream_type_code,
                                                                   default)
-            html += temp_stream_type.get_edit_panel()
+            html += temp_stream_type.get_edit_panel(stream_data)
         return html_parts.panel("Streams", "", html)
 
     @abstractmethod
