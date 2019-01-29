@@ -152,12 +152,6 @@ class AudioStreamType(StreamType):
             "Visual Impaired":section_info.get("disposition", {}).get("visual_impaired", "")
         })
         html += ghtml_parts.hidden(self._var_start() + "type", "audio", True)
-        html += ghtml_parts.item(self._var_start() + "default", "Default Audio",
-                                 "Is this the Default Audio Track",
-                                 ghtml_parts.checkbox_single("",
-                                                             self._var_start() + "default",
-                                                             self._default),
-                                 True)
         html += ghtml_parts.item(self._var_start() + "dub", "Dubbed Audio",
                                  "Is this a Dubbed Audio Track",
                                  ghtml_parts.checkbox_single("",
@@ -236,12 +230,6 @@ class SubtitleStreamType(StreamType):
             "Lyrics":section_info.get("disposition", {}).get("lyrics", "")
         })
         html += ghtml_parts.hidden(self._var_start() + "type", "subtitle", True)
-        html += ghtml_parts.item(self._var_start() + "default", "Default Subtitle",
-                                 "Is this the Default Subtitle Track",
-                                 ghtml_parts.checkbox_single("",
-                                                             self._var_start() + "default",
-                                                             self._default),
-                                 True)
         html += ghtml_parts.item(self._var_start() + "forced", "Forced Subtitle",
                                  "Is this a Forced Subtitle Track",
                                  ghtml_parts.checkbox_single("",
