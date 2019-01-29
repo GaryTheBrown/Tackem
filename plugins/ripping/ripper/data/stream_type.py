@@ -269,22 +269,22 @@ def make_stream_type(stream_index, stream):
         stream = json.loads(stream)
     if stream is None:
         return None
-    elif stream['video_type'] == "video":
+    elif stream['type'] == "video":
         return VideoStreamType(stream_index, stream['hdr'])
-    elif stream['video_type'] == "audio":
+    elif stream['type'] == "audio":
         return AudioStreamType(stream_index, stream['default'], stream['dub'], stream['original'],
                                stream['comment'], stream['visual_impaired'], stream['karaoke'])
-    elif stream['video_type'] == "subtitle":
+    elif stream['type'] == "subtitle":
         return SubtitleStreamType(stream_index, stream['default'], stream['forced'],
                                   stream['hearing_impaired'], stream['lyrics'])
     return None
 
-def make_blank_stream_type(stream_index, stream_type_code):
+def make_blank_stream_type(stream_index, stream_type_code, default=False):
     '''make the blank stream type'''
     if stream_type_code.lower() == "video":
         return VideoStreamType(stream_index)
     elif stream_type_code.lower() == "audio":
-        return AudioStreamType(stream_index)
+        return AudioStreamType(stream_index, default=default)
     elif stream_type_code.lower() == "subtitle":
-        return SubtitleStreamType(stream_index)
+        return SubtitleStreamType(stream_index, default=default)
     return None

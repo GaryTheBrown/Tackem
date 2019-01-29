@@ -101,6 +101,7 @@ def labeler_disctype_start_item(item, icon, magic):
     disc_type_html = disc_type_html.replace("%%STARTSIZE%%", str(magic))
     disc_type_html = disc_type_html.replace("%%STARTICON%%", icon)
     disc_type_html = disc_type_html.replace("%%STARTTYPE%%", item)
+    disc_type_html = disc_type_html.replace("%%STARTTYPESAFE%%", item.replace(" ", "").lower())
     return disc_type_html
 
 def labeler_disctype_template(label, disc_type_label, rip_data, search=True):

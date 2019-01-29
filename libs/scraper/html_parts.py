@@ -9,7 +9,7 @@ def fail_message(status, reason):
     return html
 
 def movie_page_link(query, page=1, year=None, label=None):
-    '''creates a link for pagination of results'''
+    '''creates a link for pagination of movie results'''
     html = "<a href='#' class='onclick' onclick='SearchMovie("
     html += '"' + query + '"' + ", year="
     if year:
@@ -24,8 +24,8 @@ def movie_page_link(query, page=1, year=None, label=None):
     html += "</a> "
     return html
 
-def movie_info(title, original_title, original_language, overview,
-               release_date, poster_path, image_url, poster_size):
+def search_info(title, original_title, original_language, overview,
+                release_date, poster_path, image_url, poster_size):
     '''creates a movie pane for the search results'''
     html = str(open(os.path.dirname(__file__) + "/html/moviesearchitem.html", "r").read())
     html = html.replace("%%TITLE%%", title)
@@ -37,6 +37,17 @@ def movie_info(title, original_title, original_language, overview,
         html = html.replace("%%POSTERURL%%", image_url + poster_size + poster_path)
     else:
         html = html.replace("%%POSTERURL%%", "")
+    return html
+
+def tvshow_page_link(query, page=1, label=None):
+    '''creates a link for pagination of tv show results'''
+    html = "<a href='#' class='onclick' onclick='SearchTVShow("
+    html += '"' + query + '"' + ", page=" + str(page) + ");'>"
+    if label:
+        html += label
+    else:
+        html += str(page)
+    html += "</a> "
     return html
 
 def yes_no_footer(yes_button, no_button):

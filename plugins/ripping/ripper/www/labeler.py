@@ -90,7 +90,7 @@ class Labeler(HTMLTEMPLATE):
                         track_data = rip_data['tracks'][track_index]
             tracks_html += self._tracktype_section(data['id'], track_index, track_file, track_data)
         edit_html = edit_html.replace("%%TRACKS%%", tracks_html)
-        return self._template(edit_html, javascript="scraper/javascript")
+        return self._template(edit_html, javascript="scraper/ripper/javascript")
 
     @cherrypy.expose
     def editdisctype(self, index=None, disc_type_code=None):
@@ -131,7 +131,11 @@ class Labeler(HTMLTEMPLATE):
             else:
                 label = rip_data.name()
             search = self._global_config['scraper']['enabled']
-            disc_type_html = html_parts.labeler_disctype_template(label, disc_type_code,
+            disc_type_code_label = disc_type_code
+            for key in disc_type.TYPES:
+                if key.replace(" ", "").lower() == disc_type_code:
+                    disc_type_code_label = key
+            disc_type_html = html_parts.labeler_disctype_template(label, disc_type_code_label,
                                                                   rip_data, search)
 
         if rip_data is not None and rip_data.name() != "":
@@ -194,7 +198,9 @@ class Labeler(HTMLTEMPLATE):
             return self._redirect(self._baseurl + "ripping/ripper/labeler/")
         if track_type_code is None:
             return self._redirect(self._baseurl + "ripping/ripper/labeler/")
-        rip_data = json.loads(data['rip_data'])
+        rip_data = {}
+        if data['rip_data'] is not None:
+            rip_data = json.loads(data['rip_data'])
         track_data = None
         if "tracks" in rip_data and isinstance(rip_data["tracks"], list):
             if len(rip_data["tracks"]) >= track_index_int:
@@ -247,7 +253,6 @@ class Labeler(HTMLTEMPLATE):
                         data['tracks'][track_index]["stream"] = [{}] * probe_info.stream_count()
                     variable = "_".join(array[4:])
                     data['tracks'][track_index]["stream"][int(array[3])][variable] = kwargs[item]
-        print(data)
         rip_data = disc_type.make_disc_type(data)
 
         finished = "complete" in kwargs

@@ -46,8 +46,11 @@ class VideoTrackType(metaclass=ABCMeta):
         '''creates the stream sections'''
         html = ""
         for stream_index, stream_type_code in enumerate(ffprobe.get_streams_and_types()):
-            temp_stream_type = stream_type.make_blank_stream_type(stream_index, stream_type_code)
-            html += temp_stream_type.get_edit_panel(ffprobe.get_stream(stream_index))
+            stream_data = ffprobe.get_stream(stream_index)
+            default = stream_data.get("disposition", {}).get("default", 0) == 1
+            temp_stream_type = stream_type.make_blank_stream_type(stream_index, stream_type_code,
+                                                                  default)
+            html += temp_stream_type.get_edit_panel()
         return html_parts.panel("Streams", "", html)
 
     @abstractmethod

@@ -4,7 +4,7 @@ import cherrypy
 from www.first_run import Root as first_run_root
 from www.root import Root as main_root
 from libs.api import API
-from libs.scraper import Scraper
+from libs import scraper
 
 class Httpd():
     '''HTTPD CLASS'''
@@ -53,8 +53,7 @@ class Httpd():
                 cherrypy.tree.mount(API(self._systems, self._plugins, self._config),
                                     baseurl + "api/", conf_api)
             if self._config['scraper']['enabled']:
-                cherrypy.tree.mount(Scraper(self._config),
-                                    baseurl + "scraper/")
+                scraper.mounts(self._config)
 
     def start(self):
         '''Start the server'''
