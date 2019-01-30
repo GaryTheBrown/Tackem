@@ -280,16 +280,15 @@ def make_track_type(track):
     '''transforms the track returned from the DB or API to the classes above'''
     if isinstance(track, str):
         track = json.loads(track)
+    if track is None:
+        return None
     streams = []
     if "streams" in track:
         for stream_index, stream in enumerate(track['streams']):
             temp = stream_type.make_stream_type(stream_index, stream)
-            # print(temp.make_dict())
             streams.append(temp)
 
-    if track is None:
-        return None
-    elif track['video_type'] == "dontrip":
+    if track['video_type'] == "dontrip":
         return DONTRIPTrackType(track['reason'])
     elif track['video_type'] == "movie":
         return MovieTrackType(streams=streams)

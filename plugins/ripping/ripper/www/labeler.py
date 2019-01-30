@@ -257,7 +257,9 @@ class Labeler(HTMLTEMPLATE):
                     if "streams" not in data['tracks'][track_index]:
                         probe_info = FFprobe(self._config['converter']['ffprobelocation'],
                                              file_dir + array[1].zfill(2) + ".mkv")
-                        data['tracks'][track_index]["streams"] = [{}] * probe_info.stream_count()
+                        data['tracks'][track_index]["streams"] = [None] * probe_info.stream_count()
+                    if not data['tracks'][track_index]["streams"][int(array[3])]:
+                        data['tracks'][track_index]["streams"][int(array[3])] = {}
                     variable = "_".join(array[4:])
                     data['tracks'][track_index]["streams"][int(array[3])][variable] = kwargs[item]
 
