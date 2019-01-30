@@ -77,7 +77,6 @@ class Labeler():
 
     def clear_rip_track_data(self, thread_name, db_id, track_id):
         '''Clears the rip data from the database'''
-        print("CLEAR TRACK DATA")
         data = self._db.select_by_row(thread_name, INFO_DB["name"], db_id, ["rip_data"])
         rip_data = json.loads(data['rip_data'])
         if isinstance(rip_data, dict):

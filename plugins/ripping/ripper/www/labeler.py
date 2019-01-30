@@ -75,6 +75,7 @@ class Labeler(HTMLTEMPLATE):
         edit_html = edit_html.replace("%%DISCID%%", str(data['id']))
 
         #tracks here
+        tracks = disc_info.tracks()
         file_location = self._config['locations']['videoripping']
         if file_location[0] != "/":
             file_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
@@ -84,13 +85,12 @@ class Labeler(HTMLTEMPLATE):
         tracks_html = ""
         for track_index, track_file in enumerate(track_files):
             track_data = None
-            if rip_data is not None:
-                if "tracks" in rip_data and isinstance(rip_data['tracks'], list):
-                    if len(rip_data['tracks']) >= track_index:
-                        track_data = rip_data['tracks'][track_index]
+            if tracks:
+                track_data = tracks[track_index]
             tracks_html += self._tracktype_section(data['id'], track_index, track_file, track_data)
         edit_html = edit_html.replace("%%TRACKS%%", tracks_html)
-        return self._template(edit_html, javascript="scraper/ripper/javascript")
+        return self._template(edit_html, javascript=["scraper/ripper/javascript",
+                                                     "config_javascript"])
 
     @cherrypy.expose
     def editdisctype(self, index=None, disc_type_code=None):
@@ -175,9 +175,7 @@ class Labeler(HTMLTEMPLATE):
         if track_data is None:
             section_html = html_parts.labeler_tracktype_start()
         else:
-            section_html = self._edit_track_type_work(track_data, track_data['video_type'],
-                                                      probe_info)
-
+            section_html = track_data.get_edit_panel(probe_info)
         track_panel = html_parts.panel(panel_head_html, "track_" + str(track_index), section_html)
         track_panel = track_panel.replace("%%TRACKINDEX%%", str(track_index))
         return track_panel
@@ -223,12 +221,18 @@ class Labeler(HTMLTEMPLATE):
         elif track_data is None:
             track_data = video_track_type.make_blank_track_type(track_type_code)
             return track_data.get_edit_panel(probe_info)
-        return video_track_type.make_track_type(track_data).get_edit_panel(probe_info)
+        if isinstance(track_data, dict):
+            return video_track_type.make_track_type(track_data).get_edit_panel(probe_info)
+        return track_data.get_edit_panel(probe_info)
 
     @cherrypy.expose
     def editsave(self, **kwargs):
         '''saves the disc type'''
-        #first sort the tracks here
+        for key in kwargs:
+            if kwargs[key] == "True":
+                kwargs[key] = True
+            if kwargs[key] == "False":
+                kwargs[key] = False
         file_location = self._config['locations']['videoripping']
         if file_location[0] != "/":
             file_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
@@ -247,12 +251,13 @@ class Labeler(HTMLTEMPLATE):
                 if array[2] != "stream":
                     data['tracks'][track_index]["_".join(array[2:])] = kwargs[item]
                 else:
-                    if "stream" not in data['tracks'][track_index]:
+                    if "streams" not in data['tracks'][track_index]:
                         probe_info = FFprobe(self._config['converter']['ffprobelocation'],
                                              file_dir + array[1].zfill(2) + ".mkv")
                         data['tracks'][track_index]["stream"] = [{}] * probe_info.stream_count()
                     variable = "_".join(array[4:])
-                    data['tracks'][track_index]["stream"][int(array[3])][variable] = kwargs[item]
+                    data['tracks'][track_index]["streams"][int(array[3])][variable] = kwargs[item]
+
         rip_data = disc_type.make_disc_type(data)
 
         finished = "complete" in kwargs

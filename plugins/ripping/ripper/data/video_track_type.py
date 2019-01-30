@@ -20,6 +20,8 @@ class VideoTrackType(metaclass=ABCMeta):
             self._video_type = video_type
         if isinstance(streams, list):
             self._streams = streams
+        else:
+            self._streams = []
 
     def video_type(self):
         '''returns the type'''
@@ -34,6 +36,13 @@ class VideoTrackType(metaclass=ABCMeta):
         if super_dict is None:
             super_dict = {}
         super_dict["video_type"] = self._video_type
+        stream_list = []
+        for stream in self._streams:
+            if stream is None:
+                stream_list.append(None)
+            else:
+                stream_list.append(stream.make_dict())
+        super_dict["streams"] = stream_list
         return super_dict
 
     def _change_section_html(self, track):
@@ -47,10 +56,11 @@ class VideoTrackType(metaclass=ABCMeta):
         html = ""
         for stream_index, stream_type_code in enumerate(ffprobe.get_streams_and_types()):
             stream_data = ffprobe.get_stream(stream_index)
-            default = stream_data.get("disposition", {}).get("default", 0) == 1
-            temp_stream_type = stream_type.make_blank_stream_type(stream_index, stream_type_code,
-                                                                  default)
-            html += temp_stream_type.get_edit_panel(stream_data)
+            if self._streams:
+                html += self._streams[stream_index].get_edit_panel(stream_data)
+            else:
+                stream_type = stream_type.make_blank_stream_type(stream_index, stream_type_code)
+                html += stream_type.get_edit_panel(stream_data)
         return html_parts.panel("Streams", "", html)
 
     @abstractmethod
@@ -271,9 +281,11 @@ def make_track_type(track):
     if isinstance(track, str):
         track = json.loads(track)
     streams = []
-    if "stream" in track:
-        for stream_index, stream in enumerate(track['stream']):
-            streams.append(stream_type.make_stream_type(stream_index, stream))
+    if "streams" in track:
+        for stream_index, stream in enumerate(track['streams']):
+            temp = stream_type.make_stream_type(stream_index, stream)
+            # print(temp.make_dict())
+            streams.append(temp)
 
     if track is None:
         return None

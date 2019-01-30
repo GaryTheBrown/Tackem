@@ -57,7 +57,7 @@ class VideoStreamType(StreamType):
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        html = ghtml_parts.hidden(self._var_start() + "type", "video", True)
+        html = ghtml_parts.hidden(self._var_start() + "stream_type", "video", True)
         if isinstance(section_info, dict):
             self.check_hdr(section_info.get("color_space", ""),
                            section_info.get("color_transfer", ""),
@@ -66,7 +66,7 @@ class VideoStreamType(StreamType):
             resolution += str(section_info.get("height", "???"))
             temp = section_info.get("r_frame_rate", "1/1").split("/")
             frame_rate = str(float(int(temp[0]) / int(temp[1])))
-            html = ghtml_parts.quick_table({
+            html += ghtml_parts.quick_table({
                 "Codec Name":section_info.get("codec_long_name", ""),
                 "Codec Profile":section_info.get("profile", ""),
                 "Resolution":resolution,
@@ -89,19 +89,14 @@ class VideoStreamType(StreamType):
 
 class AudioStreamType(StreamType):
     '''Other Types'''
-    def __init__(self, stream_index, default=False, dub=False, original=False, comment=False,
+    def __init__(self, stream_index, dub=False, original=False, comment=False,
                  visual_impaired=False, karaoke=False):
         super().__init__("audio", stream_index)
-        self._default = default
         self._dub = dub
         self._original = original
         self._comment = comment
         self._visual_impaired = visual_impaired
         self._karaoke = karaoke
-
-    def default(self):
-        '''return default'''
-        return self._default
 
     def dub(self):
         '''return dub'''
@@ -127,7 +122,6 @@ class AudioStreamType(StreamType):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["default"] = self._default
         super_dict["dub"] = self._dub
         super_dict["original"] = self._original
         super_dict["comment"] = self._comment
@@ -137,7 +131,7 @@ class AudioStreamType(StreamType):
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        html = ghtml_parts.hidden(self._var_start() + "type", "audio", True)
+        html = ghtml_parts.hidden(self._var_start() + "stream_type", "audio", True)
         if isinstance(section_info, dict):
             html += ghtml_parts.quick_table({
                 "Codec Name":section_info.get("codec_long_name", ""),
@@ -187,17 +181,12 @@ class AudioStreamType(StreamType):
 
 class SubtitleStreamType(StreamType):
     '''Other Types'''
-    def __init__(self, stream_index, default=False, forced=False, hearing_impaired=False,
+    def __init__(self, stream_index, forced=False, hearing_impaired=False,
                  lyrics=False):
         super().__init__("subtitle", stream_index)
-        self._default = default
         self._forced = forced
         self._hearing_impaired = hearing_impaired
         self._lyrics = lyrics
-
-    def default(self):
-        '''return default'''
-        return self._default
 
     def forced(self):
         '''return forced'''
@@ -215,7 +204,6 @@ class SubtitleStreamType(StreamType):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["default"] = self._default
         super_dict["forced"] = self._forced
         super_dict["hearing_impaired"] = self._hearing_impaired
         super_dict["lyrics"] = self._lyrics
@@ -223,7 +211,7 @@ class SubtitleStreamType(StreamType):
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        html = ghtml_parts.hidden(self._var_start() + "type", "subtitle", True)
+        html = ghtml_parts.hidden(self._var_start() + "stream_type", "subtitle", True)
         if isinstance(section_info, dict):
             html += ghtml_parts.quick_table({
                 "Language":section_info.get("tags", {}).get("language", ""),
@@ -257,24 +245,29 @@ def make_stream_type(stream_index, stream):
     '''transforms the stream returned from the DB or API to the classes above'''
     if isinstance(stream, str):
         stream = json.loads(stream)
+    for key in stream:
+        if stream[key] == "True":
+            stream[key] = True
+        if stream[key] == "False":
+            stream[key] = False
     if stream is None:
         return None
-    elif stream['type'] == "video":
+    elif stream['stream_type'] == "video":
         return VideoStreamType(stream_index, stream['hdr'])
-    elif stream['type'] == "audio":
-        return AudioStreamType(stream_index, stream['default'], stream['dub'], stream['original'],
+    elif stream['stream_type'] == "audio":
+        return AudioStreamType(stream_index, stream['dub'], stream['original'],
                                stream['comment'], stream['visual_impaired'], stream['karaoke'])
-    elif stream['type'] == "subtitle":
-        return SubtitleStreamType(stream_index, stream['default'], stream['forced'],
+    elif stream['stream_type'] == "subtitle":
+        return SubtitleStreamType(stream_index, stream['forced'],
                                   stream['hearing_impaired'], stream['lyrics'])
     return None
 
-def make_blank_stream_type(stream_index, stream_type_code, default=False):
+def make_blank_stream_type(stream_index, stream_type_code):
     '''make the blank stream type'''
     if stream_type_code.lower() == "video":
         return VideoStreamType(stream_index)
     elif stream_type_code.lower() == "audio":
-        return AudioStreamType(stream_index, default=default)
+        return AudioStreamType(stream_index)
     elif stream_type_code.lower() == "subtitle":
-        return SubtitleStreamType(stream_index, default=default)
+        return SubtitleStreamType(stream_index)
     return None
