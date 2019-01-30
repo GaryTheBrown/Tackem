@@ -289,7 +289,7 @@ def make_track_type(track):
             streams.append(temp)
 
     if track['video_type'] == "dontrip":
-        return DONTRIPTrackType(track['reason'])
+        return DONTRIPTrackType(track.get('reason', ""))
     elif track['video_type'] == "movie":
         return MovieTrackType(streams=streams)
     elif track['video_type'] == "tvshow":
