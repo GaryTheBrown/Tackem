@@ -220,9 +220,11 @@ def make_disc_type(data):
         for track in data['tracks']:
             tracks.append(track_type.make_track_type(track))
     if data['disc_type'].replace(" ", "").lower() == "movie":
-        return MovieDiscType(data['name'], data['info'], data['year'], data['imdbid'], tracks)
+        return MovieDiscType(data.get('name', ""), data.get('info', ""), data.get('year', ""),
+                             data.get('imdbid', ""), tracks)
     if data['disc_type'].replace(" ", "").lower() == "tvshow":
-        return TVShowDiscType(data['name'], data['info'], data['tvdbid'], tracks)
+        return TVShowDiscType(data.get('name', ""), data.get('info', ""),
+                              data.get('tvdbid', ""), tracks)
     return None
 
 def make_blank_disc_type(disc_type_code):

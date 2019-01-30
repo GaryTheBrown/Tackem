@@ -147,3 +147,36 @@ def labeler_tracktype_template(track_index, rip_data):
     track_type_html = track_type_html.replace("%%PANEL%%", rip_data.get_edit_panel())
     track_type_html = track_type_html.replace("%%TRACKINDEX%%", str(track_index))
     return track_type_html
+
+def stream_panel(ffprobeinfo, options):
+    '''panel for the stream info'''
+    html = get_page("labeler/edit/tracktype/streampanel")
+    html = html.replace("%%FFPROBEINFO%%", _ffprobe_info_panel(ffprobeinfo))
+    html = html.replace("%%PANELOPTIONS%%", options)
+    return html
+
+def _ffprobe_info_panel(data):
+    '''generates the ffprobe info panel for the stream section'''
+    html = '<div class="row border mb-2">'
+    for key in data:
+        html += '<div class="col-sm-4 col-6 border-right font-weight-bold">' + key + '</div>'
+        html += '<div class="col-sm-8 col-6">' + str(data[key]) + '</div>'
+    html += '</div>'
+    return html
+
+def item(variable_name, label, help_text, input_html, not_in_config=False):
+    ''' The whole section for each Config Object'''
+    html = get_page("labeler/edit/tracktype/item")
+    html = html.replace("%%VARNAME%%", variable_name)
+    if label != "":
+        html = html.replace("%%LABEL%%", label)
+    else:
+        html = html.replace("%%LABEL%%:", "")
+    if isinstance(help_text, str):
+        html = html.replace("%%HELP%%", help_text)
+    else:
+        html = html.replace("%%HELP%%", '')
+    html = html.replace("%%INPUT%%", input_html)
+    if not_in_config:
+        html = html.replace("cs_", "")
+    return html

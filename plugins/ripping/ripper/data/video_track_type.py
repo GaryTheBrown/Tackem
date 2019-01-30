@@ -293,13 +293,13 @@ def make_track_type(track):
     elif track['video_type'] == "movie":
         return MovieTrackType(streams=streams)
     elif track['video_type'] == "tvshow":
-        return TVShowTrackType(track['season'], track['episode'], streams=streams)
+        return TVShowTrackType(track.get('season', ""), track.get('episode', ""), streams=streams)
     elif track['video_type'] == "trailer":
-        return TrailerTrackType(track['info'], streams=streams)
+        return TrailerTrackType(track.get('info', ""), streams=streams)
     elif track['video_type'] == "extra":
-        return ExtraTrackType(track['name'], streams=streams)
+        return ExtraTrackType(track.get('name', ""), streams=streams)
     elif track['video_type'] == "other":
-        return OtherTrackType(track['other_type'], streams=streams)
+        return OtherTrackType(track.get('other_type', ""), streams=streams)
     return None
 
 def make_blank_track_type(track_type_code):
