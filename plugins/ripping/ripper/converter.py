@@ -89,6 +89,6 @@ def create_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
                 "info_id":info_id,
                 "filename":file_name,
                 "disc_info":disc_info,
-                "rip_data":json.dumps(track.__dict__)
+                "rip_data":json.dumps(track.make_dict())
             }
             sql.insert(thread_name, CONVERT_DB["name"], to_save)
