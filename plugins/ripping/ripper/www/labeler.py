@@ -61,6 +61,7 @@ class Labeler(HTMLTEMPLATE):
         edit_html = html_parts.get_page("labeler/edit/edit", self._system)
         edit_html += ghtml_parts.search_modal()
         visibility = ""
+        disc_info = None
         if data['rip_data'] is None:
             rip_data = None
             disc_type_html = self._edit_disc_type_work(data, 'change')
@@ -75,7 +76,9 @@ class Labeler(HTMLTEMPLATE):
         edit_html = edit_html.replace("%%DISCID%%", str(data['id']))
 
         #tracks here
-        tracks = disc_info.tracks()
+        tracks = None
+        if disc_info:
+            tracks = disc_info.tracks()
         file_location = self._config['locations']['videoripping']
         if file_location[0] != "/":
             file_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
@@ -254,7 +257,7 @@ class Labeler(HTMLTEMPLATE):
                     if "streams" not in data['tracks'][track_index]:
                         probe_info = FFprobe(self._config['converter']['ffprobelocation'],
                                              file_dir + array[1].zfill(2) + ".mkv")
-                        data['tracks'][track_index]["stream"] = [{}] * probe_info.stream_count()
+                        data['tracks'][track_index]["streams"] = [{}] * probe_info.stream_count()
                     variable = "_".join(array[4:])
                     data['tracks'][track_index]["streams"][int(array[3])][variable] = kwargs[item]
 
