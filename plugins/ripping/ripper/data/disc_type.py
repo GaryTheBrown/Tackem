@@ -61,6 +61,7 @@ class DiscType(metaclass=ABCMeta):
             super_dict = {}
         super_dict["disc_type"] = self._disc_type
         super_dict["info"] = self._info
+        super_dict["language"] = self._language
         if not no_tracks:
             track_list = []
             for track in self._tracks:
