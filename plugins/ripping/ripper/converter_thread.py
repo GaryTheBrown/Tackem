@@ -2,28 +2,29 @@
 import threading
 import os
 import os.path
+import time
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
 from .ffprobe import FFprobe
 
 class ConverterThread():
     '''Master Section for the Converter controller'''
-    def __init__(self, sql_id, disc_uuid, filename, disc_info, rip_data, config, db, tasks_sema):
-        self._id = sql_id
-        self._disc_uuid = disc_uuid
-        self._filename = filename
-        self._disc_info = disc_info
-        self._rip_data = rip_data
+    def __init__(self, item, config, db, tasks_sema):
+        self._id = item['id']
+        self._filename = item['filename']
+        self._disc_info = item['disc_info']
+        self._track_info = item['track_info']
         self._config = config
         self._db = db
         self._tasks_sema = tasks_sema
         self._thread = threading.Thread(target=self.run, args=())
-        self._thread_name = "Converter Task " + str(sql_id)
+        self._thread_name = "Converter Task " + str(self._id)
         self._thread.setName(self._thread_name)
+        self._thread_run = False
         self._task_done = False
         self._sql_row_id = self._db.table_has_row(self._thread_name,
                                                   CONVERT_DB["name"],
-                                                  {"id":sql_id})
+                                                  {"id":self._id})
 
     def task_done(self):
         '''returns if the task is done'''
@@ -34,24 +35,45 @@ class ConverterThread():
 ##########
     def start_thread(self):
         '''start the thread'''
-        with self._tasks_sema:
-            print("Starting Converter Task " + str(id))
-            self._thread.start()
+        self._thread.start()
+        self._thread_run = True
+
+    def stop_thread(self):
+        '''stop the thread'''
+        if self._thread.is_alive():
+            self._thread_run = False
+            self._thread.join()
 
 ##########
 ##Script##
 ##########
     def run(self):
         ''' Loops through the standard converter function'''
-        #actions here
+        self._tasks_sema.acquire()
+        if not self._thread_run:
+            return
+        command = self._create_command()
+        if command is None:
+            self._thread_run = False
+        if not self._thread_run:
+            return
+        print("CONVERTER", self._id, ":COMMAND:", command)
+        #run converter here with above command
+        time.sleep(5.0)
+        self._task_done = True
+        self._tasks_sema.release()
+
+    def _create_command(self):
+        '''creates the conversion command here'''
+                #actions here
         temp_location = self._config['locations']['videoripping']
         if temp_location[0] != "/":
             temp_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
         infile = temp_location + self._filename
-        outfile = temp_location + self._filename + ".NEW"
+        outfile = temp_location + self._filename + ".NEW.mkv"
         if not os.path.exists(infile):
             print("ERROR:" + infile + " missing")
-            return # PROBLEM HERE AS IN FILE MISSING
+            return None# PROBLEM HERE AS IN FILE MISSING
         if os.path.exists(outfile):
             os.remove(outfile)
 
@@ -66,6 +88,11 @@ class ConverterThread():
         if con_config['videoinserttags']:
             #Deal with tagging here
             #https://kodi.wiki/view/Video_file_tagging#Title
+            # “title”
+            # “description”
+            # “language”
+
+            #-metadata title="Track #5" 
             pass
 
         #Deal with chapters here
@@ -76,19 +103,29 @@ class ConverterThread():
             else:
                 command.append("-1")
 
+        #video is HDR stuff bellow
+        #https://forum.doom9.org/showthread.php?t=175227
+        #-pix_fmt yuv420p10le
+        # -vf scale=out_color_matrix=bt2020:out_h_chr_pos=0:out_v_chr_pos=0,format=yuv420p10
+        # -c:v libx265 -preset medium
+        # -x265-params :colorprim=bt2020:transfer=smpte-st-2048:colormatrix=bt2020nc:master-display=
+        # "G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L(12000000,200)":max-cll=
+        # 0,0:repeat-headers
+        # -c:a copy -max_muxing_queue_size 4096 "Sample_HDR-encode.mkv"
+
         #Deal with video resolution here
-        config_video_max_height = con_config["videoresolution"]
-        video_info = probe_info.get_video_info()
-        video_height = video_info[0]['height']
-        if config_video_max_height != "keep":
-            if config_video_max_height == "sd": #576 or 480
-                if video_height > 576: # PAL spec resolution
-                    command.append("-vf")
-                    command.append("scale=-2:480")
-            else: # HD videos Here
-                if video_height > config_video_max_height:
-                    command.append("-vf")
-                    command.append("scale=-2:" + config_video_max_height)
+        # config_video_max_height = con_config["videoresolution"]
+        # video_info = probe_info.get_video_info()
+        # video_height = video_info[0]['height']
+        # if config_video_max_height != "keep":
+        #     if config_video_max_height == "sd": #576 or 480
+        #         if video_height > 576: # PAL spec resolution
+        #             command.append("-vf")
+        #             command.append("scale=-2:480")
+        #     else: # HD videos Here
+        #         if video_height > config_video_max_height:
+        #             command.append("-vf")
+        #             command.append("scale=-2:" + config_video_max_height)
 
         #Deal with video codec here
 
@@ -97,7 +134,7 @@ class ConverterThread():
         # audio_tracks_to_keep = []
         # audio_tracks_to_remove = []
         # commentary_tracks = []
-        # commentary_track = self._rip_data.commentary_track()
+        # commentary_track = self._track_data.commentary_track()
         # if commentary_track:
         #     if isinstance(commentary_track, int):
         #         for count, stream in enumerate(audio_info):
@@ -128,7 +165,6 @@ class ConverterThread():
         #Deal with subtitles here
         #forced & hearing_impared(closed captions)
 
-        #do conversion
         #https://github.com/senko/python-video-converter/ <-- use as a starting point
         #https://ffmpeg.org/ffmpeg.html
         # ffmpeg -i "infile" -map 0:v? -map 0:a? -map 0:s? "outfile"
@@ -140,11 +176,15 @@ class ConverterThread():
         #https://ffmpeg.org/pipermail/ffmpeg-user/2016-August/033183.html
         #then work through each stream and copy or drop depending on settings
         #how to detect HDR https://video.stackexchange.com/questions/22059/how-to-identify-hdr-video
-        os.rename(infile, infile + ".OLD")
-        os.rename(outfile, infile)
-        os.remove(infile + ".OLD")
-        self._db.update(self._thread_name,
-                        CONVERT_DB["name"],
-                        self._sql_row_id, {"converted":True})
-        self._task_done = True
-        print("Finished Converter Task " + str(id))
+        return command
+
+    def _do_conversion(self, command):
+        '''method to convert file'''
+        pass
+
+        # os.rename(infile, infile + ".OLD")
+        # os.rename(outfile, infile)
+        # os.remove(infile + ".OLD")
+        # self._db.update(self._thread_name,
+        #                 CONVERT_DB["name"],
+        #                 self._sql_row_id, {"converted":True})

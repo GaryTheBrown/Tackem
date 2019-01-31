@@ -10,7 +10,7 @@ VIDEO_CONVERT_DB_INFO = {
             Column("info_id", "integer", not_null=True),
             Column("filename", "text", not_null=True),
             Column("disc_info", "json"),
-            Column("rip_data", "json"),
+            Column("track_data", "json"),
             Column("converted", "bit", not_null=True, default=False),
         ],
     "version": 1
