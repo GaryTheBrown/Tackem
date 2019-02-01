@@ -238,7 +238,7 @@ def make_disc_type(data):
 def make_blank_disc_type(disc_type_code):
     '''make the blank disc type'''
     if disc_type_code.replace(" ", "").lower() == "movie":
-        return MovieDiscType("", "", 0, "", None, "eng", "")
+        return MovieDiscType("", "", 0, "", None, "en", "")
     elif disc_type_code.replace(" ", "").lower() == "tvshow":
-        return TVShowDiscType("", "", "", None, "eng", "")
+        return TVShowDiscType("", "", "", None, "en", "")
     return None
