@@ -102,7 +102,7 @@ class ConverterThread():
 
                 if track_type == "movie":
                     tags.append('title="' + self._disc_info.name() + '"')
-                    tags.append('year=' + self._disc_info.year())
+                    tags.append('year=' + str(self._disc_info.year()))
 
             elif disc_type == "TV Show":
                 tags.append('show="' + self._disc_info.name() + '"')
@@ -111,8 +111,8 @@ class ConverterThread():
                                                                       self._track_info.season(),
                                                                       self._track_info.episode())
                     scraper_data = scraper_info['response']
-                    tags.append('season=' + self._track_info.season())
-                    tags.append('episode=' + self._track_info.episode())
+                    tags.append('season=' + str(self._track_info.season()))
+                    tags.append('episode=' + str(self._track_info.episode()))
                     tags.append('title="' + scraper_data['name'] + '"')
                 elif track_type == "extra":
                     tags.append('title="' + self._track_info.name() + '"')
