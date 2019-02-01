@@ -142,9 +142,11 @@ class Labeler(HTMLTEMPLATE):
                                                                   rip_data, search)
 
         if rip_data is not None and rip_data.name() != "":
-            disc_type_html = disc_type_html.replace("%%DISCLABEL%%", rip_data.name())
+            label = rip_data.name().replace("_", " ")
+            disc_type_html = disc_type_html.replace("%%DISCLABEL%%", label)
         else:
-            disc_type_html = disc_type_html.replace("%%DISCLABEL%%", data['label'])
+            label = data['label'].replace("_", " ")
+            disc_type_html = disc_type_html.replace("%%DISCLABEL%%", label)
         disc_type_html = disc_type_html.replace("%%DISCID%%", str(data['id']))
         return disc_type_html
 
@@ -264,7 +266,6 @@ class Labeler(HTMLTEMPLATE):
                     data['tracks'][track_index]["streams"][int(array[3])][variable] = kwargs[item]
 
         rip_data = disc_type.make_disc_type(data)
-
         finished = "complete" in kwargs
         self._system.get_labeler().set_data("WWW" + cherrypy.request.remote.ip, kwargs['discid'],
                                             rip_data, finished)

@@ -101,11 +101,10 @@ class DiscType(metaclass=ABCMeta):
     def _get_edit_panel_bottom(self, search=True):
         '''returns the edit panel'''
         html = ""
-        html += html_parts.item("originallanguage", "Original Language",
+        html += html_parts.item("language", "Original Language",
                                 "Choose the Original Language here",
-                                html_parts.select_box("originallanguage", self._language,
-                                                      Languages().config_option_2(),
-                                                      disabled=search),
+                                html_parts.select_box("language", self._language,
+                                                      Languages().config_option_2()),
                                 True)
         return html
 class MovieDiscType(DiscType):
@@ -115,8 +114,8 @@ class MovieDiscType(DiscType):
         current_year = int(datetime.date.today().year)
         if year == 0:
             self._year = ""
-        elif year >= 1888 and year <= current_year:
-            self._year = year
+        elif int(year) >= 1888 and int(year) <= current_year:
+            self._year = int(year)
         elif year < 1888:
             self._year = 1888
         elif year > current_year:
@@ -228,11 +227,11 @@ def make_disc_type(data):
             tracks.append(track_type.make_track_type(track))
     if data['disc_type'].replace(" ", "").lower() == "movie":
         return MovieDiscType(data.get('name', ""), data.get('info', ""), data.get('year', ""),
-                             data.get('imdbid', ""), tracks, data.get('language', "eng"),
+                             data.get('imdbid', ""), tracks, data.get('language', "en"),
                              data.get('moviedbid', ""))
     if data['disc_type'].replace(" ", "").lower() == "tvshow":
         return TVShowDiscType(data.get('name', ""), data.get('info', ""),
-                              data.get('tvdbid', ""), tracks, data.get('language', "eng"),
+                              data.get('tvdbid', ""), tracks, data.get('language', "en"),
                               data.get('moviedbid', ""))
     return None
 
