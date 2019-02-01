@@ -3,19 +3,21 @@ import threading
 import time
 import json
 from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
+from .data.disc_type import make_disc_type
 from .data.video_track_type import make_track_type
 from .converter_thread import ConverterThread
 from .data.events import RipperEvents
 
 class Converter():
     '''Master Section for the Converter controller'''
-    def __init__(self, config, db):
+    def __init__(self, config, root_config, db):
         self._config = config
         self._db = db
+        self._root_config = root_config
         self._thread_name = "Converter"
         self._thread = threading.Thread(target=self.run, args=())
         self._thread.setName(self._thread_name)
-        self._thread_run = True
+        self._thread_run = False
 
         self._max_thread_count = self._config['converter']['threadcount']
         self._thread_count = 0
@@ -30,6 +32,7 @@ class Converter():
     def start_thread(self):
         '''start the thread'''
         if not self._thread.is_alive():
+            self._thread_run = True
             self._thread.start()
             return True
         return False
@@ -45,6 +48,7 @@ class Converter():
 ##########
     def run(self):
         ''' Loops through the standard converter function'''
+        list_of_ids = []
         while self._thread_run:
             check = {"converted":False}
             return_data = self._db.select(self._thread_name, CONVERT_DB["name"], check)
@@ -55,36 +59,44 @@ class Converter():
                 elif isinstance(return_data, dict):
                     data.append(return_data)
                 for item in data:
-                    item['disc_info'] = json.loads(item['disc_info'])
-                    item['track_info'] = json.loads(item['track_info'])
-                    self._tasks.append(ConverterThread(item, self._config, self._db,
-                                                       self._tasks_sema))
-                print("TASKS:", len(self._tasks))
+                    if item['id'] not in list_of_ids:
+                        item['disc_info'] = make_disc_type(json.loads(item['disc_info']))
+                        item['track_info'] = make_track_type(json.loads(item['track_info']))
+                        self._tasks.append(ConverterThread(item, self._config, self._root_config,
+                                                           self._db, self._tasks_sema))
+                        list_of_ids.append(item['id'])
 
                 if not self._thread_run:
                     return
                 for task in self._tasks:
                     task.start_thread()
 
-                while self._tasks:
-                    i = 0
-                    count = len(self._tasks)
-                    while i < count:
-                        if self._tasks[i].task_done():
-                            del self._tasks[i]
-                            count -= 1
-                        else:
-                            i += 1
-                        if not self._thread_run:
-                            return
-                print("TASKS FINISHED")
+                if not self._task_do_loop():
+                    return
 
-            self._thread_run = False
-            # if not self._thread_run:
-            #     return
-            # RipperEvents().converter.clear()
-            # RipperEvents().converter.wait()
-            # time.sleep(1.0)
+            # self._thread_run = False
+            if not self._thread_run:
+                return
+            RipperEvents().converter.clear()
+            RipperEvents().converter.wait()
+            time.sleep(1.0)
+
+    def _task_do_loop(self):
+        '''loop through the tasks till done'''
+        while self._tasks:
+            i = 0
+            count = len(self._tasks)
+            while i < count:
+                if self._tasks[i].task_done():
+                    del self._tasks[i]
+                    count -= 1
+                else:
+                    i += 1
+                if not self._thread_run:
+                    for task in self._tasks:
+                        task.stop_thread()
+                    return False
+        return True
 
 def create_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
     '''Function to add tracks to Convertor DB'''
@@ -97,6 +109,6 @@ def create_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
                 "info_id":info_id,
                 "filename":file_name,
                 "disc_info":disc_info,
-                "track_data":json.dumps(track.make_dict())
+                "track_info":json.dumps(track.make_dict())
             }
             sql.insert(thread_name, CONVERT_DB["name"], to_save)

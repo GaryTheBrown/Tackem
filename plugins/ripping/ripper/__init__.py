@@ -243,7 +243,7 @@ class Plugin(PluginBaseClass):
             drive.start_thread()
 
         if self._config['converter']['enabled']:
-            self._converter = Converter(self._config, self._db)
+            self._converter = Converter(self._config, self._root_config, self._db)
             self._converter.start_thread()
 
         print("START RENAMER THREAD")

@@ -4,17 +4,19 @@ import os
 import os.path
 import time
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from libs.scraper.scraper_base import Scraper
 from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
 from .ffprobe import FFprobe
 
 class ConverterThread():
     '''Master Section for the Converter controller'''
-    def __init__(self, item, config, db, tasks_sema):
+    def __init__(self, item, config, root_config, db, tasks_sema):
         self._id = item['id']
         self._filename = item['filename']
         self._disc_info = item['disc_info']
         self._track_info = item['track_info']
         self._config = config
+        self._root_config = root_config
         self._db = db
         self._tasks_sema = tasks_sema
         self._thread = threading.Thread(target=self.run, args=())
@@ -22,8 +24,7 @@ class ConverterThread():
         self._thread.setName(self._thread_name)
         self._thread_run = False
         self._task_done = False
-        self._sql_row_id = self._db.table_has_row(self._thread_name,
-                                                  CONVERT_DB["name"],
+        self._sql_row_id = self._db.table_has_row(self._thread_name, CONVERT_DB["name"],
                                                   {"id":self._id})
 
     def task_done(self):
@@ -35,8 +36,8 @@ class ConverterThread():
 ##########
     def start_thread(self):
         '''start the thread'''
-        self._thread.start()
         self._thread_run = True
+        self._thread.start()
 
     def stop_thread(self):
         '''stop the thread'''
@@ -51,11 +52,13 @@ class ConverterThread():
         ''' Loops through the standard converter function'''
         self._tasks_sema.acquire()
         if not self._thread_run:
+            self._tasks_sema.release()
             return
         command = self._create_command()
         if command is None:
             self._thread_run = False
         if not self._thread_run:
+            self._tasks_sema.release()
             return
         print("CONVERTER", self._id, ":COMMAND:", command)
         #run converter here with above command
@@ -70,7 +73,7 @@ class ConverterThread():
         if temp_location[0] != "/":
             temp_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
         infile = temp_location + self._filename
-        outfile = temp_location + self._filename + ".NEW.mkv"
+        outfile = temp_location + self._filename.replace(".mkv", "") + ".NEW.mkv"
         if not os.path.exists(infile):
             print("ERROR:" + infile + " missing")
             return None# PROBLEM HERE AS IN FILE MISSING
@@ -83,17 +86,46 @@ class ConverterThread():
         command = []
         command.append(con_config['ffmpeglocation']) # ffmpeg program
         command.append("-i")
-        command.append('"' + self._filename + '"')
+        command.append('"' + infile + '"')
 
+        #TODO GRAB DATA FROM SCRAPER AND FILL IN TAGS BELLOW FOR EACH PART
         if con_config['videoinserttags']:
+            scraper = Scraper(self._root_config)
+            disc_type = self._disc_info.disc_type()
+            track_type = self._track_info.video_type()
+            tags = []
+            scraper_data = None
+            if disc_type == "Movie":
+                scraper_info = scraper.get_movie_details(self._disc_info.moviedbid())
+                if scraper_info['success']:
+                    scraper_data = scraper_info['response']
+
+                if track_type == "movie":
+                    tags.append('title="' + self._disc_info.name() + '"')
+                    tags.append('year=' + self._disc_info.year())
+
+            elif disc_type == "TV Show":
+                tags.append('show="' + self._disc_info.name() + '"')
+                if track_type == "tvshow":
+                    scraper_info = scraper.get_tvshow_episode_details(self._disc_info.moviedbid(),
+                                                                      self._track_info.season(),
+                                                                      self._track_info.episode())
+                    scraper_data = scraper_info['response']
+                    tags.append('season=' + self._track_info.season())
+                    tags.append('episode=' + self._track_info.episode())
+                    tags.append('title="' + scraper_data['name'] + '"')
+                elif track_type == "extra":
+                    tags.append('title="' + self._track_info.name() + '"')
+
+            tags.append('language="' + self._disc_info.language() + '"')
+
+            for tag in tags:
+                command.append('-metadata')
+                command.append(tag)
             #Deal with tagging here
             #https://kodi.wiki/view/Video_file_tagging#Title
-            # “title”
-            # “description”
-            # “language”
 
-            #-metadata title="Track #5" 
-            pass
+
 
         #Deal with chapters here
         if probe_info.has_chapters():
@@ -176,6 +208,8 @@ class ConverterThread():
         #https://ffmpeg.org/pipermail/ffmpeg-user/2016-August/033183.html
         #then work through each stream and copy or drop depending on settings
         #how to detect HDR https://video.stackexchange.com/questions/22059/how-to-identify-hdr-video
+
+        command.append('"' + outfile + '"')
         return command
 
     def _do_conversion(self, command):
