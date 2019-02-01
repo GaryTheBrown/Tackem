@@ -104,7 +104,8 @@ class DiscType(metaclass=ABCMeta):
         html += html_parts.item("language", "Original Language",
                                 "Choose the Original Language here",
                                 html_parts.select_box("language", self._language,
-                                                      Languages().config_option_2()),
+                                                      Languages().config_option_2(),
+                                                      disabled=search),
                                 True)
         return html
 class MovieDiscType(DiscType):
