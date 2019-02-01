@@ -78,8 +78,8 @@ def labeler_items(data, baseurl, vertical=False):
     '''returns the group of labeler items html'''
     group_html = str(open(DIR + 'labeler/group.html', "r").read())
     data_html = ""
-    for item in data:
-        data_html += labeler_item(item, baseurl, vertical)
+    for d_item in data:
+        data_html += labeler_item(d_item, baseurl, vertical)
     if vertical:
         group_html = group_html.replace("%%LAYOUT%%", "true/")
     else:
@@ -91,17 +91,17 @@ def labeler_disctype_start():
     disc_type_html = get_page("labeler/edit/disctype/start")
     magic = 3
     item_html = ""
-    for item in disc_type.TYPES:
-        item_html += labeler_disctype_start_item(item, disc_type.TYPES[item], magic)
+    for d_item in disc_type.TYPES:
+        item_html += labeler_disctype_start_item(d_item, disc_type.TYPES[item], magic)
     return disc_type_html.replace("%%STARTLINKS%%", item_html)
 
-def labeler_disctype_start_item(item, icon, magic):
+def labeler_disctype_start_item(d_item, icon, magic):
     '''labeler disc type starting section'''
     disc_type_html = get_page("labeler/edit/disctype/startitem")
     disc_type_html = disc_type_html.replace("%%STARTSIZE%%", str(magic))
     disc_type_html = disc_type_html.replace("%%STARTICON%%", icon)
-    disc_type_html = disc_type_html.replace("%%STARTTYPE%%", item)
-    disc_type_html = disc_type_html.replace("%%STARTTYPESAFE%%", item.replace(" ", "").lower())
+    disc_type_html = disc_type_html.replace("%%STARTTYPE%%", d_item)
+    disc_type_html = disc_type_html.replace("%%STARTTYPESAFE%%", d_item.replace(" ", "").lower())
     return disc_type_html
 
 def labeler_disctype_template(label, disc_type_label, rip_data, search=True):
@@ -117,16 +117,16 @@ def labeler_tracktype_start():
     track_type_html = get_page("labeler/edit/tracktype/start")
     magic = 2
     item_html = ""
-    for item in video_track_type.TYPES:
-        item_html += labeler_tracktype_start_item(item, video_track_type.TYPES[item], magic)
+    for d_item in video_track_type.TYPES:
+        item_html += labeler_tracktype_start_item(d_item, video_track_type.TYPES[item], magic)
     return track_type_html.replace("%%STARTLINKS%%", item_html)
 
-def labeler_tracktype_start_item(item, icon, magic):
+def labeler_tracktype_start_item(d_item, icon, magic):
     '''labeler track type starting section'''
     track_type_html = get_page("labeler/edit/tracktype/startitem")
     track_type_html = track_type_html.replace("%%STARTSIZE%%", str(magic))
     track_type_html = track_type_html.replace("%%STARTICON%%", icon)
-    track_type_html = track_type_html.replace("%%STARTTYPE%%", item)
+    track_type_html = track_type_html.replace("%%STARTTYPE%%", d_item)
     return track_type_html
 
 def panel(panel_head, section_name, section_html):
