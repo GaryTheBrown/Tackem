@@ -12,6 +12,13 @@ class Scraper():
         self._conn = http.client.HTTPSConnection(config['scraper']['url'])
         self._image_config = self._configuration()
 
+###########
+##GETTERS##
+###########
+    def image_base(self):
+        '''returns the base address for the image'''
+        return self._image_config['secure_base_url']
+
 #############
 ##SHORTCUTS##
 #############
@@ -83,6 +90,12 @@ class Scraper():
         '''returns the full tv show details'''
         command = "/3/tv/" + str(tvshow_id) + "?" + self._base(adult=False)
         command += "&append_to_response=external_ids"
+        return self._get_request(command)
+
+    def get_tvshow_episode_details(self, tvshow_id, season, episode):
+        '''returns the full tv show details'''
+        command = "/3/tv/" + str(tvshow_id) + "/season/" + str(season) + "/episode/" + str(episode)
+        command += "?" + self._base(adult=False)
         return self._get_request(command)
 
 ############
