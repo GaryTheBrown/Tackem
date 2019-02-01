@@ -57,6 +57,7 @@ function PopulateMovie(id){
 				$('#disctypesection').find('input[name="year"]').val(item['response']['release_date'].substring(0, 4));
 				$('#disctypesection').find('input[name="imdbid"]').val(item['response']['imdb_id']);
 				$('#disctypesection').find('select[name="originallanguage"]').val(item['response']['original_language']);
+				$('#disctypesection').find('input[name="moviedbid"]').val(item['response']['id']);
 				 
 			}
 		}
@@ -90,6 +91,7 @@ function PopulateTVShow(id){
 				$('#disctypesection').find('input[name="name"]').val(item['response']['name']);
 				$('#disctypesection').find('input[name="tvdbid"]').val(item['response']['external_ids']['tvdb_id']);
 				$('#disctypesection').find('select[name="originallanguage"]').val(item['response']['original_language']);
+				$('#disctypesection').find('input[name="moviedbid"]').val(item['response']['id']);
 			}
 		}
 	})

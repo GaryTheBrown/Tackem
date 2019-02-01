@@ -11,7 +11,7 @@ TYPES = {"Movie":"film",
 
 class DiscType(metaclass=ABCMeta):
     '''Master Disc Type'''
-    def __init__(self, disc_type, name, info, tracks, language):
+    def __init__(self, disc_type, name, info, tracks, language, moviedbid):
         if disc_type in TYPES:
             self._disc_type = disc_type
         self._name = name
@@ -24,6 +24,7 @@ class DiscType(metaclass=ABCMeta):
             self._language = language
         else:
             self._language = "en"
+        self._moviedbid = moviedbid
 
     def disc_type(self):
         '''returns the type'''
@@ -45,6 +46,10 @@ class DiscType(metaclass=ABCMeta):
         '''returns the discs main language'''
         return self._language
 
+    def moviedbid(self):
+        '''returns the moviedbid'''
+        return self._moviedbid
+
     def set_track(self, track_id, track):
         '''sets the tracks'''
         if self._tracks is not None:
@@ -55,6 +60,7 @@ class DiscType(metaclass=ABCMeta):
         if self._tracks is not None and isinstance(tracks, list):
             self._tracks = tracks
 
+    @abstractmethod
     def make_dict(self, super_dict=None, no_tracks=False):
         '''returns the tracks'''
         if super_dict is None:
@@ -62,6 +68,7 @@ class DiscType(metaclass=ABCMeta):
         super_dict["disc_type"] = self._disc_type
         super_dict["info"] = self._info
         super_dict["language"] = self._language
+        super_dict['moviedbid'] = self._moviedbid
         if not no_tracks:
             track_list = []
             for track in self._tracks:
@@ -83,7 +90,8 @@ class DiscType(metaclass=ABCMeta):
 
     def _get_edit_panel_top(self):
         '''returns the edit panel'''
-        html = ""
+        html = html_parts.hidden("disc_type", self._disc_type, True)
+        html += html_parts.hidden("moviedbid", self._moviedbid, True)
         html += html_parts.item("info", "Temp Disc Info",
                                 "Put some useful info in here for use during renaming",
                                 html_parts.input_box("text", "info", self._info),
@@ -102,8 +110,8 @@ class DiscType(metaclass=ABCMeta):
         return html
 class MovieDiscType(DiscType):
     '''Movie Disc Type'''
-    def __init__(self, name, info, year, imdbid, tracks, language="eng"):
-        super().__init__("Movie", name, info, tracks, language)
+    def __init__(self, name, info, year, imdbid, tracks, language="eng", moviedbid=""):
+        super().__init__("Movie", name, info, tracks, language, moviedbid)
         current_year = int(datetime.date.today().year)
         if year == 0:
             self._year = ""
@@ -134,8 +142,7 @@ class MovieDiscType(DiscType):
 
     def get_edit_panel(self, search=True):
         '''returns the edit panel'''
-        html = html_parts.hidden("disc_type", "Movie", True)
-        html += super()._get_edit_panel_top()
+        html = super()._get_edit_panel_top()
         html += html_parts.item("name", "Movie Title",
                                 "Enter the name of the movie here",
                                 html_parts.input_box("text", "name", self._name),
@@ -168,8 +175,8 @@ class MovieDiscType(DiscType):
 
 class TVShowDiscType(DiscType):
     '''TV Show Disc Type'''
-    def __init__(self, name, info, tvdbid, tracks, language="eng"):
-        super().__init__("TV Show", name, info, tracks, language)
+    def __init__(self, name, info, tvdbid, tracks, language="eng", moviedbid=""):
+        super().__init__("TV Show", name, info, tracks, language, moviedbid)
         self._tvdbid = tvdbid
 
     def tvdbid(self):
@@ -186,8 +193,7 @@ class TVShowDiscType(DiscType):
 
     def get_edit_panel(self, search=True):
         '''returns the edit panel'''
-        html = html_parts.hidden("disc_type", "TV Show", True)
-        html += super()._get_edit_panel_top()
+        html = super()._get_edit_panel_top()
         html += html_parts.item("name", "TV Show Name",
                                 "Enter the name of the TV Show here",
                                 html_parts.input_box("text", "name", self._name),
@@ -222,16 +228,18 @@ def make_disc_type(data):
             tracks.append(track_type.make_track_type(track))
     if data['disc_type'].replace(" ", "").lower() == "movie":
         return MovieDiscType(data.get('name', ""), data.get('info', ""), data.get('year', ""),
-                             data.get('imdbid', ""), tracks)
+                             data.get('imdbid', ""), tracks, data.get('language', "eng"),
+                             data.get('moviedbid', ""))
     if data['disc_type'].replace(" ", "").lower() == "tvshow":
         return TVShowDiscType(data.get('name', ""), data.get('info', ""),
-                              data.get('tvdbid', ""), tracks)
+                              data.get('tvdbid', ""), tracks, data.get('language', "eng"),
+                              data.get('moviedbid', ""))
     return None
 
 def make_blank_disc_type(disc_type_code):
     '''make the blank disc type'''
     if disc_type_code.replace(" ", "").lower() == "movie":
-        return MovieDiscType("", "", 0, "", None)
+        return MovieDiscType("", "", 0, "", None, "eng", "")
     elif disc_type_code.replace(" ", "").lower() == "tvshow":
-        return TVShowDiscType("", "", "", None)
+        return TVShowDiscType("", "", "", None, "eng", "")
     return None
