@@ -12,7 +12,7 @@ from ..data import video_track_type
 from ..ffprobe import FFprobe
 
 class Labeler(HTMLTEMPLATE):
-    '''LABELER OF PLUGINS WEBUI HERE'''
+    '''LABELER WEBUI'''
     @cherrypy.expose
     def index(self):
         '''index of plugin'''
@@ -41,7 +41,7 @@ class Labeler(HTMLTEMPLATE):
 
     @cherrypy.expose
     def getids(self):
-        '''index of Drives'''
+        '''index of discs to label'''
         return json.dumps(self._system.get_labeler().get_ids("WWW" + cherrypy.request.remote.ip))
 
     @cherrypy.expose

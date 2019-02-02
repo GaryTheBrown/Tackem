@@ -4,7 +4,7 @@ from libs.html_template import HTMLTEMPLATE
 from . import html_parts
 
 class Drives(HTMLTEMPLATE):
-    '''ROOT OF PLUGINS WEBUI HERE'''
+    '''DRIVES WEBUI'''
     @cherrypy.expose
     def index(self):
         '''index of Drives'''
