@@ -16,7 +16,7 @@ def mounts(key, systems, plugins, config):
     root.labeler = Labeler("Ripper Labeler", key, systems, plugins, config,
                            base_stylesheet=stylesheet)
     root.converter = Converter("Ripper Converter", key, systems, plugins, config,
-                           base_stylesheet=stylesheet)
+                               base_stylesheet=stylesheet)
     cherrypy.tree.mount(root,
                         config.get("webui", {}).get("baseurl", "/") + key.replace(" ", "/") + "/",
                         cfg(config))
