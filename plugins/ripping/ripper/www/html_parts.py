@@ -180,3 +180,19 @@ def item(variable_name, label, help_text, input_html, not_in_config=False):
     if not_in_config:
         html = html.replace("cs_", "")
     return html
+
+def converter_item(data):
+    '''return html for converter item'''
+    item_html = str(open(DIR + 'converter/quickitem.html', "r").read())
+    item_html = item_html.replace("%%ITEMID%%", str(data['id']))
+    item_html = item_html.replace("%%DISCID%%", str(data['discid']))
+    item_html = item_html.replace("%%TRACKID%%", str(data['trackid']))
+    return item_html
+
+def converter_items(data):
+    '''returns the group of converter items html'''
+    group_html = str(open(DIR + 'converter/group.html', "r").read())
+    data_html = ""
+    for d_item in data:
+        data_html += converter_item(d_item)
+    return group_html.replace("%%ITEMS%%", data_html)

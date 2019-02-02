@@ -1,0 +1,29 @@
+<div id="convertergroup">%%ITEMS%%</div>
+<script type="text/javascript">
+	var converterTimer = setInterval(function() {
+		$.ajax('%%BASEURL%%ripping/ripper/converter/getids/', {
+			dataType: 'json',
+			success: function(result) {
+				for (id in result){
+					if ($('#converter_item' + result[id]).length == 0){
+						$.ajax('%%BASEURL%%ripping/ripper/converter/single/' + result[id] + '/', {
+							success: function(newitem) {
+								$('#convertergroup').append(newitem);
+							}
+						})
+					}
+				}
+				$('[id^="converter_item"]').each(function( index ) {
+					id = parseInt($( this ).attr('id').replace('converter_item',''));
+					if (!result.includes(id)){
+						$(this).remove()
+					}
+					
+				});
+			},
+			error: function(){
+				clearTimeout(converterTimer);
+			}
+		})
+	}, 1000);
+</script>

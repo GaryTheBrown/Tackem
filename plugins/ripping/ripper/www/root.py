@@ -12,7 +12,9 @@ class Root(HTMLTEMPLATE):
         root_html = html_parts.get_page("root/index", False)
         root_html = root_html.replace("%%DRIVES%%", html_parts.drives(self._system.get_drives(),
                                                                       self._config['drives'], True))
-        data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
-        labeler_html = html_parts.labeler_items(data, baseurl, True)
-        root_html = root_html.replace("%%LABELERS%%", labeler_html)
+        labeler_data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
+        root_html = root_html.replace("%%LABELERS%%", html_parts.labeler_items(labeler_data,
+                                                                               baseurl, True))
+        converter_data = self._system.get_converter().get_data()
+        root_html = root_html.replace("%%CONVERTERS%%", html_parts.converter_items(converter_data))
         return self._template(root_html)

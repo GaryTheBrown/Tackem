@@ -25,6 +25,26 @@ class Converter():
         self._tasks_sema = threading.Semaphore(self._max_thread_count)
         self._tasks = []
 
+        self._list_of_running_ids = []
+
+###########
+##GETTERS##
+###########
+    def get_quick_data(self):
+        '''returns the data as dict for html'''
+        return [task.get_data() for task in self._tasks]
+
+    def get_data_ids(self):
+        '''returns the data as dict for html'''
+        return [task.get_id() for task in self._tasks]
+
+    def get_quick_data_by_id(self, task_id):
+        '''returns the data as dict for html'''
+        for task in self._tasks:
+            if task.get_id() == task_id:
+                return task.get_quick_data()
+        return None
+
 ##########
 ##Thread##
 ##########
@@ -48,7 +68,6 @@ class Converter():
 ##########
     def run(self):
         ''' Loops through the standard converter function'''
-        list_of_ids = []
         while self._thread_run:
             check = {"converted":False}
             return_data = self._db.select(self._thread_name, CONVERT_DB["name"], check)
@@ -59,12 +78,12 @@ class Converter():
                 elif isinstance(return_data, dict):
                     data.append(return_data)
                 for item in data:
-                    if item['id'] not in list_of_ids:
+                    if item['id'] not in self._list_of_running_ids:
                         item['disc_info'] = make_disc_type(json.loads(item['disc_info']))
                         item['track_info'] = make_track_type(json.loads(item['track_info']))
                         self._tasks.append(ConverterThread(item, self._config, self._root_config,
                                                            self._db, self._tasks_sema))
-                        list_of_ids.append(item['id'])
+                        self._list_of_running_ids.append(item['id'])
 
                 if not self._thread_run:
                     return

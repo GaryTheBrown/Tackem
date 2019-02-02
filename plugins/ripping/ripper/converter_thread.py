@@ -26,10 +26,29 @@ class ConverterThread():
         self._task_done = False
         self._sql_row_id = self._db.table_has_row(self._thread_name, CONVERT_DB["name"],
                                                   {"id":self._id})
+        self._command = []
 
     def task_done(self):
         '''returns if the task is done'''
         return self._task_done
+
+###########
+##GETTERS##
+###########
+
+    def get_id(self):
+        '''returns the ID'''
+        return self._id
+
+    def get_quick_data(self):
+        '''returns the data as dict for html'''
+        file_name_split = self._filename.replace(".mkv", "").split("/")
+        return_dict = {
+            'id': self._id,
+            'discid': int(file_name_split[0]),
+            'trackid': int(file_name_split[1])
+        }
+        return return_dict
 
 ##########
 ##Thread##
@@ -60,9 +79,7 @@ class ConverterThread():
         if not self._thread_run:
             self._tasks_sema.release()
             return
-        print("CONVERTER", self._id, ":COMMAND:", command)
         #run converter here with above command
-        time.sleep(5.0)
         self._task_done = True
         self._tasks_sema.release()
 
@@ -76,19 +93,17 @@ class ConverterThread():
         outfile = temp_location + self._filename.replace(".mkv", "") + ".NEW.mkv"
         if not os.path.exists(infile):
             print("ERROR:" + infile + " missing")
-            return None# PROBLEM HERE AS IN FILE MISSING
+            return False# PROBLEM HERE AS IN FILE MISSING
         if os.path.exists(outfile):
             os.remove(outfile)
 
         con_config = self._config['converter']
         probe_info = FFprobe(con_config['ffprobelocation'], self._filename)
 
-        command = []
-        command.append(con_config['ffmpeglocation']) # ffmpeg program
-        command.append("-i")
-        command.append('"' + infile + '"')
+        self._command.append(con_config['ffmpeglocation']) # ffmpeg program
+        self._command.append("-i")
+        self._command.append('"' + infile + '"')
 
-        #TODO GRAB DATA FROM SCRAPER AND FILL IN TAGS BELLOW FOR EACH PART
         if con_config['videoinserttags']:
             scraper = Scraper(self._root_config)
             disc_type = self._disc_info.disc_type()
@@ -120,8 +135,8 @@ class ConverterThread():
             tags.append('language="' + self._disc_info.language() + '"')
 
             for tag in tags:
-                command.append('-metadata')
-                command.append(tag)
+                self._command.append('-metadata')
+                self._command.append(tag)
             #Deal with tagging here
             #https://kodi.wiki/view/Video_file_tagging#Title
 
@@ -129,11 +144,11 @@ class ConverterThread():
 
         #Deal with chapters here
         if probe_info.has_chapters():
-            command.append("-map_chapters")
+            self._command.append("-map_chapters")
             if con_config['keepchapters']:
-                command.append("0")
+                self._command.append("0")
             else:
-                command.append("-1")
+                self._command.append("-1")
 
         #video is HDR stuff bellow
         #https://forum.doom9.org/showthread.php?t=175227
@@ -152,12 +167,12 @@ class ConverterThread():
         # if config_video_max_height != "keep":
         #     if config_video_max_height == "sd": #576 or 480
         #         if video_height > 576: # PAL spec resolution
-        #             command.append("-vf")
-        #             command.append("scale=-2:480")
+        #             self._command.append("-vf")
+        #             self._command.append("scale=-2:480")
         #     else: # HD videos Here
         #         if video_height > config_video_max_height:
-        #             command.append("-vf")
-        #             command.append("scale=-2:" + config_video_max_height)
+        #             self._command.append("-vf")
+        #             self._command.append("scale=-2:" + config_video_max_height)
 
         #Deal with video codec here
 
@@ -192,8 +207,8 @@ class ConverterThread():
 
 
         #create audio map list here with disposition info where needed matching new track numbering
-        # command.append("-disposition:a:" + count)
-        # command.append("comment")
+        # self._command.append("-disposition:a:" + count)
+        # self._command.append("comment")
         #Deal with subtitles here
         #forced & hearing_impared(closed captions)
 
@@ -209,8 +224,8 @@ class ConverterThread():
         #then work through each stream and copy or drop depending on settings
         #how to detect HDR https://video.stackexchange.com/questions/22059/how-to-identify-hdr-video
 
-        command.append('"' + outfile + '"')
-        return command
+        self._command.append('"' + outfile + '"')
+        return True
 
     def _do_conversion(self, command):
         '''method to convert file'''

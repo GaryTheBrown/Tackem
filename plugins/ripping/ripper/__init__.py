@@ -273,3 +273,7 @@ class Plugin(PluginBaseClass):
     def get_labeler(self):
         '''returns the labeler system'''
         return self._labeler
+
+    def get_converter(self):
+        '''returns the converter system'''
+        return self._converter
