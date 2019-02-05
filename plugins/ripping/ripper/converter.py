@@ -32,7 +32,7 @@ class Converter():
 ###########
     def get_quick_data(self):
         '''returns the data as dict for html'''
-        return [task.get_data() for task in self._tasks]
+        return [task.get_quick_data() for task in self._tasks]
 
     def get_data_ids(self):
         '''returns the data as dict for html'''
@@ -81,6 +81,11 @@ class Converter():
                     if item['id'] not in self._list_of_running_ids:
                         item['disc_info'] = make_disc_type(json.loads(item['disc_info']))
                         item['track_info'] = make_track_type(json.loads(item['track_info']))
+
+                        #TEMP HDR SKIPPER
+                        if item['track_info'].hdr():
+                            continue
+
                         self._tasks.append(ConverterThread(item, self._config, self._root_config,
                                                            self._db, self._tasks_sema))
                         self._list_of_running_ids.append(item['id'])

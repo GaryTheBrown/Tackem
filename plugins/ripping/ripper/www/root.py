@@ -15,6 +15,6 @@ class Root(HTMLTEMPLATE):
         labeler_data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
         root_html = root_html.replace("%%LABELERS%%", html_parts.labeler_items(labeler_data,
                                                                                baseurl, True))
-        converter_data = self._system.get_converter().get_data()
+        converter_data = self._system.get_converter().get_quick_data()
         root_html = root_html.replace("%%CONVERTERS%%", html_parts.converter_items(converter_data))
         return self._template(root_html)

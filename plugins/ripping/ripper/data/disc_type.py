@@ -108,6 +108,7 @@ class DiscType(metaclass=ABCMeta):
                                                       disabled=search),
                                 True)
         return html
+
 class MovieDiscType(DiscType):
     '''Movie Disc Type'''
     def __init__(self, name, info, year, imdbid, tracks, language="eng", moviedbid=""):

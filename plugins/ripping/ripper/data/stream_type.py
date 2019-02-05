@@ -8,20 +8,30 @@ from ..www import html_parts
 class StreamType(metaclass=ABCMeta):
     '''Master Type'''
     _types = ["video", "audio", "subtitle"]
-    def __init__(self, stream_type, stream_index):
+    def __init__(self, stream_type, stream_index, label):
         if stream_type in self._types:
             self._stream_type = stream_type
         self._stream_index = stream_index
+        self._label = label
 
     def stream_type(self):
         '''returns the type'''
         return self._stream_type
+
+    def stream_index(self):
+        '''returns the index'''
+        return self._stream_index
+
+    def label(self):
+        '''return label'''
+        return self._label
 
     def make_dict(self, super_dict=None):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
         super_dict["stream_type"] = self._stream_type
+        super_dict["label"] = self._label
         return super_dict
 
     def _var_start(self):
@@ -35,34 +45,19 @@ class StreamType(metaclass=ABCMeta):
 
 class VideoStreamType(StreamType):
     '''Other Types'''
-    def __init__(self, stream_index, hdr=False):
-        super().__init__("video", stream_index)
-        self._hdr = hdr
-        self._hdr_lock = False
-    def hdr(self):
-        '''return hdr'''
-        return self._hdr
-
-    def check_hdr(self, space, transfer, primaries):
-        '''checks and sets the HDR option'''
-        if "bt2020" in space and transfer == "smpte2084" and primaries == "bt2020":
-            self._hdr = True
-            self._hdr_lock = True
+    def __init__(self, stream_index, label=""):
+        super().__init__("video", stream_index, label)
 
     def make_dict(self, super_dict=None):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["hdr"] = self._hdr
         return super().make_dict(super_dict)
 
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
         ffprobeinfo = {}
         if isinstance(section_info, dict):
-            self.check_hdr(section_info.get("color_space", ""),
-                           section_info.get("color_transfer", ""),
-                           section_info.get("color_primaries", ""))
             resolution = str(section_info.get("width", "???")) + "X"
             resolution += str(section_info.get("height", "???"))
             temp = section_info.get("r_frame_rate", "1/1").split("/")
@@ -79,14 +74,11 @@ class VideoStreamType(StreamType):
                 "Colour Primaries":section_info.get("color_primaries", "")
             }
         html = ghtml_parts.hidden(self._var_start() + "stream_type", "video", True)
-        html += html_parts.item(self._var_start() + "hdr", "HDR",
-                                "Is the Video HDR (incase detection of hdr has failed)",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "hdr",
-                                                            self._hdr,
-                                                            read_only=self._hdr_lock,
-                                                            disabled=self._hdr_lock),
-                                True)
+        html += ghtml_parts.item(self._var_start() + "label", "Label",
+                                 "Label of the Subtitles",
+                                 ghtml_parts.input_box("text", self._var_start() + "label",
+                                                       self._label),
+                                 True)
         stream_panel_html = html_parts.stream_panel(ffprobeinfo, html)
         return html_parts.panel(str(self._stream_index) + ". Video Section", "",
                                 stream_panel_html)
@@ -95,13 +87,12 @@ class AudioStreamType(StreamType):
     '''Other Types'''
     def __init__(self, stream_index, dub=False, original=False, comment=False,
                  visual_impaired=False, karaoke=False, label="", duplicate=False):
-        super().__init__("audio", stream_index)
+        super().__init__("audio", stream_index, label)
         self._dub = dub
         self._original = original
         self._comment = comment
         self._visual_impaired = visual_impaired
         self._karaoke = karaoke
-        self._label = label
         self._duplicate = duplicate
 
     def dub(self):
@@ -124,10 +115,6 @@ class AudioStreamType(StreamType):
         '''return karaoke'''
         return self._karaoke
 
-    def label(self):
-        '''return label'''
-        return self._label
-
     def duplicate(self):
         '''return if duplicate stream'''
         return self._duplicate
@@ -141,7 +128,6 @@ class AudioStreamType(StreamType):
         super_dict["comment"] = self._comment
         super_dict["visual_impaired"] = self._visual_impaired
         super_dict["karaoke"] = self._karaoke
-        super_dict["label"] = self._label
         super_dict["duplicate"] = self._duplicate
         return super().make_dict(super_dict)
 
@@ -197,17 +183,17 @@ class AudioStreamType(StreamType):
                                                             self._var_start() + "karaoke",
                                                             self._karaoke),
                                 True)
-        html += ghtml_parts.item(self._var_start() + "label", "Label",
-                                 "Label of the Subtitles",
-                                 ghtml_parts.input_box("text", self._var_start() + "label",
-                                                       self._label),
-                                 True)
         html += html_parts.item(self._var_start() + "duplicate", "Duplicate",
                                 "Is this a Duplicate Audio Track?",
                                 ghtml_parts.checkbox_single("",
                                                             self._var_start() + "duplicate",
                                                             self._duplicate),
                                 True)
+        html += ghtml_parts.item(self._var_start() + "label", "Label",
+                                 "Label of the Subtitles",
+                                 ghtml_parts.input_box("text", self._var_start() + "label",
+                                                       self._label),
+                                 True)
         stream_panel_html = html_parts.stream_panel(ffprobeinfo, html)
         return html_parts.panel(str(self._stream_index) + ". Audio Section", "",
                                 stream_panel_html)
@@ -215,12 +201,12 @@ class AudioStreamType(StreamType):
 class SubtitleStreamType(StreamType):
     '''Other Types'''
     def __init__(self, stream_index, forced=False, hearing_impaired=False,
-                 lyrics=False, label="", duplicate=False):
-        super().__init__("subtitle", stream_index)
+                 lyrics=False, label="", duplicate=False, comment=False):
+        super().__init__("subtitle", stream_index, label)
         self._forced = forced
         self._hearing_impaired = hearing_impaired
+        self._comment = comment
         self._lyrics = lyrics
-        self._label = label
         self._duplicate = duplicate
 
     def forced(self):
@@ -231,13 +217,13 @@ class SubtitleStreamType(StreamType):
         '''return hearing_impaired'''
         return self._hearing_impaired
 
+    def comment(self):
+        '''return comment'''
+        return self._comment
+
     def lyrics(self):
         '''return lyrics'''
         return self._lyrics
-
-    def label(self):
-        '''return label'''
-        return self._label
 
     def duplicate(self):
         '''return if duplicate'''
@@ -249,8 +235,8 @@ class SubtitleStreamType(StreamType):
             super_dict = {}
         super_dict["forced"] = self._forced
         super_dict["hearing_impaired"] = self._hearing_impaired
+        super_dict["comment"] = self._comment
         super_dict["lyrics"] = self._lyrics
-        super_dict["label"] = self._label
         super_dict["duplicate"] = self._duplicate
         return super().make_dict(super_dict)
 
@@ -266,6 +252,7 @@ class SubtitleStreamType(StreamType):
                 "Forced":bool(section_info.get("disposition", {}).get("forced", "")),
                 "Hearing Impaired":bool(section_info.get("disposition", {}).get("hearing_impaired",
                                                                                 "")),
+                "Commentary":bool(section_info.get("disposition", {}).get("comment", "")),
                 "Lyrics":bool(section_info.get("disposition", {}).get("lyrics", ""))
             }
 
@@ -289,17 +276,23 @@ class SubtitleStreamType(StreamType):
                                                             self._var_start() + "lyrics",
                                                             self._lyrics),
                                 True)
-        html += ghtml_parts.item(self._var_start() + "label", "Label",
-                                 "Label of the Subtitles",
-                                 ghtml_parts.input_box("text", self._var_start() + "label",
-                                                       self._label),
-                                 True)
+        html += html_parts.item(self._var_start() + "comment", "Comment Track",
+                                "Is this a Commentary Subtitle Track",
+                                ghtml_parts.checkbox_single("",
+                                                            self._var_start() + "comment",
+                                                            self._comment),
+                                True)
         html += html_parts.item(self._var_start() + "duplicate", "Duplicate",
                                 "Is this a Duplicate Subtitle Track?",
                                 ghtml_parts.checkbox_single("",
                                                             self._var_start() + "duplicate",
                                                             self._duplicate),
                                 True)
+        html += ghtml_parts.item(self._var_start() + "label", "Label",
+                                 "Label of the Subtitles",
+                                 ghtml_parts.input_box("text", self._var_start() + "label",
+                                                       self._label),
+                                 True)
         stream_panel_html = html_parts.stream_panel(ffprobeinfo, html)
         return html_parts.panel(str(self._stream_index) + ". Subtitle Section", "",
                                 stream_panel_html)
@@ -316,17 +309,24 @@ def make_stream_type(stream_index, stream):
     if stream is None:
         return None
     elif stream['stream_type'] == "video":
-        return VideoStreamType(stream_index, stream.get('hdr', False))
+        return VideoStreamType(stream_index)
     elif stream['stream_type'] == "audio":
-        return AudioStreamType(stream_index, stream.get('dub', False),
-                               stream.get('original', False), stream.get('comment', False),
-                               stream.get('visual_impaired', False), stream.get('karaoke', False),
-                               stream.get('label', ""), stream.get('duplicate', ""))
+        return AudioStreamType(stream_index,
+                               dub=stream.get('dub', False),
+                               original=stream.get('original', False),
+                               comment=stream.get('comment', False),
+                               visual_impaired=stream.get('visual_impaired', False),
+                               karaoke=stream.get('karaoke', False),
+                               label=stream.get('label', ""),
+                               duplicate=stream.get('duplicate', ""))
     elif stream['stream_type'] == "subtitle":
-        return SubtitleStreamType(stream_index, stream.get('forced', False),
-                                  stream.get('hearing_impaired', False),
-                                  stream.get('lyrics', False), stream.get('label', ""),
-                                  stream.get('duplicate', ""))
+        return SubtitleStreamType(stream_index,
+                                  forced=stream.get('forced', False),
+                                  hearing_impaired=stream.get('hearing_impaired', False),
+                                  lyrics=stream.get('lyrics', False),
+                                  label=stream.get('label', ""),
+                                  duplicate=stream.get('duplicate', False),
+                                  comment=stream.get('comment', False))
     return None
 
 def make_blank_stream_type(stream_index, stream_type_code):
