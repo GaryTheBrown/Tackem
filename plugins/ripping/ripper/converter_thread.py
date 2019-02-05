@@ -7,6 +7,7 @@ from libs.scraper.scraper_base import Scraper
 from libs.data.languages import Languages
 from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
 from .ffprobe import FFprobe
+from .presets import get_video_preset_command
 
 class ConverterThread():
     '''Master Section for the Converter controller'''
@@ -106,7 +107,6 @@ class ConverterThread():
         self._command.append('"' + self._infile + '"')
 
         #Deal with tagging here
-        #https://kodi.wiki/view/Video_file_tagging#Title
         if self._conf['videoinserttags']:
             scraper = Scraper(self._root_config)
             disc_type = self._disc_info.disc_type()
@@ -173,6 +173,7 @@ class ConverterThread():
                 map_links[index] = new_count
                 new_count += 1
 
+        #Add metadata and dispositions for each track here
         video_count = 0
         audio_count = 0
         subtitle_count = 0
@@ -206,30 +207,6 @@ class ConverterThread():
                     self._command.append(str(deposition))
                     subtitle_count += 1
 
-        #video is HDR stuff bellow
-        #https://forum.doom9.org/showthread.php?t=175227
-        # https://trac.ffmpeg.org/ticket/5831
-        #-pix_fmt yuv420p10le
-        # -vf scale=out_color_matrix=bt2020:out_h_chr_pos=0:out_v_chr_pos=0,format=yuv420p10
-        # # -c:v libx265 -preset medium
-        # -x265-params :colorprim=bt2020:transfer=smpte-st-2048:colormatrix=bt2020nc:master-display=
-        # "G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L(12000000,200)":max-cll=
-        # 0,0:repeat-headers
-        # -c:a copy -max_muxing_queue_size 4096 "Sample_HDR-encode.mkv"
-
-        # self.check_hdr(section_info.get("color_space", ""),
-        #             section_info.get("color_transfer", ""),
-        #             section_info.get("color_primaries", ""))
-        # def check_hdr(self, space, transfer, primaries):
-        #     '''checks and sets the HDR option'''
-        #     if "bt2020" in space and transfer == "smpte2084" and primaries == "bt2020":
-        #         self._hdr = True
-        #         self._hdr_lock = True
-        
-        
-        #check the video codes setting, figure out what is best default settings and set them for
-        # x264 and x265 then extend the options for the custom versions with all the settings and
-        # then in here make the command from them do it in another method
         #Deal with video resolution here
         config_video_max_height = self._conf["videoresolution"]
         video_info = self._probe_info.get_video_info()
@@ -245,12 +222,26 @@ class ConverterThread():
                     self._command.append("scale=-2:" + config_video_max_height)
 
         #Deal with video codec here
-        #https://en.wikibooks.org/wiki/Category:Book:FFMPEG_An_Intermediate_Guide
-        #https://github.com/senko/python-video-converter/ <-- use as a starting point
-        #https://ffmpeg.org/ffmpeg.html
-        #https://ffmpeg.org/pipermail/ffmpeg-user/2016-August/033183.html
-        #how to detect HDR https://video.stackexchange.com/questions/22059/how-to-identify-hdr-video
-        #https://github.com/ruediger/VobSub2SRT
+        if self._conf['videocodec'] == "keep":
+            self._command.append('-c:v')
+            self._command.append('copy')
+        elif self._conf['videocodec'] == "x264default":
+            self._command.append('-c:v')
+            self._command.append('libx264')
+        elif self._conf['videocodec'] == "x265default":
+            self._command.append('-c:v')
+            self._command.append('libx265')
+        elif self._conf['videocodec'] == "x264custom":
+            self._command.append('-c:v')
+            self._command.append('libx264')
+            #additional settings
+        elif self._conf['videocodec'] == "x265custom":
+            self._command.append('-c:v')
+            self._command.append('libx265')
+            #additional settings
+        elif self._conf['videocodec'] == "preset":
+            video_command = get_video_preset_command(self._conf['videopreset'])
+            self._command.append(video_command)
 
         #tell ffmpeg to copy the audio
         self._command.append('-c:a')

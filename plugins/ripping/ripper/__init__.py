@@ -20,6 +20,7 @@ from .drive_linux import DriveLinux, get_hwinfo_linux
 from .labeler import Labeler
 from .converter import Converter
 from .renamer import Renamer
+from .presets import video_presets_config_options
 
 #REQUIRED
 # makemkv + java JRE + CCExtractor libcss2
@@ -94,6 +95,9 @@ Where do you want to move the audio cds to when completed""")
                      help_text="Where is FFprobe located?"),
         ConfigObject("threadcount", "How Many Instances?", "integer", minimum=1, maximum=5,
                      default=1, help_text="How Many Threads (Max of 5)"),
+        ConfigObject("defaultlanguage", "Default Language", "option", default="eng",
+                     input_type="dropdown", options=Languages().config_option_3t(),
+                     help_text="What is your main language?"),
         ConfigObject("videoinserttags", "Insert Tags", "boolean", default=True,
                      input_type="checkbox", help_text="""
 Do you want to add in the tags to the Video Files?"""),
@@ -109,19 +113,25 @@ Do you want to add in the tags to the Video Files?"""),
         ConfigObject("videocodec", "Video Codec", "option", default='keep',
                      input_type='radio',
                      options=[
-                         ConfigOption("keep", "Keep Original"),
-                         ConfigOption("x264default", "X264 Default"),
-                         ConfigOption("x265default", "X265 Default"),
-                         ConfigOption("x264custom", "X264 Custom"),
-                         ConfigOption("x265custom", "X265 Custom")],
+                         ConfigOption("keep", "Keep Original",
+                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                         ConfigOption("x264default", "X264 Default",
+                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                         ConfigOption("x265default", "X265 Default",
+                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                         ConfigOption("x264custom", "X264 Custom", disabled=True,
+                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                         ConfigOption("x265custom", "X265 Custom", disabled=True,
+                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                         ConfigOption("preset", "Preset (choose from a list)",
+                                      show="plugins_ripping_ripper_converter_videopresets")],
                      help_text="What video codec do you wish to convert to?"),
-        # video codec
-        # https://matroska.org/technical/specs/codecid/index.html
-        # think about being able to combine videos into 1 file
-        # think about HDR -> https://forum.doom9.org/showthread.php?t=175227
-        ConfigObject("defaultlanguage", "Default Language", "string",
-                     input_type="dropdown", options=Languages().config_option_3t(),
-                     help_text="What is your main language?"),
+        ConfigList("videopresets", "Video Preset List", objects=[
+            ConfigObject("videopreset", "Video Preset", "option",
+                         input_type="dropdown", options=video_presets_config_options(),
+                         help_text="What preset do you want to use?")],
+                   is_section=True, section_link=["plugins", "ripping", "ripper",
+                                                  "converter", "videocodec"]),
         ConfigObject("originalordub", "Original or Dubbed Language", "option", default='all',
                      input_type='radio', options=[ConfigOption("original", "Original"),
                                                   ConfigOption("dub", "Dubbed")],
