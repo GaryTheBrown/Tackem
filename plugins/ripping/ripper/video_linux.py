@@ -20,23 +20,22 @@ class VideoLinux(Video):
         message = shlex.split(returned_message.decode('utf-8').rstrip().split(": ")[1])
         uuid = message[0].split("=")[1]
         label = message[1].split("=")[1]
-        #run for a second through mplayer so it will stop any dd I/O errors
-        # if self._disc_type == "dvd":
-        #     mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
-        #                              "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
-        #                             stderr=DEVNULL)
-        #     mplayer_process.wait()
-        # #using DD to read the disc pass it to sha256 to make a unique code for searching by
-        # dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
-        #                    stdout=PIPE, stderr=DEVNULL)
-        # sha256sum_process = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE,
-        #                           stderr=DEVNULL)
-        # sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
-        # dd_process.wait()
-        # sha256sum_process.wait()
-        # if dd_process.returncode > 0:
-        #     return False
-        sha256 = "4b51675f6745f12de88afdf430638de48dfb87c831df8ad0a1767dd2afcfcc3a"
+        # run for a second through mplayer so it will stop any dd I/O errors
+        if self._disc_type == "dvd":
+            mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
+                                     "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
+                                    stderr=DEVNULL)
+            mplayer_process.wait()
+        #using DD to read the disc pass it to sha256 to make a unique code for searching by
+        dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
+                           stdout=PIPE, stderr=DEVNULL)
+        sha256sum_process = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE,
+                                  stderr=DEVNULL)
+        sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
+        dd_process.wait()
+        sha256sum_process.wait()
+        if dd_process.returncode > 0:
+            return False
         self._set_disc_info(uuid, label, sha256)
         return True
 
