@@ -495,6 +495,6 @@ def progress_bar(label, value, max_value, percent):
     html = str(open("www/html/other/progressbar.html", "r").read())
     html = html.replace("%%LABEL%%", str(label))
     html = html.replace("%%VALUE%%", str(value))
-    html = html.replace("%%MAX%%",str(max_value))
-    html = html.replace("%%PERCENT%%",str(percent))
+    html = html.replace("%%MAX%%", str(max_value))
+    html = html.replace("%%PERCENT%%", str(percent))
     return html
