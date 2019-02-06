@@ -96,7 +96,7 @@ class VideoLinux(Video):
             elif i == 3:
                 update_progress = False
                 self._ripping_file = self._ripping_max
-                self._ripping_file_p = round(float(int(values[0]) / int(values[2]) * 100), 2)
+                self._ripping_file_p = round(float(100), 2)
         try:
             os.remove("wget-log")
             os.remove("wget-log.1")
