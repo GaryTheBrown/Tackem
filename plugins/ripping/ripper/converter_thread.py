@@ -103,11 +103,11 @@ class ConverterThread():
         if self._do_conversion():
             os.rename(self._infile, self._infile + ".OLD")
             os.rename(self._outfile, self._infile)
-        #     if not self._conf['keeporiginalfile']:
-        #         os.remove(self._infile + ".OLD")
-        #     self._db.update(self._thread_name,
-        #                     CONVERT_DB["name"],
-        #                     self._sql_row_id, {"converted":True})
+            if not self._conf['keeporiginalfile']:
+                os.remove(self._infile + ".OLD")
+            self._db.update(self._thread_name,
+                            CONVERT_DB["name"],
+                            self._sql_row_id, {"converted":True})
         self._task_done = True
         self._tasks_sema.release()
 
