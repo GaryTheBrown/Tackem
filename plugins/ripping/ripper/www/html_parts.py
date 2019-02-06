@@ -44,6 +44,12 @@ def drive(drive_obj, drive_index, name, vertical=False):
     drive_html = drive_html.replace("%%LOCKED%%", locked_html)
     drive_html = drive_html.replace("%%NAME%%", name_html)
     drive_html = drive_html.replace("%%INFO%%", data["drivestatus"])
+    if data['ripping']:
+        drive_html = drive_html.replace("%%RIPPINGDATAVISIBLE%%", "")
+        drive_html = drive_html.replace("%%RIPPINGDATA%%", data["rippingdata"])
+    else:
+        drive_html = drive_html.replace("%%RIPPINGDATAVISIBLE%%", 'style="display:none;"')
+        drive_html = drive_html.replace("%%RIPPINGDATA%%", "")
     return drive_html
 
 def drives(drive_list, config_drives, vertical=False):
@@ -53,6 +59,13 @@ def drives(drive_list, config_drives, vertical=False):
         cfg_name = drive_obj.get_cfg_name()
         drives_html += drive(drive_obj, drive_index, config_drives[cfg_name]['name'], vertical)
     return drives_html
+
+def drive_ripping_data(progress_bar_track, progress_bar_total):
+    '''returns html for drive ripping data'''
+    html = str(open(DIR + 'drives/rippingdata.html', "r").read())
+    html = html.replace("%%PROGRESSTRACK%%", progress_bar_track)
+    html = html.replace("%%PROGRESSTOTAL%%", progress_bar_total)
+    return html
 
 def labeler_item(data, baseurl, vertical=False):
     '''return html for labeler item'''

@@ -2,6 +2,7 @@
 import os
 import shlex
 from subprocess import DEVNULL, PIPE, Popen
+import pexpect
 from .video import Video
 
 class VideoLinux(Video):
@@ -20,21 +21,22 @@ class VideoLinux(Video):
         uuid = message[0].split("=")[1]
         label = message[1].split("=")[1]
         #run for a second through mplayer so it will stop any dd I/O errors
-        if self._disc_type == "dvd":
-            mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
-                                     "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
-                                    stderr=DEVNULL)
-            mplayer_process.wait()
-        #using DD to read the disc pass it to sha256 to make a unique code for searching by
-        dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
-                           stdout=PIPE, stderr=DEVNULL)
-        sha256sum_process = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE,
-                                  stderr=DEVNULL)
-        sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
-        dd_process.wait()
-        sha256sum_process.wait()
-        if dd_process.returncode > 0:
-            return False
+        # if self._disc_type == "dvd":
+        #     mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
+        #                              "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
+        #                             stderr=DEVNULL)
+        #     mplayer_process.wait()
+        # #using DD to read the disc pass it to sha256 to make a unique code for searching by
+        # dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
+        #                    stdout=PIPE, stderr=DEVNULL)
+        # sha256sum_process = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE,
+        #                           stderr=DEVNULL)
+        # sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
+        # dd_process.wait()
+        # sha256sum_process.wait()
+        # if dd_process.returncode > 0:
+        #     return False
+        sha256 = "4b51675f6745f12de88afdf430638de48dfb87c831df8ad0a1767dd2afcfcc3a"
         self._set_disc_info(uuid, label, sha256)
         return True
 
@@ -59,14 +61,42 @@ class VideoLinux(Video):
             "--minlength=0",
             "--messages=-null",
             "--progress=-stdout",
+            "--noscan",
             "mkv",
             "dev:" + self._device,
             str(index),
             temp_dir
         ]
-        process = Popen(prog_args, stdout=DEVNULL, stderr=DEVNULL)
-        process.communicate()
-        process.wait()
+        print(" ".join(prog_args))
+        thread = pexpect.spawn(" ".join(prog_args), encoding='utf-8')
+
+        cpl = thread.compile_pattern_list([
+            pexpect.EOF,
+            'PRGC:\d+,\d+,"Saving to MKV file"',
+            'PRGV:\d+,\d+,\d+',
+            'PRGC:\d+,\d+,"Analyzing seamless segments"'
+        ])
+        update_progress = False
+        while True:
+            i = thread.expect_list(cpl, timeout=None)
+            if i == 0: # EOF
+                self._ripping_track = None
+                break
+            elif i == 1:
+                self._ripping_track = int(thread.match.group(0).split(":")[1].split(",")[1])
+                update_progress = True
+            elif i == 2:
+                if update_progress:
+                    values = thread.match.group(0).split(":")[1].split(",")
+                    self._ripping_file = int(values[0])
+                    self._ripping_total = int(values[1])
+                    self._ripping_max = int(values[2])
+                    self._ripping_file_p = round(float(int(values[0]) / int(values[2]) * 100), 2)
+                    self._ripping_total_p = round(float(int(values[1]) / int(values[2]) * 100), 2)
+            elif i == 3:
+                update_progress = False
+                self._ripping_file = self._ripping_max
+                self._ripping_file_p = round(float(int(values[0]) / int(values[2]) * 100), 2)
         try:
             os.remove("wget-log")
             os.remove("wget-log.1")

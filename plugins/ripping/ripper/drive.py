@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 import threading
 import time
 import json
+from libs import html_parts as ghtml_parts
+from .www import html_parts
 
 class Drive(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
@@ -27,6 +29,8 @@ class Drive(metaclass=ABCMeta):
         self._tray_locked_lock = threading.Lock()
         self._disc_type = "none"
         self._disc_type_lock = threading.Lock()
+
+        self._video_ripper = None
 
 ###########
 ##SETTERS##
@@ -187,6 +191,7 @@ class Drive(metaclass=ABCMeta):
                     elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
                         self._video_rip()
+                        self._video_ripper = None
                 if not self._thread_run:
                     self.unlock_tray()
                     return
@@ -232,6 +237,27 @@ class Drive(metaclass=ABCMeta):
                 return_dict["traystatus"] = image_folder + "bluray.png"
         return_dict["drivestatus"] = self.get_drive_status()
         return_dict["traylock"] = self.get_tray_locked()
+        if self._video_ripper:
+            ripping_data = self._video_ripper.get_ripping_data()
+            if ripping_data['track'] is not None:
+                return_dict["ripping"] = True
+                file_percent = "Track " + str(ripping_data['track']) + " ("
+                file_percent += str(ripping_data['file_percent']) + "%)"
+                total_percent = "Total (" + str(ripping_data['total_percent']) + "%)"
+                progress_bar_track = ghtml_parts.progress_bar(file_percent,
+                                                              ripping_data['file'],
+                                                              ripping_data['max'],
+                                                              ripping_data['file_percent'])
+                progress_bar_total = ghtml_parts.progress_bar(total_percent,
+                                                              ripping_data['total'],
+                                                              ripping_data['max'],
+                                                              ripping_data['total_percent'])
+                return_dict["rippingdata"] = html_parts.drive_ripping_data(progress_bar_track,
+                                                                           progress_bar_total)
+            else:
+                return_dict["ripping"] = False
+        else:
+            return_dict["ripping"] = False
         if return_json:
             return json.dumps(return_dict)
         return return_dict

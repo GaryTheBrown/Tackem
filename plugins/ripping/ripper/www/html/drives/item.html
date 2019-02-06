@@ -3,18 +3,28 @@
 	<img class="drivelock" src="%%BASEURL%%ripping/ripper/static/images/locked.png" %%LOCKED%%>
 	<div class="font-weight-bold">%%NAME%%</div>
 	<div class="info">%%INFO%%</div>
+	<div class="rippingdata" %%RIPPINGDATAVISIBLE%%>%%RIPPINGDATA%%</div>
 	<script type="text/javascript">
 		var drive%%DRIVENUMBER%%Timer = setInterval(function() {
 			$.ajax('%%BASEURL%%ripping/ripper/drives/single/%%DRIVENUMBER%%/', {
 				dataType: 'json',
 				success: function(result) {
-					$('#drive%%DRIVENUMBER%%').find('.driveimg').attr('src', result.traystatus);
+					if ($('#drive%%DRIVENUMBER%%').find('.driveimg').attr('src') != result.traystatus){
+						$('#drive%%DRIVENUMBER%%').find('.driveimg').attr('src', result.traystatus);
+					}
 					if(result.traylock == true){
 						$('#drive%%DRIVENUMBER%%').find('.drivelock').show();
 					}else{
 						$('#drive%%DRIVENUMBER%%').find('.drivelock').hide();
 					}
 					$('#drive%%DRIVENUMBER%%').find('.info').html(result.drivestatus);
+					if(result.ripping == true){
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').html(result.rippingdata);
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').show();
+					} else{
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').hide();
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').html("");
+					}
 				},
 				// error: function(){
 				// 	clearTimeout(drive%%DRIVENUMBER%%Timer);

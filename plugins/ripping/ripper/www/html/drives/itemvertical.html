@@ -5,10 +5,11 @@
 			<img class="drivelock" src="%%BASEURL%%ripping/ripper/static/images/locked.png" %%LOCKED%%>
 		</div>
 		<div class="col py-2">
-			
 			<div class="font-weight-bold">%%NAME%%</div>
 			<div class="info">%%INFO%%</div>
+			
 		</div>
+		<div class="col-12 py-2 rippingdata" %%RIPPINGDATAVISIBLE%%>%%RIPPINGDATA%%</div>
 	</div>
 	<script type="text/javascript">
 		setInterval(function() {
@@ -22,6 +23,13 @@
 						$('#drive%%DRIVENUMBER%%').find('.drivelock').hide();
 					}
 					$('#drive%%DRIVENUMBER%%').find('.info').html(result.drivestatus);
+					if(result.ripping == true){
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').html(result.rippingdata);
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').show();
+					} else{
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').hide();
+						$('#drive%%DRIVENUMBER%%').find('.rippingdata').html("");
+					}
 				}
 			})
 		}, 1000);
