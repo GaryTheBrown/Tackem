@@ -86,6 +86,7 @@ def labeler_item(data, baseurl, vertical=False):
     item_html = item_html.replace("%%IMAGE%%", disc_type_img)
     item_html = item_html.replace("%%LABEL%%", label.replace("_", " "))
     item_html = item_html.replace("%%INFO%%", info.replace("_", " "))
+    item_html = item_html.replace("%%BASEURL%%", baseurl)
     return item_html
 
 def labeler_items(data, baseurl, vertical=False):

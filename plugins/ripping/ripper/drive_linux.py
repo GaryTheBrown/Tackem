@@ -127,8 +127,9 @@ class DriveLinux(Drive):
 
     def _video_rip(self):
         '''script to rip video disc'''
-        self._video_ripper = VideoLinux(self.get_device(), self._config, self._db, self._thread.getName(),
-                                  self.get_disc_type(), self._set_drive_status)
+        self._video_ripper = VideoLinux(self.get_device(), self._config, self._db,
+                                        self._thread.getName(), self.get_disc_type(),
+                                        self._set_drive_status)
         self._video_ripper.run()
 
 ###############
