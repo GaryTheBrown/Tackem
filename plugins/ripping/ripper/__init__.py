@@ -95,6 +95,8 @@ Where do you want to move the audio cds to when completed""")
                      help_text="Where is FFprobe located?"),
         ConfigObject("threadcount", "How Many Instances?", "integer", minimum=1, maximum=5,
                      default=1, help_text="How Many Threads (Max of 5)"),
+        ConfigObject("keeporiginalfile", "Keep Original File", "boolean", default=False,
+                     help_text="If you want to keep the original files after backup"),
         ConfigObject("defaultlanguage", "Default Language", "option", default="eng",
                      input_type="dropdown", options=Languages().config_option_3t(),
                      help_text="What is your main language?"),
@@ -114,22 +116,63 @@ Do you want to add in the tags to the Video Files?"""),
                      input_type='radio',
                      options=[
                          ConfigOption("keep", "Keep Original",
-                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                                      hide=["plugins_ripping_ripper_converter_videopresets",
+                                            "plugins_ripping_ripper_converter_x26custom"]),
                          ConfigOption("x264default", "X264 Default",
-                                      hide="plugins_ripping_ripper_converter_videopresets"),
+                                      hide=["plugins_ripping_ripper_converter_videopresets",
+                                            "plugins_ripping_ripper_converter_x26custom"]),
                          ConfigOption("x265default", "X265 Default",
+                                      hide=["plugins_ripping_ripper_converter_videopresets",
+                                            "plugins_ripping_ripper_converter_x26custom"]),
+                         ConfigOption("x264custom", "X264 Custom",
+                                      show="plugins_ripping_ripper_converter_x26custom",
                                       hide="plugins_ripping_ripper_converter_videopresets"),
-                         ConfigOption("x264custom", "X264 Custom", disabled=True,
-                                      hide="plugins_ripping_ripper_converter_videopresets"),
-                         ConfigOption("x265custom", "X265 Custom", disabled=True,
+                         ConfigOption("x265custom", "X265 Custom",
+                                      show="plugins_ripping_ripper_converter_x26custom",
                                       hide="plugins_ripping_ripper_converter_videopresets"),
                          ConfigOption("preset", "Preset (choose from a list)",
-                                      show="plugins_ripping_ripper_converter_videopresets")],
+                                      show="plugins_ripping_ripper_converter_videopresets",
+                                      hide="plugins_ripping_ripper_converter_x26custom")],
                      help_text="What video codec do you wish to convert to?"),
         ConfigList("videopresets", "Video Preset List", objects=[
             ConfigObject("videopreset", "Video Preset", "option",
                          input_type="dropdown", options=video_presets_config_options(),
                          help_text="What preset do you want to use?")],
+                   is_section=True, section_link=["plugins", "ripping", "ripper",
+                                                  "converter", "videocodec"]),
+        ConfigList("x26custom", "x26? Custom Options", objects=[
+            ConfigObject("x26crf8bit", "CRF (8 bit)?", "integer", minimum=0, maximum=51,
+                         default=23, help_text="""
+The range of the CRF (8 bit) scale is 0–51, where 0 is lossless, 23 is the default,and 51 is worst
+quality possible. A lower value generally leads to higher quality, and a subjectively sane range is
+17–28. Consider 17 or 18 to be visually lossless or nearly so; it should look the same or nearly the
+same as the input but it isn't technically lossless. The range is exponential, so increasing the CRF 
+value +6 results in roughly half the bitrate / file size, while -6 leads to roughly twice the
+bitrate. Choose the highest CRF value that still provides an acceptable quality. If the output looks
+good, then try a higher value. If it looks bad, choose a lower value."""),
+            ConfigObject("x26crf10bit", "CRF (10 bit)?", "integer", minimum=0, maximum=63,
+                         default=23, help_text="""
+The range of the CRF (10 bit) scale is 0–63, where 0 is lossless, 23 is the default,and 63 is worst
+quality possible."""),
+            ConfigObject("x26preset", "Preset", "option", default="medium",
+                         input_type="dropdown", options=[ConfigOption("ultrafast", "Ultra Fast"),
+                                                         ConfigOption("superfast", "Super Fast"),
+                                                         ConfigOption("veryfast", "Very Fast"),
+                                                         ConfigOption("faster", "Faster"),
+                                                         ConfigOption("fast", "Fast"),
+                                                         ConfigOption("medium", "Medium"),
+                                                         ConfigOption("slow", "Slow"),
+                                                         ConfigOption("slower", "Slower"),
+                                                         ConfigOption("veryslow", "Very Slow")],
+                         help_text="""
+A preset is a collection of options that will provide a certain encoding speed to compression ratio.
+A slower preset will provide better compression (compression is quality per filesize).
+This means that, for example, if you target a certain file size or constant bit rate,
+you will achieve better quality with a slower preset. Similarly, for constant quality encoding,
+you will simply save bitrate by choosing a slower preset.
+Use the slowest preset that you have patience for."""),
+            ConfigObject("x26extra", "Extra commands", "string", default="",
+                         help_text="Other commands?")],
                    is_section=True, section_link=["plugins", "ripping", "ripper",
                                                   "converter", "videocodec"]),
         ConfigObject("originalordub", "Original or Dubbed Language", "option", default='all',

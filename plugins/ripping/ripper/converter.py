@@ -34,6 +34,10 @@ class Converter():
         '''returns the data as dict for html'''
         return [task.get_quick_data() for task in self._tasks]
 
+    def get_data(self):
+        '''returns the data as dict for html'''
+        return [task.get_data() for task in self._tasks]
+
     def get_data_ids(self):
         '''returns the data as dict for html'''
         return [task.get_id() for task in self._tasks]
@@ -45,6 +49,19 @@ class Converter():
                 return task.get_quick_data()
         return None
 
+    def get_data_by_id(self, task_id):
+        '''returns the data as dict for html'''
+        for task in self._tasks:
+            if task.get_id() == task_id:
+                return task.get_data()
+        return None
+
+    def get_converting_by_id(self, task_id):
+        '''returns the data as dict for html'''
+        for task in self._tasks:
+            if task.get_id() == task_id:
+                return task.converting()
+        return None
 ##########
 ##Thread##
 ##########

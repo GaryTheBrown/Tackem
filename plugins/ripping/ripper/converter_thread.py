@@ -2,6 +2,7 @@
 import threading
 import os
 import os.path
+import pexpect
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.scraper.scraper_base import Scraper
 from libs.data.languages import Languages
@@ -31,11 +32,15 @@ class ConverterThread():
         if temp_location[0] != "/":
             temp_location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
         self._infile = temp_location + self._filename
-        self._outfile = temp_location + self._filename.replace(".mkv", "") + ".NEW.mkv"
+        self._outfile = self._infile.replace(".mkv", "") + ".NEW.mkv"
         self._disc_language = Languages().convert_2_to_3t(self._disc_info.language())
         self._conf = self._config['converter']
         self._probe_info = FFprobe(self._conf['ffprobelocation'], self._infile)
         self._command = []
+        self._frame_count = None
+        self._frame_process = 0
+        self._percent = 0.0
+        self._running = False
 
     def task_done(self):
         '''returns if the task is done'''
@@ -49,15 +54,23 @@ class ConverterThread():
         '''returns the ID'''
         return self._id
 
-    def get_quick_data(self):
+    def get_data(self):
         '''returns the data as dict for html'''
         file_name_split = self._filename.replace(".mkv", "").split("/")
         return_dict = {
             'id': self._id,
             'discid': int(file_name_split[0]),
-            'trackid': int(file_name_split[1])
+            'trackid': int(file_name_split[1]),
+            'converting': self._running,
+            'count':self._frame_count,
+            'process':self._frame_process,
+            'percent':self._percent
         }
         return return_dict
+
+    def converting(self):
+        '''return if converting'''
+        return self._running
 
 ##########
 ##Thread##
@@ -82,20 +95,24 @@ class ConverterThread():
         if not self._thread_run:
             self._tasks_sema.release()
             return
-        if self._create_command() is not True:
-            self._thread_run = False
+        self._create_command()
         if not self._thread_run:
             self._tasks_sema.release()
             return
-        print(" ".join(self._command))
-        #run converter here with above command
+        self._get_frame_count()
+        if self._do_conversion():
+            os.rename(self._infile, self._infile + ".OLD")
+            os.rename(self._outfile, self._infile)
+        #     if not self._conf['keeporiginalfile']:
+        #         os.remove(self._infile + ".OLD")
+        #     self._db.update(self._thread_name,
+        #                     CONVERT_DB["name"],
+        #                     self._sql_row_id, {"converted":True})
         self._task_done = True
         self._tasks_sema.release()
 
     def _create_command(self):
         '''creates the conversion command here'''
-                #actions here
-
         if not os.path.exists(self._infile):
             print("ERROR:" + self._infile + " missing")
             return False# PROBLEM HERE AS IN FILE MISSING
@@ -184,25 +201,25 @@ class ConverterThread():
                                                   )
                 if stream.stream_type() == "video":
                     if stream.label() != "":
-                        self._command.append("-metadata:v:" + str(video_count))
+                        self._command.append("-metadata:s:v:" + str(video_count))
                         self._command.append('title="[' + stream.label() + ']"')
-                        self._command.append('handler="[' + stream.label() + ']"')
+                        # self._command.append('handler="[' + stream.label() + ']"')
                     self._command.append("-disposition:v:" + str(video_count))
                     self._command.append(str(deposition))
                     video_count += 1
                 elif stream.stream_type() == "audio":
                     if stream.label() != "":
-                        self._command.append("-metadata:a:" + str(audio_count))
+                        self._command.append("-metadata:s:a:" + str(audio_count))
                         self._command.append('title="[' + stream.label() + ']"')
-                        self._command.append('handler="[' + stream.label() + ']"')
+                        # self._command.append('handler="[' + stream.label() + ']"')
                     self._command.append("-disposition:a:" + str(audio_count))
                     self._command.append(str(deposition))
                     audio_count += 1
                 elif stream.stream_type() == "subtitle":
                     if stream.label() != "":
-                        self._command.append("-metadata:s:" + str(subtitle_count))
+                        self._command.append("-metadata:s:s:" + str(subtitle_count))
                         self._command.append('title="[' + stream.label() + ']"')
-                        self._command.append('handler="[' + stream.label() + ']"')
+                        # self._command.append('handler="[' + stream.label() + ']"')
                     self._command.append("-disposition:s:" + str(subtitle_count))
                     self._command.append(str(deposition))
                     subtitle_count += 1
@@ -234,11 +251,27 @@ class ConverterThread():
         elif self._conf['videocodec'] == "x264custom":
             self._command.append('-c:v')
             self._command.append('libx264')
-            #additional settings
+            self._command.append('-preset')
+            self._command.append(self._conf['x26preset'])
+            self._command.append('-crf')
+            if "10le" in video_info[0].get("pix_fmt", ""):
+                self._command.append(str(self._conf['x26crf10bit']))
+            else:
+                self._command.append(str(self._conf['x26crf8bit']))
+            if self._conf['x26extra']:
+                self._command.append(str(self._conf['x26extra']))
         elif self._conf['videocodec'] == "x265custom":
             self._command.append('-c:v')
             self._command.append('libx265')
-            #additional settings
+            self._command.append('-preset')
+            self._command.append(self._conf['x26preset'])
+            self._command.append('-crf')
+            if "10le" in video_info[0].get("pix_fmt", ""):
+                self._command.append(str(self._conf['x26crf10bit']))
+            else:
+                self._command.append(str(self._conf['x26crf8bit']))
+            if self._conf['x26extra']:
+                self._command.append(str(self._conf['x26extra']))
         elif self._conf['videocodec'] == "preset":
             video_command = get_video_preset_command(self._conf['videopreset'])
             self._command.append(video_command)
@@ -391,14 +424,33 @@ class ConverterThread():
                 result += 256
         return result
 
+    def _get_frame_count(self):
+        '''gets the frame count of the file'''
+        cmd = 'ffmpeg -hide_banner -v quiet -stats -i "'
+        cmd += self._infile
+        cmd += '" -map 0:v:0 -c copy -f null -'
+        frames = 0
+        thread = pexpect.spawn(cmd, encoding='utf-8')
+        cpl = thread.compile_pattern_list([pexpect.EOF, "frame= *\d+"])
+        while True:
+            i = thread.expect_list(cpl, timeout=None)
+            if i == 0: # EOF
+                break
+            elif i == 1:
+                frames = thread.match.group(0)
+        self._frame_count = int(frames.replace("frame=", "").strip())
 
-    def _do_conversion(self, command):
+    def _do_conversion(self):
         '''method to convert file'''
-        pass
-
-        # os.rename(infile, infile + ".OLD")
-        # os.rename(outfile, infile)
-        # os.remove(infile + ".OLD")
-        # self._db.update(self._thread_name,
-        #                 CONVERT_DB["name"],
-        #                 self._sql_row_id, {"converted":True})
+        self._running = True
+        thread = pexpect.spawn(" ".join(self._command), encoding='utf-8')
+        cpl = thread.compile_pattern_list([pexpect.EOF, "frame= *\d+"])
+        while True:
+            i = thread.expect_list(cpl, timeout=None)
+            if i == 0: # EOF
+                self._running = False
+                return True
+            elif i == 1:
+                return_string = thread.match.group(0).replace("frame=", "").lstrip()
+                self._frame_process = int(return_string)
+                self._percent = round(float(self._frame_process/ self._frame_count * 100), 2)

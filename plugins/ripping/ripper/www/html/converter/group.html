@@ -5,10 +5,24 @@
 			dataType: 'json',
 			success: function(result) {
 				for (id in result){
-					if ($('#converter_item' + result[id]).length == 0){
-						$.ajax('%%BASEURL%%ripping/ripper/converter/single/' + result[id] + '/', {
+					item_number = result[id];
+					if ($('#converter_item' + item_number).length == 0){
+						$.ajax('%%BASEURL%%ripping/ripper/converter/single/' + item_number + '/', {
 							success: function(newitem) {
 								$('#convertergroup').append(newitem);
+							}
+						})
+					}else{
+						$.ajax('%%BASEURL%%ripping/ripper/converter/getconverting/' + item_number + '/', {
+							success: function(answer) {
+								if (answer == "True"){
+									$('#converter_item' + item_number).find('.convertingbool').html(answer);
+									$.ajax('%%BASEURL%%ripping/ripper/converter/progress/' + item_number + '/', {
+										success: function(newitem) {
+											$('#converter_item' + item_number).find('.progressdata').html(newitem);
+										}
+									})
+								}
 							}
 						})
 					}

@@ -2,6 +2,7 @@
 import os
 import json
 import cherrypy
+from libs import html_parts
 from ..data import disc_type, video_track_type
 DIR = os.path.dirname(__file__) + "/html/"
 
@@ -181,29 +182,27 @@ def item(variable_name, label, help_text, input_html, not_in_config=False):
         html = html.replace("cs_", "")
     return html
 
-def converter_quick_item(data):
-    '''return html for converter item'''
-    item_html = str(open(DIR + 'converter/quickitem.html', "r").read())
-    item_html = item_html.replace("%%ITEMID%%", str(data['id']))
-    item_html = item_html.replace("%%DISCID%%", str(data['discid']))
-    item_html = item_html.replace("%%TRACKID%%", str(data['trackid']))
-    return item_html
-
 def converter_item(data):
     '''return html for converter item'''
     item_html = str(open(DIR + 'converter/item.html', "r").read())
     item_html = item_html.replace("%%ITEMID%%", str(data['id']))
     item_html = item_html.replace("%%DISCID%%", str(data['discid']))
     item_html = item_html.replace("%%TRACKID%%", str(data['trackid']))
+    item_html = item_html.replace("%%CONVERTING%%", str(data['converting']))
+    if data['converting']:
+        progress_string = str(data['process']) + "/" + str(data['count'])
+        progress_string += "(" + str(data['percent']) + "%)"
+        progress_bar = html_parts.progress_bar(progress_string, data['process'], data['count'],
+                                               data['percent'])
+        item_html = item_html.replace("%%PROGRESS%%", progress_bar)
+    else:
+        item_html = item_html.replace("%%PROGRESS%%", "")
     return item_html
 
-def converter_items(data, quick=True):
+def converter_items(data):
     '''returns the group of converter items html'''
     group_html = str(open(DIR + 'converter/group.html', "r").read())
     data_html = ""
     for d_item in data:
-        if quick:
-            data_html += converter_quick_item(d_item)
-        else:
-            data_html += converter_item(d_item)
+        data_html += converter_item(d_item)
     return group_html.replace("%%ITEMS%%", data_html)
