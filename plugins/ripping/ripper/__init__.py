@@ -25,9 +25,10 @@ from .presets import video_presets_config_options
 #REQUIRED
 # makemkv + java JRE + CCExtractor libcss2
 # sudo apt install libdvd-pkg && sudo dpkg-reconfigure libdvd-pkg
+# mplayer
 # https://github.com/CCExtractor/ccextractor/blob/master/docs/COMPILATION.MD
+# ffmpeg + ffprobe
 # TODO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
-# for the ripping/keep use bellow to show the videos so user can say what it is.
 
 # makemkv settings.conf
 # app_DefaultOutputFileName = "{t:N2}"

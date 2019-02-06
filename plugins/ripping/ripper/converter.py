@@ -120,6 +120,8 @@ class Converter():
                 return
             RipperEvents().converter.clear()
             RipperEvents().converter.wait()
+
+            #TODO check all files for a disc are completed and report it to the renamer.
             time.sleep(1.0)
 
     def _task_do_loop(self):
