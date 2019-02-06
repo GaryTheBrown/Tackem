@@ -36,7 +36,10 @@ class Labeler(HTMLTEMPLATE):
         if data is False:
             return self._redirect(self._baseurl + "ripping/ripper/labeler/")
         if isinstance(vertical, str):
-            vertical = False
+            if vertical.lower() == "true":
+                vertical = True
+            else:
+                vertical = False
         return html_parts.labeler_item(data, self._baseurl, vertical)
 
     @cherrypy.expose
