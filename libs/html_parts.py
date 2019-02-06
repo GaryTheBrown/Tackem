@@ -489,3 +489,12 @@ def quick_table(data):
         head_html += table_head_html.replace("%%HEADER%%", key)
         body_html += table_body_html.replace("%%VALUE%%", str(data[key]))
     return html.replace("%%HEADERS%%", head_html).replace("%%VALUES%%", body_html)
+
+def progress_bar(label, value, max_value, percent):
+    '''creates a progress bar'''
+    html = str(open("www/html/other/progressbar.html", "r").read())
+    html = html.replace("%%LABEL%%", str(label))
+    html = html.replace("%%VALUE%%", str(value))
+    html = html.replace("%%MAX%%",str(max_value))
+    html = html.replace("%%PERCENT%%",str(percent))
+    return html
