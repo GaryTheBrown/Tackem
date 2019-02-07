@@ -76,7 +76,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         values = []
         for key in dict_of_values:
             values.append(self._convert_var(dict_of_values[key]))
-        command += ", " .join(values) + ");"
+        command += ", ".join(values) + ");"
         return self._call(SQLMessage(system_name, command=command))
 
     def select(self, system_name, table_name, dict_of_values, list_of_returns=None):
@@ -90,7 +90,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         values = []
         for key in dict_of_values:
             values.append(key + " = " + self._convert_var(dict_of_values[key]))
-        command += " AND " .join(values) + ";"
+        command += " AND ".join(values) + ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
 
@@ -106,7 +106,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         values = []
         for key in dict_of_values:
             values.append(key + " = " + self._convert_var(dict_of_values[key]))
-        command += " AND " .join(values) + ";"
+        command += " AND ".join(values) + ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[],
                                      return_dict=False))[0][0]
 
@@ -129,7 +129,21 @@ class MysqlBaseClass(metaclass=ABCMeta):
         values = []
         for key in dict_of_values:
             values.append(key + " = " + self._convert_var(dict_of_values[key]))
-        command += ", " .join(values) + " WHERE id=" + str(row_id) + ";"
+        command += ", ".join(values) + " WHERE id=" + str(row_id) + ";"
+        return self._call(SQLMessage(system_name, command=command))
+
+    def delete_row(self, system_name, table_name, row_id):
+        '''delete a row by id'''
+        command = "DELETE FROM " + table_name + " WHERE id=" + str(row_id) +";"
+        return self._call(SQLMessage(system_name, command=command))
+
+    def delete_where(self, system_name, table_name, dict_of_values):
+        '''delete a row by id'''
+        command = "DELETE FROM " + table_name + " WHERE "
+        values = []
+        for key in dict_of_values:
+            values.append(key + " = " + self._convert_var(dict_of_values[key]))
+        command += " AND ".join(values) + ";"
         return self._call(SQLMessage(system_name, command=command))
 
     def _call(self, job):
