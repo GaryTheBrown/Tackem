@@ -11,12 +11,13 @@ from .data.events import RipperEvents
 
 class Video(metaclass=ABCMeta):
     '''video ripping controller'''
-    def __init__(self, device, config, db, thread_name, disc_type, set_drive_status):
+    def __init__(self, device, config, db, thread_name, disc_type, set_drive_status, thread_run):
         self._device = device
         self._events = RipperEvents()
         self._config = config
         self._db = db
         self._thread_name = thread_name
+        self._thread_run = thread_run
         self._disc_info_lock = threading.Lock()
         self._disc_info_uuid = None
         self._disc_info_label = None
@@ -133,10 +134,13 @@ class Video(metaclass=ABCMeta):
             for idx, track in enumerate(self._disc_rip_info):
                 if not isinstance(track, bool):
                     self._makemkv_backup_from_disc(temp_dir, idx)
+                    if not self._thread_run:
+                        return False
         elif self._disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir)
         self._set_drive_status("idle")
         self._db.update(self._thread_name, INFO_DB["name"], self._db_id, {"ripped":True})
+        return True
 
     @abstractmethod
     def _makemkv_backup_from_disc(self, temp_dir, index=-1):
@@ -166,9 +170,14 @@ class Video(metaclass=ABCMeta):
         self._set_drive_status("Get disc unique data")
         if not self._check_disc_information():
             return
+        if not self._thread_run:
+            return
         self._set_drive_status("check info for")
         self._check_db_and_api_for_disc_info()
+        if not self._thread_run:
+            return
         self._set_drive_status("Ripping Disc")
-        self._call_makemkv_backup()
+        if not self._call_makemkv_backup():
+            return
         if self._disc_rip_info:
             self._send_to_next_system()

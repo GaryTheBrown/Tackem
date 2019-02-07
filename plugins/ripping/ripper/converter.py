@@ -77,6 +77,8 @@ class Converter():
     def stop_thread(self):
         '''stop the thread'''
         if self._thread.is_alive():
+            for task in self._tasks:
+                task.stop_thread()
             self._thread_run = False
             self._thread.join()
 

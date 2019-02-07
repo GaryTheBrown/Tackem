@@ -127,8 +127,7 @@ class DriveLinux(Drive):
         '''script to rip video disc'''
         self._video_ripper = VideoLinux(self.get_device(), self._config, self._db,
                                         self._thread.getName(), self.get_disc_type(),
-                                        self._set_drive_status)
-        self._video_ripper.run()
+                                        self._set_drive_status, self._thread_run)
 
 ###############
 #EXTERNAL APPS#

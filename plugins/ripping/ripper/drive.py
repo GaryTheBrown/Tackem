@@ -191,6 +191,7 @@ class Drive(metaclass=ABCMeta):
                     elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
                         self._video_rip()
+                        self._video_ripper.run()
                         self._video_ripper = None
                 if not self._thread_run:
                     self.unlock_tray()

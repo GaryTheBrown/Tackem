@@ -19,12 +19,16 @@ class VideoLinux(Video):
         message = shlex.split(returned_message.decode('utf-8').rstrip().split(": ")[1])
         uuid = message[0].split("=")[1]
         label = message[1].split("=")[1]
+        if not self._thread_run:
+            return
         # run for a second through mplayer so it will stop any dd I/O errors
         if self._disc_type == "dvd":
             mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
                                      "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
                                     stderr=DEVNULL)
             mplayer_process.wait()
+        if not self._thread_run:
+            return
         #using DD to read the disc pass it to sha256 to make a unique code for searching by
         dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
                            stdout=PIPE, stderr=DEVNULL)
@@ -33,6 +37,8 @@ class VideoLinux(Video):
         sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
         if dd_process.returncode > 0:
             return False
+        if not self._thread_run:
+            return
         self._set_disc_info(uuid, label, sha256)
         return True
 
