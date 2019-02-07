@@ -2,7 +2,7 @@
 import threading
 import time
 import json
-from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
+from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB, VIDEO_INFO_DB_INFO as INFO_DB
 from .data.disc_type import make_disc_type
 from .data.video_track_type import make_track_type
 from .converter_thread import ConverterThread
@@ -18,13 +18,10 @@ class Converter():
         self._thread = threading.Thread(target=self.run, args=())
         self._thread.setName(self._thread_name)
         self._thread_run = False
-
         self._max_thread_count = self._config['converter']['threadcount']
         self._thread_count = 0
-
         self._tasks_sema = threading.Semaphore(self._max_thread_count)
         self._tasks = []
-
         self._list_of_running_ids = []
 
 ###########
@@ -117,13 +114,26 @@ class Converter():
                 if not self._task_do_loop():
                     return
 
-            # self._thread_run = False
+            discs = [x['id'] for x in self._db.select(self._thread_name, INFO_DB["name"],
+                                                      {"ready_to_convert":True,
+                                                       "ready_to_rename": False}, "id")]
+            convert_data = self._db.select(self._thread_name, CONVERT_DB["name"])
+            wake_renamer = False
+            for disc in discs:
+                if all([item['converted'] for item in convert_data if item['info_id'] == disc]):
+                    self._db.delete_where(self._thread_name, CONVERT_DB["name"], {"disc_id":disc})
+                    self._db.update(self._thread_name, INFO_DB["name"], disc,
+                                    {"ready_to_rename":True})
+                    wake_renamer = True
+            if wake_renamer:
+                RipperEvents().renamer.set()
+
             if not self._thread_run:
                 return
-            RipperEvents().converter.clear()
-            RipperEvents().converter.wait()
 
-            #TODO check all files for a disc are completed and report it to the renamer.
+            RipperEvents().converter.wait()
+            RipperEvents().converter.clear()
+
             time.sleep(1.0)
 
     def _task_do_loop(self):
