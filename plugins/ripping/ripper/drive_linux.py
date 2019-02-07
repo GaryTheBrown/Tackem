@@ -51,7 +51,6 @@ class DriveLinux(Drive):
                                  stdout=PIPE, stderr=DEVNULL)
                 process2 = Popen(["grep", "ID_FS_TYPE="], stdin=process1.stdout, stdout=PIPE)
                 message = process2.communicate()[0].decode('utf-8').replace("\n", "")
-                process2.wait()
                 if not self._thread_run:
                     self.unlock_tray()
                     return False
@@ -62,7 +61,6 @@ class DriveLinux(Drive):
                                  stdout=PIPE, stderr=DEVNULL)
                 process4 = Popen(["grep", "ID_FS_VERSION="], stdin=process3.stdout, stdout=PIPE)
                 message = process4.communicate()[0]
-                process4.wait()
                 udf_version_str = message.decode('utf-8').rstrip().split("=")[1]
                 udf_version_float = float(udf_version_str)
                 if udf_version_float == 1.02:
@@ -139,7 +137,6 @@ def get_hwinfo_linux():
     '''issues the hwinfo command and passes the info back in a dict'''
     process = Popen(["hwinfo", "--cdrom"], stdout=PIPE, stderr=DEVNULL)
     returned_message = process.communicate()[0]
-    process.wait()
     devices = returned_message.decode('utf-8').rstrip().split("\n\n")
     device_list = []
     for device in devices:
@@ -162,7 +159,6 @@ def get_hwinfo_linux():
                                 stdout=PIPE, stderr=DEVNULL)
         grep_process = Popen(["grep", "ID_SERIAL="], stdin=udevadm_process.stdout, stdout=PIPE)
         message = grep_process.communicate()[0]
-        process.wait()
         uid = message.decode('utf-8').rstrip().split("=")[1].replace("-0:0", "").replace("_", "-")
         drives[uid] = temp_list
     return drives

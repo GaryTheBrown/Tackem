@@ -14,7 +14,6 @@ class VideoLinux(Video):
         '''Will return if disc is in drive (setting the UUID and label) or it will return False'''
         process = Popen(["blkid", self._device], stdout=PIPE, stderr=DEVNULL)
         returned_message = process.communicate()[0]
-        process.wait()
         if not returned_message:
             return False
         message = shlex.split(returned_message.decode('utf-8').rstrip().split(": ")[1])
@@ -32,8 +31,6 @@ class VideoLinux(Video):
         sha256sum_process = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE,
                                   stderr=DEVNULL)
         sha256 = sha256sum_process.communicate()[0].decode('utf-8').replace("-", "").rstrip()
-        dd_process.wait()
-        sha256sum_process.wait()
         if dd_process.returncode > 0:
             return False
         self._set_disc_info(uuid, label, sha256)
