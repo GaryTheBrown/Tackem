@@ -1,6 +1,5 @@
 '''Master Section for the Converter controller'''
 import threading
-import time
 import json
 from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB, VIDEO_INFO_DB_INFO as INFO_DB
 from .data.disc_type import make_disc_type
@@ -133,8 +132,6 @@ class Converter():
 
             RipperEvents().converter.wait()
             RipperEvents().converter.clear()
-
-            time.sleep(1.0)
 
     def _task_do_loop(self):
         '''loop through the tasks till done'''
