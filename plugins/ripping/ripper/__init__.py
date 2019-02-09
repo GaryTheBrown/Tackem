@@ -302,7 +302,7 @@ class Plugin(PluginBaseClass):
             self._converter.start_thread()
 
         print("START RENAMER THREAD")
-        self._renamer = Renamer(self._config, self._db)
+        self._renamer = Renamer(self._config, self._root_config, self._db)
         self._renamer.start_thread()
 
         self._running = True
