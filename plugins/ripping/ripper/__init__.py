@@ -31,10 +31,10 @@ from .presets import video_presets_config_options
 # TODO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
 
 # makemkv settings.conf
+# app_DefaultSelectionString = "+sel:all"
 # app_DefaultOutputFileName = "{t:N2}"
-# app_ExpertMode = "1"
-# app_Java = ""
 # app_ccextractor = "/usr/local/bin/ccextractor"
+
 
 SETTINGS = {
     'single_instance':True,
@@ -104,6 +104,45 @@ Where do you want to move the audio cds to when completed""")
         ConfigObject("videoinserttags", "Insert Tags", "boolean", default=True,
                      input_type="checkbox", help_text="""
 Do you want to add in the tags to the Video Files?"""),
+        #3D Options Here
+        ConfigObject("video3dtype", "3D Type", "option", default='keep',
+                     input_type='dropdown',
+                     options=[
+                         ConfigOption("keep", "Keep Original"),
+                         ConfigOption("sbsl", "Side by Side (Left Eye First)"),
+                         ConfigOption("sbsr", "Side by Side (Right Eye First)"),
+                         ConfigOption("sbs2l", "Half Side by Side (Left Eye First)"),
+                         ConfigOption("sbs2r", "Half Side by Side (Right Eye First)"),
+                         ConfigOption("abl", "Top Bottom (Left Eye Top)"),
+                         ConfigOption("abr", "Top Bottom (Right Eye Top)"),
+                         ConfigOption("ab2l", "Half Top Bottom (Left Eye Top)"),
+                         ConfigOption("ab2r", "Half Top Bottom (Right Eye Top)"),
+                         ConfigOption("al", "Alternating Frames (Left Eye First)"),
+                         ConfigOption("ar", "Alternating Frames (Right Eye First)"),
+                         ConfigOption("irl", "Interleaved Rows (Left Eye Has Top Row)"),
+                         ConfigOption("irr", "Interleaved Rows (Right Eye Has Top Row)"),
+                         ConfigOption("arbg", "Anaglyph Red/Blue Grayscale"),
+                         ConfigOption("argg", "Anaglyph Red/Green Grayscale"),
+                         ConfigOption("arcg", "Anaglyph Red/Cyan Grayscale"),
+                         ConfigOption("arch", "Anaglyph Red/Cyan Half Coloured"),
+                         ConfigOption("arcc", "Anaglyph Red/Cyan Colour"),
+                         ConfigOption("arcd", "Anaglyph Red/Cyan Colour dubois"),
+                         ConfigOption("agmg", "Anaglyph Green/Magenta Grayscale"),
+                         ConfigOption("agmh", "Anaglyph Green/Magenta Half Coloured"),
+                         ConfigOption("agmc", "Anaglyph Green/Magenta Coloured"),
+                         ConfigOption("agmd", "Anaglyph Green/Magenta Colour Dubois"),
+                         ConfigOption("aybg", "Anaglyph Yellow/Blue Grayscale"),
+                         ConfigOption("aybh", "Anaglyph Yellow/Blue Half Coloured"),
+                         ConfigOption("aybc", "Anaglyph Yellow/Blue Coloured"),
+                         ConfigOption("aybd", "Anaglyph Yellow/Blue Colour Dubois"),
+                         ConfigOption("ml", "Mono Output (Left Eye Only)"),
+                         ConfigOption("mr", "Mono Output (Right Eye Only)"),
+                         ConfigOption("chl", "Checkerboard (Left Eye First)"),
+                         ConfigOption("chr", "Checkerboard (Right Eye First)"),
+                         ConfigOption("icl", "Interleaved Columns (Left Eye First)"),
+                         ConfigOption("icr", "Interleaved Columns (Right Eye First)"),
+                         ConfigOption("hdmi", "HDMI Frame Pack")],
+                     help_text="what 3D mode do you want to transform 3d Discs into"),
         ConfigObject("videoresolution", "Max Video Resolution", "option", default='keep',
                      input_type='radio',
                      options=[

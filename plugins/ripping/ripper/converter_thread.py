@@ -185,8 +185,7 @@ class ConverterThread():
         new_count = 0
         for index, stream in enumerate(streams):
             if self._map_stream(index, stream):
-                self._command.append("-map")
-                self._command.append("0:" + str(index))
+                self._command.append("-map 0:" + str(index))
                 map_links[index] = new_count
                 new_count += 1
 
@@ -228,29 +227,79 @@ class ConverterThread():
         config_video_max_height = self._conf["videoresolution"]
         video_info = self._probe_info.get_video_info()
         video_height = video_info[0]['height']
+
+        #Detection of 3d here
+        if "stereo_mode" in video_info[0].get("tags", {}):
+            if self._conf['video3dtype'] != 'keep':
+                aspect_ratio = video_info[0]['display_aspect_ratio'] # 4:3 or 16:9
+                type_3d_in = None
+                type_3d = video_info[0].get("tags", {}).get("stereo_mode", "mono")
+                if type_3d == 'left_right':
+                    # Both views are arranged side by side, Left-eye view is on the left
+                    if aspect_ratio == '4:3' or aspect_ratio == '16:9':
+                        type_3d_in = 'sbs2l' # side by side parallel with half width resolution
+                    else:
+                        type_3d_in = 'sbsl' # side by side parallel
+                elif type_3d == 'right_left':
+                    # Both views are arranged side by side, Right-eye view is on the left
+                    if aspect_ratio == '4:3' or aspect_ratio == '16:9':
+                        type_3d_in = 'sbs2r' # side by side crosseye with half width resolution
+                    else:
+                        type_3d_in = 'sbsr' # side by side crosseye
+                elif type_3d == 'bottom_top':
+                    #  Both views are arranged in top-bottom orientation, Left-eye view is at bottom
+                    if aspect_ratio == '4:3' or aspect_ratio == '16:9':
+                        type_3d_in = 'ab2r' # above-below with half height resolution
+                    else:
+                        type_3d_in = 'abr' # above-below
+                elif type_3d == 'top_bottom':
+                    # Both views are arranged in top-bottom orientation, Left-eye view is on top
+                    if aspect_ratio == '4:3' or aspect_ratio == '16:9':
+                        type_3d_in = 'ab2l' # above-below with half height resolution
+                    else:
+                        type_3d_in = 'abl' # above-below
+                elif type_3d == 'row_interleaved_rl':
+                    # Each view is constituted by a row based interleaving, Right-eye view is first
+                    type_3d_in = 'irr'
+                elif type_3d == 'row_interleaved_lr':
+                    # Each view is constituted by a row based interleaving, Left-eye view is first
+                    type_3d_in = 'irl'
+                elif type_3d == 'col_interleaved_rl':
+                    # Both views are arranged in a column based interleaving manner,
+                    # Right-eye view is first column
+                    type_3d_in = 'icr'
+                elif type_3d == 'col_interleaved_lr':
+                    # Both views are arranged in a column based interleaving manner,
+                    # Left-eye view is first column
+                    type_3d_in = 'icl'
+                elif type_3d == 'block_lr':
+                    # Both eyes laced in one Block, Left-eye view is first alternating frames
+                    type_3d_in = 'al'
+                elif type_3d == 'block_rl':
+                    # Both eyes laced in one Block, Right-eye view is first alternating frames
+                    type_3d_in = 'ar'
+                if type_3d_in is not None:
+                    type_3d_out = self._conf['video3dtype']
+                    self._command.append("-vf stereo3d=" + type_3d_in + ":" + type_3d_out)
+                    if type_3d_out == "ml" or type_3d_out == "mr":
+                        self._command.append('-metadata:s:v:0 stereo_mode="mono"')
         if config_video_max_height != "keep":
             if config_video_max_height == "sd": #576 or 480
                 if video_height > 576: # PAL spec resolution
-                    self._command.append("-vf")
-                    self._command.append("scale=-2:480")
+                    self._command.append("-vf scale=-2:480")
             else: # HD videos Here
                 if video_height > config_video_max_height:
-                    self._command.append("-vf")
-                    self._command.append("scale=-2:" + config_video_max_height)
+                    self._command.append("-vf scale=-2:" + config_video_max_height)
 
         #Deal with video codec here
         if self._conf['videocodec'] == "keep":
-            self._command.append('-c:v')
-            self._command.append('copy')
+            self._command.append('-c:v copy')
         elif self._conf['videocodec'] == "x264default":
-            self._command.append('-c:v')
-            self._command.append('libx264')
+            self._command.append('-c:v libx264')
         elif self._conf['videocodec'] == "x265default":
-            self._command.append('-c:v')
-            self._command.append('libx265')
+            self._command.append('-c:v libx265')
         elif self._conf['videocodec'] == "x264custom":
-            self._command.append('-c:v')
-            self._command.append('libx264')
+            self._command.append('-c:v libx264')
             self._command.append('-preset')
             self._command.append(self._conf['x26preset'])
             self._command.append('-crf')
@@ -261,8 +310,7 @@ class ConverterThread():
             if self._conf['x26extra']:
                 self._command.append(str(self._conf['x26extra']))
         elif self._conf['videocodec'] == "x265custom":
-            self._command.append('-c:v')
-            self._command.append('libx265')
+            self._command.append('-c:v libx265')
             self._command.append('-preset')
             self._command.append(self._conf['x26preset'])
             self._command.append('-crf')
@@ -277,12 +325,10 @@ class ConverterThread():
             self._command.append(video_command)
 
         #tell ffmpeg to copy the audio
-        self._command.append('-c:a')
-        self._command.append('copy')
+        self._command.append('-c:a copy')
 
         #tell ffmpeg to copy the subtitles
-        self._command.append('-c:s')
-        self._command.append('copy')
+        self._command.append('-c:s copy')
 
         #tell ffmpag the output file
         self._command.append('"' + self._outfile + '"')
