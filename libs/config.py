@@ -14,35 +14,6 @@ import libs.html_parts as html_part
 CONFIG = ConfigList("root")
 CONFIG.append(
     ConfigList("system", objects=[
-        ConfigObject("operationmode", "Operation Mode", "option", default='single',
-                     input_type='radio', options=[
-                         ConfigOption("single", "SINGLE",
-                                      toggle_sections=([], ['system_master', 'system_slave'])),
-                         ConfigOption("master", "MASTER", disabled=True,
-                                      toggle_sections=(['system_master'], ['system_slave'])),
-                         ConfigOption("slave", "SLAVE", disabled=True,
-                                      toggle_sections=(['system_slave'], ['system_master']))
-                     ],
-                     help_text="""
-Is this program running alone or acting as part of a multi computer setup"""),
-        #Master Only
-        ConfigList("master", objects=[
-            ConfigObject("portrangefrom", "Port Range From", "integer", minimum=1001, maximum=65535,
-                         default=50000, help_text="""
-    The Min range of allowed ports for communication between systems"""),
-            ConfigObject("portrangeto", "Port Range To", "integer", minimum=1001, maximum=65535,
-                         default=50100, help_text="""
-    The Max range of allowed ports for communication between systems""")
-        ], is_section=True, section_link=["system", "operationmode"]),
-        #Slave Only
-        ConfigList("slave", objects=[
-            ConfigObject("masteraddress", "Master Address", "string", default="",
-                         help_text="The master systems address or mastername"),
-            ConfigObject("masterport", "Master Port", "integer", minimum=1001, maximum=65535,
-                         default=8081, help_text="The master systems API/WebUI port"),
-            ConfigObject("masterapikey", "Master API Key", "string", default="",
-                         help_text="The master systems API key")
-        ], is_section=True, section_link=["system", "operationmode"])
     ])
 )
 CONFIG.append(
