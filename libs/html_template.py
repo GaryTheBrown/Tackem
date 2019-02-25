@@ -74,10 +74,8 @@ class HTMLTEMPLATE():
     def _navbar(self):
         '''Navigation Bar For System'''
         nav_items_html = ""
-        if not self._auth.enabled():
-            nav_items_html = self._navbar_item()
-        elif self._auth.check_logged_in():
-            nav_items_html = self._navbar_item()
+        if not self._auth.enabled() or self._auth.check_logged_in():
+            nav_items_html = self._navbar_left_items()
 
         navbar_right_html = ""
         if self._auth.is_admin() or not self._auth.enabled():
@@ -98,7 +96,7 @@ class HTMLTEMPLATE():
                 navbar_right_html += html_part.navbar_item("Login", "login")
         return html_part.navbar_master(nav_items_html, navbar_right_html)
 
-    def _navbar_item(self):
+    def _navbar_left_items(self):
         '''Navigation Bar For System'''
         nav_items_html = ""
         nav_list = {}
