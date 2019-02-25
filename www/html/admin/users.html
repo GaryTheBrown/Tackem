@@ -1,0 +1,33 @@
+<h1 class="text-center">Users Admin Section</h1>
+<div class="containter-fluid">
+	<div class="col-12 row">
+		<div class="col-1 font-weight-bold text-center border border-light">ID</div>
+		<div class="col-3 font-weight-bold text-center border border-light">USERNAME</div>
+		<div class="col-3 font-weight-bold text-center border border-light">PASSWORD</div>
+		<div class="col-3 font-weight-bold text-center border border-light">IS ADMIN</div>
+		<div class="col-2 font-weight-bold text-center border border-light">ACTIONS</div>
+	</div>
+	%%USERSHTML%%
+	<form action="%%BASEURL%%admin/adduser" method="post" class="col-12 row">
+		<div class="col-1 border border-light"></div>
+		<div class="col-3 p-2 border border-light">
+			<input type="text" name="username" class="form-control" value="">
+		</div>
+		<div class="col-3 p-2 border border-light">
+			<input type="password" name="password" class="form-control" value="">
+		</div>
+		<div class="col-3 p-2 border border-light text-center pt-3">
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="is_admin" value="True">
+				<label class="form-check-label" for="inlineRadio1">True</label>
+			</div>
+			<div class="form-check form-check-inline">
+				<input class="form-check-input" type="radio" name="is_admin" value="False" checked>
+				<label class="form-check-label" for="inlineRadio2">False</label>
+			</div>
+		</div>
+		<div class="col-2 p-2 border border-light">
+			<input type="submit" class="btn btn-success btn-block" value="Add"/>
+		</div>
+	</form>
+</div>

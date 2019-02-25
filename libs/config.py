@@ -12,8 +12,13 @@ import libs.html_parts as html_part
 # TO DO ALSO MAKE IT POSSIBLE TO SHUTDOWN THE PLUGIN
 
 CONFIG = ConfigList("root")
+# CONFIG.append(
+#     ConfigList("system", objects=[
+#     ])
+# )
 CONFIG.append(
-    ConfigList("system", objects=[
+    ConfigList("authentication", objects=[
+        ConfigObject("enabled", "Enabled", "boolean", default=True, input_type="switch")
     ])
 )
 CONFIG.append(

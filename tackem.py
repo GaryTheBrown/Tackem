@@ -10,6 +10,7 @@ from libs.startup_arguments import ARGS
 from libs.config import config_load
 from libs.config_list import ConfigList
 from libs.sql import setup_db
+from libs.authenticator import Authentication
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
 
@@ -24,6 +25,7 @@ class Tackem:
     cherrypy = None
     config = None
     webserver = None
+    auth = None
     root_event = RootEvent()
 
     def __init__(self):
@@ -51,6 +53,9 @@ class Tackem:
                 print("Loading Systems...")
                 self._setup_systems()
 
+            #Start Authenticator
+            Tackem.auth = Authentication(Tackem.config['authentication'],
+                                         Tackem.sql, Tackem.config['webui']['baseurl'])
             Tackem.setup_done = True
             #Setup signal to watch for ctrl + c command
             signal.signal(signal.SIGINT, ctrl_c)
@@ -136,7 +141,7 @@ class Tackem:
 
             if Tackem.config['api']['enabled'] or Tackem.config['webui']['enabled']:
                 print("Starting WebUI and/or API")
-                Tackem.webserver = Httpd(Tackem.config, Tackem.systems,
+                Tackem.webserver = Httpd(Tackem.config, Tackem.auth, Tackem.systems,
                                          Tackem.plugins, Tackem.first_run)
                 Tackem.webserver.start()
 

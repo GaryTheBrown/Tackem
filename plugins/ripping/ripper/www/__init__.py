@@ -8,14 +8,15 @@ from .labeler import Labeler
 from .converter import Converter
 
 LAYOUT = {}
-def mounts(key, systems, plugins, config):
+def mounts(key, systems, plugins, config, auth):
     '''where the system creates the cherrypy mounts'''
     stylesheet = key.replace(" ", "/") + "/static/style.css"
-    root = Root("Ripper", key, systems, plugins, config, base_stylesheet=stylesheet)
-    root.drives = Drives("Ripper Drives", key, systems, plugins, config, base_stylesheet=stylesheet)
-    root.labeler = Labeler("Ripper Labeler", key, systems, plugins, config,
+    root = Root("Ripper", key, systems, plugins, config, auth, base_stylesheet=stylesheet)
+    root.drives = Drives("Ripper Drives", key, systems, plugins, config, auth,
+                         base_stylesheet=stylesheet)
+    root.labeler = Labeler("Ripper Labeler", key, systems, plugins, config, auth,
                            base_stylesheet=stylesheet)
-    root.converter = Converter("Ripper Converter", key, systems, plugins, config,
+    root.converter = Converter("Ripper Converter", key, systems, plugins, config, auth,
                                base_stylesheet=stylesheet)
     cherrypy.tree.mount(root,
                         config.get("webui", {}).get("baseurl", "/") + key.replace(" ", "/") + "/",

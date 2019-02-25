@@ -3,9 +3,9 @@ import cherrypy
 from libs.html_template import HTMLTEMPLATE
 
 LAYOUT = {}
-def mounts(key, systems, plugins, config):
+def mounts(key, systems, plugins, config, auth):
     '''where the system creates the cherrypy mounts'''
-    cherrypy.tree.mount(Root("Game Library", key, systems, plugins, config),
+    cherrypy.tree.mount(Root("Game Library", key, systems, plugins, config, auth),
                         config.get("webui", {}).get("baseurl", "/") + key.replace(" ", "/") + "/",
                         cfg(config))
 
@@ -18,5 +18,6 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self):
         '''index of plugin'''
+        self._auth.check_auth()
         index_page = self._name.replace("_", " ").title() + " ROOT"
         return self._template(index_page)

@@ -18,34 +18,42 @@ def master_template(title, body, javascript_extra, stylesheet_extra, baseurl, na
 #NAVBAR#
 ########
 def navbar_dropdown(title, dropdown_id, items):
-    '''A Navber Item (not active)'''
+    '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/dropdown.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
 
 def navbar_dropdown_right(title, dropdown_id, items):
-    '''A Navber Item (not active)'''
+    '''A Navbar Item right aligned (not active)'''
     html = str(open("www/html/navbar/dropdownright.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
 
+def navbar_drop_right(title, dropdown_id, items):
+    '''A Navbar Item (not active)'''
+    html = str(open("www/html/navbar/dropright.html", "r").read())
+    html = html.replace("%%TITLE%%", title.title())
+    html = html.replace("%%DROPDOWNID%%", dropdown_id)
+    return html.replace("%%ITEMS%%", items)
+
 def navbar_item(title, url):
-    '''A Navber Item (not active)'''
+    '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/item.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     return html.replace("%%URL%%", url.replace(" ", "/"))
 
 def navbar_item_active(title):
-    '''A Navber Item (not active)'''
+    '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/itemactive.html", "r").read())
     return html.replace("%%TITLE%%", title.title())
 
-def navbar_master(nav_bar_items):
+def navbar_master(navbar_items, navbar_right_items):
     '''master file for the navbar'''
     html = str(open("www/html/navbar/master.html", "r").read())
-    return html.replace("%%NAVBARITEMS%%", nav_bar_items)
+    html = html.replace("%%NAVBARRIGHT%%", navbar_right_items)
+    return html.replace("%%NAVBARITEMS%%", navbar_items)
 
 #######
 #PAGES#
@@ -60,6 +68,16 @@ def root_config_page(sections):
     '''Root config page'''
     html = str(open("www/html/pages/rootconfigpage.html", "r").read())
     return html.replace("%%PLUGINLIST%%", sections)
+
+def login_page(return_url):
+    '''Root config page'''
+    html = str(open("www/html/pages/login.html", "r").read())
+    return html.replace("%%RETURNURL%%", return_url)
+
+def password_page():
+    '''Root config page'''
+    html = str(open("www/html/pages/password.html", "r").read())
+    return html
 
 ##########
 #SECTIONS#
@@ -497,4 +515,26 @@ def progress_bar(label, value, max_value, percent):
     html = html.replace("%%VALUE%%", str(value))
     html = html.replace("%%MAX%%", str(max_value))
     html = html.replace("%%PERCENT%%", str(percent))
+    return html
+
+#########
+##ADMIN##
+#########
+def users_page(users_html):
+    '''creates a progress bar'''
+    html = str(open("www/html/admin/users.html", "r").read())
+    html = html.replace("%%USERSHTML%%", users_html)
+    return html
+
+def user_page(user_id, username, is_admin):
+    '''creates a progress bar'''
+    html = str(open("www/html/admin/user.html", "r").read())
+    html = html.replace("%%USERID%%", str(user_id))
+    html = html.replace("%%USERNAME%%", str(username))
+    if is_admin:
+        html = html.replace("%%ADMINTRUE%%", "checked")
+        html = html.replace("%%ADMINFALSE%%", "")
+    else:
+        html = html.replace("%%ADMINTRUE%%", "")
+        html = html.replace("%%ADMINFALSE%%", "checked")
     return html

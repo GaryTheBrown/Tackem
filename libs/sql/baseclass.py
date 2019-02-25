@@ -54,6 +54,10 @@ class MysqlBaseClass(metaclass=ABCMeta):
                                      data=data,
                                      version=version))
 
+    def table_checks(self, system_name, data):
+        '''Function to do a table check from a dict'''
+        return self.table_check(system_name, data["name"], data["data"], data["version"])
+
     def table_has_row(self, system_name, table_name, dict_of_queries):
         '''Check if the Table has row by looking for all the queries'''
         queries = []

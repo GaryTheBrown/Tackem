@@ -1,0 +1,35 @@
+<div class="container-fluid">
+	<h1 class="my-4 text-center">TACKEM LOGIN</h1>
+	<div class="row my-4">
+		<div class="col"></div>
+		<div class="col-10 col-sm-8 col-lg-6 px-4 border border-light">
+			<div class="mt-2 font-weight-bold text-center">Please Login To Access This Page</div>
+			<form action="%%BASEURL%%login" method="post">
+				<input type="hidden" name="return_url" value="%%RETURNURL%%">
+				<div class="my-4 input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-user"></i></span>
+					</div>
+					<input type="text" name="username" class="form-control" placeholder="Username" required>
+					
+				</div>
+				<div class="my-4 input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i></span>
+					</div>
+					<input type="password" name="password" class="form-control" placeholder="Password" required>
+				</div>
+				<div class="my-4 input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text">Stay Logged In For Minutes:</span>
+					</div>
+					<input type="number" name="timeout" class="form-control" min=1 value=60 required>
+				</div>
+				<div class="my-4">
+					<button type="submit" class="btn btn-success btn-block">Login</button>
+				</div>
+			</form>
+		</div>
+		<div class="col"></div>
+	</div>
+</div>

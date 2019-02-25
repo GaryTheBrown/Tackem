@@ -1,7 +1,6 @@
 '''Database Tables'''
 from libs.sql.column import Column
 
-
 VIDEO_CONVERT_DB_INFO = {
     "name": "ripper_video_convert_info",
     "data":

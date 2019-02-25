@@ -3,12 +3,13 @@ import libs.html_parts as html_part
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-    def __init__(self, name, key, systems, plugins, config,
+    def __init__(self, name, key, systems, plugins, config, auth,
                  base_stylesheet=None, base_javascript=None):
         self._key = key
         self._systems = systems
         self._plugins = plugins
         self._global_config = config
+        self._auth = auth
         self._name = name
         self._base_stylesheet = base_stylesheet
         self._base_javascript = base_javascript
@@ -62,7 +63,42 @@ class HTMLTEMPLATE():
         return html_part.master_template(title, body, javascript_extra_html, stylesheet_extra_html,
                                          baseurl, navbar_html)
 
+    def _error_page(self, code):
+        '''Shows the error Page'''
+        #if not any codes bellow or 404
+        page = '<h1 class="text-center">404 Not Found</h1>'
+        if code == 401:
+            page = '<h1 class="text-center">401 Not Authorised</h1>'
+        return self._template(page, False)
+
     def _navbar(self):
+        '''Navigation Bar For System'''
+        nav_items_html = ""
+        if not self._auth.enabled():
+            nav_items_html = self._navbar_item()
+        elif self._auth.check_logged_in():
+            nav_items_html = self._navbar_item()
+
+        navbar_right_html = ""
+        if self._auth.is_admin() or not self._auth.enabled():
+            navbar_admin = ""
+            navbar_admin += html_part.navbar_item("Config", "config")
+            if self._auth.is_admin() and self._auth.enabled():
+                navbar_admin += html_part.navbar_item("Users", "admin/users")
+            navbar_admin += html_part.navbar_item("Reboot", "reboot")
+            navbar_admin += html_part.navbar_item("Shutdown", "shutdown")
+            navbar_right_html += html_part.navbar_dropdown_right("Admin", "admin", navbar_admin)
+        if self._auth.enabled():
+            if self._auth.check_logged_in():
+                navbar_user = ""
+                navbar_user += html_part.navbar_item("Logout", "logout")
+                navbar_user += html_part.navbar_item("Change Password", "password")
+                navbar_right_html += html_part.navbar_dropdown_right("User", "user", navbar_user)
+            else:
+                navbar_right_html += html_part.navbar_item("Login", "login")
+        return html_part.navbar_master(nav_items_html, navbar_right_html)
+
+    def _navbar_item(self):
         '''Navigation Bar For System'''
         nav_items_html = ""
         nav_list = {}
@@ -102,10 +138,6 @@ class HTMLTEMPLATE():
                                 layer3 += html_part.navbar_item_active(key3)
                             else:
                                 layer3 += html_part.navbar_item(key3, nav_list[key][key2][key3])
-                        layer2 += html_part.navbar_dropdown_right(key2, key + key2, layer3)
+                        layer2 += html_part.navbar_drop_right(key2, key + key2, layer3)
                 nav_items_html += html_part.navbar_dropdown(key, key, layer2)
-        return html_part.navbar_master(nav_items_html)
-
-    def _redirect(self, url):
-        '''redirects to different page'''
-        return str(open("www/html/redirect.html", "r").read()).replace("%%URL%%", url)
+        return nav_items_html

@@ -8,6 +8,7 @@ class Drives(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self):
         '''index of Drives'''
+        self._auth.check_auth()
         index_html = html_parts.get_page("drives/index", self._system)
         index_html = index_html.replace("%%DRIVES%%",
                                         html_parts.drives(self._system.get_drives(),
@@ -17,14 +18,15 @@ class Drives(HTMLTEMPLATE):
     @cherrypy.expose
     def single(self, index=None):
         '''get single Drive'''
+        self._auth.check_auth()
         if index is None:
-            return self._redirect(self._baseurl + "ripping/ripper/drives/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/drives/")
         try:
             index_int = int(index)
         except ValueError:
-            return self._redirect(self._baseurl + "ripping/ripper/drives/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/drives/")
         drives = self._system.get_drives()
         if index_int > len(drives):
-            return self._redirect(self._baseurl + "ripping/ripper/drives/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/drives/")
         drive = self._system.get_drives()[index_int]
         return drive.html_data()

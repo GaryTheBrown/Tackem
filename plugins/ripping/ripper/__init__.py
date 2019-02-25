@@ -303,14 +303,8 @@ class Plugin(PluginBaseClass):
         self._converter = None
         self._renamer = None
 
-        self._db.table_check("Ripper",
-                             db_tables.VIDEO_INFO_DB_INFO["name"],
-                             db_tables.VIDEO_INFO_DB_INFO["data"],
-                             db_tables.VIDEO_INFO_DB_INFO["version"])
-        self._db.table_check("Ripper",
-                             db_tables.VIDEO_CONVERT_DB_INFO["name"],
-                             db_tables.VIDEO_CONVERT_DB_INFO["data"],
-                             db_tables.VIDEO_CONVERT_DB_INFO["version"])
+        self._db.table_checks("Ripper", db_tables.VIDEO_INFO_DB_INFO)
+        self._db.table_checks("Ripper", db_tables.VIDEO_CONVERT_DB_INFO)
 
         for location in config['locations']:
             folder = config['locations'][location]

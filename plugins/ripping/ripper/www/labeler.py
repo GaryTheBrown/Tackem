@@ -16,6 +16,7 @@ class Labeler(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self):
         '''index of plugin'''
+        self._auth.check_auth()
         root_html = html_parts.get_page("labeler/index", self._system)
         data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
         labeler_html = html_parts.labeler_items(data, self._baseurl, False)
@@ -25,16 +26,17 @@ class Labeler(HTMLTEMPLATE):
     @cherrypy.expose
     def single(self, index=None, vertical=True):
         '''get single labeler item'''
+        self._auth.check_auth()
         if index is None:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         try:
             index_int = int(index)
         except ValueError:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          index_int)
         if data is False:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         if isinstance(vertical, str):
             if vertical.lower() == "true":
                 vertical = True
@@ -45,21 +47,23 @@ class Labeler(HTMLTEMPLATE):
     @cherrypy.expose
     def getids(self):
         '''index of discs to label'''
+        self._auth.check_auth()
         return json.dumps(self._system.get_labeler().get_ids("WWW" + cherrypy.request.remote.ip))
 
     @cherrypy.expose
     def edit(self, index=None):
         '''edit the data page'''
+        self._auth.check_auth()
         if index is None:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         try:
             index_int = int(index)
         except ValueError:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          index_int)
         if data is False:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
 
         edit_html = html_parts.get_page("labeler/edit/edit", self._system)
         edit_html += ghtml_parts.search_modal()
@@ -101,18 +105,19 @@ class Labeler(HTMLTEMPLATE):
     @cherrypy.expose
     def editdisctype(self, index=None, disc_type_code=None):
         '''gets the disc type html'''
+        self._auth.check_auth()
         if index is None:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         try:
             index_int = int(index)
         except ValueError:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          index_int)
         if data is False:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         if disc_type_code is None:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         if disc_type_code == "change":
             self._system.get_labeler().clear_rip_data("WWW" + cherrypy.request.remote.ip, index_int)
         return self._edit_disc_type_work(data, disc_type_code)
@@ -133,7 +138,7 @@ class Labeler(HTMLTEMPLATE):
                 label = data['label']
                 rip_data = disc_type.make_blank_disc_type(disc_type_code)
                 if rip_data is None:
-                    return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+                    raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
             else:
                 label = rip_data.name()
             search = self._global_config['scraper']['enabled']
@@ -191,19 +196,20 @@ class Labeler(HTMLTEMPLATE):
     @cherrypy.expose
     def edittracktype(self, disc_index=None, track_index=None, track_type_code=None):
         '''gets the disc type html'''
+        self._auth.check_auth()
         if disc_index is None or track_index is None:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         try:
             disc_index_int = int(disc_index)
             track_index_int = int(track_index)
         except ValueError:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          disc_index_int)
         if data is False:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         if track_type_code is None:
-            return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
         rip_data = {}
         if data['rip_data'] is not None:
             rip_data = json.loads(data['rip_data'])
@@ -236,6 +242,7 @@ class Labeler(HTMLTEMPLATE):
     @cherrypy.expose
     def editsave(self, **kwargs):
         '''saves the disc type'''
+        self._auth.check_auth()
         for key in kwargs:
             if kwargs[key] == "True":
                 kwargs[key] = True
@@ -272,4 +279,4 @@ class Labeler(HTMLTEMPLATE):
         finished = "complete" in kwargs
         self._system.get_labeler().set_data("WWW" + cherrypy.request.remote.ip, kwargs['discid'],
                                             rip_data, finished)
-        return self._redirect(self._baseurl + "ripping/ripper/labeler/")
+        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
