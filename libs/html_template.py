@@ -83,7 +83,7 @@ class HTMLTEMPLATE():
         if self._auth.is_admin() or not self._auth.enabled():
             navbar_admin = ""
             navbar_admin += html_part.navbar_item("Config", "config")
-            if self._auth.is_admin() and self._auth.enabled():
+            if self._auth.enabled() and self._auth.is_admin():
                 navbar_admin += html_part.navbar_item("Users", "admin/users")
             navbar_admin += html_part.navbar_item("Reboot", "reboot")
             navbar_admin += html_part.navbar_item("Shutdown", "shutdown")
