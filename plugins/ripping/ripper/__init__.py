@@ -11,6 +11,7 @@ from libs.config_list import ConfigList
 from libs.config_object import ConfigObject
 from libs.config_option import ConfigOption
 from libs.config_rules import ConfigRules
+from libs.program_checker import check_for_required_programs
 from libs.data.languages import Languages
 from libs.data.audio_format_options import OPTIONS as audio_format_options
 from . import www
@@ -22,20 +23,6 @@ from .converter import Converter
 from .renamer import Renamer
 from .presets import video_presets_config_options
 
-#REQUIRED
-# makemkv + java JRE + CCExtractor libcss2
-# sudo apt install libdvd-pkg && sudo dpkg-reconfigure libdvd-pkg
-# mplayer
-# https://github.com/CCExtractor/ccextractor/blob/master/docs/COMPILATION.MD
-# ffmpeg + ffprobe
-# TODO MAKE SYSTEM OUTPUT A MESSAGE IF MISSING PROGRAMS FOR THIS SECTION TO RUN
-
-# makemkv settings.conf
-# app_DefaultSelectionString = "+sel:all"
-# app_DefaultOutputFileName = "{t:N2}"
-# app_ccextractor = "/usr/local/bin/ccextractor"
-
-
 SETTINGS = {
     'single_instance':True,
     'webui':True,
@@ -44,13 +31,19 @@ SETTINGS = {
     'platform': ['Linux']#, 'Darwin', 'Windows']
 }
 DRIVES = {}
+
+LINUX_PROGRAMS = ["hwinfo", "makemkvcon", "java", "ccextractor", "ffmpeg", "ffprobe", "mplayer", 
+                  "eject", "lsblk", "hwinfo", "blkid"]
+
 if platform.system() == 'Linux':
-    DRIVES = get_hwinfo_linux()
+    if check_for_required_programs(LINUX_PROGRAMS, output=False):
+        DRIVES = get_hwinfo_linux()
 
 def check_enabled():
     '''plugin check for if plugin should be enabled'''
     if platform.system() == 'Linux':
-        pass
+        if not check_for_required_programs(LINUX_PROGRAMS, "Ripper"):
+            return False
     return bool(DRIVES)
 
 CONFIG = ConfigList("ripper", plugin=sys.modules[__name__], objects=[

@@ -41,7 +41,6 @@ class StreamType(metaclass=ABCMeta):
     @abstractmethod
     def get_edit_panel(self, section_info=""):
         '''returns the edit panel'''
-        pass
 
 class VideoStreamType(StreamType):
     '''Other Types'''

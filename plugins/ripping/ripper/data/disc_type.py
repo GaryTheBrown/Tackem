@@ -86,7 +86,6 @@ class DiscType(metaclass=ABCMeta):
     @abstractmethod
     def get_edit_panel(self, search=True):
         '''returns the edit panel'''
-        pass
 
     def _get_edit_panel_top(self):
         '''returns the edit panel'''

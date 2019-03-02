@@ -120,8 +120,6 @@ class DriveLinux(Drive):
 ##########
     def _audio_rip(self):
         '''script to rip an audio cd'''
-        pass
-        # self._check_audio_disc_information()
 
     def _video_rip(self):
         '''script to rip video disc'''

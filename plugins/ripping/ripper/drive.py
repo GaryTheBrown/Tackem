@@ -100,17 +100,10 @@ class Drive(metaclass=ABCMeta):
     @abstractmethod
     def check_tray(self):
         '''check the status of the disc tray'''
-        pass
 
     @abstractmethod
     def _check_disc_type(self, sleep_time=1.0):
         '''Will return the size of the disc'''
-        pass
-
-    # @abstractmethod
-    # def _check_audio_disc_information(self):
-    #     '''Will return if drive is open or it will return a string of the error'''
-    #     pass
 
 ################
 ##TRAYCONTROLS##
@@ -119,22 +112,18 @@ class Drive(metaclass=ABCMeta):
     @abstractmethod
     def open_tray(self):
         '''Send Command to open the tray'''
-        pass
 
     @abstractmethod
     def close_tray(self):
         '''Send Command to close the tray'''
-        pass
 
     @abstractmethod
     def lock_tray(self):
         '''Send Command to lock the tray'''
-        pass
 
     @abstractmethod
     def unlock_tray(self):
         '''Send Command to unlock the tray'''
-        pass
 
 ##########
 ##Thread##
@@ -205,12 +194,10 @@ class Drive(metaclass=ABCMeta):
     @abstractmethod
     def _audio_rip(self):
         '''script to rip an audio cd'''
-        pass
 
     @abstractmethod
     def _video_rip(self):
         '''script to rip video disc'''
-        pass
 
 ##############
 ##HTML STUFF##

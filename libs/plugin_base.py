@@ -16,12 +16,10 @@ class PluginBaseClass(metaclass=ABCMeta):
     @abstractmethod
     def startup(self):
         '''Startup Script'''
-        pass
 
     @abstractmethod
     def shutdown(self):
         '''stop the plugin'''
-        pass
 
     def running(self):
         '''is it running?'''

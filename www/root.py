@@ -10,15 +10,6 @@ class Root(HTMLTEMPLATE):
     '''Root'''
 
     @cherrypy.expose
-    def welcome(self, **kwargs):
-        '''First Run Will Load Into this page'''
-        if kwargs:
-            #first startup message add here
-            pass
-        index_page = str(open("www/html/pages/welcome.html", "r").read())
-        return self._template(index_page)
-
-    @cherrypy.expose
     def index(self):
         '''Index Page'''
         self._auth.check_auth()

@@ -1,13 +1,36 @@
 # Tackem
 
 BASE INSTALLATION (ubuntu/debian):
-
-sudo apt install python3 python3-pip
-
-pip install configobj cherrypy
+REQUIRED: python3
+PYTHON REQUIREDS: configobj cherrypy requests pexpect
 
 RUNNING:
 
 python3 tackem.py
 
 access http://[HOSTNAME/IP]:8081 to start the setup pages
+
+
+PLUGINS:
+
+RIPPER:
+REQUIRED: hwinfo makemkv java JRE CCExtractor libcss2 mplayer eject lsblk hwinfo blkid
+
+[Ubuntu commands]
+sudo add-apt-repository ppa:heyarje/makemkv-beta
+sudo apt install hwinfo mplayer ffmpeg makemkv-bin makemkv-oss libdvd-pkg default-jre
+sudo dpkg-reconfigure libdvd-pkg
+git clone https://github.com/CCExtractor/ccextractor.git
+sudo apt install cmake gcc libcurl4-gnutls-dev tesseract-ocr libtesseract-dev libleptonica-dev autoconf
+cd ccextractor/linux
+cd ccextractor/linux
+./autogen.sh
+./configure
+make
+sudo make install
+
+
+makemkv settings.conf
+app_DefaultSelectionString = "+sel:all"
+app_DefaultOutputFileName = "{t:N2}"
+app_ccextractor = "/usr/local/bin/ccextractor"

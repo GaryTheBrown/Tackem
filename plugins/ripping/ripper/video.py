@@ -91,7 +91,6 @@ class Video(metaclass=ABCMeta):
     @abstractmethod
     def _check_disc_information(self):
         '''Will set the UUID and label or it will return False'''
-        pass
 
 #######################
 ##DATABASE & API CALL##
@@ -145,7 +144,6 @@ class Video(metaclass=ABCMeta):
     @abstractmethod
     def _makemkv_backup_from_disc(self, temp_dir, index=-1):
         '''Do the mkv Backup from disc'''
-        pass
 
 #######################
 ##SEND TO NEXT SYSTEM##
