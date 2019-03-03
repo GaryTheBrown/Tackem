@@ -64,18 +64,31 @@ must start with '/'""")
     ])
 )
 CONFIG.append(
-    ConfigList("scraper", "Scraper (The Movie DB)", objects=[
+    ConfigList("scraper", "Video Scraper (The Movie DB)", objects=[
         ConfigObject("enabled", "Enabled", "boolean", default=False, toggle_section="scraper",
                      input_type="switch"),
-        ConfigObject("apikey", "API Key", "string", default='',
-                     help_text="""
+        ConfigObject("apikey", "API Key", "string", default='', help_text="""
 The API key for TMDB API access goto http://www.themoviedb.org/ to grab your key"""),
-        ConfigObject("url", "Base Url", "string", default='api.themoviedb.org',
-                     help_text="""
+        ConfigObject("url", "Base Url", "string", default='api.themoviedb.org', help_text="""
 The API base url for TMDB API access Leave alone unless you need to move this"""),
         ConfigObject("includeadult", "", "boolean", default=False, hide_from_html=True),
         ConfigObject("language", "Language", "option", input_type="dropdown", default='en-GB',
                      options=locale_options, help_text="language to use when scraping the data"),
+    ])
+)
+CONFIG.append(
+    ConfigList("musicbrainz", "Audio CD Scraper (MusicBrainz)", objects=[
+        ConfigObject("enabled", "Enabled", "boolean", default=False, toggle_section="musicbrainz",
+                     input_type="switch"),
+        ConfigObject("username", "MusicBrainz Username", "string", default="", help_text="""
+Your MusicBrainz username (Only needed if you are submitting unknown CDs Back to the service)"""),
+        ConfigObject("password", "MusicBrainz Password", "password", default="", help_text="""
+Your MusicBrainz password (Only needed if you are submitting unknown CDs Back to the service)"""),
+        ConfigObject("url", "Base Url", "string", default='musicbrainz.org', help_text="""
+The base url for MusicBrainz access Leave alone unless you need to move this"""),
+        ConfigObject("coverarturl", "Cover Art Base Url", "string", default='coverartarchive.org',
+                     help_text="""
+The base url for Cover Art Archive requests Leave alone unless you need to move this""")
     ])
 )
 CONFIG.append(ConfigList("plugins"))# keep this one at the end of the config section

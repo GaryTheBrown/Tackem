@@ -2,7 +2,7 @@
 
 BASE INSTALLATION (ubuntu/debian):
 REQUIRED: python3
-PYTHON REQUIREDS: configobj cherrypy requests pexpect
+PYTHON REQUIREDS: configobj cherrypy requests pexpect musicbrainzngs
 
 RUNNING:
 
@@ -14,7 +14,8 @@ access http://[HOSTNAME/IP]:8081 to start the setup pages
 PLUGINS:
 
 RIPPER:
-REQUIRED: hwinfo makemkv java JRE CCExtractor libcss2 mplayer eject lsblk hwinfo blkid
+REQUIRED: hwinfo makemkv java JRE CCExtractor libcss2 mplayer eject lsblk hwinfo blkid libdiscid0
+PYTHON REQUIREDS: discid
 
 [Ubuntu commands]
 sudo add-apt-repository ppa:heyarje/makemkv-beta
