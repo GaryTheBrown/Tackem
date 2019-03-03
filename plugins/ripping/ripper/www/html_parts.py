@@ -81,7 +81,10 @@ def video_labeler_item(data, baseurl, vertical=False):
         label = data['label']
     else:
         rip_data = disc_type.make_disc_type(json.loads(data['rip_data']))
-        info = rip_data.info()
+        if rip_data.info() != "":
+            info = rip_data.info()
+        else:
+            info = "no info"
         label = rip_data.name()
     item_html = item_html.replace("%%ITEMID%%", str(data['id']))
     item_html = item_html.replace("%%IMAGE%%", disc_type_img)
