@@ -2,7 +2,9 @@
 import argparse
 import os.path
 HOMEFOLDER = os.path.expanduser("~")
+PROGRAMNAME = "Tackem"
 PROGRAMVERSION = "ALPHA"
+PROGRAMGITADDRESS = "http://github.com/garythebrown/tackem/"
 PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
 
 def parse():
