@@ -16,17 +16,12 @@ class VideoLabeler(HTMLTEMPLATE):
 
     def _return(self):
         '''return on fail'''
-        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/videolabeler/")
+        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/")
 
     @cherrypy.expose
     def index(self):
-        '''index of plugin'''
-        self._auth.check_auth()
-        root_html = html_parts.get_page("video_labeler/index", self._system)
-        data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
-        labeler_html = html_parts.video_labeler_items(data, self._baseurl, False)
-        root_html = root_html.replace("%%LABELERS%%", labeler_html)
-        return self._template(root_html)
+        '''index page return to ripper main page'''
+        self._return()
 
     @cherrypy.expose
     def single(self, index=None, vertical=True):
@@ -70,7 +65,7 @@ class VideoLabeler(HTMLTEMPLATE):
         if data is False:
             self._return()
 
-        edit_html = html_parts.get_page("video_labeler/edit/edit", self._system)
+        edit_html = html_parts.get_page("video_labeler/edit/edit")
         edit_html += ghtml_parts.search_modal()
         visibility = ""
         disc_info = None
@@ -130,7 +125,7 @@ class VideoLabeler(HTMLTEMPLATE):
     def _edit_disc_type_work(self, data, disc_type_code):
         '''work shared between two functions'''
         if disc_type_code == "change":
-            disc_type_html = html_parts.labeler_disctype_start()
+            disc_type_html = html_parts.video_labeler_disctype_start()
             rip_data = None
         else:
             if isinstance(data['rip_data'], str):
@@ -151,8 +146,8 @@ class VideoLabeler(HTMLTEMPLATE):
             for key in disc_type.TYPES:
                 if key.replace(" ", "").lower() == disc_type_code:
                     disc_type_code_label = key
-            disc_type_html = html_parts.labeler_disctype_template(label, disc_type_code_label,
-                                                                  rip_data, search)
+            disc_type_html = html_parts.video_labeler_disctype_template(label, disc_type_code_label,
+                                                                        rip_data, search)
 
         if rip_data is not None and rip_data.name() != "":
             label = rip_data.name().replace("_", " ")
@@ -191,10 +186,11 @@ class VideoLabeler(HTMLTEMPLATE):
         panel_head_html = panel_head_html.replace("%%SUBTITLECOUNT%%", subtitle_count)
         panel_head_html = panel_head_html.replace("%%HASCHAPTERS%%", has_chapters)
         if track_data is None:
-            section_html = html_parts.labeler_tracktype_start()
+            section_html = html_parts.video_labeler_tracktype_start()
         else:
             section_html = track_data.get_edit_panel(probe_info)
-        track_panel = html_parts.panel(panel_head_html, "track_" + str(track_index), section_html)
+        track_panel = html_parts.video_panel(panel_head_html, "track_" + str(track_index),
+                                             section_html)
         track_panel = track_panel.replace("%%TRACKINDEX%%", str(track_index))
         return track_panel
 
@@ -236,7 +232,7 @@ class VideoLabeler(HTMLTEMPLATE):
     def _edit_track_type_work(self, track_data, track_type_code, probe_info):
         '''work shared between two functions'''
         if track_type_code == "change":
-            return html_parts.labeler_tracktype_start()
+            return html_parts.video_labeler_tracktype_start()
         elif track_data is None:
             track_data = video_track_type.make_blank_track_type(track_type_code)
             return track_data.get_edit_panel(probe_info)

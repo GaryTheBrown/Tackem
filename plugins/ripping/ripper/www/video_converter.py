@@ -10,17 +10,12 @@ class VideoConverter(HTMLTEMPLATE):
 
     def _return(self):
         '''return on fail'''
-        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/videoconverter/")
+        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/")
 
     @cherrypy.expose
     def index(self):
-        '''index of plugin'''
-        self._auth.check_auth()
-        root_html = html_parts.get_page("video_converter/index", self._system)
-        data = self._system.get_converter().get_data()
-        converter_html = html_parts.converter_items(data)
-        root_html = root_html.replace("%%CONVERTERS%%", converter_html)
-        return self._template(root_html)
+        '''index page return to ripper main page'''
+        self._return()
 
     @cherrypy.expose
     def single(self, index=None):

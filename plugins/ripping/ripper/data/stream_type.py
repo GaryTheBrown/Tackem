@@ -78,9 +78,9 @@ class VideoStreamType(StreamType):
                                  ghtml_parts.input_box("text", self._var_start() + "label",
                                                        self._label),
                                  True)
-        stream_panel_html = html_parts.stream_panel(ffprobeinfo, html)
-        return html_parts.panel(str(self._stream_index) + ". Video Section", "",
-                                stream_panel_html)
+        stream_panel_html = html_parts.video_stream_panel(ffprobeinfo, html)
+        return html_parts.video_panel(str(self._stream_index) + ". Video Section", "",
+                                      stream_panel_html)
 
 class AudioStreamType(StreamType):
     '''Other Types'''
@@ -152,50 +152,52 @@ class AudioStreamType(StreamType):
                                                                                ""))
             }
         html = ghtml_parts.hidden(self._var_start() + "stream_type", "audio", True)
-        html += html_parts.item(self._var_start() + "dub", "Dubbed Audio",
-                                "Is this a Dubbed Audio Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "dub",
-                                                            self._dub),
-                                True)
-        html += html_parts.item(self._var_start() + "original", "Original Audio",
-                                "Is this the Original Audio Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "original",
-                                                            self._original),
-                                True)
-        html += html_parts.item(self._var_start() + "comment", "Comment Audio",
-                                "Is this a Commentary Audio Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "comment",
-                                                            self._comment),
-                                True)
-        html += html_parts.item(self._var_start() + "visual_impaired", "Visual Impaired Audio",
-                                "Is this a Visual Impaired Audio Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "visual_impaired",
-                                                            self._visual_impaired),
-                                True)
-        html += html_parts.item(self._var_start() + "karaoke", "Karaoke Audio Track",
-                                "Is this a Karaoke Audio Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "karaoke",
-                                                            self._karaoke),
-                                True)
-        html += html_parts.item(self._var_start() + "duplicate", "Duplicate",
-                                "Is this a Duplicate Audio Track?",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "duplicate",
-                                                            self._duplicate),
-                                True)
+        html += html_parts.video_item(self._var_start() + "dub", "Dubbed Audio",
+                                      "Is this a Dubbed Audio Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "dub",
+                                                                  self._dub),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "original", "Original Audio",
+                                      "Is this the Original Audio Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "original",
+                                                                  self._original),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "comment", "Comment Audio",
+                                      "Is this a Commentary Audio Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "comment",
+                                                                  self._comment),
+                                      True)
+        tmp_label = self._var_start() + "visual_impaired"
+        html += html_parts.video_item(self._var_start() + "visual_impaired",
+                                      "Visual Impaired Audio",
+                                      "Is this a Visual Impaired Audio Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  tmp_label,
+                                                                  self._visual_impaired),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "karaoke", "Karaoke Audio Track",
+                                      "Is this a Karaoke Audio Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "karaoke",
+                                                                  self._karaoke),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "duplicate", "Duplicate",
+                                      "Is this a Duplicate Audio Track?",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "duplicate",
+                                                                  self._duplicate),
+                                      True)
         html += ghtml_parts.item(self._var_start() + "label", "Label",
                                  "Label of the Subtitles",
                                  ghtml_parts.input_box("text", self._var_start() + "label",
                                                        self._label),
                                  True)
-        stream_panel_html = html_parts.stream_panel(ffprobeinfo, html)
-        return html_parts.panel(str(self._stream_index) + ". Audio Section", "",
-                                stream_panel_html)
+        stream_panel_html = html_parts.video_stream_panel(ffprobeinfo, html)
+        return html_parts.video_panel(str(self._stream_index) + ". Audio Section", "",
+                                      stream_panel_html)
 
 class SubtitleStreamType(StreamType):
     '''Other Types'''
@@ -256,45 +258,46 @@ class SubtitleStreamType(StreamType):
             }
 
         html = ghtml_parts.hidden(self._var_start() + "stream_type", "subtitle", True)
-        html += html_parts.item(self._var_start() + "forced", "Forced Subtitle",
-                                "Is this a Forced Subtitle Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "forced",
-                                                            self._forced),
-                                True)
-        html += html_parts.item(self._var_start() + "hearing_impaired",
-                                "Hearing Impaired Subtitle",
-                                "Is this a Hearing Impaired Subtitle Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "hearing_impaired",
-                                                            self._hearing_impaired),
-                                True)
-        html += html_parts.item(self._var_start() + "lyrics", "Lyrics Track",
-                                "Is this a Lyric Subtitle Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "lyrics",
-                                                            self._lyrics),
-                                True)
-        html += html_parts.item(self._var_start() + "comment", "Comment Track",
-                                "Is this a Commentary Subtitle Track",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "comment",
-                                                            self._comment),
-                                True)
-        html += html_parts.item(self._var_start() + "duplicate", "Duplicate",
-                                "Is this a Duplicate Subtitle Track?",
-                                ghtml_parts.checkbox_single("",
-                                                            self._var_start() + "duplicate",
-                                                            self._duplicate),
-                                True)
+        html += html_parts.video_item(self._var_start() + "forced", "Forced Subtitle",
+                                      "Is this a Forced Subtitle Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "forced",
+                                                                  self._forced),
+                                      True)
+        tmp_variable = self._var_start() + "hearing_impaired"
+        html += html_parts.video_item(self._var_start() + "hearing_impaired",
+                                      "Hearing Impaired Subtitle",
+                                      "Is this a Hearing Impaired Subtitle Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  tmp_variable,
+                                                                  self._hearing_impaired),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "lyrics", "Lyrics Track",
+                                      "Is this a Lyric Subtitle Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "lyrics",
+                                                                  self._lyrics),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "comment", "Comment Track",
+                                      "Is this a Commentary Subtitle Track",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "comment",
+                                                                  self._comment),
+                                      True)
+        html += html_parts.video_item(self._var_start() + "duplicate", "Duplicate",
+                                      "Is this a Duplicate Subtitle Track?",
+                                      ghtml_parts.checkbox_single("",
+                                                                  self._var_start() + "duplicate",
+                                                                  self._duplicate),
+                                      True)
         html += ghtml_parts.item(self._var_start() + "label", "Label",
                                  "Label of the Subtitles",
                                  ghtml_parts.input_box("text", self._var_start() + "label",
                                                        self._label),
                                  True)
-        stream_panel_html = html_parts.stream_panel(ffprobeinfo, html)
-        return html_parts.panel(str(self._stream_index) + ". Subtitle Section", "",
-                                stream_panel_html)
+        stream_panel_html = html_parts.video_stream_panel(ffprobeinfo, html)
+        return html_parts.video_panel(str(self._stream_index) + ". Subtitle Section", "",
+                                      stream_panel_html)
 
 def make_stream_type(stream_index, stream):
     '''transforms the stream returned from the DB or API to the classes above'''

@@ -72,7 +72,7 @@ class VideoTrackType(metaclass=ABCMeta):
             else:
                 temp_stream = stream_type.make_blank_stream_type(stream_index, stream_type_code)
                 html += temp_stream.get_edit_panel(stream_data)
-        return html_parts.panel("Streams", "", html)
+        return html_parts.video_panel("Streams", "", html)
 
     @abstractmethod
     def get_edit_panel(self, ffprobe=None):

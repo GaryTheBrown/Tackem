@@ -10,7 +10,7 @@ class Root(HTMLTEMPLATE):
         '''index of plugin'''
         self._auth.check_auth()
         baseurl = self._global_config.get("webui", {}).get("baseurl", "/")
-        root_html = html_parts.get_page("root/index", self._system)
+        root_html = html_parts.get_page("root/index")
         root_html = root_html.replace("%%DRIVES%%", html_parts.drives(self._system.get_drives(),
                                                                       self._config['drives'], True))
         labeler_data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)

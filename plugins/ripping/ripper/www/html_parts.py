@@ -1,28 +1,13 @@
 '''drives pages'''
 import os
 import json
-import cherrypy
 from libs import html_parts
 from ..data import disc_type, video_track_type
 DIR = os.path.dirname(__file__) + "/html/"
 
-def get_page(page, system=None):
+def get_page(page):
     '''opens an page and returns it with the navbar sorted'''
-    page_html = str(open(DIR + page + ".html", "r").read())
-    if system:
-        return page_html.replace("%%NAVBAR%%", navbar(system))
-    return page_html
-
-def navbar(system):
-    '''creates the navbar section'''
-    navbar_html = str(open(DIR + "navbar.html", "r").read())
-    navbar_html = navbar_html.replace(" (%%AUDIOLABLERCOUNT%%)", "")
-    video_labeler_count = system.get_labeler().get_count("WWW" + cherrypy.request.remote.ip)
-    if video_labeler_count > 0:
-        navbar_html = navbar_html.replace("%%VIDEOLABLERCOUNT%%", str(video_labeler_count))
-    else:
-        navbar_html = navbar_html.replace(" (%%VIDEOLABLERCOUNT%%)", "")
-    return navbar_html
+    return str(open(DIR + page + ".html", "r").read())
 
 def drive(drive_obj, drive_index, name, vertical=False):
     '''return html for Drive'''
