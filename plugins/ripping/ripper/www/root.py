@@ -22,11 +22,14 @@ class Root(HTMLTEMPLATE):
         audio_labeler_count = 0
         thread_name = "WWW" + cherrypy.request.remote.ip
         video_labeler_count = self._system.get_labeler().get_count(thread_name)
-        labeler_count = audio_labeler_count + video_labeler_count
-        if labeler_count > 0:
-            root_html = root_html.replace("%%LABLERCOUNT%%", str(labeler_count))
+        if audio_labeler_count > 0:
+            root_html = root_html.replace("%%AUDIOLABLERCOUNT%%", str(audio_labeler_count))
         else:
-            root_html = root_html.replace(" (%%LABLERCOUNT%%)", "")
+            root_html = root_html.replace(" (%%AUDIOLABLERCOUNT%%)", "")
+        if video_labeler_count > 0:
+            root_html = root_html.replace("%%VIDEOLABLERCOUNT%%", str(video_labeler_count))
+        else:
+            root_html = root_html.replace(" (%%VIDEOLABLERCOUNT%%)", "")
         converter_data = self._system.get_converter().get_data()
         root_html = root_html.replace("%%CONVERTERS%%", html_parts.converter_items(converter_data))
         return self._template(root_html)
