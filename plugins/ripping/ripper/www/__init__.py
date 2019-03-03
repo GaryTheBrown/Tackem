@@ -4,8 +4,8 @@ import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from .root import Root
 from .drives import Drives
-from .labeler import Labeler
-from .converter import Converter
+from .video_labeler import VideoLabeler
+from .video_converter import VideoConverter
 
 LAYOUT = {}
 def mounts(key, systems, plugins, config, auth):
@@ -14,10 +14,10 @@ def mounts(key, systems, plugins, config, auth):
     root = Root("Ripper", key, systems, plugins, config, auth, base_stylesheet=stylesheet)
     root.drives = Drives("Ripper Drives", key, systems, plugins, config, auth,
                          base_stylesheet=stylesheet)
-    root.labeler = Labeler("Ripper Labeler", key, systems, plugins, config, auth,
-                           base_stylesheet=stylesheet)
-    root.converter = Converter("Ripper Converter", key, systems, plugins, config, auth,
-                               base_stylesheet=stylesheet)
+    root.videolabeler = VideoLabeler("Ripper Video Labeler", key, systems, plugins, config, auth,
+                                base_stylesheet=stylesheet)
+    root.videoconverter = VideoConverter("Ripper Video Converter", key, systems, plugins, config, auth,
+                                    base_stylesheet=stylesheet)
     cherrypy.tree.mount(root,
                         config.get("webui", {}).get("baseurl", "/") + key.replace(" ", "/") + "/",
                         cfg(config))

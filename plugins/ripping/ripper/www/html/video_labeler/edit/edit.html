@@ -1,5 +1,5 @@
 %%NAVBAR%%
-<form action="%%BASEURL%%ripping/ripper/labeler/editsave/" method="post">
+<form action="%%BASEURL%%ripping/ripper/videolabeler/editsave/" method="post">
 	<input type="hidden" name="discid" value="%%DISCID%%">
 	<div id="disctypesection" class="px-2">%%DISCTYPESECTION%%</div>
 	<div id="trackssection" class="p-2" %%VISIBILITY%%>%%TRACKS%%</div>
@@ -9,7 +9,7 @@
 				var answer = confirm("Are you sure doing this will clear out all data");
 				if(answer == false) return;
 			}
-			$.ajax('%%BASEURL%%ripping/ripper/labeler/editdisctype/%%DISCID%%/' + name + '/', {
+			$.ajax('%%BASEURL%%ripping/ripper/videolabeler/editdisctype/%%DISCID%%/' + name + '/', {
 				success: function(newitem) {$('#disctypesection').html(newitem);}
 			})
 			if (name == "change"){
@@ -25,7 +25,7 @@
 				var answer = confirm("Are you sure doing this will clear out the track data");
 				if(answer == false) return;
 			}
-			$.ajax('%%BASEURL%%ripping/ripper/labeler/edittracktype/%%DISCID%%/' + track + "/" + name + '/', {
+			$.ajax('%%BASEURL%%ripping/ripper/videolabeler/edittracktype/%%DISCID%%/' + track + "/" + name + '/', {
 				success: function(newitem) {$('#track_' + track + '_section').html(newitem);}
 			})
 		}

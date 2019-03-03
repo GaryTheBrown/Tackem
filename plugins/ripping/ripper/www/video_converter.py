@@ -5,13 +5,18 @@ from libs.html_template import HTMLTEMPLATE
 from libs import html_parts as ghtml_parts
 from . import html_parts
 
-class Converter(HTMLTEMPLATE):
+class VideoConverter(HTMLTEMPLATE):
     '''CONVERTER WEBUI'''
+
+    def _return(self):
+        '''return on fail'''
+        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/videoconverter/")
+
     @cherrypy.expose
     def index(self):
         '''index of plugin'''
         self._auth.check_auth()
-        root_html = html_parts.get_page("converter/index", self._system)
+        root_html = html_parts.get_page("video_converter/index", self._system)
         data = self._system.get_converter().get_data()
         converter_html = html_parts.converter_items(data)
         root_html = root_html.replace("%%CONVERTERS%%", converter_html)
@@ -22,14 +27,14 @@ class Converter(HTMLTEMPLATE):
         '''get single converter item'''
         self._auth.check_auth()
         if index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         try:
             index_int = int(index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         data = self._system.get_converter().get_data_by_id(index_int)
         if data is False:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         return html_parts.converter_item(data)
 
     @cherrypy.expose
@@ -43,11 +48,11 @@ class Converter(HTMLTEMPLATE):
         '''get single converter item'''
         self._auth.check_auth()
         if index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         try:
             index_int = int(index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         return str(self._system.get_converter().get_converting_by_id(index_int))
 
     @cherrypy.expose
@@ -55,14 +60,14 @@ class Converter(HTMLTEMPLATE):
         '''get progress bar item'''
         self._auth.check_auth()
         if index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         try:
             index_int = int(index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         data = self._system.get_converter().get_data_by_id(index_int)
         if data is False:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/converter/")
+            self._return()
         if data['converting']:
             label = str(data['process']) + "/" + str(data['count'])
             label += "(" + str(data['percent']) + "%)"

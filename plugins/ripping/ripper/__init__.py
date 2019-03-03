@@ -32,7 +32,7 @@ SETTINGS = {
 }
 DRIVES = {}
 
-LINUX_PROGRAMS = ["hwinfo", "makemkvcon", "java", "ccextractor", "ffmpeg", "ffprobe", "mplayer", 
+LINUX_PROGRAMS = ["hwinfo", "makemkvcon", "java", "ccextractor", "ffmpeg", "ffprobe", "mplayer",
                   "eject", "lsblk", "hwinfo", "blkid"]
 
 if platform.system() == 'Linux':
@@ -66,7 +66,7 @@ Where do you want to move the audio cds to when completed""")
     ConfigList("videoripping", "Video Ripping", objects=[
         ConfigObject("enabled", "Enabled", "boolean", default=True, input_type="switch",
                      script=True),
-        ConfigObject("torip", "What to Rip", "string_list", default=["movie", "tvshow"],
+        ConfigObject("torip", "What to Rip", "string_list", default=["movie", "tvshow", "Other"],
                      input_type="checkbox", options=[
                          ConfigOption("movie", "Movie"),
                          ConfigOption("tvshow", "TV Show Episode"),

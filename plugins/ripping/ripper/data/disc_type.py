@@ -6,7 +6,9 @@ from libs import html_parts
 from libs.data.languages import Languages
 from . import video_track_type as track_type
 TYPES = {"Movie":"film",
-         "TV Show":"tv"
+         "TV Show":"tv",
+         "Documentary":"video",
+         "Other":"question"
         }
 
 class DiscType(metaclass=ABCMeta):
@@ -66,6 +68,7 @@ class DiscType(metaclass=ABCMeta):
         if super_dict is None:
             super_dict = {}
         super_dict["disc_type"] = self._disc_type
+        super_dict["name"] = self._name
         super_dict["info"] = self._info
         super_dict["language"] = self._language
         super_dict['moviedbid'] = self._moviedbid
@@ -90,7 +93,6 @@ class DiscType(metaclass=ABCMeta):
     def _get_edit_panel_top(self):
         '''returns the edit panel'''
         html = html_parts.hidden("disc_type", self._disc_type, True)
-        html += html_parts.hidden("moviedbid", self._moviedbid, True)
         html += html_parts.item("info", "Temp Disc Info",
                                 "Put some useful info in here for use during renaming",
                                 html_parts.input_box("text", "info", self._info),
@@ -135,14 +137,14 @@ class MovieDiscType(DiscType):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["name"] = self._name
         super_dict["year"] = self._year
         super_dict["imdbid"] = self._imdbid
         return super().make_dict(super_dict, no_tracks)
 
     def get_edit_panel(self, search=True):
         '''returns the edit panel'''
-        html = super()._get_edit_panel_top()
+        html = html_parts.hidden("moviedbid", self._moviedbid, True)
+        html += super()._get_edit_panel_top()
         html += html_parts.item("name", "Movie Title",
                                 "Enter the name of the movie here",
                                 html_parts.input_box("text", "name", self._name),
@@ -187,13 +189,13 @@ class TVShowDiscType(DiscType):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["name"] = self._name
         super_dict["tvdbid"] = self._tvdbid
         return super().make_dict(super_dict, no_tracks)
 
     def get_edit_panel(self, search=True):
         '''returns the edit panel'''
-        html = super()._get_edit_panel_top()
+        html = html_parts.hidden("moviedbid", self._moviedbid, True)
+        html += super()._get_edit_panel_top()
         html += html_parts.item("name", "TV Show Name",
                                 "Enter the name of the TV Show here",
                                 html_parts.input_box("text", "name", self._name),
@@ -218,6 +220,52 @@ class TVShowDiscType(DiscType):
         return html_parts.panel("TV Show Information", self._change_section_html(), "", "",
                                 html, True)
 
+class DocumentaryDiscType(DiscType):
+    '''TV Show Disc Type'''
+    def __init__(self, name, info, tracks, language="eng"):
+        super().__init__("Documentary", name, info, tracks, language, None)
+
+    def make_dict(self, super_dict=None, no_tracks=False):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        return super().make_dict(super_dict, no_tracks)
+
+    def get_edit_panel(self, search=True):
+        '''returns the edit panel'''
+        html = super()._get_edit_panel_top()
+        html += html_parts.item("name", "Documentary Name",
+                                "Enter the name of the Documentary here",
+                                html_parts.input_box("text", "name", self._name),
+                                True)
+        html += super()._get_edit_panel_bottom(False)
+        html += html_parts.text_item("*Please Choose Other For All Tracks")
+        return html_parts.panel("Documentary Information", self._change_section_html(), "", "",
+                                html, True)
+
+class OtherDiscType(DiscType):
+    '''TV Show Disc Type'''
+    def __init__(self, name, info, tracks, language="eng"):
+        super().__init__("Other", name, info, tracks, language, None)
+
+    def make_dict(self, super_dict=None, no_tracks=False):
+        '''returns the tracks'''
+        if super_dict is None:
+            super_dict = {}
+        return super().make_dict(super_dict, no_tracks)
+
+    def get_edit_panel(self, search=True):
+        '''returns the edit panel'''
+        html = super()._get_edit_panel_top()
+        html += html_parts.item("name", "Disc Name",
+                                "Enter the name of the Disc here",
+                                html_parts.input_box("text", "name", self._name),
+                                True)
+        html += super()._get_edit_panel_bottom(False)
+        html += html_parts.text_item("*Please Choose Other For All Tracks")
+        return html_parts.panel("Disc Information", self._change_section_html(), "", "",
+                                html, True)
+
 def make_disc_type(data):
     '''transforms the data returned from the DB or API to the classes above'''
     if isinstance(data, str):
@@ -234,6 +282,12 @@ def make_disc_type(data):
         return TVShowDiscType(data.get('name', ""), data.get('info', ""),
                               data.get('tvdbid', ""), tracks, data.get('language', "en"),
                               data.get('moviedbid', ""))
+    if data['disc_type'].replace(" ", "").lower() == "Documentary":
+        return DocumentaryDiscType(data.get('name', ""), data.get('info', ""),
+                                   tracks, data.get('language', "en"))
+    if data['disc_type'].replace(" ", "").lower() == "Other":
+        return OtherDiscType(data.get('name', ""), data.get('info', ""),
+                             tracks, data.get('language', "en"))
     return None
 
 def make_blank_disc_type(disc_type_code):
@@ -242,4 +296,8 @@ def make_blank_disc_type(disc_type_code):
         return MovieDiscType("", "", 0, "", None, "en", "")
     elif disc_type_code.replace(" ", "").lower() == "tvshow":
         return TVShowDiscType("", "", "", None, "en", "")
+    elif disc_type_code.replace(" ", "").lower() == "documentary":
+        return DocumentaryDiscType("", "", None, "en")
+    elif disc_type_code.replace(" ", "").lower() == "other":
+        return OtherDiscType("", "", None, "en")
     return None

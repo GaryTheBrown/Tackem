@@ -1,12 +1,12 @@
 <div id="labelergroup">%%ITEMS%%</div>
 <script type="text/javascript">
 	var labelerTimer = setInterval(function() {
-		$.ajax('%%BASEURL%%ripping/ripper/labeler/getids/', {
+		$.ajax('%%BASEURL%%ripping/ripper/videolabeler/getids/', {
 			dataType: 'json',
 			success: function(result) {
 				for (id in result){
-					if ($('#labeler_item' + result[id]).length == 0){
-						$.ajax('%%BASEURL%%ripping/ripper/labeler/single/' + result[id] + '/%%LAYOUT%%', {
+					if ($('#video_labeler_item' + result[id]).length == 0){
+						$.ajax('%%BASEURL%%ripping/ripper/videolabeler/single/' + result[id] + '/%%LAYOUT%%', {
 							success: function(newitem) {
 								$('#labelergroup').append(newitem);
 							}

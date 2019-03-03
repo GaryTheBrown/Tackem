@@ -11,15 +11,20 @@ from ..data import disc_type
 from ..data import video_track_type
 from ..ffprobe import FFprobe
 
-class Labeler(HTMLTEMPLATE):
+class VideoLabeler(HTMLTEMPLATE):
     '''LABELER WEBUI'''
+
+    def _return(self):
+        '''return on fail'''
+        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/videolabeler/")
+
     @cherrypy.expose
     def index(self):
         '''index of plugin'''
         self._auth.check_auth()
-        root_html = html_parts.get_page("labeler/index", self._system)
+        root_html = html_parts.get_page("video_labeler/index", self._system)
         data = self._system.get_labeler().get_data("WWW" + cherrypy.request.remote.ip)
-        labeler_html = html_parts.labeler_items(data, self._baseurl, False)
+        labeler_html = html_parts.video_labeler_items(data, self._baseurl, False)
         root_html = root_html.replace("%%LABELERS%%", labeler_html)
         return self._template(root_html)
 
@@ -28,21 +33,21 @@ class Labeler(HTMLTEMPLATE):
         '''get single labeler item'''
         self._auth.check_auth()
         if index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         try:
             index_int = int(index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          index_int)
         if data is False:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         if isinstance(vertical, str):
             if vertical.lower() == "true":
                 vertical = True
             else:
                 vertical = False
-        return html_parts.labeler_item(data, self._baseurl, vertical)
+        return html_parts.video_labeler_item(data, self._baseurl, vertical)
 
     @cherrypy.expose
     def getids(self):
@@ -55,17 +60,17 @@ class Labeler(HTMLTEMPLATE):
         '''edit the data page'''
         self._auth.check_auth()
         if index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         try:
             index_int = int(index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          index_int)
         if data is False:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
 
-        edit_html = html_parts.get_page("labeler/edit/edit", self._system)
+        edit_html = html_parts.get_page("video_labeler/edit/edit", self._system)
         edit_html += ghtml_parts.search_modal()
         visibility = ""
         disc_info = None
@@ -107,17 +112,17 @@ class Labeler(HTMLTEMPLATE):
         '''gets the disc type html'''
         self._auth.check_auth()
         if index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         try:
             index_int = int(index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          index_int)
         if data is False:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         if disc_type_code is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         if disc_type_code == "change":
             self._system.get_labeler().clear_rip_data("WWW" + cherrypy.request.remote.ip, index_int)
         return self._edit_disc_type_work(data, disc_type_code)
@@ -138,7 +143,7 @@ class Labeler(HTMLTEMPLATE):
                 label = data['label']
                 rip_data = disc_type.make_blank_disc_type(disc_type_code)
                 if rip_data is None:
-                    raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+                    self._return()
             else:
                 label = rip_data.name()
             search = self._global_config['scraper']['enabled']
@@ -179,7 +184,7 @@ class Labeler(HTMLTEMPLATE):
         else:
             has_chapters = "No"
 
-        panel_head_html = html_parts.get_page("labeler/edit/tracktype/panelname")
+        panel_head_html = html_parts.get_page("video_labeler/edit/tracktype/panelname")
         panel_head_html = panel_head_html.replace("%%TRACKLENGTH%%", length)
         panel_head_html = panel_head_html.replace("%%TRACKURL%%", video_url)
         panel_head_html = panel_head_html.replace("%%AUDIOCOUNT%%", audio_count)
@@ -198,18 +203,18 @@ class Labeler(HTMLTEMPLATE):
         '''gets the disc type html'''
         self._auth.check_auth()
         if disc_index is None or track_index is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         try:
             disc_index_int = int(disc_index)
             track_index_int = int(track_index)
         except ValueError:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
                                                          disc_index_int)
         if data is False:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         if track_type_code is None:
-            raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+            self._return()
         rip_data = {}
         if data['rip_data'] is not None:
             rip_data = json.loads(data['rip_data'])
@@ -279,4 +284,4 @@ class Labeler(HTMLTEMPLATE):
         finished = "complete" in kwargs
         self._system.get_labeler().set_data("WWW" + cherrypy.request.remote.ip, kwargs['discid'],
                                             rip_data, finished)
-        raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/labeler/")
+        self._return()

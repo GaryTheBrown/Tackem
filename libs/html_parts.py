@@ -209,6 +209,12 @@ def tab_pane(plugin_name, plugin_html, active=False):
         return html.replace("%%ACTIVE%%", "active")
     return html.replace("%%ACTIVE%%", "")
 
+def text_item(text):
+    ''' The whole section for each Config Object'''
+    html = str(open("www/html/sections/text_item.html", "r").read())
+    html = html.replace("%%TEXT%%", text)
+    return html
+
 ########
 #INPUTS#
 ########
