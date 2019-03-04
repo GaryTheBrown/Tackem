@@ -12,11 +12,17 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self):
         '''Index Page'''
-        self._auth.check_auth()
+        # self._auth.check_auth()
         index_page = str(open("www/html/pages/homepage.html", "r").read())
 
         return self._template(index_page)
 
+    @cherrypy.expose
+    def about(self):
+        '''About Page'''
+        index_page = str(open("www/html/pages/about.html", "r").read())
+
+        return self._template(index_page)
     @cherrypy.expose
     def config(self, **kwargs):
         '''Config System'''

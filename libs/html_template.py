@@ -73,32 +73,13 @@ class HTMLTEMPLATE():
 
     def _navbar(self):
         '''Navigation Bar For System'''
-        nav_items_html = ""
-        if not self._auth.enabled() or self._auth.check_logged_in():
-            nav_items_html = self._navbar_left_items()
-
-        navbar_right_html = ""
-        if self._auth.is_admin() or not self._auth.enabled():
-            navbar_admin = ""
-            navbar_admin += html_part.navbar_item("Config", "config")
-            if self._auth.enabled() and self._auth.is_admin():
-                navbar_admin += html_part.navbar_item("Users", "admin/users")
-            navbar_admin += html_part.navbar_item("Reboot", "reboot")
-            navbar_admin += html_part.navbar_item("Shutdown", "shutdown")
-            navbar_right_html += html_part.navbar_dropdown_right("Admin", "admin", navbar_admin)
-        if self._auth.enabled():
-            if self._auth.check_logged_in():
-                navbar_user = ""
-                navbar_user += html_part.navbar_item("Logout", "logout")
-                navbar_user += html_part.navbar_item("Change Password", "password")
-                navbar_right_html += html_part.navbar_dropdown_right("User", "user", navbar_user)
-            else:
-                navbar_right_html += html_part.navbar_item("Login", "login")
-        return html_part.navbar_master(nav_items_html, navbar_right_html)
+        return html_part.navbar_master(self._navbar_left_items(), self._navbar_right_items())
 
     def _navbar_left_items(self):
-        '''Navigation Bar For System'''
+        '''Navigation Bar Left Items For The System'''
         nav_items_html = ""
+        if self._auth.enabled() and not self._auth.check_logged_in():
+            return nav_items_html
         nav_list = {}
         for key in self._systems:
             key_list = key.split(" ")
@@ -139,3 +120,36 @@ class HTMLTEMPLATE():
                         layer2 += html_part.navbar_drop_right(key2, key + key2, layer3)
                 nav_items_html += html_part.navbar_dropdown(key, key, layer2)
         return nav_items_html
+
+    def _navbar_right_items(self):
+        '''Navigation Bar Left Items For The System'''
+        navbar_about_html = html_part.navbar_item("About", "about")
+        navbar_config_html = html_part.navbar_item("Config", "config")
+        navbar_users_html = html_part.navbar_item("Users", "admin/users")
+        navbar_login_html = html_part.navbar_item("Login", "login")
+        navbar_logout_html = html_part.navbar_item("Logout", "logout")
+        navbar_password_html = html_part.navbar_item("Change Password", "password")
+        navbar_reboot_html = html_part.navbar_item("Reboot", "reboot")
+        navbar_shutdown_html = html_part.navbar_item("Shutdown", "shutdown")
+
+        navbar_right_html = navbar_about_html
+        if self._auth.enabled():
+            if self._auth.check_logged_in():
+                if self._auth.is_admin():
+                    admin_html = navbar_config_html
+                    admin_html += navbar_users_html
+                    admin_html += navbar_reboot_html
+                    admin_html += navbar_shutdown_html
+                    navbar_right_html += html_part.navbar_dropdown_right("Admin", "admin",
+                                                                         admin_html)
+                user_html = navbar_password_html
+                user_html += navbar_logout_html
+                navbar_right_html += html_part.navbar_dropdown_right("User", "user", user_html)
+            else:
+                navbar_right_html += navbar_login_html
+        else:
+            system_html = navbar_config_html
+            system_html += navbar_reboot_html
+            system_html += navbar_shutdown_html
+            navbar_right_html += html_part.navbar_dropdown_right("System", "system", system_html)
+        return navbar_right_html

@@ -24,9 +24,23 @@ def navbar_dropdown(title, dropdown_id, items):
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
 
+def navbar_dropdown_left(title, dropdown_id, items):
+    '''A Navbar Item left aligned (not active)'''
+    html = str(open("www/html/navbar/dropdownleft.html", "r").read())
+    html = html.replace("%%TITLE%%", title.title())
+    html = html.replace("%%DROPDOWNID%%", dropdown_id)
+    return html.replace("%%ITEMS%%", items)
+
 def navbar_dropdown_right(title, dropdown_id, items):
     '''A Navbar Item right aligned (not active)'''
     html = str(open("www/html/navbar/dropdownright.html", "r").read())
+    html = html.replace("%%TITLE%%", title.title())
+    html = html.replace("%%DROPDOWNID%%", dropdown_id)
+    return html.replace("%%ITEMS%%", items)
+
+def navbar_drop_left(title, dropdown_id, items):
+    '''A Navbar Item (not active)'''
+    html = str(open("www/html/navbar/dropleft.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
