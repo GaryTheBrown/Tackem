@@ -14,12 +14,12 @@ access http://[HOSTNAME/IP]:8081 to start the setup pages
 PLUGINS:
 
 RIPPER:
-REQUIRED: hwinfo makemkv java JRE CCExtractor libcss2 mplayer eject lsblk hwinfo blkid libdiscid0
+REQUIRED: hwinfo makemkv java JRE CCExtractor libcss2 mplayer eject lsblk hwinfo blkid libdiscid0 cdda2wav
 PYTHON REQUIREDS: discid
 
 [Ubuntu commands]
 sudo add-apt-repository ppa:heyarje/makemkv-beta
-sudo apt install hwinfo mplayer ffmpeg makemkv-bin makemkv-oss libdvd-pkg default-jre
+sudo apt install hwinfo mplayer ffmpeg makemkv-bin makemkv-oss libdvd-pkg default-jre icedax
 sudo dpkg-reconfigure libdvd-pkg
 git clone https://github.com/CCExtractor/ccextractor.git
 sudo apt install cmake gcc libcurl4-gnutls-dev tesseract-ocr libtesseract-dev libleptonica-dev autoconf

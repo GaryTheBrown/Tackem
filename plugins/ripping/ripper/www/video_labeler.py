@@ -24,7 +24,7 @@ class VideoLabeler(HTMLTEMPLATE):
         self._return()
 
     @cherrypy.expose
-    def single(self, index=None, vertical=True):
+    def single(self, index=None):
         '''get single labeler item'''
         self._auth.check_auth()
         if index is None:
@@ -33,22 +33,18 @@ class VideoLabeler(HTMLTEMPLATE):
             index_int = int(index)
         except ValueError:
             self._return()
-        data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
-                                                         index_int)
+        data = self._system.get_video_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
+                                                               index_int)
         if data is False:
             self._return()
-        if isinstance(vertical, str):
-            if vertical.lower() == "true":
-                vertical = True
-            else:
-                vertical = False
-        return html_parts.video_labeler_item(data, self._baseurl, vertical)
+        return html_parts.video_labeler_item(data, self._baseurl)
 
     @cherrypy.expose
     def getids(self):
         '''index of discs to label'''
         self._auth.check_auth()
-        return json.dumps(self._system.get_labeler().get_ids("WWW" + cherrypy.request.remote.ip))
+        db_label = "WWW" + cherrypy.request.remote.ip
+        return json.dumps(self._system.get_video_labeler().get_ids(db_label))
 
     @cherrypy.expose
     def edit(self, index=None):
@@ -60,8 +56,8 @@ class VideoLabeler(HTMLTEMPLATE):
             index_int = int(index)
         except ValueError:
             self._return()
-        data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
-                                                         index_int)
+        data = self._system.get_video_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
+                                                               index_int)
         if data is False:
             self._return()
 
@@ -112,14 +108,15 @@ class VideoLabeler(HTMLTEMPLATE):
             index_int = int(index)
         except ValueError:
             self._return()
-        data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
-                                                         index_int)
+        data = self._system.get_video_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
+                                                               index_int)
         if data is False:
             self._return()
         if disc_type_code is None:
             self._return()
         if disc_type_code == "change":
-            self._system.get_labeler().clear_rip_data("WWW" + cherrypy.request.remote.ip, index_int)
+            self._system.get_video_labeler().clear_rip_data("WWW" + cherrypy.request.remote.ip,
+                                                            index_int)
         return self._edit_disc_type_work(data, disc_type_code)
 
     def _edit_disc_type_work(self, data, disc_type_code):
@@ -205,8 +202,8 @@ class VideoLabeler(HTMLTEMPLATE):
             track_index_int = int(track_index)
         except ValueError:
             self._return()
-        data = self._system.get_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
-                                                         disc_index_int)
+        data = self._system.get_video_labeler().get_data_by_id("WWW" + cherrypy.request.remote.ip,
+                                                               disc_index_int)
         if data is False:
             self._return()
         if track_type_code is None:
@@ -219,8 +216,9 @@ class VideoLabeler(HTMLTEMPLATE):
             if len(rip_data["tracks"]) >= track_index_int:
                 track_data = rip_data["tracks"][track_index_int]
         if track_data and track_type_code == "change":
-            self._system.get_labeler().clear_rip_track_data("WWW" + cherrypy.request.remote.ip,
-                                                            disc_index_int, track_index_int)
+            db_label = "WWW" + cherrypy.request.remote.ip
+            self._system.get_video_labeler().clear_rip_track_data(db_label, disc_index_int,
+                                                                  track_index_int)
         location = self._config['locations']['videoripping']
         if location[0] != "/":
             location = PROGRAMCONFIGLOCATION + self._config['locations']['videoripping']
@@ -278,6 +276,6 @@ class VideoLabeler(HTMLTEMPLATE):
 
         rip_data = disc_type.make_disc_type(data)
         finished = "complete" in kwargs
-        self._system.get_labeler().set_data("WWW" + cherrypy.request.remote.ip, kwargs['discid'],
-                                            rip_data, finished)
+        self._system.get_video_labeler().set_data("WWW" + cherrypy.request.remote.ip,
+                                                  kwargs['discid'], rip_data, finished)
         self._return()

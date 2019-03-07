@@ -30,7 +30,7 @@ class Drive(metaclass=ABCMeta):
         self._disc_type = "none"
         self._disc_type_lock = threading.Lock()
 
-        self._video_ripper = None
+        self._ripper = None
 
 ###########
 ##SETTERS##
@@ -180,8 +180,8 @@ class Drive(metaclass=ABCMeta):
                     elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
                         self._video_rip()
-                        self._video_ripper.run()
-                        self._video_ripper = None
+                        self._ripper.run()
+                        self._ripper = None
                 if not self._thread_run:
                     self.unlock_tray()
                     return
@@ -225,8 +225,8 @@ class Drive(metaclass=ABCMeta):
                 return_dict["traystatus"] = image_folder + "bluray.png"
         return_dict["drivestatus"] = self.get_drive_status()
         return_dict["traylock"] = self.get_tray_locked()
-        if self._video_ripper:
-            ripping_data = self._video_ripper.get_ripping_data()
+        if self._ripper:
+            ripping_data = self._ripper.get_ripping_data()
             if ripping_data['track'] is not None:
                 return_dict["ripping"] = True
                 file_percent = "Track " + str(ripping_data['track']) + " ("

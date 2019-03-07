@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 import threading
 import json
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
-from .converter import create_converter_row
+from .converter import create_video_converter_row
 from .disc_api import apiaccess_video_disc_id
 from .data.db_tables import VIDEO_INFO_DB_INFO as INFO_DB
 from .data.disc_type import make_disc_type
@@ -151,8 +151,8 @@ class Video(metaclass=ABCMeta):
     def _send_to_next_system(self):
         '''method to send info to the next step in the process'''
         if self._config['converter']['enabled']:
-            create_converter_row(self._db, self._thread_name, self._db_id, self._disc_rip_info,
-                                 self._config['videoripping']['torip'])
+            create_video_converter_row(self._db, self._thread_name, self._db_id,
+                                       self._disc_rip_info, self._config['videoripping']['torip'])
             self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
                             {"ready_to_convert":True})
             RipperEvents().converter.set()

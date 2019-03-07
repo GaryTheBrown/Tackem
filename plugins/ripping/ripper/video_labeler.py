@@ -1,11 +1,11 @@
-'''Master Section for the Labeler controller'''
+'''Master Section for the VideoLabeler controller'''
 import json
-from .converter import create_converter_row
+from .converter import create_video_converter_row
 from .data.events import RipperEvents
 from .data.db_tables import VIDEO_INFO_DB_INFO as INFO_DB
 from .data.disc_type import DiscType
 
-class Labeler():
+class VideoLabeler():
     '''Master Section for the Drive controller'''
     def __init__(self, db, config):
         self._db = db
@@ -57,8 +57,8 @@ class Labeler():
         dict_for_db = {"rip_data":rip_data}
         if finished:
             if self._config['converter']['enabled']:
-                create_converter_row(self._db, thread_name, db_id, data,
-                                     self._config['videoripping']['torip'])
+                create_video_converter_row(self._db, thread_name, db_id, data,
+                                           self._config['videoripping']['torip'])
                 dict_for_db["ready_to_convert"] = True
             else:
                 dict_for_db["ready_to_rename"] = True

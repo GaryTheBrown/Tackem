@@ -1,4 +1,4 @@
-'''Master Section for the Converter controller'''
+'''Master Section for the Video Converter controller'''
 import threading
 import os
 import os.path
@@ -6,12 +6,12 @@ import pexpect
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.scraper.scraper_base import Scraper
 from libs.data.languages import Languages
-from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB
+from .data.db_tables import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
 from .ffprobe import FFprobe
 from .presets import get_video_preset_command
 
-class ConverterThread():
-    '''Master Section for the Converter controller'''
+class ConverterVideoThread():
+    '''Master Section for the Video Converter controller'''
     def __init__(self, item, config, root_config, db, tasks_sema):
         self._id = item['id']
         self._filename = item['filename']
@@ -26,7 +26,7 @@ class ConverterThread():
         self._thread.setName(self._thread_name)
         self._thread_run = False
         self._task_done = False
-        self._sql_row_id = self._db.table_has_row(self._thread_name, CONVERT_DB["name"],
+        self._sql_row_id = self._db.table_has_row(self._thread_name, VIDEO_CONVERT_DB["name"],
                                                   {"id":self._id})
         temp_location = self._config['locations']['videoripping']
         if temp_location[0] != "/":
@@ -52,7 +52,7 @@ class ConverterThread():
 
     def get_id(self):
         '''returns the ID'''
-        return self._id
+        return "v" + self._id
 
     def get_data(self):
         '''returns the data as dict for html'''
@@ -106,7 +106,7 @@ class ConverterThread():
             if not self._conf['keeporiginalfile']:
                 os.remove(self._infile + ".OLD")
             self._db.update(self._thread_name,
-                            CONVERT_DB["name"],
+                            VIDEO_CONVERT_DB["name"],
                             self._sql_row_id, {"converted":True})
         self._task_done = True
         self._tasks_sema.release()

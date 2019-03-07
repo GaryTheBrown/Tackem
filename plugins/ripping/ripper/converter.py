@@ -1,10 +1,10 @@
 '''Master Section for the Converter controller'''
 import threading
 import json
-from .data.db_tables import VIDEO_CONVERT_DB_INFO as CONVERT_DB, VIDEO_INFO_DB_INFO as INFO_DB
+from .data.db_tables import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB, VIDEO_INFO_DB_INFO as INFO_DB
 from .data.disc_type import make_disc_type
 from .data.video_track_type import make_track_type
-from .converter_thread import ConverterThread
+from .converter_video_thread import ConverterVideoThread
 from .data.events import RipperEvents
 
 class Converter():
@@ -84,46 +84,20 @@ class Converter():
     def run(self):
         ''' Loops through the standard converter function'''
         while self._thread_run:
-            check = {"converted":False}
-            return_data = self._db.select(self._thread_name, CONVERT_DB["name"], check)
-            data = []
-            if return_data:
-                if isinstance(return_data, list):
-                    data = return_data
-                elif isinstance(return_data, dict):
-                    data.append(return_data)
-                for item in data:
-                    if item['id'] not in self._list_of_running_ids:
-                        item['disc_info'] = make_disc_type(json.loads(item['disc_info']))
-                        item['track_info'] = make_track_type(json.loads(item['track_info']))
+            self._get_video_tasks()
 
-                        #TEMP HDR SKIPPER
-                        if item['track_info'].hdr():
-                            continue
+            if not self._thread_run:
+                return
+            for task in self._tasks:
+                task.start_thread()
 
-                        self._tasks.append(ConverterThread(item, self._config, self._root_config,
-                                                           self._db, self._tasks_sema))
-                        self._list_of_running_ids.append(item['id'])
+            if not self._task_do_loop():
+                return
 
-                if not self._thread_run:
-                    return
-                for task in self._tasks:
-                    task.start_thread()
-
-                if not self._task_do_loop():
-                    return
-
-            discs = [x['id'] for x in self._db.select(self._thread_name, INFO_DB["name"],
-                                                      {"ready_to_convert":True,
-                                                       "ready_to_rename": False}, "id")]
-            convert_data = self._db.select(self._thread_name, CONVERT_DB["name"])
             wake_renamer = False
-            for disc in discs:
-                if all([item['converted'] for item in convert_data if item['info_id'] == disc]):
-                    self._db.delete_where(self._thread_name, CONVERT_DB["name"], {"disc_id":disc})
-                    self._db.update(self._thread_name, INFO_DB["name"], disc,
-                                    {"ready_to_rename":True})
-                    wake_renamer = True
+            if self._clear_video_tasks():
+                wake_renamer = True
+
             if wake_renamer:
                 RipperEvents().renamer.set()
 
@@ -132,6 +106,46 @@ class Converter():
 
             RipperEvents().converter.wait()
             RipperEvents().converter.clear()
+
+    def _get_video_tasks(self):
+        '''Grab video tasks and append them to the list'''
+        check = {"converted":False}
+        return_data = self._db.select(self._thread_name, VIDEO_CONVERT_DB["name"], check)
+        data = []
+        if return_data:
+            if isinstance(return_data, list):
+                data = return_data
+            elif isinstance(return_data, dict):
+                data.append(return_data)
+            for item in data:
+                if "v" + item['id'] not in self._list_of_running_ids:
+                    item['disc_info'] = make_disc_type(json.loads(item['disc_info']))
+                    item['track_info'] = make_track_type(json.loads(item['track_info']))
+
+                    #TEMP HDR SKIPPER
+                    if item['track_info'].hdr():
+                        continue
+
+                    self._tasks.append(ConverterVideoThread(item, self._config,
+                                                            self._root_config, self._db,
+                                                            self._tasks_sema))
+                    self._list_of_running_ids.append("v" + item['id'])
+
+    def _clear_video_tasks(self):
+        '''clears the video tasks from the database when done'''
+        discs = [x['id'] for x in self._db.select(self._thread_name, INFO_DB["name"],
+                                                  {"ready_to_convert":True,
+                                                   "ready_to_rename": False}, "id")]
+        convert_data = self._db.select(self._thread_name, VIDEO_CONVERT_DB["name"])
+        wake_renamer = False
+        for disc in discs:
+            if all([item['converted'] for item in convert_data if item['info_id'] == disc]):
+                self._db.delete_where(self._thread_name, VIDEO_CONVERT_DB["name"],
+                                      {"disc_id":disc})
+                self._db.update(self._thread_name, INFO_DB["name"], disc,
+                                {"ready_to_rename":True})
+                wake_renamer = True
+        return wake_renamer
 
     def _task_do_loop(self):
         '''loop through the tasks till done'''
@@ -150,7 +164,7 @@ class Converter():
                     return False
         return True
 
-def create_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
+def create_video_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
     '''Function to add tracks to Convertor DB'''
     track_name = str(info_id) + "/"
     disc_info = json.dumps(disc_rip_info.make_dict(no_tracks=True))
@@ -163,4 +177,4 @@ def create_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
                 "disc_info":disc_info,
                 "track_info":json.dumps(track.make_dict())
             }
-            sql.insert(thread_name, CONVERT_DB["name"], to_save)
+            sql.insert(thread_name, VIDEO_CONVERT_DB["name"], to_save)

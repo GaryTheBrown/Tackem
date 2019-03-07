@@ -69,7 +69,6 @@ class VideoLinux(Video):
             str(index),
             temp_dir
         ]
-        print(" ".join(prog_args))
         thread = pexpect.spawn(" ".join(prog_args), encoding='utf-8')
 
         cpl = thread.compile_pattern_list([

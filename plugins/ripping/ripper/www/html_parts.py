@@ -188,7 +188,7 @@ def video_item(variable_name, label, help_text, input_html, not_in_config=False)
 
 def converter_item(data):
     '''return html for converter item'''
-    item_html = str(open(DIR + 'video_converter/item.html', "r").read())
+    item_html = str(open(DIR + 'converter/item.html', "r").read())
     item_html = item_html.replace("%%ITEMID%%", str(data['id']))
     item_html = item_html.replace("%%DISCID%%", str(data['discid']))
     item_html = item_html.replace("%%TRACKID%%", str(data['trackid']))
@@ -205,7 +205,7 @@ def converter_item(data):
 
 def converter_items(data):
     '''returns the group of converter items html'''
-    group_html = str(open(DIR + 'video_converter/group.html', "r").read())
+    group_html = str(open(DIR + 'converter/group.html', "r").read())
     data_html = ""
     for d_item in data:
         data_html += converter_item(d_item)

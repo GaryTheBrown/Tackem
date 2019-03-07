@@ -1,6 +1,36 @@
 '''Database Tables'''
 from libs.sql.column import Column
 
+AUDIO_CONVERT_DB_INFO = {
+    "name": "ripper_audio_convert_info",
+    "data":
+        [
+            Column("id", "integer", primary_key=True, not_null=True),
+            Column("info_id", "integer", not_null=True),
+            Column("filename", "text", not_null=True),
+            Column("track_info", "json"),
+            Column("converted", "bit", not_null=True, default=False),
+        ],
+    "version": 1
+}
+
+AUDIO_INFO_DB_INFO = {
+    "name": "ripper_audio_info",
+    "data":
+        [
+            Column("id", "integer", primary_key=True, not_null=True),
+            Column("musicbrainzdiscid", "varchar(28)", not_null=True),
+            Column("rip_data", "json"),
+            Column("ripped", "bit", not_null=True, default=False),
+            Column("ready_to_convert", "bit", not_null=True, default=False),
+            Column("ready_to_rename", "bit", not_null=True, default=False),
+            Column("ready_for_library", "bit", not_null=True, default=False),
+            Column("completed", "bit", not_null=True, default=False),
+        ],
+    "version": 1
+}
+
+
 VIDEO_CONVERT_DB_INFO = {
     "name": "ripper_video_convert_info",
     "data":

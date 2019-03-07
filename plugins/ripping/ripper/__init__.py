@@ -18,7 +18,7 @@ from . import www
 from .data import db_tables
 from .data.events import RipperEvents
 from .drive_linux import DriveLinux, get_hwinfo_linux
-from .labeler import Labeler
+from .video_labeler import VideoLabeler
 from .converter import Converter
 from .renamer import Renamer
 from .presets import video_presets_config_options
@@ -292,7 +292,7 @@ class Plugin(PluginBaseClass):
     def __init__(self, plugin_link, name, config, root_config, db):
         super().__init__(plugin_link, name, config, root_config, db)
         self._drives = []
-        self._labeler = Labeler(db, config)
+        self._video_labeler = VideoLabeler(db, config)
         self._converter = None
         self._renamer = None
 
@@ -351,9 +351,9 @@ class Plugin(PluginBaseClass):
         '''gets the drives'''
         return self._drives
 
-    def get_labeler(self):
-        '''returns the labeler system'''
-        return self._labeler
+    def get_video_labeler(self):
+        '''returns the video_labeler system'''
+        return self._video_labeler
 
     def get_converter(self):
         '''returns the converter system'''
