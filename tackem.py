@@ -10,6 +10,7 @@ from libs.startup_arguments import ARGS
 from libs.config import config_load
 from libs.config_list import ConfigList
 from libs.sql import setup_db
+from libs.musicbrainz import MusicBrainz
 from libs.authenticator import Authentication
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
@@ -26,6 +27,7 @@ class Tackem:
     config = None
     webserver = None
     auth = None
+    musicbrainz = None
     root_event = RootEvent()
 
     def __init__(self):
@@ -50,6 +52,9 @@ class Tackem:
             if not Tackem.first_run:
                 #DB Load
                 Tackem.sql = setup_db(Tackem.config['database'])
+                #musicbrainz system
+                if Tackem.config.get('musicbrainz', {}).get('enabled', False):
+                    Tackem.musicbrainz = MusicBrainz(Tackem.config)
                 print("Loading Systems...")
                 self._setup_systems()
 
@@ -111,7 +116,8 @@ class Tackem:
                                                                               plugin_full_name,
                                                                               temp_config,
                                                                               Tackem.config,
-                                                                              Tackem.sql)
+                                                                              Tackem.sql,
+                                                                              Tackem.musicbrainz)
                 else:
                     for inst in temp_config:
                         full_name = plugin_full_name + " " + inst
@@ -121,7 +127,8 @@ class Tackem:
                                                                            full_name,
                                                                            temp_config[inst],
                                                                            Tackem.config,
-                                                                           Tackem.sql)
+                                                                           Tackem.sql,
+                                                                           Tackem.musicbrainz)
 
     def start(self):
         '''Startup Of the systems'''

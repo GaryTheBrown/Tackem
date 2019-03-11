@@ -39,7 +39,9 @@ class VideoLinux(Video):
             return False
         if not self._thread_run:
             return
-        self._set_disc_info(uuid, label, sha256)
+        self._disc_info_uuid = uuid
+        self._disc_info_label = label
+        self._disc_info_sha256 = sha256
         return True
 
 #################
@@ -52,7 +54,7 @@ class VideoLinux(Video):
         except OSError:
             pass
         with open(temp_dir + "/info.txt", "w") as text_file:
-            string = "UUID: " + self.get_disc_info_uuid() + "\nLabel: " + self.get_disc_info_label()
+            string = "UUID: " + self._disc_info_uuid + "\nLabel: " + self._disc_info_label
             text_file.write(string)
         if index == -1:
             index = "all"

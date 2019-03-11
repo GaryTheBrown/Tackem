@@ -12,7 +12,7 @@ class AudioCDLinux(AudioCD):
 #####################
 ##DISC RIP COMMANDS##
 #####################
-    def rip_disc(self, track_count):
+    def _rip_disc(self):
         '''command to rip the cd here'''
 
         temp_location = self._config['locations']['audioripping']
@@ -51,6 +51,6 @@ class AudioCDLinux(AudioCD):
                     next_track = False
                 else:
                     next_track = True
-                total = round(((self._ripping_track - 1) * 100 + value) / track_count, 2)
+                total = round(((self._ripping_track - 1) * 100 + value) / self._track_count, 2)
                 self._ripping_file_p = self._ripping_file = value
                 self._ripping_total_p = self._ripping_total = total

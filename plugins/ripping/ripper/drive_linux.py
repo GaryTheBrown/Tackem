@@ -4,6 +4,7 @@ import os
 import time
 from subprocess import DEVNULL, PIPE, Popen
 from .drive import Drive
+from .audiocd_linux import AudioCDLinux
 from .video_linux import VideoLinux
 
 class DriveLinux(Drive):
@@ -114,17 +115,19 @@ class DriveLinux(Drive):
             self._tray_locked = False
             Popen(["eject", "-i0", self._device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
-
 ##########
 ##Script##
 ##########
     def _audio_rip(self):
         '''script to rip an audio cd'''
+        self._ripper = AudioCDLinux(self.get_device(), self._config, self._db,
+                                    self._thread.getName(), self._musicbrainz,
+                                    self._set_drive_status, self._thread_run)
 
     def _video_rip(self):
         '''script to rip video disc'''
         self._ripper = VideoLinux(self.get_device(), self._config, self._db,
-                                  self._thread.getName(), self.get_disc_type(),
+                                  self._thread.getName(), self._disc_type,
                                   self._set_drive_status, self._thread_run)
 
 ###############

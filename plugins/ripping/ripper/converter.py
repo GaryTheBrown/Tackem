@@ -165,12 +165,12 @@ class Converter():
         return True
 
 def create_video_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip):
-    '''Function to add tracks to Convertor DB'''
-    track_name = str(info_id) + "/"
+    '''Function to add Video tracks to Convertor DB'''
+    folder_name = str(info_id) + "/"
     disc_info = json.dumps(disc_rip_info.make_dict(no_tracks=True))
     for i, track in enumerate(disc_rip_info.tracks()):
         if track.video_type() in to_rip:
-            file_name = track_name + str(i).zfill(2) + ".mkv"
+            file_name = folder_name + str(i).zfill(2) + ".mkv"
             to_save = {
                 "info_id":info_id,
                 "filename":file_name,
@@ -178,3 +178,9 @@ def create_video_converter_row(sql, thread_name, info_id, disc_rip_info, to_rip)
                 "track_info":json.dumps(track.make_dict())
             }
             sql.insert(thread_name, VIDEO_CONVERT_DB["name"], to_save)
+
+def create_audiocd_converter_row(sql, thread_name, info_id, disc_rip_info):
+    '''Function to add Audio CD tracks to Convertor DB'''
+    folder_name = str(info_id) + "/"
+    disc_info = json.dumps(disc_rip_info)
+    # 'audio_XX.wav'

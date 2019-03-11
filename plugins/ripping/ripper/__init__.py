@@ -313,7 +313,8 @@ class Plugin(PluginBaseClass):
                 if drive in self._config['drives']:
                     if self._config['drives'][drive]["enabled"]:
                         self._drives.append(DriveLinux(drive, DRIVES[drive],
-                                                       self._config, baseurl, self._db))
+                                                       self._config, self._root_config,
+                                                       baseurl, self._db))
 
         #Check if Devices Exist and if not it will stop the plugin from loading
         if not self._drives:

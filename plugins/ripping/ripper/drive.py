@@ -8,13 +8,14 @@ from .www import html_parts
 
 class Drive(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
-    def __init__(self, cfg_name, device_info, config, baseurl, db):
+    def __init__(self, cfg_name, device_info, config, baseurl, db, musicbrainz):
         self._cfg_name = cfg_name
         self._device_info = device_info
         self._device = device_info['link']
         self._config = config
         self._baseurl = baseurl
         self._db = db
+        self._musicbrainz = musicbrainz
 
         self._thread = threading.Thread(target=self.run, args=())
         self._thread.setName("Ripper:" + self._device)
@@ -176,12 +177,13 @@ class Drive(metaclass=ABCMeta):
                         self.unlock_tray()
                         return
                     if self.get_disc_type() == "audiocd":
+                        self._set_drive_status("ripping audio cd disc")
                         self._audio_rip()
                     elif self.get_disc_type() == "bluray" or self.get_disc_type() == "dvd":
                         self._set_drive_status("ripping video disc")
                         self._video_rip()
-                        self._ripper.run()
-                        self._ripper = None
+                    self._ripper.run()
+                    self._ripper = None
                 if not self._thread_run:
                     self.unlock_tray()
                     return

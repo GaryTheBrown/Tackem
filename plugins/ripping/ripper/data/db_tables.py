@@ -19,8 +19,10 @@ AUDIO_INFO_DB_INFO = {
     "data":
         [
             Column("id", "integer", primary_key=True, not_null=True),
-            Column("musicbrainzdiscid", "varchar(28)", not_null=True),
-            Column("rip_data", "json"),
+            Column("musicbrainz_disc_id", "varchar(28)", not_null=True),
+            Column("track_count", "tinyint", not_null=True),
+            Column("release_id", "varchar(36)", not_null=True),
+            Column("disc_data", "json"),
             Column("ripped", "bit", not_null=True, default=False),
             Column("ready_to_convert", "bit", not_null=True, default=False),
             Column("ready_to_rename", "bit", not_null=True, default=False),

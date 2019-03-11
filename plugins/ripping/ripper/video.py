@@ -3,21 +3,17 @@ from abc import ABCMeta, abstractmethod
 import threading
 import json
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from .ripper_subsystem import RipperSubSystem
 from .converter import create_video_converter_row
 from .disc_api import apiaccess_video_disc_id
 from .data.db_tables import VIDEO_INFO_DB_INFO as INFO_DB
 from .data.disc_type import make_disc_type
 from .data.events import RipperEvents
 
-class Video(metaclass=ABCMeta):
+class Video(RipperSubSystem, metaclass=ABCMeta):
     '''video ripping controller'''
     def __init__(self, device, config, db, thread_name, disc_type, set_drive_status, thread_run):
-        self._device = device
-        self._events = RipperEvents()
-        self._config = config
-        self._db = db
-        self._thread_name = thread_name
-        self._thread_run = thread_run
+        super().__init__(device, config, db, thread_name, set_drive_status, thread_run)
         self._disc_info_lock = threading.Lock()
         self._disc_info_uuid = None
         self._disc_info_label = None
@@ -26,64 +22,6 @@ class Video(metaclass=ABCMeta):
         self._disc_type = disc_type
         self._db_id = None
         self._set_drive_status = set_drive_status
-
-        self._ripping_track = None
-        self._ripping_file = 0
-        self._ripping_total = 0
-        self._ripping_max = 0
-        self._ripping_file_p = 0.0
-        self._ripping_total_p = 0.0
-
-###########
-##SETTERS##
-###########
-    def _set_disc_info(self, uuid=None, label=None, sha256=None):
-        '''Threadded Safe Set disc info'''
-        with self._disc_info_lock:
-            if isinstance(uuid, str):
-                self._disc_info_uuid = uuid
-            if isinstance(label, str):
-                self._disc_info_label = label
-            if isinstance(sha256, str):
-                self._disc_info_sha256 = sha256
-###########
-##GETTERS##
-###########
-    def get_disc_info_uuid(self):
-        '''returns the disc UUID'''
-        with self._disc_info_lock:
-            uuid = self._disc_info_uuid
-        return uuid
-
-    def get_disc_info_label(self):
-        '''returns the disc label'''
-        with self._disc_info_lock:
-            label = self._disc_info_label
-        return label
-
-    def get_disc_info_sha256(self):
-        '''returns the disc label'''
-        with self._disc_info_lock:
-            sha256 = self._disc_info_sha256
-        return sha256
-
-    def get_disc_type(self):
-        '''returns the disc label'''
-        with self._disc_info_lock:
-            disc_type = self._disc_type
-        return disc_type
-
-    def get_ripping_data(self):
-        '''returns the data as dict for html'''
-        return_dict = {
-            'track':self._ripping_track,
-            'file':self._ripping_file,
-            'total':self._ripping_total,
-            'max':self._ripping_max,
-            'file_percent':self._ripping_file_p,
-            'total_percent':self._ripping_total_p
-        }
-        return return_dict
 
 ##########
 ##CHECKS##
@@ -97,10 +35,10 @@ class Video(metaclass=ABCMeta):
 #######################
     def _check_db_and_api_for_disc_info(self):
         '''checks the DB and API for the Disc info'''
-        uuid = self.get_disc_info_uuid()
-        label = self.get_disc_info_label()
-        sha256 = self.get_disc_info_sha256()
-        disc_type = self.get_disc_type()
+        uuid = self._disc_info_uuid
+        label = self._disc_info_label
+        sha256 = self._disc_info_sha256
+        disc_type = self._disc_type
         basic_info = {"uuid":uuid, "label":label, "sha256": sha256, "disc_type": disc_type}
         self._db_id = self._db.table_has_row(self._thread_name, INFO_DB["name"], basic_info)
         if self._db_id:
@@ -170,7 +108,7 @@ class Video(metaclass=ABCMeta):
             return
         if not self._thread_run:
             return
-        self._set_drive_status("check info for")
+        self._set_drive_status("checking info")
         self._check_db_and_api_for_disc_info()
         if not self._thread_run:
             return
