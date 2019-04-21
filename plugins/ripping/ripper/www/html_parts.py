@@ -170,14 +170,12 @@ def video_item(variable_name, label, help_text, input_html, not_in_config=False)
     ''' The whole section for each Config Object'''
     html = get_page("video_labeler/edit/tracktype/item")
     html = html.replace("%%VARNAME%%", variable_name)
-    if label != "":
-        html = html.replace("%%LABEL%%", label)
-    else:
-        html = html.replace("%%LABEL%%:", "")
-    if isinstance(help_text, str):
-        html = html.replace("%%HELP%%", help_text)
-    else:
-        html = html.replace("%%HELP%%", '')
+    if not isinstance(label, str):
+        label = ""
+    html = html.replace("%%LABEL%%", label)
+    if not isinstance(help_text, str):
+        help_text = ""
+    html = html.replace("%%HELP%%", help_text)
     html = html.replace("%%INPUT%%", input_html)
     if not_in_config:
         html = html.replace("cs_", "")
