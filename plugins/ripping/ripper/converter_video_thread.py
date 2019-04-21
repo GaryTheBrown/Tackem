@@ -342,13 +342,13 @@ class ConverterVideoThread():
         stream_format = stream_info.get("codec_name", "")
         if stream.stream_type() == "video":
             return True
-        elif stream.stream_type() == "audio":
+        if stream.stream_type() == "audio":
             if stream.duplicate():
                 return False
             if self._conf["audiolanguage"] == "all":
                 if self._conf["audioformat"] == "all":
                     return True
-                elif self._conf["audioformat"] == "highest":
+                if self._conf["audioformat"] == "highest":
                     #TODO work out how to detect this
                     pass
                 elif self._conf["audioformat"] == "selected":
@@ -358,7 +358,7 @@ class ConverterVideoThread():
                 if stream_language == self._disc_language:
                     if self._conf["audioformat"] == "all":
                         return True
-                    elif self._conf["audioformat"] == "highest":
+                    if self._conf["audioformat"] == "highest":
                         #TODO work out how to detect this
                         pass
                     elif self._conf["audioformat"] == "selected":
@@ -370,7 +370,7 @@ class ConverterVideoThread():
                 if original_bool or selected_bool:
                     if self._conf["audioformat"] == "all":
                         return True
-                    elif self._conf["audioformat"] == "highest":
+                    if self._conf["audioformat"] == "highest":
                         #TODO work out how to detect this
                         pass
                     elif self._conf["audioformat"] == "selected":
@@ -380,7 +380,7 @@ class ConverterVideoThread():
                 if stream_language in self._conf['audiolanguages']:
                     if self._conf["audioformat"] == "all":
                         return True
-                    elif self._conf["audioformat"] == "highest":
+                    if self._conf["audioformat"] == "highest":
                         #TODO work out how to detect this
                         pass
                     elif self._conf["audioformat"] == "selected":
@@ -393,20 +393,20 @@ class ConverterVideoThread():
                 if self._conf['keepclosedcaptions']:
                     if self._conf["subtitle"] == "all":
                         return True
-                    elif self._conf["subtitle"] == "selected":
+                    if self._conf["subtitle"] == "selected":
                         if stream_language in self._conf['subtitlelanguages']:
                             return True
             elif stream.comment() is True:
                 if self._conf['keepcommentary']:
                     if self._conf["subtitle"] == "all":
                         return True
-                    elif self._conf["subtitle"] == "selected":
+                    if self._conf["subtitle"] == "selected":
                         if stream_language in self._conf['subtitlelanguages']:
                             return True
             else:
                 if self._conf["subtitle"] == "all":
                     return True
-                elif self._conf["subtitle"] == "selected":
+                if self._conf["subtitle"] == "selected":
                     if stream_language in self._conf['subtitlelanguages']:
                         return True
         return False
@@ -496,7 +496,7 @@ class ConverterVideoThread():
             if i == 0: # EOF
                 self._running = False
                 return True
-            elif i == 1:
+            if i == 1:
                 return_string = thread.match.group(0).replace("frame=", "").lstrip()
                 self._frame_process = int(return_string)
                 self._percent = round(float(self._frame_process/ self._frame_count * 100), 2)
