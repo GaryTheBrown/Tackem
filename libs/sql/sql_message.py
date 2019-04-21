@@ -30,22 +30,27 @@ class SQLMessage:
         '''Return system Name'''
         with self._lock:
             return self._system_name
+
     def special_command(self):
         '''Return special command'''
         with self._lock:
             return self._special_command
+
     def command(self):
         '''Return command'''
         with self._lock:
             return self._command
+
     def table_name(self):
         '''Return table_name'''
         with self._lock:
             return self._table_name
+
     def data(self):
         '''Return data'''
         with self._lock:
             return self._data
+
     def version(self):
         '''Return version'''
         with self._lock:
