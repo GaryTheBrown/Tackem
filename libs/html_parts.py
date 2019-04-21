@@ -131,14 +131,12 @@ def item(variable_name, label, help_text, input_html, not_in_config=False):
     ''' The whole section for each Config Object'''
     html = str(open("www/html/sections/item.html", "r").read())
     html = html.replace("%%VARNAME%%", variable_name)
-    if label != "":
-        html = html.replace("%%LABEL%%", label)
-    else:
-        html = html.replace("%%LABEL%%:", "")
-    if isinstance(help_text, str):
-        html = html.replace("%%HELP%%", help_text)
-    else:
-        html = html.replace("%%HELP%%", '')
+    if not isinstance(label, str):
+        label = ""
+    html = html.replace("%%LABEL%%", label)
+    if not isinstance(help_text, str):
+        help_text = ""
+    html = html.replace("%%HELP%%", help_text)
     html = html.replace("%%INPUT%%", input_html)
     if not_in_config:
         html = html.replace("cs_", "")
@@ -345,10 +343,9 @@ def input_box(input_type, variable_name, value, script="", max_length=None, mini
     html = html.replace("%%INPUTTYPE%%", input_type)
     html = html.replace("%%VARIABLENAME%%", variable_name)
     html = html.replace("%%VALUE%%", ' value="' + str(value) + '"')
-    if isinstance(script, str):
-        html = html.replace("%%SCRIPT%%", script)
-    else:
-        html = html.replace("%%SCRIPT%%", "")
+    if not isinstance(script, str):
+        script = ""
+    html = html.replace("%%SCRIPT%%", script)
     if isinstance(max_length, int):
         html = html.replace("%%MAXLENGTH%%", ' maxlength="' + str(max_length) + '"')
     else:
@@ -367,8 +364,7 @@ def input_box(input_type, variable_name, value, script="", max_length=None, mini
     html = html.replace("%%READONLY%%", read_only)
     if button:
         return html.replace("%%BUTTON%%", button)
-    else:
-        return html.replace("%%BUTTON%%", "")
+    return html.replace("%%BUTTON%%", "")
 
 def radio_option(variable_name, name, label, checked=False, disabled=False,
                  read_only=False, script=""):
@@ -384,10 +380,9 @@ def radio_option(variable_name, name, label, checked=False, disabled=False,
     html = html.replace("%%CHECKED%%", checked)
     html = html.replace("%%DISABLED%%", disabled)
     html = html.replace("%%READONLY%%", read_only)
-    if isinstance(script, str):
-        html = html.replace("%%SCRIPT%%", script)
-    else:
-        html = html.replace("%%SCRIPT%%", "")
+    if not isinstance(script, str):
+        script = ""
+    html = html.replace("%%SCRIPT%%", script)
     return html
 
 def select_box_option(name, label, selected=False,
@@ -406,10 +401,9 @@ def select_box_option(name, label, selected=False,
     html = html.replace("%%SELECTED%%", selected)
     html = html.replace("%%DISABLED%%", disabled)
     html = html.replace("%%READONLY%%", read_only)
-    if isinstance(script, str):
-        html = html.replace("%%SCRIPT%%", script)
-    else:
-        html = html.replace("%%SCRIPT%%", "")
+    if not isinstance(script, str):
+        script = ""
+    html = html.replace("%%SCRIPT%%", script)
     return html
 
 def select_box(variable_name, value, options_html, multiple=False, box_size=0, script="",
@@ -439,11 +433,10 @@ def select_box(variable_name, value, options_html, multiple=False, box_size=0, s
         blank_options_html = ""
     if isinstance(options_html, str):
         return html.replace("%%OPTIONS%%", blank_options_html + options_html)
-    else:
-        options_out_html = ""
-        for option in options_html:
-            options_out_html += option.html_option(value)
-        return html.replace("%%OPTIONS%%", blank_options_html + options_out_html)
+    options_out_html = ""
+    for option in options_html:
+        options_out_html += option.html_option(value)
+    return html.replace("%%OPTIONS%%", blank_options_html + options_out_html)
 
 ######
 #TAGS#
