@@ -18,14 +18,8 @@ class DiscType(metaclass=ABCMeta):
             self._disc_type = disc_type
         self._name = name
         self._info = info
-        if isinstance(tracks, list):
-            self._tracks = tracks
-        else:
-            self._tracks = []
-        if len(language) == 2 and isinstance(language, str):
-            self._language = language
-        else:
-            self._language = "en"
+        self._tracks = tracks if isinstance(tracks, list) else []
+        self._language = language if len(language) == 2 and isinstance(language, str) else "en"
         self._moviedbid = moviedbid
 
     def disc_type(self):

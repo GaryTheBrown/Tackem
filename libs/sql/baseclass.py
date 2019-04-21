@@ -166,10 +166,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
     def _convert_var(self, var):
         '''convert the value'''
         if isinstance(var, bool):
-            if var:
-                return '"True"'
-            else:
-                return '"False"'
+            return '"True"' if var else '"False"'
         elif isinstance(var, int):
             return str(var)
         elif isinstance(var, str):

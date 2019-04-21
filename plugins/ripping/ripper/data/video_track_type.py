@@ -18,10 +18,7 @@ class VideoTrackType(metaclass=ABCMeta):
     def __init__(self, video_type, streams, hdr):
         if video_type in TYPES:
             self._video_type = video_type
-        if isinstance(streams, list):
-            self._streams = streams
-        else:
-            self._streams = []
+        self._streams = streams if isinstance(streams, list) else []
         self._hdr = hdr
 
     def hdr(self):

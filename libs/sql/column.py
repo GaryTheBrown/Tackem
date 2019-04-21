@@ -47,17 +47,11 @@ class Column:
         if not self.default is None:
             return_string += " DEFAULT "
             if isinstance(self.default, str):
-                if self.default_raw:
-                    return_string += self.default
-                else:
-                    return_string += "'" + self.default + "'"
+                return_string += self.default if self.default_raw else "'" + self.default + "'"
             elif isinstance(self.default, int):
                 return_string += str(self.default)
             elif isinstance(self.default, bool):
-                if self.default:
-                    return_string += '"True"'
-                else:
-                    return_string += '"False"'
+                return_string += '"True"' if self.default else '"False"'
         return return_string
 
     def get_default_value(self):

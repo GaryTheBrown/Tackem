@@ -260,18 +260,9 @@ def checkbox_multi(label, variable_name, value, checked=True, disabled=False, re
                    script=None):
     '''returns a multi checkbox'''
     html = str(open("www/html/inputs/multicheckbox.html", "r").read())
-    if checked:
-        checked = "checked"
-    else:
-        checked = ""
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
+    checked = "checked" if checked else ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%CHECKED%%", checked)
     html = html.replace("%%DISABLED%%", disabled)
     html = html.replace("%%READONLY%%", read_only)
@@ -296,14 +287,8 @@ def checkbox_single(name, variable_name, checked=True, disabled=False, read_only
     else:
         checked = ""
         html = html.replace("%%ENABLED%%", "False")
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%CHECKED%%", checked)
     html = html.replace("%%DISABLED%%", disabled)
     html = html.replace("%%READONLY%%", read_only)
@@ -323,18 +308,9 @@ def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only
     switch_html = str(open("www/html/inputs/switchoptions.html", "r").read())
     html = single_checkbox_html.replace("%%SWITCH%%", switch_html)
     enabled = str(checked)
-    if checked:
-        checked = "checked"
-    else:
-        checked = ""
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
+    checked = "checked" if checked else ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%CHECKED%%", checked)
     html = html.replace("%%ENABLED%%", enabled)
     html = html.replace("%%DISABLED%%", disabled)
@@ -385,15 +361,9 @@ def input_box(input_type, variable_name, value, script="", max_length=None, mini
         html = html.replace("%%MAX%%", ' max="' + str(maximum) + '"')
     else:
         html = html.replace("%%MAX%%", "")
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%DISABLED%%", disabled)
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
     html = html.replace("%%READONLY%%", read_only)
     if button:
         return html.replace("%%BUTTON%%", button)
@@ -408,20 +378,11 @@ def radio_option(variable_name, name, label, checked=False, disabled=False,
     html = html.replace("%%VARIABLENAME%%", variable_name)
     html = html.replace("%%NAME%%", name)
     html = html.replace("%%LABEL%%", label)
-    if checked:
-        checked = "checked"
-    else:
-        checked = ""
+    checked = "checked" if checked else ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%CHECKED%%", checked)
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
     html = html.replace("%%DISABLED%%", disabled)
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
     html = html.replace("%%READONLY%%", read_only)
     if isinstance(script, str):
         html = html.replace("%%SCRIPT%%", script)
@@ -439,20 +400,11 @@ def select_box_option(name, label, selected=False,
     else:
         html = html.replace("%%NAME%%", "")
         html = html.replace("%%NAMECAPITALIZE%%", " -- select an option -- ")
-    if selected:
-        selected = "selected"
-    else:
-        selected = ""
+    selected = "selected" if selected else ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%SELECTED%%", selected)
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
     html = html.replace("%%DISABLED%%", disabled)
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
     html = html.replace("%%READONLY%%", read_only)
     if isinstance(script, str):
         html = html.replace("%%SCRIPT%%", script)
@@ -473,15 +425,9 @@ def select_box(variable_name, value, options_html, multiple=False, box_size=0, s
         html = html.replace('%%SIZE%%', 'size="' + box_size + '"')
     else:
         html = html.replace(' %%SIZE%%', '')
-    if disabled:
-        disabled = "disabled"
-    else:
-        disabled = ""
+    disabled = "disabled" if disabled else ""
+    read_only = "readonly" if read_only else ""
     html = html.replace("%%DISABLED%%", disabled)
-    if read_only:
-        read_only = "readonly"
-    else:
-        read_only = ""
     html = html.replace("%%READONLY%%", read_only)
     if isinstance(script, str):
         html = html.replace("%%SCRIPT%%", script)

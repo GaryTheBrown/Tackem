@@ -163,18 +163,9 @@ class VideoLabeler(HTMLTEMPLATE):
         length = str(datetime.timedelta(seconds=int(format_info["duration"].split(".")[0])))
         video_url = "/".join(cherrypy.url().split("/")[:-3]) + "/tempvideo/"
         video_url += str(disc_index) + "/" + str(track_index).zfill(2) + ".mkv"
-        if 'audio' in stream_counts:
-            audio_count = str(stream_counts['audio'])
-        else:
-            audio_count = "0"
-        if 'subtitle' in stream_counts:
-            subtitle_count = str(stream_counts['subtitle'])
-        else:
-            subtitle_count = "0"
-        if probe_info.has_chapters():
-            has_chapters = "Yes"
-        else:
-            has_chapters = "No"
+        audio_count = str(stream_counts['audio']) if 'audio' in stream_counts else "0"
+        subtitle_count = str(stream_counts['subtitle']) if 'subtitle' in stream_counts else "0"
+        has_chapters = "Yes" if probe_info.has_chapters() else "No"
 
         panel_head_html = html_parts.get_page("video_labeler/edit/tracktype/panelname")
         panel_head_html = panel_head_html.replace("%%TRACKLENGTH%%", length)

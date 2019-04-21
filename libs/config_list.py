@@ -9,10 +9,7 @@ class ConfigList:
                  is_section=False, section_link=None):
         if isinstance(name, str):
             self._name = name
-        if isinstance(label, str):
-            self._label = label
-        else:
-            self._label = name
+        self._label = label if isinstance(label, str) else name
         if isinstance(plugin, str):
             self._plugin = plugin
         self._objects = []

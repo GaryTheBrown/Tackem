@@ -12,15 +12,9 @@ def movie_page_link(query, page=1, year=None, label=None):
     '''creates a link for pagination of movie results'''
     html = "<a href='#' class='onclick' onclick='SearchMovie("
     html += '"' + query + '"' + ", year="
-    if year:
-        html += str(year)
-    else:
-        html += "null"
+    html += str(year) if year else "null"
     html += ", page=" + str(page) + ");'>"
-    if label:
-        html += label
-    else:
-        html += str(page)
+    html += label if label else str(page)
     html += "</a> "
     return html
 
@@ -43,10 +37,7 @@ def tvshow_page_link(query, page=1, label=None):
     '''creates a link for pagination of tv show results'''
     html = "<a href='#' class='onclick' onclick='SearchTVShow("
     html += '"' + query + '"' + ", page=" + str(page) + ");'>"
-    if label:
-        html += label
-    else:
-        html += str(page)
+    html += label if label else str(page)
     html += "</a> "
     return html
 

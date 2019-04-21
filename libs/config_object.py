@@ -98,10 +98,7 @@ class ConfigObject(ConfigBase):
                     if list_count > 0:
                         return_string += ", "
                     if isinstance(item, bool):
-                        if item:
-                            return_string += "True"
-                        else:
-                            return_string += "False"
+                        return_string += "True" if item else "False"
                     elif isinstance(item, int):
                         return_string += item
                     elif isinstance(item, str):
@@ -109,10 +106,7 @@ class ConfigObject(ConfigBase):
                     list_count += 1
                 return_string += ")"
             elif isinstance(self._default, bool):
-                if self._default:
-                    return_string += "True"
-                else:
-                    return_string += "False"
+                return_string += "True" if self._default else "False"
             elif isinstance(self._default, (int, float)):
                 return_string += str(self._default)
             elif isinstance(self._default, str):
@@ -230,10 +224,8 @@ class ConfigObject(ConfigBase):
         '''returns multiple checkboxes'''
         checkboxes_html = ""
         for option in self._options:
-            if option.name() in values:
-                checkboxes_html += option.html_checkbox(variable_name, True)
-            else:
-                checkboxes_html += option.html_checkbox(variable_name, False)
+            checkbox_bool = True if option.name() in values else False
+            checkboxes_html += option.html_checkbox(variable_name, checkbox_bool)
         return checkboxes_html
 
     def convert_var(self, variable):
