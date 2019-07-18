@@ -24,7 +24,6 @@ sudo dpkg-reconfigure libdvd-pkg
 git clone https://github.com/CCExtractor/ccextractor.git
 sudo apt install cmake gcc libcurl4-gnutls-dev tesseract-ocr libtesseract-dev libleptonica-dev autoconf
 cd ccextractor/linux
-cd ccextractor/linux
 ./autogen.sh
 ./configure
 make
