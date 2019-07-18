@@ -1,6 +1,7 @@
 __pycache__/
 bin/*
 .vscode
+.venv
 temp
 *.py[cod]
 *.log
