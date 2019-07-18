@@ -289,8 +289,8 @@ Do you want to keep the chapter points?"""),
 class Plugin(PluginBaseClass):
     '''Main Class to create an instance of the plugin'''
 
-    def __init__(self, plugin_link, name, config, root_config, db):
-        super().__init__(plugin_link, name, config, root_config, db)
+    def __init__(self, plugin_link, name, config, root_config, db, musicbrainz):
+        super().__init__(plugin_link, name, config, root_config, db, musicbrainz)
         self._drives = []
         self._video_labeler = VideoLabeler(db, config)
         self._converter = None
