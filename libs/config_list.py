@@ -265,6 +265,8 @@ class ConfigList:
                         control_html = html_part.checkbox_switch("enabled",
                                                                  variable_name_loop,
                                                                  enabled, script=True)
+                    if not key in config:
+                        config[key] = {}
                     keyconfig = config[key]
                     label = key
                     if 'name' in config[key] and config[key]['name'] != "":
