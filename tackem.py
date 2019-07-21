@@ -49,6 +49,11 @@ class Tackem:
                 Tackem.first_run = True
             Tackem.config = config_load(ARGS.home + "config.ini", plugin_cfg)
 
+            #Check if setup marked complete in config
+
+            if Tackem.config['firstrun']:
+                Tackem.first_run = True
+
             if not Tackem.first_run:
                 #DB Load
                 Tackem.sql = setup_db(Tackem.config['database'])
@@ -58,9 +63,9 @@ class Tackem:
                 print("Loading Systems...")
                 self._setup_systems()
 
-            #Start Authenticator
-            Tackem.auth = Authentication(Tackem.config['authentication'],
-                                         Tackem.sql, Tackem.config['webui']['baseurl'])
+                #Start Authenticator
+                Tackem.auth = Authentication(Tackem.config['authentication'],
+                                            Tackem.sql, Tackem.config['webui']['baseurl'])
             Tackem.setup_done = True
             #Setup signal to watch for ctrl + c command
             signal.signal(signal.SIGINT, ctrl_c)
