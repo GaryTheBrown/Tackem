@@ -65,7 +65,7 @@ class Tackem:
 
                 #Start Authenticator
                 Tackem.auth = Authentication(Tackem.config['authentication'],
-                                            Tackem.sql, Tackem.config['webui']['baseurl'])
+                                             Tackem.sql, Tackem.config['webui']['baseurl'])
             Tackem.setup_done = True
             #Setup signal to watch for ctrl + c command
             signal.signal(signal.SIGINT, ctrl_c)
