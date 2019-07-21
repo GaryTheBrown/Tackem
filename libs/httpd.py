@@ -1,5 +1,5 @@
 '''HTTPD SYSTEM'''
-import sys
+import os
 import cherrypy
 from www.first_run import Root as first_run_root
 from www.root import Root as main_root
@@ -15,7 +15,7 @@ class Httpd():
         self._systems = systems
         self._plugins = plugins
         self._first_run = first_run
-
+        
         cherrypy.config.update({
             'server.socket_host': '0.0.0.0',
             'server.socket_port': self._config['webui']['port'],
@@ -28,7 +28,7 @@ class Httpd():
         conf_root = {
             '/static': {
                 'tools.staticdir.on': True,
-                'tools.staticdir.dir': sys.path[0] + '/www/static/'
+                'tools.staticdir.dir': os.getcwd() + '/www/static/'
             }
         }
         conf_api = {
@@ -44,7 +44,7 @@ class Httpd():
                                 baseurl,
                                 conf_root)
         else:
-            if self._config['webui']['enabled']:
+            if not self._config['webui']['disabled']:
                 cherrypy.tree.mount(main_root("", "", self._systems, self._plugins,
                                               self._config, self._auth),
                                     baseurl, conf_root)

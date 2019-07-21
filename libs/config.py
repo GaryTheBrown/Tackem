@@ -12,10 +12,9 @@ import libs.html_parts as html_part
 # TO DO ALSO MAKE IT POSSIBLE TO SHUTDOWN THE PLUGIN
 
 CONFIG = ConfigList("root")
-# CONFIG.append(
-#     ConfigList("system", objects=[
-#     ])
-# )
+CONFIG.append(
+    ConfigObject("firstrun", "", "boolean", default=True, hide_from_html=True)
+)
 CONFIG.append(
     ConfigList("authentication", objects=[
         ConfigObject("enabled", "Enabled", "boolean", default=True, input_type="switch")
@@ -55,8 +54,8 @@ CONFIG.append(
 )
 CONFIG.append(
     ConfigList("webui", "Web Interface", objects=[
-        ConfigObject("enabled", "Enabled", "boolean", default=True, toggle_section="webui",
-                     input_type="switch"),
+        ConfigObject("disabled", "Disabled", "boolean", default=False, toggle_section="webui",
+                     input_type="switch", hide_from_html=True),
         ConfigObject("port", "Port", "integer", minimum=1001, maximum=65535, default=8081,
                      help_text="The port for the WebUI"),
         ConfigObject("baseurl", "Base Url", "string", default="/", help_text="""The Base URL
