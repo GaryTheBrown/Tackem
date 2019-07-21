@@ -2,7 +2,7 @@
 from libs.sql.column import Column
 
 AUDIO_CONVERT_DB_INFO = {
-    "name": "ripper_audio_convert_info",
+    "name": "ripping_ripper_audio_convert_info",
     "data":
         [
             Column("id", "integer", primary_key=True, not_null=True),
@@ -15,7 +15,7 @@ AUDIO_CONVERT_DB_INFO = {
 }
 
 AUDIO_INFO_DB_INFO = {
-    "name": "ripper_audio_info",
+    "name": "ripping_ripper_audio_info",
     "data":
         [
             Column("id", "integer", primary_key=True, not_null=True),
@@ -34,7 +34,7 @@ AUDIO_INFO_DB_INFO = {
 
 
 VIDEO_CONVERT_DB_INFO = {
-    "name": "ripper_video_convert_info",
+    "name": "ripping_ripper_video_convert_info",
     "data":
         [
             Column("id", "integer", primary_key=True, not_null=True),
@@ -48,7 +48,7 @@ VIDEO_CONVERT_DB_INFO = {
 }
 
 VIDEO_INFO_DB_INFO = {
-    "name": "ripper_video_info",
+    "name": "ripping_ripper_video_info",
     "data":
         [
             Column("id", "integer", primary_key=True, not_null=True),
