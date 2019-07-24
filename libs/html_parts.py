@@ -155,7 +155,7 @@ def multi_modal(title, variable_name):
     html = html.replace("%%TITLE%%", title.title())
     return html.replace("%%VARIABLENAME%%", variable_name)
 
-def multi_panel(variable_name, name, enable_option, delete_option, section_html, section_visible):
+def multi_panel(variable_name, name, enable_option, delete_option, section_html, visible=True):
     '''Returns a panel for multi type plugin data'''
     html = str(open("www/html/sections/multi_panel.html", "r").read())
     html = html.replace("%%VARIABLENAME%%", variable_name)
@@ -163,11 +163,11 @@ def multi_panel(variable_name, name, enable_option, delete_option, section_html,
     html = html.replace("%%ENABLEDOPTION%%", enable_option)
     html = html.replace("%%DELETEOPTION%%", delete_option)
     html = html.replace("%%SECTION%%", section_html)
-    if not section_visible:
+    if not visible:
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
-def panel(title, control, modal, variable_name, section_html, section_visible):
+def panel(title, control, modal, variable_name, section_html, visible=True):
     '''A Panel for plugins or sections'''
     html = str(open("www/html/sections/panel.html", "r").read())
     html = html.replace("%%TITLE%%", title)
@@ -181,7 +181,7 @@ def panel(title, control, modal, variable_name, section_html, section_visible):
     else:
         html = html.replace("%%VARIABLENAME%%", variable_name)
     html = html.replace("%%SECTION%%", section_html)
-    if not section_visible:
+    if not visible:
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
@@ -189,12 +189,12 @@ def search_modal():
     '''Returnas a modal for adding a multi plugin'''
     return str(open("www/html/sections/search_modal.html", "r").read())
 
-def section(section_name, section_html, section_visible):
+def section(section_name, section_html, visible=True):
     '''A Panel for plugins or sections'''
     html = str(open("www/html/sections/section.html", "r").read())
     html = html.replace("%%SECTIONNAME%%", section_name)
     html = html.replace("%%SECTION%%", section_html)
-    if not section_visible:
+    if not visible:
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
