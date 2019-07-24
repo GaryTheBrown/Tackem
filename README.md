@@ -2,7 +2,7 @@
 
 BASE INSTALLATION (ubuntu/debian):  
 REQUIRED: python3  
-PYTHON REQUIREDS: configobj cherrypy requests pexpect musicbrainzngs  
+PYTHON REQUIREDS: configobj cherrypy requests pexpect musicbrainzngs gitpython
   
 RUNNING:  
   

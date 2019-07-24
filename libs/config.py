@@ -144,7 +144,7 @@ def root_config_page(config):
 
 def plugin_config_page(config, plugins):
     '''setup for Libraries into a form'''
-    return html_part.form("/", html_part.hidden_page_index(3), "Save & Restart",
+    return html_part.form("/", html_part.hidden_page_index(4), "Save & Restart",
                           _plugin_config_page(config, plugins))
 
 def full_config_page(config, plugins):

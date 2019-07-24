@@ -4,6 +4,7 @@ from libs.html_template import HTMLTEMPLATE
 from libs.config import post_config_settings, plugin_config_page
 from libs.config import root_config_page, get_config_multi_setup
 from libs.config import javascript as config_javascript
+from libs.plugin_downloader import plugin_download_page
 from libs.root_event import RootEvent
 
 class Root(HTMLTEMPLATE):
@@ -30,16 +31,27 @@ class Root(HTMLTEMPLATE):
 
     def _post_action(self, kwargs):
         '''the part of the script to do all of the pages & updates of the config'''
-        post_config_settings(kwargs, self._config, self._plugins)
+        post_config_settings(kwargs, self._global_config, self._plugins)
+        try:
+            self._global_config.write()
+        except OSError:
+            print("ERROR WRITING CONFIG FILE")
         javascript = "javascript"
         if kwargs["page_index"] == "1":
-            return self._template(root_config_page(self._config), False, javascript=javascript)
+            return self._template(root_config_page(self._global_config), False,
+                                  javascript=javascript)
         elif kwargs["page_index"] == "2":
-            return self._template(plugin_config_page(self._config, self._plugins),
+            #TODO HERE CHECK FOR PLUGINS FOLDER BEING EMPTY AND THEN SCAN GITHUB ORG/USER FOR
+            # PLUGINS TO CLONE
+            return self._template(plugin_download_page(),
                                   False, javascript=javascript)
         elif kwargs["page_index"] == "3":
+            return self._template(plugin_config_page(self._global_config, self._plugins),
+                                  False, javascript=javascript)
+        elif kwargs["page_index"] == "4":
+            self._global_config['firstrun'] = False
             try:
-                self._config.write()
+                self._global_config.write()
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
             RootEvent().set_event("reboot")
