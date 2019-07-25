@@ -41,8 +41,6 @@ class Root(HTMLTEMPLATE):
             return self._template(root_config_page(self._global_config), False,
                                   javascript=javascript)
         elif kwargs["page_index"] == "2":
-            #TODO HERE CHECK FOR PLUGINS FOLDER BEING EMPTY AND THEN SCAN GITHUB ORG/USER FOR
-            # PLUGINS TO CLONE
             return self._template(plugin_download_page(),
                                   False, javascript=javascript)
         elif kwargs["page_index"] == "3":
