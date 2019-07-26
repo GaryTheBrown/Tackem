@@ -15,7 +15,7 @@ class Httpd():
         self._systems = systems
         self._plugins = plugins
         self._first_run = first_run
-        
+
         cherrypy.config.update({
             'server.socket_host': '0.0.0.0',
             'server.socket_port': self._config['webui']['port'],
