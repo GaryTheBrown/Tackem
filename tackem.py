@@ -19,7 +19,6 @@ class Tackem:
     '''main program entrance'''
     setup_done = False
     started = False
-    first_run = False # change this to true if you need to access the first run script for editing
     plugins = {}
     sql = None
     systems = {}
@@ -28,7 +27,6 @@ class Tackem:
     webserver = None
     auth = None
     musicbrainz = None
-    root_event = RootEvent()
 
     def __init__(self):
         pass
@@ -38,23 +36,20 @@ class Tackem:
         if not Tackem.setup_done:
             #First check if home folder exists (useable to run first time script)
             if not os.path.exists(ARGS.home):
-                Tackem.first_run = True
                 os.mkdir(ARGS.home)
 
             #Load Plugin Data
             plugin_cfg = self._setup_plugins()
 
             #Load Config File
-            if not os.path.exists(ARGS.home + "config.ini"):
-                Tackem.first_run = True
-            Tackem.config = config_load(ARGS.home + "config.ini", plugin_cfg)
+            Tackem.config = config_load(ARGS.home, plugin_cfg)
 
             #Check if setup marked complete in config
 
             if Tackem.config['firstrun']:
                 Tackem.first_run = True
 
-            if not Tackem.first_run:
+            if not Tackem.config['firstrun']:
                 #DB Load
                 Tackem.sql = setup_db(Tackem.config['database'])
                 #musicbrainz system
@@ -154,7 +149,7 @@ class Tackem:
             if Tackem.config['api']['enabled'] or Tackem.config['webui']['enabled']:
                 print("Starting WebUI and/or API")
                 Tackem.webserver = Httpd(Tackem.config, Tackem.auth, Tackem.systems,
-                                         Tackem.plugins, Tackem.first_run)
+                                         Tackem.plugins)
                 Tackem.webserver.start()
 
             Tackem.started = True
@@ -215,7 +210,7 @@ class Tackem:
         self.setup()
         self.start()
         while True:
-            event_type, event_variable = Tackem.root_event.wait_and_get_event()
+            event_type, event_variable = RootEvent().wait_and_get_event()
 
             if event_type is False:
                 continue
@@ -225,7 +220,6 @@ class Tackem:
             elif event_type == "reboot":
                 self.shutdown()
                 Tackem.setup_done = False
-                Tackem.first_run = False
                 self.setup()
                 self.start()
             elif event_type == "start system":

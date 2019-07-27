@@ -9,12 +9,11 @@ from libs import scraper
 
 class Httpd():
     '''HTTPD CLASS'''
-    def __init__(self, config, auth, systems=False, plugins=False, first_run=False):
+    def __init__(self, config, auth, systems=False, plugins=False):
         self._config = config
         self._auth = auth
         self._systems = systems
         self._plugins = plugins
-        self._first_run = first_run
 
         cherrypy.config.update({
             'server.socket_host': '0.0.0.0',
@@ -38,7 +37,7 @@ class Httpd():
             }
         }
         baseurl = self._config.get("webui", {}).get("baseurl", "/")
-        if first_run:
+        if self._config['firstrun']:
             cherrypy.tree.mount(first_run_root("", "", self._systems, self._plugins,
                                                self._config, self._auth),
                                 baseurl,
