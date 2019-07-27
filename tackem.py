@@ -44,11 +44,6 @@ class Tackem:
             #Load Config File
             Tackem.config = config_load(ARGS.home, plugin_cfg)
 
-            #Check if setup marked complete in config
-
-            if Tackem.config['firstrun']:
-                Tackem.first_run = True
-
             if not Tackem.config['firstrun']:
                 #DB Load
                 Tackem.sql = setup_db(Tackem.config['database'])
