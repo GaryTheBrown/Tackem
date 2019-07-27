@@ -176,7 +176,7 @@ class Tackem:
             if Tackem.sql is not None:
                 Tackem.sql.stop_thread()
 
-            if not Tackem.first_run:
+            if not Tackem.config['firstrun']:
                 try:
                     Tackem.config.write()
                 except OSError:
