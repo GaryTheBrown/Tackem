@@ -22,7 +22,6 @@ class Tackem:
     plugins = {}
     sql = None
     systems = {}
-    cherrypy = None
     config = None
     webserver = None
     auth = None
@@ -47,6 +46,7 @@ class Tackem:
             if not Tackem.config['firstrun']:
                 #DB Load
                 Tackem.sql = setup_db(Tackem.config['database'])
+                Tackem.sql.start_thread()
                 #musicbrainz system
                 if Tackem.config.get('musicbrainz', {}).get('enabled', False):
                     Tackem.musicbrainz = MusicBrainz(Tackem.config)
