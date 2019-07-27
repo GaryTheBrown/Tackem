@@ -12,5 +12,4 @@ def setup_db(config):
     #     sql = MySql()
     else:
         print(config['mode'])
-    sql.start_thread()
     return sql
