@@ -48,8 +48,9 @@ class Tackem:
                 Tackem.sql = setup_db(Tackem.config['database'])
                 Tackem.sql.start_thread()
                 #musicbrainz system
-                if Tackem.config.get('musicbrainz', {}).get('enabled', False):
-                    Tackem.musicbrainz = MusicBrainz(Tackem.config)
+                musicbrainz_config = Tackem.config.get('musicbrainz', {})
+                if musicbrainz_config.get('enabled', False):
+                    Tackem.musicbrainz = MusicBrainz(musicbrainz_config)
                 print("Loading Systems...")
                 self._setup_systems()
 
