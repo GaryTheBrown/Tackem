@@ -96,10 +96,10 @@ def config_load(path, plugin_configs):
     """Create a config file using a configspec and validate it against a Validator object"""
     temp_spec = CONFIG.get_root_spec() + plugin_configs
     _spec = temp_spec.split("\n")
-    config = ConfigObj(path, configspec=_spec)
+    config = ConfigObj(path + "config.ini", configspec=_spec)
     validator = Validator()
     config.validate(validator, copy=True)
-    config.filename = path
+    config.filename = path + "config.ini"
     # line bellow for debugging
     # print(config)
     return config
