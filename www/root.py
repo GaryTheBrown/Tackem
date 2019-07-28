@@ -5,6 +5,7 @@ from libs.html_template import HTMLTEMPLATE
 from libs.config import full_config_page, get_config_multi_setup, post_config_settings
 from libs.config import javascript as config_javascript
 from libs.root_event import RootEvent
+from libs import plugin_downloader
 
 class Root(HTMLTEMPLATE):
     '''Root'''
@@ -96,14 +97,14 @@ class Root(HTMLTEMPLATE):
         self._auth.logout()
 
     @cherrypy.expose
-    def reboot(self):
+    def reboot(self, url="login"):
         '''Login Page'''
         if self._auth.enabled():
             if not self._auth.is_admin():
                 return self._error_page(401)
         RootEvent().set_event("reboot")
         page = str(open("www/html/reboot.html", "r").read())
-        page = page.replace("%%PAGE%%", "login")
+        page = page.replace("%%PAGE%%", url)
         return self._template(page, False)
 
     @cherrypy.expose
@@ -115,3 +116,42 @@ class Root(HTMLTEMPLATE):
         RootEvent().set_event("shutdown")
         page = "Shuting Down Tackem..."
         return self._template(page, False)
+
+    @cherrypy.expose
+    def plugin_download(self):
+        '''url for system access to plugin downloaded'''
+        if self._auth.enabled():
+            if not self._auth.is_admin():
+                return self._error_page(401)
+        javascript = "config_javascript"
+        return self._template(plugin_downloader.plugin_download_page(True), False,
+                              javascript=javascript)
+
+    @cherrypy.expose
+    def download_plugin(self, name):
+        '''download the plugin program link'''
+        plugin_downloader.download_plugin(name)
+        return html_parts.input_button("Remove",
+                                       plugin_downloader.button_remove(name), False)
+
+    @cherrypy.expose
+    def remove_plugin(self, name):
+        '''remove the plugin program link'''
+        plugin_downloader.delete_plugin(name)
+        return html_parts.input_button("Add",
+                                       plugin_downloader.button_add(name), False)
+
+    @cherrypy.expose
+    def restart(self):
+        '''Restarts Tackem'''
+        try:
+            self._global_config.write()
+        except OSError:
+            print("ERROR WRITING CONFIG FILE")
+        RootEvent().set_event("reboot")
+        return ""
+
+    @cherrypy.expose
+    def is_live(self):
+        '''returns blank page'''
+        return ""

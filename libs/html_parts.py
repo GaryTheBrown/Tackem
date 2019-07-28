@@ -172,9 +172,10 @@ def panel(title, control, modal, variable_name, section_html, visible=True):
     html = str(open("www/html/sections/panel.html", "r").read())
     html = html.replace("%%TITLE%%", title)
     if control == "":
-        html = html.replace("<div>%%CONTROL%%</div>", "")
+        html = html.replace('<div id="%%TITLEB%%_control">%%CONTROL%%</div>', "")
     else:
         html = html.replace("%%CONTROL%%", control)
+        html = html.replace("%%TITLEB%%", "Tackem-Plugin-" + title.replace(" - ", "-"))
     html = html.replace("%%MODAL%%", modal)
     if variable_name == "":
         html = html.replace('id="%%VARIABLENAME%%_section"', variable_name)
@@ -241,10 +242,13 @@ def delete_instance_button(plugin_name, name):
     html = html.replace("%%PLUGINNAME%%", plugin_name)
     return html.replace("%%NAME%%", name)
 
-def input_button(value, on_click):
+def input_button(value, on_click, outer_div=True):
     '''returns a button'''
     html = str(open("www/html/inputs/inputbutton.html", "r").read())
     html = html.replace("%%BUTTONVALUE%%", value)
+    if not outer_div:
+        html = html.replace('<div class="input-group-append">', "")
+        html = html.replace('</div>', "")
     return html.replace("%%BUTTONONCLICK%%", on_click)
 
 def checkbox(name, variable_name, checkbox_html):
@@ -476,6 +480,9 @@ def progress_bar(label, value, max_value, percent):
     html = html.replace("%%PERCENT%%", str(percent))
     return html
 
+def dim_screen():
+    '''creates system for a dimmed screen'''
+    return '<div id="dim_screen"></div>'
 #########
 ##ADMIN##
 #########

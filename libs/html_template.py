@@ -125,6 +125,7 @@ class HTMLTEMPLATE():
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = html_part.navbar_item("About", "about")
         navbar_config_html = html_part.navbar_item("Config", "config")
+        navbar_plugin_download_html = html_part.navbar_item("Plugin Download", "plugin_download")
         navbar_users_html = html_part.navbar_item("Users", "admin/users")
         navbar_login_html = html_part.navbar_item("Login", "login")
         navbar_logout_html = html_part.navbar_item("Logout", "logout")
@@ -137,6 +138,7 @@ class HTMLTEMPLATE():
             if self._auth.check_logged_in():
                 if self._auth.is_admin():
                     admin_html = navbar_config_html
+                    admin_html += navbar_plugin_download_html
                     admin_html += navbar_users_html
                     admin_html += navbar_reboot_html
                     admin_html += navbar_shutdown_html

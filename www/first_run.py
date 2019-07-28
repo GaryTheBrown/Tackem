@@ -4,8 +4,8 @@ from libs.html_template import HTMLTEMPLATE
 from libs.config import post_config_settings, plugin_config_page
 from libs.config import root_config_page, get_config_multi_setup
 from libs.config import javascript as config_javascript
-from libs.plugin_downloader import plugin_download_page
 from libs.root_event import RootEvent
+from libs import plugin_downloader
 
 class Root(HTMLTEMPLATE):
     '''Setup Script'''
@@ -41,7 +41,7 @@ class Root(HTMLTEMPLATE):
             return self._template(root_config_page(self._global_config), False,
                                   javascript=javascript)
         elif kwargs["page_index"] == "2":
-            return self._template(plugin_download_page(),
+            return self._template(plugin_downloader.plugin_download_page(False),
                                   False, javascript=javascript)
         elif kwargs["page_index"] == "3":
             return self._template(plugin_config_page(self._global_config, self._plugins),
@@ -58,3 +58,24 @@ class Root(HTMLTEMPLATE):
             return self._template(page, False)
         else:
             return self._template("TODO", False)
+
+    @cherrypy.expose
+    def download_plugin(self, name):
+        '''download the plugin program link'''
+        plugin_downloader.download_plugin(name)
+        return plugin_downloader.no_button()
+
+    @cherrypy.expose
+    def restart(self):
+        '''Restarts Tackem'''
+        try:
+            self._global_config.write()
+        except OSError:
+            print("ERROR WRITING CONFIG FILE")
+        RootEvent().set_event("reboot")
+        return ""
+
+    @cherrypy.expose
+    def is_live(self):
+        '''returns blank page'''
+        return ""

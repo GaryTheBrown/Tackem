@@ -104,3 +104,107 @@ function AddMulti(plugin){
     }
     return true;
 }
+
+var pluginList = []
+
+function DownloadPlugin(pluginName, full_system){
+    $('#dim_screen').show();
+    input = $("#" + pluginName + "_control");
+    $("#" + pluginName + "_control > input").prop('disabled', true);
+    $.ajax({
+        type: 'GET',
+        url: '/download_plugin?name=' + pluginName,
+        input: input,
+        pluginName: pluginName,
+        success: function(data) {
+            this.input.html(data);
+            alert(this.pluginName + " Downloaded");
+            count = parseInt($("#plugin_count").val());
+            count++;
+            $("#plugin_count").val(count);
+            newCount = parseInt($("#new_plugin_count").val());
+            if (pluginList.includes(this.pluginName)){
+                newCount--;
+                pluginList = pluginList.filter(e => e !== this.pluginName);
+            }else{
+                newCount++;
+                pluginList.push(this.pluginName);
+            }
+            $("#new_plugin_count").val(newCount);
+            if (newCount == 0){
+                $('input[value="Restart"]').hide();
+                $("button").prop("disabled", true);
+            }else{
+                $('input[value="Restart"]').show();
+                $("button").prop("disabled", true);
+            }
+            $('#dim_screen').hide();
+        }
+   });
+}
+
+function RemovePlugin(pluginName){
+    $('#dim_screen').show();
+    input = $("#" + pluginName + "_control");
+    $("#" + pluginName + "_control > input").prop('disabled', true);
+    $.ajax({
+        type: 'GET',
+        url: '/remove_plugin?name=' + pluginName,
+        input: input,
+        pluginName: pluginName,
+        success: function(data) {
+            this.input.html(data);
+            alert(this.pluginName + " Removed");
+            count = parseInt($("#plugin_count").val());
+            count--;
+            $("#plugin_count").val(count);
+            newCount = parseInt($("#new_plugin_count").val());
+            if (pluginList.includes(this.pluginName)){
+                newCount--;
+                pluginList = pluginList.filter(e => e !== this.pluginName);
+            }else{
+                newCount++;
+                pluginList.push(this.pluginName);
+            }
+            $("#new_plugin_count").val(newCount);
+            if (newCount == 0){
+                $('input[value="Restart"]').hide();
+                $("button").prop("disabled", true);
+            }else{
+                $('input[value="Restart"]').show();
+                $("button").prop("disabled", true);
+            }
+            $('#dim_screen').hide();
+        }
+   });
+}
+
+function CheckLive () {
+    $.ajax({
+        url: "/is_live",
+        type: "GET",
+        success: function () {
+            clearTimeout(CheckLive);
+            $("#page_index").val(2);
+            $("form").submit();
+        },
+        error: function () {
+            setTimeout(() => {
+                CheckLive()
+            }, 5000)
+        }
+    })
+  }
+
+function Restart(){
+    $('#dim_screen').show();
+    $('input[value="Restart"]').hide();
+    $.ajax({
+        type: 'GET',
+        url: '/restart',
+        success: function(data) {
+            setTimeout(function(){CheckLive();}, 10000);
+            
+        }
+   });
+}
