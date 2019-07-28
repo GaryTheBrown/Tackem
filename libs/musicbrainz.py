@@ -5,8 +5,7 @@ from libs.startup_arguments import PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRES
 class MusicBrainz():
     '''video ripping controller'''
     def __init__(self, config):
-        self._root_config = config
-        self._config = config['musicbrainz']
+        self._config = config
         self._logged_in = False
         musicbrainzngs.set_useragent(PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRESS)
         musicbrainzngs.set_hostname(self._config['url'])
