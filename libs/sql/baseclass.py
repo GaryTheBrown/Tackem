@@ -100,6 +100,22 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command += ";"
         return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
+    def select_like(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
+        '''select data from a table'''
+        returns = "*"
+        if isinstance(list_of_returns, list):
+            returns = ", ".join(list_of_returns)
+        elif isinstance(list_of_returns, str):
+            returns = list_of_returns
+        command = "SELECT " + returns + " FROM " + table_name
+        if dict_of_values:
+            command += " WHERE "
+            values = []
+            for key in dict_of_values:
+                values.append(key + " LIKE " + self._convert_var(dict_of_values[key]))
+            command += " AND ".join(values)
+        command += ";"
+        return self._call(SQLMessage(system_name, command=command, return_data=[]))
 
     def count(self, system_name, table_name):
         '''select data from a table'''
