@@ -5,19 +5,19 @@ from system.plugin import TackemSystemPlugin
 class PluginBaseClass(metaclass=ABCMeta):
     '''base class of the plugins'''
 
-    def __init__(self, system_name, instance=False):
+    def __init__(self, system_name, single_instance=False):
         self._running = False
         self._system = None
         self._name = system_name
-
+        instance = None
         name_split = system_name.split(" ")
-        if instance:
+        if single_instance:
+            plugin_type = name_split[-2]
+            plugin_name = name_split[-1]
+        else:
             plugin_type = name_split[-3]
             plugin_name = name_split[-2]
             instance = name_split[-1]
-        else:
-            plugin_type = name_split[-2]
-            plugin_name = name_split[-1]
 
         self._tackem_system = TackemSystemPlugin(plugin_type, plugin_name, instance)
 
