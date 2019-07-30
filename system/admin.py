@@ -323,8 +323,7 @@ class TackemSystemAdmin(TackemSystemBase):
         if self._base_data.config.get('webui', {}).get('disabled', False):
             return False
         if self._base_data.webserver is None:
-            self._base_data.webserver = Httpd(self._base_data.config, self._base_data.auth,
-                                              self._base_data.systems, self._base_data.plugins)
+            self._base_data.webserver = Httpd()
             return True
 
     def delete_webserver(self):
