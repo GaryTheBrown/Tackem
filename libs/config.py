@@ -7,10 +7,6 @@ from libs.config_option import ConfigOption
 from libs.data.locale_options import OPTIONS as locale_options
 import libs.html_parts as html_part
 
-# TO DO PULL ALL HTML CODE OUT AND PUT IT INTO INDIVIDUAL FILES SO THEY CAN BE CHANGED in Theming
-# TO DO ADD A WAY OF RELOADING OR EVEN ADDING AN INSTANCE OF THE PLUGIN TO THE SYSTEM
-# TO DO ALSO MAKE IT POSSIBLE TO SHUTDOWN THE PLUGIN
-
 CONFIG = ConfigList("root")
 CONFIG.append(
     ConfigObject("firstrun", "", "boolean", default=True, hide_from_html=True)

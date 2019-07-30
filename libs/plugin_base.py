@@ -1,18 +1,25 @@
 '''MySQL Abstract Class System'''
 from abc import ABCMeta, abstractmethod
+from system.plugin import TackemSystemPlugin
 
 class PluginBaseClass(metaclass=ABCMeta):
     '''base class of the plugins'''
 
-    def __init__(self, plugin_link, name, config, root_config, db, musicbrainz):
+    def __init__(self, system_name, instance=False):
         self._running = False
         self._system = None
-        self._plugin_link = plugin_link
-        self._name = name
-        self._config = config
-        self._root_config = root_config
-        self._db = db
-        self._musicbrainz = musicbrainz
+        self._name = system_name
+
+        name_split = system_name.split(" ")
+        if instance:
+            plugin_type = name_split[-3]
+            plugin_name = name_split[-2]
+            instance = name_split[-1]
+        else:
+            plugin_type = name_split[-2]
+            plugin_name = name_split[-1]
+
+        self._tackem_system = TackemSystemPlugin(plugin_type, plugin_name, instance)
 
     @abstractmethod
     def startup(self):
@@ -32,4 +39,4 @@ class PluginBaseClass(metaclass=ABCMeta):
 
     def plugin_link(self):
         '''Returns the plugin Link'''
-        return self._plugin_link
+        return self._tackem_system.plugin()

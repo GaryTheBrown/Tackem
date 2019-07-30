@@ -8,6 +8,7 @@ import git
 import requests
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 import libs.html_parts as html_parts
+# from system.admin import TackemSystemAdmin
 
 # Need to figure out how to tell the user they need to install additional software for the plugin
 
@@ -105,23 +106,25 @@ def plugin_download_page(full_system=True):
     panels_html = ""
     for plugin in GITHUB_PLUGINS:
         title = plugin['plugin_type'] + " - " + plugin['plugin_name']
-        control = ""
+        add_remove = ""
+        start_stop = ""
+        clear_config = ""
+        clear_database = ""
         if full_system:
             #TODO Make these check if they are there and if so show them so you can delete this info
             # regardless of if the plugin is there.
-            control += html_parts.input_button("Remove Config", "", False)
-            control += html_parts.input_button("Remove Data", "", False)
+            clear_config = html_parts.input_button("Remove Config", "", False)
+            clear_database = html_parts.input_button("Remove Data", "", False)
         if plugin['downloaded']:
             if full_system:
-                control += html_parts.input_button("Remove", button_remove(plugin['name']), False)
+                add_remove = html_parts.input_button("Remove", button_remove(plugin['name']), False)
             else:
-                control += no_button()
+                add_remove = no_button()
             plugin_count += 1
         else:
-            control += html_parts.input_button("Add", button_add(plugin['name']), False)
-        variable_name = plugin['plugin_type'] + "-" + plugin['plugin_name']
-        section_html = plugin['description']
-        panels_html += html_parts.panel(title, control, "", variable_name, section_html)
+            add_remove = html_parts.input_button("Add", button_add(plugin['name']), False)
+        panels_html += html_parts.plugin_panel(title, plugin['description'], clear_config,
+                                               clear_database, start_stop, add_remove)
     html += panels_html
     html += "<h2>LOCAL PLUGINS</h2>"
     panels_html = ""

@@ -186,6 +186,16 @@ def panel(title, control, modal, variable_name, section_html, visible=True):
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
+def plugin_panel(title, description, clear_config, clear_database, start_stop, add_remove):
+    '''A Panel for plugins or sections'''
+    html = str(open("www/html/sections/plugin_panel.html", "r").read())
+    html = html.replace("%%TITLE%%", title)
+    html = html.replace("%%DESCRIPTION%%", description)
+    html = html.replace("%%CLEARCONFIG%%", clear_config)
+    html = html.replace("%%CLEARDATABASE%%", clear_database)
+    html = html.replace("%%STARTSTOP%%", start_stop)
+    return html.replace("%%ADDREMOVE%%", add_remove)
+
 def search_modal():
     '''Returnas a modal for adding a multi plugin'''
     return str(open("www/html/sections/search_modal.html", "r").read())

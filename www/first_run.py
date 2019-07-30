@@ -27,29 +27,31 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def get_multi_setup(self, plugin, name=""):
         '''Return the information needed for the setup of the plugin'''
-        return get_config_multi_setup(self._plugins, plugin, self._config, name)
+        return get_config_multi_setup(self._tackem_system.plugins(), plugin,
+                                      self._tackem_system.config(), name)
 
     def _post_action(self, kwargs):
         '''the part of the script to do all of the pages & updates of the config'''
-        post_config_settings(kwargs, self._global_config, self._plugins)
+        post_config_settings(kwargs, self._tackem_system.config(), self._tackem_system.plugins())
         try:
-            self._global_config.write()
+            self._tackem_system.config().write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
         javascript = "javascript"
         if kwargs["page_index"] == "1":
-            return self._template(root_config_page(self._global_config), False,
+            return self._template(root_config_page(self._tackem_system.config()), False,
                                   javascript=javascript)
         elif kwargs["page_index"] == "2":
             return self._template(plugin_downloader.plugin_download_page(False),
                                   False, javascript=javascript)
         elif kwargs["page_index"] == "3":
-            return self._template(plugin_config_page(self._global_config, self._plugins),
+            return self._template(plugin_config_page(self._tackem_system.config(),
+                                                     self._tackem_system.plugins()),
                                   False, javascript=javascript)
         elif kwargs["page_index"] == "4":
-            self._global_config['firstrun'] = False
+            self._tackem_system.set_config(['firstrun'], False)
             try:
-                self._global_config.write()
+                self._tackem_system.config().write()
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
             RootEvent().set_event("reboot")
@@ -69,7 +71,7 @@ class Root(HTMLTEMPLATE):
     def restart(self):
         '''Restarts Tackem'''
         try:
-            self._global_config.write()
+            self._tackem_system.config().write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
         RootEvent().set_event("reboot")

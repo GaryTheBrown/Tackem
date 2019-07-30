@@ -2,208 +2,91 @@
 #https://docs.cherrypy.org/en/latest/tutorials.html
 import os
 import os.path
-import importlib
-import platform
 import signal
-from glob import glob
 from libs.startup_arguments import ARGS
-from libs.config import config_load
-from libs.config_list import ConfigList
-from libs.sql import setup_db
-from libs.musicbrainz import MusicBrainz
-from libs.authenticator import Authentication
 from libs.root_event import RootEventMaster as RootEvent
-from libs.httpd import Httpd
+from system.admin import TackemSystemAdmin
 
 class Tackem:
     '''main program entrance'''
-    setup_done = False
-    started = False
-    plugins = {}
-    sql = None
-    systems = {}
-    config = None
-    webserver = None
-    auth = None
-    musicbrainz = None
-
     def __init__(self):
         pass
 
-    def setup(self):
-        '''Setup of the program'''
-        if not Tackem.setup_done:
-            #First check if home folder exists (useable to run first time script)
-            if not os.path.exists(ARGS.home):
-                os.mkdir(ARGS.home)
+    def load(self):
+        '''Load of the program'''
+        print("LOADING PLUGINS...")
+        TackemSystemAdmin().load_plugins()
+        print("LOADING CONFIG...")
+        TackemSystemAdmin().load_plugin_cfgs()
+        TackemSystemAdmin().load_config()
 
-            #Load Plugin Data
-            plugin_cfg = self._setup_plugins()
+        if not TackemSystemAdmin().get_config(['firstrun'], True):
+            print("LOADING DATABASE...")
+            TackemSystemAdmin().load_sql()
+            print("LOADING MUSICBRAINZ...")
+            TackemSystemAdmin().load_musicbrainz()
+            print("LOADING AUTHENTICATOR...")
+            TackemSystemAdmin().load_auth()
+            print("LOADING SYSTEMS...")
+            TackemSystemAdmin().load_systems()
 
-            #Load Config File
-            Tackem.config = config_load(ARGS.home, plugin_cfg)
-
-            if not Tackem.config['firstrun']:
-                #DB Load
-                Tackem.sql = setup_db(Tackem.config['database'])
-                Tackem.sql.start_thread()
-                #musicbrainz system
-                musicbrainz_config = Tackem.config.get('musicbrainz', {})
-                if musicbrainz_config.get('enabled', False):
-                    Tackem.musicbrainz = MusicBrainz(musicbrainz_config)
-                print("Loading Systems...")
-                self._setup_systems()
-
-                #Start Authenticator
-                Tackem.auth = Authentication(Tackem.config['authentication'],
-                                             Tackem.sql, Tackem.config['webui']['baseurl'])
-            Tackem.setup_done = True
-            #Setup signal to watch for ctrl + c command
-            signal.signal(signal.SIGINT, ctrl_c)
-
-    def _setup_plugins(self):
-        '''Setup the Plugins'''
-        cfg = ""
-        Tackem.plugins = {}
-        print("Loading Plugins...")
-        for folder in glob("plugins/*/*/"):
-            if not "__pycache__" in folder:
-                folder_split = folder.split("/")
-                name = folder_split[-2]
-                print_name = name.replace("_", " ").title()
-                plugin_type = folder_split[-3]
-                print("Loading " + plugin_type.title() + ":" + print_name.title() + "...")
-                plugin = importlib.import_module("plugins." + plugin_type + "." + name)
-                plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux',
-                                                                     'Darwin',
-                                                                     'Windows'])
-                if not platform.system() in plugin_platforms:
-                    continue
-                if hasattr(plugin, "check_disabled") and plugin.check_disabled():
-                    continue
-                if hasattr(plugin, "check_enabled") and not plugin.check_enabled():
-                    continue
-
-                if not plugin_type in Tackem.plugins:
-                    Tackem.plugins[plugin_type] = {}
-                Tackem.plugins[plugin_type][name] = plugin
-        for plugin_type in Tackem.plugins:
-            cfg += "    [[" + plugin_type + "]]\n"
-            for plugin in Tackem.plugins[plugin_type]:
-                temp_plugin = Tackem.plugins[plugin_type][plugin]
-                if isinstance(temp_plugin.CONFIG, ConfigList):
-                    single_instance = temp_plugin.SETTINGS.get("single_instance", False)
-                    cfg += temp_plugin.CONFIG.get_plugin_spec(single_instance)
-                else:
-                    cfg += temp_plugin.CFG
-        return cfg
-
-    def _setup_systems(self):
-        '''setup the systems section'''
-        for plugin_type in Tackem.plugins:
-            for plugin_name in Tackem.plugins[plugin_type]:
-                temp_plugin = Tackem.plugins[plugin_type][plugin_name]
-                temp_config = Tackem.config['plugins'][plugin_type][plugin_name]
-                plugin_full_name = plugin_type + " " + plugin_name
-                if temp_plugin.SETTINGS['single_instance']:
-                    if temp_config.get('enabled', True):
-                        print("Loading " + plugin_full_name)
-                        Tackem.systems[plugin_full_name] = temp_plugin.Plugin(temp_plugin,
-                                                                              plugin_full_name,
-                                                                              temp_config,
-                                                                              Tackem.config,
-                                                                              Tackem.sql,
-                                                                              Tackem.musicbrainz)
-                else:
-                    for inst in temp_config:
-                        full_name = plugin_full_name + " " + inst
-                        if temp_config.get(inst, {}).get('enabled', True):
-                            print("Loading " + full_name)
-                            Tackem.systems[full_name] = temp_plugin.Plugin(temp_plugin,
-                                                                           full_name,
-                                                                           temp_config[inst],
-                                                                           Tackem.config,
-                                                                           Tackem.sql,
-                                                                           Tackem.musicbrainz)
+        print("LOADING WEBSERVICES...")
+        TackemSystemAdmin().load_webserver()
 
     def start(self):
         '''Startup Of the systems'''
-        if not Tackem.started:
-            temp_keys = []
-            for key in Tackem.systems:
-                clean_key = key.replace("_", " ")
-                print("Starting " + clean_key)
-                started, message = Tackem.systems[key].startup()
-                if not started:
-                    print(Tackem.systems[key].name() + " Failed to start because " + message)
-                    temp_keys.append(key)
+        if not TackemSystemAdmin().get_config(['firstrun'], True):
+            print("STARTING DATABASE...")
+            TackemSystemAdmin().start_sql()
+            print("STARTING AUTHENTICATOR...")
+            TackemSystemAdmin().start_auth()
+            print("STARTING SYSTEMS...")
+            TackemSystemAdmin().start_systems()
+        print("STARTING WEBSERVICES...")
+        TackemSystemAdmin().start_webserver()
+        print("TACKEM HAS STARTED")
 
-            for key in temp_keys:
-                del Tackem.systems[key]
-            del temp_keys
+    def stop(self):
+        '''Stop commands'''
+        print("STOPPING WEB SERVICES...")
+        TackemSystemAdmin().stop_webserver()
+        if not TackemSystemAdmin().get_config(['firstrun'], True):
+            print("STOPPING SYSTEMS...")
+            TackemSystemAdmin().stop_systems()
+            print("STOPPING DATABASE...")
+            TackemSystemAdmin().stop_sql()
 
-            if Tackem.config['api']['enabled'] or Tackem.config['webui']['enabled']:
-                print("Starting WebUI and/or API")
-                Tackem.webserver = Httpd(Tackem.config, Tackem.auth, Tackem.systems,
-                                         Tackem.plugins)
-                Tackem.webserver.start()
-
-            Tackem.started = True
-            print("Tackem has started")
+    def cleanup(self):
+        '''Cleanup commands'''
+        print("CLEANING UP...")
+        TackemSystemAdmin().delete_webserver()
+        TackemSystemAdmin().delete_systems()
+        TackemSystemAdmin().delete_sql()
+        TackemSystemAdmin().delete_plugin_cfgs()
+        TackemSystemAdmin().delete_plugins()
+        TackemSystemAdmin().delete_musicbrainz()
+        TackemSystemAdmin().delete_auth()
+        TackemSystemAdmin().delete_config()
 
 
     def shutdown(self):
         '''Shutdown commands'''
-        if Tackem.started:
-            print("SHUTDOWN STARTED")
-            #stop the WebUI AND/OR API
-            if Tackem.webserver is not None:
-                print("Stopping Web Services")
-                Tackem.webserver.stop()
-
-            #Stop All Plugins
-            print("Stopping Plugins")
-            for key in Tackem.systems:
-                Tackem.systems[key].shutdown()
-
-            while Tackem.systems:
-                for key in Tackem.systems:
-                    if not Tackem.systems[key].running():
-                        print(key + " Stopped")
-                        del Tackem.systems[key]
-                        break
-            print("All systems Shutdown")
-
-            if Tackem.sql is not None:
-                Tackem.sql.stop_thread()
-
-            if not Tackem.config['firstrun']:
-                try:
-                    Tackem.config.write()
-                except OSError:
-                    print("ERROR WRITING CONFIG FILE")
-            Tackem.started = False
-
-    def system_start(self, system_name):
-        '''Start up an invidual plugin system'''
-        print("Starting " + system_name)
-        started, message = Tackem.systems[system_name].startup()
-        if not started:
-            print(Tackem.systems[system_name].name() + " Failed to start because " + message)
-            del Tackem.systems[system_name]
-
-    def system_stop(self, system_name):
-        '''Stop up an invidual plugin system'''
-        Tackem.systems[system_name].shutdown()
-        while True:
-            if not Tackem.systems[system_name].running():
-                print(system_name + " Stopped")
-                del Tackem.systems[system_name]
-                break
+        self.stop()
+        print("SAVING CONFIG FILE...")
+        TackemSystemAdmin().write_config_to_disk()
+        print("SHUTDOWN COMPLETED")
 
     def run(self):
         '''Looping function'''
-        self.setup()
+
+        #First check if home folder exists (useable to run first time script)
+        if not os.path.exists(ARGS.home):
+            os.mkdir(ARGS.home)
+
+        #Setup signal to watch for ctrl + c command
+        signal.signal(signal.SIGINT, ctrl_c)
+
+        self.load()
         self.start()
         while True:
             event_type, event_variable = RootEvent().wait_and_get_event()
@@ -215,25 +98,26 @@ class Tackem:
                 break
             elif event_type == "reboot":
                 self.shutdown()
-                Tackem.setup_done = False
-                self.setup()
+                self.load()
                 self.start()
-            elif event_type == "start system":
-                if event_variable is False:
-                    continue
-                self.system_start(event_variable)
-            elif event_type == "stop system":
-                if event_variable is False:
-                    continue
-                self.system_stop(event_variable)
-            elif event_type == "restart system":
-                if event_variable is False:
-                    continue
-                self.system_stop(event_variable)
-                self.system_start(event_variable)
+            # elif event_type == "start system":
+            #     if event_variable is False:
+            #         continue
+            #     self.system_start(event_variable)
+            # elif event_type == "stop system":
+            #     if event_variable is False:
+            #         continue
+            #     self.system_stop(event_variable)
+            # elif event_type == "restart system":
+            #     if event_variable is False:
+            #         continue
+            #     self.system_stop(event_variable)
+            #     self.system_start(event_variable)
             else:
                 print("Event Not Recognised Ignoring")
                 continue
+
+        self.cleanup()
 
 ##############################################
 # Catching the ctrl + c event and doing a clean shutdown

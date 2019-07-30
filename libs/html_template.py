@@ -1,28 +1,25 @@
 '''HTML TEMPLATE'''
 import libs.html_parts as html_part
+from system.full import TackemSystemFull
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-    def __init__(self, name, key, systems, plugins, config, auth,
-                 base_stylesheet=None, base_javascript=None):
-        self._key = key
-        self._systems = systems
-        self._plugins = plugins
-        self._global_config = config
-        self._auth = auth
+    def __init__(self, name, key, base_stylesheet=None, base_javascript=None):
+        self._tackem_system = TackemSystemFull()
         self._name = name
+        self._key = key
         self._base_stylesheet = base_stylesheet
         self._base_javascript = base_javascript
-        self._baseurl = self._global_config.get("webui", {}).get("baseurl", "/")
 
         if key != "":
-            self._system = systems[key]
+            self._system = self._tackem_system.system(key)
             split_key = key.split(" ")
-            self._plugin = plugins[split_key[0]][split_key[1]]
+            self._plugin = self._tackem_system.plugin(split_key[0], split_key[1])
+            temp_config = self._tackem_system.config()['plugins'][split_key[0]][split_key[1]]
             if len(split_key) == 2:
-                self._config = config['plugins'][split_key[0]][split_key[1]]
+                self._config = temp_config
             elif len(split_key) == 3:
-                self._config = config['plugins'][split_key[0]][split_key[1]][split_key[2]]
+                self._config = temp_config[split_key[2]]
 
     def _template(self, body, navbar=True, javascript=None, stylesheet=None):
         '''Create The Template Layout'''
@@ -53,7 +50,7 @@ class HTMLTEMPLATE():
                 stylesheet_extra_html += html_part.stylesheet_link(key)
         elif isinstance(stylesheet, str):
             stylesheet_extra_html = html_part.stylesheet_link(stylesheet)
-        baseurl = self._global_config.get("webui", {}).get("baseurl", "")
+        baseurl = self._tackem_system.get_baseurl()
         title = ""
         if self._key is not "":
             if self._name != "":
@@ -78,10 +75,11 @@ class HTMLTEMPLATE():
     def _navbar_left_items(self):
         '''Navigation Bar Left Items For The System'''
         nav_items_html = ""
-        if self._auth.enabled() and not self._auth.check_logged_in():
-            return nav_items_html
+        if self._tackem_system.get_auth().enabled():
+            if not self._tackem_system.get_auth().check_logged_in():
+                return nav_items_html
         nav_list = {}
-        for key in self._systems:
+        for key in self._tackem_system.systems():
             key_list = key.split(" ")
             if not key_list[0] in nav_list:
                 if len(key_list) is 1:
@@ -134,9 +132,9 @@ class HTMLTEMPLATE():
         navbar_shutdown_html = html_part.navbar_item("Shutdown", "shutdown")
 
         navbar_right_html = navbar_about_html
-        if self._auth.enabled():
-            if self._auth.check_logged_in():
-                if self._auth.is_admin():
+        if self._tackem_system.get_auth().enabled():
+            if self._tackem_system.get_auth().check_logged_in():
+                if self._tackem_system.get_auth().is_admin():
                     admin_html = navbar_config_html
                     admin_html += navbar_plugin_download_html
                     admin_html += navbar_users_html

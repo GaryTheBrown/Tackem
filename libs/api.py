@@ -2,22 +2,21 @@
 import json
 import cherrypy
 from libs.root_event import RootEvent
+from system.full import TackemSystemFull
 
 class API():
     '''API'''
-    def __init__(self, systems, plugins, config):
-        self._systems = systems
-        self._plugins = plugins
-        self._config = config
+    def __init__(self):
+        self._tackem_system = TackemSystemFull()
 
     def _get_api_key(self, key):
         '''checks the api key against the master and user keys and sets the correct modes
         True = Master
         False = User
         None = NONE'''
-        if key == self._config.get("masterapi", {}).get("key", None):
+        if key == self._tackem_system.get_config(["masterapi", "key"], None):
             return True
-        elif key == self._config.get("userapi", {}).get("key", None):
+        elif key == self._tackem_system.get_config(["userapi", "key"], None):
             return False
         return None
 
@@ -53,8 +52,8 @@ class API():
         #SEND TO A SYSTEM OR PLUGIN
         if plugin_name is not None:
             plugin = None
-            for plugin_type in self._plugins:
-                plugin = self._plugins[plugin_type].get(plugin_name, None)
+            for plugin_type in self._tackem_system.plugins():
+                plugin = self._tackem_system.plugin(plugin_type, plugin_name)
                 if plugin is not None:
                     break
             if plugin is None:
@@ -62,7 +61,7 @@ class API():
             single_instance_plugin = plugin.SETTINGS['single_instance']
         if single_instance_plugin:
             if system_name is not None:
-                system = self._systems.get(system_name, None)
+                system = self._tackem_system.system(system_name)
                 if system is None:
                     return "system " + system_name + " not found"
                 #TODO pass to the plugins api single mode
@@ -70,7 +69,7 @@ class API():
         else:
             if system_name is not None and plugin_name is not None:
                 system_full_name = plugin_name + system_name
-                system = self._systems.get(system_full_name, None)
+                system = self._tackem_system.system(system_full_name)
                 if system is None:
                     return "system not found"
                 #TODO pass to the plugins api multi mode
@@ -118,15 +117,7 @@ class API():
             if "api" in get:
                 return "PERMISSION DENIED"
         data = get.split("/")
-        if len(data) == 1:
-            val = self._config.get(data[0], None)
-        elif len(data) == 2:
-            val = self._config.get(data[0], {}).get(data[1], None)
-        elif len(data) == 3:
-            val = self._config.get(data[0], {}).get(data[1], {}).get(data[2], None)
-        elif len(data) == 4:
-            conf = self._config.get(data[0], {}).get(data[1], {}).get(data[2], {})
-            val = conf.get(data[3], None)
+        val = self._tackem_system.get_config(data, None)
         if val is None:
             return "ERROR"
         return val
@@ -137,39 +128,4 @@ class API():
         if not isinstance(value, str):
             return "ERROR NO VALUE GIVEN"
         data = set_str.split("/")
-        if data:
-            if not data[0] in self._config:
-                return "ERROR " + data[0] + "NOT FOUND"
-            if len(data) == 1:
-                self._config[data[0]] = value
-                return True
-
-            # greater than 1
-            if not data[1] in self._config[data[0]]:
-                return "ERROR " + data[1] + "NOT FOUND IN " + data[0]
-            if len(data) == 2:
-                self._config[data[0]][data[1]] = value
-                return True
-
-            # greater than 2
-            if not data[2] in self._config[data[0]][data[1]]:
-                return "ERROR " + data[2] + "NOT FOUND IN " + data[1]
-            if len(data) == 3:
-                self._config[data[0]][data[1]][data[2]] = value
-                return True
-
-            # greater than 3
-            if not data[3] in self._config[data[0]][data[1]][data[2]]:
-                return "ERROR " + data[3] + "NOT FOUND IN " + data[2]
-            if len(data) == 4:
-                self._config[data[0]][data[1]][data[2]] = value
-                return True
-
-            # greater than 4
-            if not data[4] in self._config[data[0]][data[1]][data[2]][data[3]]:
-                return "ERROR " + data[4] + "NOT FOUND IN " + data[3]
-            if len(data) == 5:
-                self._config[data[0]][data[1]][data[2]][data[3]] = value
-                return True
-
-        return False
+        return self._tackem_system.set_config(data, value)
