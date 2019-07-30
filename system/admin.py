@@ -46,9 +46,12 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def delete_plugins(self):
         '''deletes the plugins'''
+        list_of_plugins = []
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
-                self.delete_plugin(plugin_type, plugin_name)
+                list_of_plugins.append((plugin_type, plugin_name))
+        for plugin_type, plugin_name in list_of_plugins:
+            self.delete_plugin(plugin_type, plugin_name)
         return True
 
     def delete_plugin(self, plugin_type, plugin_name):
