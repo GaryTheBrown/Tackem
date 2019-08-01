@@ -12,8 +12,8 @@ class Tackem:
     def __init__(self):
         pass
 
-    def load(self):
-        '''Load of the program'''
+    def start(self):
+        '''Start of the program'''
         print("LOADING PLUGINS...")
         TackemSystemAdmin().load_plugins()
         print("LOADING CONFIG...")
@@ -23,25 +23,20 @@ class Tackem:
         if not TackemSystemAdmin().get_config(['firstrun'], True):
             print("LOADING DATABASE...")
             TackemSystemAdmin().load_sql()
+            print("STARTING DATABASE...")
+            TackemSystemAdmin().start_sql()
             print("LOADING MUSICBRAINZ...")
             TackemSystemAdmin().load_musicbrainz()
             print("LOADING AUTHENTICATOR...")
             TackemSystemAdmin().load_auth()
-            print("LOADING SYSTEMS...")
-            TackemSystemAdmin().load_systems()
-
-        print("LOADING WEBSERVICES...")
-        TackemSystemAdmin().load_webserver()
-
-    def start(self):
-        '''Startup Of the systems'''
-        if not TackemSystemAdmin().get_config(['firstrun'], True):
-            print("STARTING DATABASE...")
-            TackemSystemAdmin().start_sql()
             print("STARTING AUTHENTICATOR...")
             TackemSystemAdmin().start_auth()
+            print("LOADING SYSTEMS...")
+            TackemSystemAdmin().load_systems()
             print("STARTING SYSTEMS...")
             TackemSystemAdmin().start_systems()
+        print("LOADING WEBSERVICES...")
+        TackemSystemAdmin().load_webserver()
         print("STARTING WEBSERVICES...")
         TackemSystemAdmin().start_webserver()
         print("TACKEM HAS STARTED")
@@ -86,7 +81,6 @@ class Tackem:
         #Setup signal to watch for ctrl + c command
         signal.signal(signal.SIGINT, ctrl_c)
 
-        self.load()
         self.start()
         while True:
             event_type, event_variable = RootEvent().wait_and_get_event()
@@ -95,10 +89,10 @@ class Tackem:
                 continue
             elif event_type == "shutdown":
                 self.shutdown()
+                self.cleanup()
                 break
             elif event_type == "reboot":
                 self.shutdown()
-                self.load()
                 self.start()
             # elif event_type == "start system":
             #     if event_variable is False:

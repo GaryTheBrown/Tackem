@@ -23,9 +23,8 @@ class Authentication:
     _temp_sessions = {}
 
     def __init__(self):
-        self._tackem_system = TackemSystemRoot('scraper')
-        self._login_url = self._tackem_system.get_config(["webui", "baseurl"], "/")
-        self._login_url += "login?return_url="
+        self._tackem_system = TackemSystemRoot('authentication')
+        self._login_url = self._tackem_system.get_baseurl() + "login?return_url="
 
     def start(self):
         '''Run starting commands need sql to run'''
@@ -81,11 +80,17 @@ class Authentication:
 
     def check_auth(self):
         '''Check authentication'''
+        print("CHECK AUTH")
         if not self._tackem_system.config()['enabled']:
+            print("ENABLED:", False)
             return
+        print("ENABLED:", True)
         if 'sessionid' in cherrypy.request.cookie.keys():
+            print("SESSIONID IN KEYS", True)
             if cherrypy.request.cookie['sessionid'].value in self._temp_sessions:
+                print("SESSIONID IN temp_sessions")
                 return
+        print("SESSIONID IN KEYS", False)
         raise cherrypy.HTTPRedirect(self._login_url + cherrypy.url(relative='server'))
 
     def check_logged_in(self):

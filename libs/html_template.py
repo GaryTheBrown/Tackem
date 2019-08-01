@@ -1,25 +1,18 @@
 '''HTML TEMPLATE'''
 import libs.html_parts as html_part
-from system.full import TackemSystemFull
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-    def __init__(self, name, key, base_stylesheet=None, base_javascript=None):
-        self._tackem_system = TackemSystemFull()
+    def __init__(self, name, key, tackem_system, base_stylesheet=None, base_javascript=None):
+        self._tackem_system = tackem_system
         self._name = name
         self._key = key
         self._base_stylesheet = base_stylesheet
         self._base_javascript = base_javascript
 
         if key != "":
-            self._system = self._tackem_system.system(key)
-            split_key = key.split(" ")
-            self._plugin = self._tackem_system.plugin(split_key[0], split_key[1])
-            temp_config = self._tackem_system.config()['plugins'][split_key[0]][split_key[1]]
-            if len(split_key) == 2:
-                self._config = temp_config
-            elif len(split_key) == 3:
-                self._config = temp_config[split_key[2]]
+            self._plugin = self._tackem_system.plugin()
+            self._config = self._tackem_system.config()
 
     def _template(self, body, navbar=True, javascript=None, stylesheet=None):
         '''Create The Template Layout'''
@@ -79,7 +72,7 @@ class HTMLTEMPLATE():
             if not self._tackem_system.get_auth().check_logged_in():
                 return nav_items_html
         nav_list = {}
-        for key in self._tackem_system.systems():
+        for key in self._tackem_system.system_keys():
             key_list = key.split(" ")
             if not key_list[0] in nav_list:
                 if len(key_list) is 1:

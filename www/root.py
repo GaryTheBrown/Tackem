@@ -27,10 +27,9 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def config(self, **kwargs):
         '''Config System'''
-        if self._tackem_system.get_auth().enabled():
-            self._tackem_system.get_auth().check_auth()
-            if not self._tackem_system.get_auth().is_admin():
-                return self._error_page(401)
+        self._tackem_system.get_auth().check_auth()
+        if not self._tackem_system.get_auth().is_admin():
+            return self._error_page(401)
         if kwargs:
             post_config_settings(kwargs, self._tackem_system.config(),
                                  self._tackem_system.plugins())

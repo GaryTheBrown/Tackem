@@ -11,11 +11,11 @@ from system.full import TackemSystemFull
 class Httpd():
     '''HTTPD CLASS'''
     def __init__(self):
-        self._tackem_system = TackemSystemFull()
+        self._system = TackemSystemFull()
 
         cherrypy.config.update({
             'server.socket_host': '0.0.0.0',
-            'server.socket_port': self._tackem_system.config()['webui']['port'],
+            'server.socket_port': self._system.config()['webui']['port'],
             'server.threadPool':10,
             'server.environment':"production",
             'log.screen': False,
@@ -34,20 +34,26 @@ class Httpd():
                 'tools.response_headers.headers': [('Content-Type', 'text/plain')]
             }
         }
-        baseurl = self._tackem_system.get_baseurl()
-        if self._tackem_system.config()['firstrun']:
-            cherrypy.tree.mount(first_run_root("", ""), baseurl, conf_root)
+        baseurl = self._system.get_baseurl()
+        if self._system.config()['firstrun']:
+            cherrypy.tree.mount(first_run_root("", "", self._system), baseurl,
+                                conf_root)
         else:
-            if not self._tackem_system.config()['webui']['disabled']:
-                cherrypy.tree.mount(main_root("", ""), baseurl, conf_root)
-                if self._tackem_system.get_auth().enabled():
-                    cherrypy.tree.mount(Admin("Admin", ""), baseurl + "admin/", conf_root)
-                for key in self._tackem_system.systems():
+            if not self._system.config()['webui']['disabled']:
+                cherrypy.tree.mount(main_root("", "", self._system), baseurl, conf_root)
+                if self._system.get_auth().enabled():
+                    cherrypy.tree.mount(Admin("Admin", "", self._system),
+                                        baseurl + "admin/", conf_root)
+                for key in self._system.systems():
                     #load system webpages into cherrypy
-                    self._tackem_system.system(key).plugin_link().www.mounts(key)
-            if self._tackem_system.config()['api']['enabled']:
+                    if self._system.system(key).plugin_link().SETTINGS.get('single_instance', True):
+                        self._system.system(key).plugin_link().www.mounts(key)
+                    else:
+                        instance_name = key.split()[-1]
+                        self._system.system(key).plugin_link().www.mounts(key, instance_name)
+            if self._system.config()['api']['enabled']:
                 cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
-            if self._tackem_system.config()['scraper']['enabled']:
+            if self._system.config()['scraper']['enabled']:
                 scraper.mounts()
 
     def start(self):

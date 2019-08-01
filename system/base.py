@@ -29,3 +29,8 @@ class TackemSystemBase:
     def get_baseurl(self):
         '''grab the baseurl'''
         return self.get_config(["webui", "baseurl"], "/")
+
+    def system_keys(self):
+        '''returns the system keys for navbar'''
+        with self._base_data.systems_lock:
+            return self._base_data.systems.keys()

@@ -4,11 +4,9 @@ import threading
 class SystemData():
     '''System Data'''
     plugins = {} # [type][ name]
-    plugins_dict_lock = threading.Lock()
-    plugin_locks = {} # [type][ name] threading.Lock()
+    plugins_lock = threading.Lock()
     systems = {} # [type name]
-    systems_dict_lock = threading.Lock()
-    system_locks = {} # [type name] threading.Lock()
+    systems_lock = threading.Lock()
     plugin_cfg = {} # [type name]
     plugin_cfg_lock = threading.Lock()
     config = None

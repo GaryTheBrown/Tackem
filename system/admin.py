@@ -2,7 +2,6 @@
 import glob
 import importlib
 import platform
-import threading
 from system.base import TackemSystemBase
 from libs.authenticator import Authentication
 from libs.config import config_load
@@ -27,7 +26,7 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def load_plugin(self, plugin_type, plugin_name):
         '''load a plugin'''
-        with self._base_data.plugins_dict_lock:
+        with self._base_data.plugins_lock:
             plugin = importlib.import_module("plugins." + plugin_type + "." + plugin_name)
             plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux', 'Darwin', 'Windows'])
             if not platform.system() in plugin_platforms:
@@ -39,9 +38,7 @@ class TackemSystemAdmin(TackemSystemBase):
 
             if not plugin_type in self._base_data.plugins:
                 self._base_data.plugins[plugin_type] = {}
-                self._base_data.plugin_locks[plugin_type] = {}
             self._base_data.plugins[plugin_type][plugin_name] = plugin
-            self._base_data.plugin_locks[plugin_type][plugin_name] = threading.Lock()
         return True
 
     def delete_plugins(self):
@@ -56,14 +53,12 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def delete_plugin(self, plugin_type, plugin_name):
         '''deletes a plugin'''
-        with self._base_data.plugins_dict_lock:
+        with self._base_data.plugins_lock:
             if self.is_systems_for_plugin_exists(plugin_type, plugin_name):
                 self.stop_plugin(plugin_type, plugin_name)
             del self._base_data.plugins[plugin_type][plugin_name]
-            del self._base_data.plugin_locks[plugin_type][plugin_name]
             if not self._base_data.plugins[plugin_type]:
                 del self._base_data.plugins[plugin_type]
-                del self._base_data.plugin_locks[plugin_type]
         return True
 
     def start_plugin(self, plugin_type, plugin_name):
@@ -85,7 +80,7 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def load_system(self, system_name, single_instance=True):
         '''loads system'''
-        with self._base_data.systems_dict_lock:
+        with self._base_data.systems_lock:
             if system_name in self._base_data.systems:
                 return False
             name_split = system_name.split(" ")
@@ -97,7 +92,6 @@ class TackemSystemAdmin(TackemSystemBase):
                 plugin_type = name_split[-3]
             temp_plugin = self._base_data.plugins[plugin_type][plugin_name]
             self._base_data.systems[system_name] = temp_plugin.Plugin(system_name, single_instance)
-            self._base_data.system_locks[system_name] = threading.Lock()
         return True
 
     def load_plugin_systems(self, plugin_type, plugin_name):
@@ -119,16 +113,15 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def delete_systems(self):
         '''deletes the systems'''
-        for name in self._base_data.systems:
+        for name in list(name for name in self._base_data.systems):
             self.delete_system(name)
         return True
 
     def delete_system(self, system_name):
         '''deletes a system'''
-        with self._base_data.systems_dict_lock:
+        with self._base_data.systems_lock:
             if not self._base_data.systems[system_name].running():
                 del self._base_data.systems[system_name]
-                del self._base_data.system_locks[system_name]
                 return True
         return False
 
@@ -148,7 +141,7 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def start_system(self, system_name):
         '''starts a system'''
-        with self._base_data.system_locks[system_name]:
+        with self._base_data.systems_lock:
             if self._base_data.systems[system_name].running():
                 return True
             started, message = self._base_data.systems[system_name].startup()
@@ -165,16 +158,20 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def stop_systems(self):
         '''stops all of the systems'''
-        with self._base_data.systems_dict_lock:
+        with self._base_data.systems_lock:
             for name in self._base_data.systems:
                 self._base_data.systems[name].shutdown()
-            while True:
-                if not list(name for name, system in self._base_data.systems if system.running()):
-                    return True
+            running = True
+            while running:
+                running = False
+                for name in self._base_data.systems:
+                    if self._base_data.systems[name].running():
+                        running = True
+            return True
 
     def stop_system(self, system_name):
         '''stops a system'''
-        with self._base_data.system_locks[system_name]:
+        with self._base_data.systems_lock:
             self._base_data.systems[system_name].shutdown()
             while True:
                 if not self._base_data.systems[system_name].running():
@@ -182,26 +179,25 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def stop_plugin_systems(self, plugin_type, plugin_name):
         '''stop systems for a plugin'''
-        system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
-        for system_name in system_names:
-            self._base_data.system_locks[system_name].acquire()
-            self._base_data.systems[system_name].shutdown()
-        temp_system_names = system_names.copy()
-        while temp_system_names:
-            for index, system_name in enumerate(temp_system_names):
-                if not self._base_data.systems[system_name].running():
-                    del temp_system_names[index]
-                    self._base_data.system_locks[system_name].release()
+        with self._base_data.systems_lock:
+            system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
+            for system_name in system_names:
+                self._base_data.systems[system_name].shutdown()
+            temp_system_names = system_names.copy()
+            while temp_system_names:
+                for index, system_name in enumerate(temp_system_names):
+                    if not self._base_data.systems[system_name].running():
+                        del temp_system_names[index]
 
     def get_systems_for_plugin(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
-        with self._base_data.systems_dict_lock:
+        with self._base_data.systems_lock:
             system_name = plugin_type + " " + plugin_name
             return list(key for key, _ in self._base_data.systems if system_name in key)
 
     def is_systems_for_plugin_exists(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
-        with self._base_data.systems_dict_lock:
+        with self._base_data.systems_lock:
             system_name = plugin_type + " " + plugin_name
             for key in self._base_data.systems:
                 if system_name in key:
@@ -210,7 +206,7 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def is_systems_for_plugin_running(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
-        with self._base_data.systems_dict_lock:
+        with self._base_data.systems_lock:
             system_name = plugin_type + " " + plugin_name
             for key in self._base_data.systems:
                 if system_name in key:
@@ -231,7 +227,7 @@ class TackemSystemAdmin(TackemSystemBase):
         with self._base_data.plugin_cfg_lock:
             if not plugin_type in self._base_data.plugin_cfg:
                 self._base_data.plugin_cfg[plugin_type] = {}
-            with self._base_data.plugin_locks[plugin_type][plugin_name]:
+            with self._base_data.plugins_lock:
                 temp_plugin = self._base_data.plugins[plugin_type][plugin_name]
                 plugin_cfg = self._base_data.plugin_cfg[plugin_type]
                 if isinstance(temp_plugin.CONFIG, ConfigList):
