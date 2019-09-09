@@ -1,0 +1,12 @@
+version: '3'
+services:
+  Tackem:
+    build: .
+    args:
+      USER: ${USER}
+      UID: $(id -u)
+      GID: $(id -g)
+    ports:
+      - '8081:8081'
+    # volumes:
+      #  - './:/app'
