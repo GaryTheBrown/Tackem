@@ -12,9 +12,9 @@
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
 	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
-		"python.pythonPath": "/usr/local/bin/python",
+		"python.pythonPath": "/usr/local/bin/python3.7",
 		"python.linting.pylintEnabled": true,
-		"python.linting.pylintPath": "/usr/local/bin/pylint",
+		"python.linting.pylintPath": "pylint",
 		"python.linting.enabled": true,
 		"python.linting.pylintUseMinimalCheckers": false,
 		"python.formatting.provider": "autopep8",

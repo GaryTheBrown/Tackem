@@ -16,5 +16,5 @@ RUN groupadd -g ${GID} ${USER} \
 
 USER $USER
 
-RUN python3 -m pip install -U pip --user \
- && python3 -m pip install -U pylint autopep8 coverage configobj cherrypy requests pexpect musicbrainzngs gitpython --user
+RUN python3.7 -m pip install -U pip --user \
+ && python3.7 -m pip install -U pylint autopep8 coverage configobj cherrypy requests pexpect musicbrainzngs gitpython --user
