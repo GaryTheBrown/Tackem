@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-ARG USER=dev
+ARG USER=gary
 ARG UID=1000
 ARG GID=1000
 

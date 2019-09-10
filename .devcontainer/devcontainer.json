@@ -1,16 +1,12 @@
 {
 	"name": "Tackem Dev Env",
 	"dockerFile": "dockerfile",
-	"dockerComposeFile": [
-		"docker-compose.yml"
-	],
 
 	// Specifies a list of ports that should be published from the container.
 	"appPort": [8081],
 
-	// Comment out the next line to run as root instead. Linux users,
-	// update Dockerfile with your user's UID/GID if not 1000.
-	"runArgs": ["-v", "/home/${USER}/.ssh:/home/${USER}/.ssh:ro"],
+	// update Dockerfile with your home folder
+	"runArgs": ["-v", "/home/gary/.ssh:/home/gary/.ssh:ro"],
 
 	// Use 'settings' to set *default* container specific settings.json values on container create.
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
