@@ -91,8 +91,8 @@ CONFIG.append(ConfigList("plugins"))# keep this one at the end of the config sec
 def config_load(path, plugin_configs):
     """Create a config file using a configspec and validate it against a Validator object"""
     temp_spec = CONFIG.get_root_spec() + plugin_configs
-    _spec = temp_spec.split("\n")
-    config = ConfigObj(path + "config.ini", configspec=_spec)
+    spec = temp_spec.split("\n")
+    config = ConfigObj(path + "config.ini", configspec=spec)
     validator = Validator()
     config.validate(validator, copy=True)
     config.filename = path + "config.ini"
@@ -125,7 +125,7 @@ def post_config_settings(kwargs, config, plugins):
 
 def add_val_to_config(config, key_list, value):
     '''recursive way of adding value into the config'''
-    if len(key_list) is 1:
+    if len(key_list) == 1:
         config[key_list[0]] = value
     else:
         if not config:
@@ -136,24 +136,24 @@ def add_val_to_config(config, key_list, value):
 
 def root_config_page(config):
     '''get the full root config setup page into a form'''
-    return html_part.form("/", html_part.hidden_page_index(2), "Next", _root_config_page(config))
+    return html_part.form("/", html_part.hidden_page_index(2), "Next", __root_config_page(config))
 
 def plugin_config_page(config, plugins):
     '''setup for Libraries into a form'''
     return html_part.form("/", html_part.hidden_page_index(4), "Save & Restart",
-                          _plugin_config_page(config, plugins))
+                          __plugin_config_page(config, plugins))
 
 def full_config_page(config, plugins):
     '''get the full config setup page into a form'''
     baseurl = config.get("webui", {}).get("baseurl", "")
     return html_part.form(baseurl + "config", "", "Save & Restart",
-                          _root_config_page(config) + _plugin_config_page(config, plugins))
+                          __root_config_page(config) + __plugin_config_page(config, plugins))
 
-def _root_config_page(config):
+def __root_config_page(config):
     '''get the full root config setup page'''
     return html_part.root_config_page(CONFIG.get_config_html(config))
 
-def _plugin_config_page(config, plugins):
+def __plugin_config_page(config, plugins):
     '''setup for Libraries'''
     plugin_tabs_html = ""
     plugin_panes_html = ""
@@ -166,17 +166,17 @@ def _plugin_config_page(config, plugins):
             temp_config = config["plugins"][plugin_type][plugin]
             variable_name = "plugins_" + plugin_type + "_" + plugin + "_"
             if temp_plugin.SETTINGS.get("single_instance", True):
-                plugin_pane_html += _single_plugin_config_page(plugin, temp_plugin, temp_config,
-                                                               variable_name)
+                plugin_pane_html += __single_plugin_config_page(plugin, temp_plugin, temp_config,
+                                                                variable_name)
             else:
-                plugin_pane_html += _multi_plugin_config_page(plugin, temp_plugin, temp_config,
-                                                              variable_name)
+                plugin_pane_html += __multi_plugin_config_page(plugin, temp_plugin, temp_config,
+                                                               variable_name)
         plugin_panes_html += html_part.tab_pane(plugin_type, plugin_pane_html, first_type)
         if first_type:
             first_type = False
     return html_part.plugin_config_page(html_part.tab_bar(plugin_tabs_html), plugin_panes_html)
 
-def _single_plugin_config_page(plugin_name, plugin, config, variable_name):
+def __single_plugin_config_page(plugin_name, plugin, config, variable_name):
     '''returns the single plugin pane'''
     section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
     control_html = ""
@@ -188,7 +188,7 @@ def _single_plugin_config_page(plugin_name, plugin, config, variable_name):
     return html_part.panel(plugin_name, control_html, "", variable_name[:-1],
                            plugin_html, section_enabled)
 
-def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
+def __multi_plugin_config_page(plugin_name, plugin, config, variable_name):
     '''returns the multi plugin pane'''
     section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
     #add instance button
@@ -206,12 +206,12 @@ def _multi_plugin_config_page(plugin_name, plugin, config, variable_name):
     plugin_html = ""
     if config:
         for name in config:
-            plugin_html = multi_plugin_config_section(plugin, config, variable_name[:-1], name)
+            plugin_html = _multi_plugin_config_section(plugin, config, variable_name[:-1], name)
 
     return html_part.panel(plugin_name, control_html, modal, variable_name[:-1],
                            plugin_html, section_enabled)
 
-def multi_plugin_config_section(plugin, config, variable_name, name):
+def _multi_plugin_config_section(plugin, config, variable_name, name):
     '''returns a section of a multi plugin'''
     section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
     enable_option = ""
@@ -229,4 +229,4 @@ def get_config_multi_setup(plugins, plugin_path, full_config, name=""):
     plugin_location = plugin_path.split("_")
     plugin = plugins[plugin_location[1]][plugin_location[2]]
     config = full_config[plugin_location[0]][plugin_location[1]][plugin_location[2]]
-    return multi_plugin_config_section(plugin, config, plugin_path, name)
+    return _multi_plugin_config_section(plugin, config, plugin_path, name)

@@ -1,5 +1,5 @@
 '''SQL System'''
-from .baseclass import MysqlBaseClass
+from .baseclass import SqlBaseClass
 from .mysql import MySql
 from .sqllite import SqlLite
 

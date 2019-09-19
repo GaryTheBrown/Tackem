@@ -7,16 +7,16 @@ from system.full import TackemSystemFull
 class API():
     '''API'''
     def __init__(self):
-        self._tackem_system = TackemSystemFull()
+        self.__tackem_system = TackemSystemFull()
 
     def _get_api_key(self, key):
         '''checks the api key against the master and user keys and sets the correct modes
         True = Master
         False = User
         None = NONE'''
-        if key == self._tackem_system.get_config(["masterapi", "key"], None):
+        if key == self.__tackem_system.get_config(["masterapi", "key"], None):
             return True
-        elif key == self._tackem_system.get_config(["userapi", "key"], None):
+        elif key == self.__tackem_system.get_config(["userapi", "key"], None):
             return False
         return None
 
@@ -52,8 +52,8 @@ class API():
         #SEND TO A SYSTEM OR PLUGIN
         if plugin_name is not None:
             plugin = None
-            for plugin_type in self._tackem_system.plugins():
-                plugin = self._tackem_system.plugin(plugin_type, plugin_name)
+            for plugin_type in self.__tackem_system.plugins():
+                plugin = self.__tackem_system.plugin(plugin_type, plugin_name)
                 if plugin is not None:
                     break
             if plugin is None:
@@ -61,7 +61,7 @@ class API():
             single_instance_plugin = plugin.SETTINGS['single_instance']
         if single_instance_plugin:
             if system_name is not None:
-                system = self._tackem_system.system(system_name)
+                system = self.__tackem_system.system(system_name)
                 if system is None:
                     return "system " + system_name + " not found"
                 #TODO pass to the plugins api single mode
@@ -69,7 +69,7 @@ class API():
         else:
             if system_name is not None and plugin_name is not None:
                 system_full_name = plugin_name + system_name
-                system = self._tackem_system.system(system_full_name)
+                system = self.__tackem_system.system(system_full_name)
                 if system is None:
                     return "system not found"
                 #TODO pass to the plugins api multi mode
@@ -87,14 +87,14 @@ class API():
         '''all actions for the api here'''
         if kwargs is None:
             kwargs = {}
-        if action is "shutdown":
+        if action == "shutdown":
             RootEvent().set_event("shutdown")
-        elif action is "reboot":
+        elif action == "reboot":
             RootEvent().set_event("reboot")
 
     def _config_api(self, kwargs, apimode):
         '''section for the config api'''
-        json_set = kwargs.get("return", "text") is "json"
+        json_set = kwargs.get("return", "text") == "json"
         return_string = "IN THE CONFIG SECTION" + json.dumps(kwargs, ensure_ascii=False)
 
         get = kwargs.get("get", False)
@@ -117,7 +117,7 @@ class API():
             if "api" in get:
                 return "PERMISSION DENIED"
         data = get.split("/")
-        val = self._tackem_system.get_config(data, None)
+        val = self.__tackem_system.get_config(data, None)
         if val is None:
             return "ERROR"
         return val
@@ -128,4 +128,4 @@ class API():
         if not isinstance(value, str):
             return "ERROR NO VALUE GIVEN"
         data = set_str.split("/")
-        return self._tackem_system.set_config(data, value)
+        return self.__tackem_system.set_config(data, value)

@@ -19,13 +19,13 @@ class ScraperRipper(Scraper):
     def javascript(self):
         '''index of scraper'''
         java_file = str(open(os.path.dirname(__file__) + "/javascript/ripper.js", "r").read())
-        return java_file.replace("%%BASEURL%%", self._config['webui']['baseurl'])
+        return java_file.replace("%%BASEURL%%", self._tackem_system.get_baseurl())
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def searchmovie(self, query, page=1, year=None):
         '''search for a movie by name (and Year)'''
-        return self._search_for_movie(query, page, year)
+        return self.__search_for_movie(query, page, year)
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
@@ -43,24 +43,24 @@ class ScraperRipper(Scraper):
     @cherrypy.tools.json_out()
     def searchtvshow(self, query, page=1):
         '''search for a tv show'''
-        return self._search_for_tvshow(query, page)
+        return self.__search_for_tvshow(query, page)
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def findtvshow(self, tvdb_id):
         '''search for a tv show by tvdb id'''
-        return self._search_by_tvdb_id(tvdb_id)
+        return self.__search_by_tvdb_id(tvdb_id)
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
     def gettvshow(self, tvshow_id):
         '''get tv show by TMDB id'''
-        return self._get_tvshow_details(tvshow_id)
+        return self.__get_tvshow_details(tvshow_id)
 
 #################
 ##MOVIE SECTION##
 #################
-    def _search_for_movie(self, query, page=1, year=None):
+    def __search_for_movie(self, query, page=1, year=None):
         '''searches for a movie getting all options'''
         data = self.search_for_movie(query, page, year)
 
@@ -150,13 +150,13 @@ class ScraperRipper(Scraper):
 ##################
 ##TVSHOW SECTION##
 ##################
-    def _search_for_tvshow(self, query, page=1):
+    def __search_for_tvshow(self, query, page=1):
         '''searches for a movie getting all options'''
         data = self.search_for_tvshow(query, page)
         if data['success'] is False:
             return json.dumps(data)
         if int(data['response']['total_results']) == 1:
-            return self._show_single_tvshow_item(data['response']['results'][0])
+            return self.__show_single_tvshow_item(data['response']['results'][0])
 
         response = data['response']
         pagination = "Pages:"
@@ -202,14 +202,14 @@ class ScraperRipper(Scraper):
             'footer': pagination
         })
 
-    def _search_by_tvdb_id(self, imdb_id):
+    def __search_by_tvdb_id(self, imdb_id):
         '''searches by the TVDB ID'''
         data = self.search_by_tvdb_id(imdb_id)
         if data['success'] is False:
             return json.dumps(data)
-        return self._show_single_tvshow_item(data['response']['tv_results'][0])
+        return self.__show_single_tvshow_item(data['response']['tv_results'][0])
 
-    def _show_single_tvshow_item(self, item):
+    def __show_single_tvshow_item(self, item):
         '''using the info shows a single item and asks if correct'''
         header = item['name']
         full_original_language = Languages().get_name_from_2(item['original_language'])
@@ -228,6 +228,6 @@ class ScraperRipper(Scraper):
             'footer': footer
         })
 
-    def _get_tvshow_details(self, tvshow_id):
+    def __get_tvshow_details(self, tvshow_id):
         '''returns the full tv show details'''
         return json.dumps(self.get_tvshow_details(tvshow_id))

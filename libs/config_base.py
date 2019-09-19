@@ -52,7 +52,7 @@ class ConfigBase:
                 return False
         return None
 
-    def _script_create_check(self):
+    def __script_create_check(self):
         '''checks if any scripts are in the option'''
         if self._show:
             return True
@@ -66,7 +66,7 @@ class ConfigBase:
 
     def _script_create(self, script_call):
         '''returns the script'''
-        if self._script_create_check():
+        if self.__script_create_check():
             return_string = ' '
             return_string += script_call
             return_string += '="'
@@ -127,3 +127,4 @@ def combine(value):
                 return_string += ", "
             return_string += "'" + item + "'"
         return return_string
+    return None

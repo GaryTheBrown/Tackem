@@ -1,4 +1,4 @@
-'''MySQL Abstract Class System'''
+'''SQL Abstract Class System'''
 #import itertools
 import threading
 import json
@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from .column import Column
 from .sql_message import SQLMessage
 
-class MysqlBaseClass(metaclass=ABCMeta):
+class SqlBaseClass(metaclass=ABCMeta):
     '''base class of database access'''
 
     _event_lock = threading.Event()
@@ -17,7 +17,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
 
     def __init__(self):
         '''INIT'''
-        self._thread = threading.Thread(target=self._run, args=())
+        self._thread = threading.Thread(target=self.__run, args=())
         self._thread.setName("SQL")
 
     def start_thread(self):
@@ -40,19 +40,19 @@ class MysqlBaseClass(metaclass=ABCMeta):
 
     def call(self, system_name, call):
         '''Function to call the sql through threadding'''
-        return self._call(SQLMessage(system_name, command=call))
+        return self.__call(SQLMessage(system_name, command=call))
 
     def get(self, system_name, call):
         '''Function to call the sql through threadding'''
-        return self._call(SQLMessage(system_name, command=call, return_data=[]))
+        return self.__call(SQLMessage(system_name, command=call, return_data=[]))
 
     def table_check(self, system_name, table_name, data, version):
         '''Function to do a table check'''
-        return self._call(SQLMessage(system_name,
-                                     special_command="tablecheck",
-                                     table_name=table_name,
-                                     data=data,
-                                     version=version))
+        return self.__call(SQLMessage(system_name,
+                                      special_command="tablecheck",
+                                      table_name=table_name,
+                                      data=data,
+                                      version=version))
 
     def table_checks(self, system_name, data):
         '''Function to do a table check from a dict'''
@@ -62,11 +62,11 @@ class MysqlBaseClass(metaclass=ABCMeta):
         '''Check if the Table has row by looking for all the queries'''
         queries = []
         for key in dict_of_queries:
-            queries.append(key + " = " + self._convert_var(dict_of_queries[key]))
+            queries.append(key + " = " + self.__convert_var(dict_of_queries[key]))
 
         command = "SELECT id FROM " + table_name
         command += " WHERE " + " AND ".join(queries) + ";"
-        return_value = self._call(SQLMessage(system_name, command=command, return_data=[]))
+        return_value = self.__call(SQLMessage(system_name, command=command, return_data=[]))
         if return_value:
             if isinstance(return_value, list) and len(return_value) == 1:
                 if isinstance(return_value[0], dict):
@@ -79,9 +79,9 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command = "INSERT INTO " + table_name + " (" + ", ".join(keys) + ") VALUES ("
         values = []
         for key in dict_of_values:
-            values.append(self._convert_var(dict_of_values[key]))
+            values.append(self.__convert_var(dict_of_values[key]))
         command += ", ".join(values) + ");"
-        return self._call(SQLMessage(system_name, command=command))
+        return self.__call(SQLMessage(system_name, command=command))
 
     def select(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
         '''select data from a table'''
@@ -95,10 +95,10 @@ class MysqlBaseClass(metaclass=ABCMeta):
             command += " WHERE "
             values = []
             for key in dict_of_values:
-                values.append(key + " = " + self._convert_var(dict_of_values[key]))
+                values.append(key + " = " + self.__convert_var(dict_of_values[key]))
             command += " AND ".join(values)
         command += ";"
-        return self._call(SQLMessage(system_name, command=command, return_data=[]))
+        return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
     def select_like(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
         '''select data from a table'''
@@ -112,26 +112,26 @@ class MysqlBaseClass(metaclass=ABCMeta):
             command += " WHERE "
             values = []
             for key in dict_of_values:
-                values.append(key + " LIKE " + self._convert_var(dict_of_values[key]))
+                values.append(key + " LIKE " + self.__convert_var(dict_of_values[key]))
             command += " AND ".join(values)
         command += ";"
-        return self._call(SQLMessage(system_name, command=command, return_data=[]))
+        return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
     def count(self, system_name, table_name):
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + ";"
-        return self._call(SQLMessage(system_name, command=command, return_data=[],
-                                     return_dict=False))[0][0]
+        return self.__call(SQLMessage(system_name, command=command, return_data=[],
+                                      return_dict=False))[0][0]
 
     def count_where(self, system_name, table_name, dict_of_values):
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + " WHERE "
         values = []
         for key in dict_of_values:
-            values.append(key + " = " + self._convert_var(dict_of_values[key]))
+            values.append(key + " = " + self.__convert_var(dict_of_values[key]))
         command += " AND ".join(values) + ";"
-        return self._call(SQLMessage(system_name, command=command, return_data=[],
-                                     return_dict=False))[0][0]
+        return self.__call(SQLMessage(system_name, command=command, return_data=[],
+                                      return_dict=False))[0][0]
 
     def select_by_row(self, system_name, table_name, row_id, list_of_returns=None):
         '''insert data into a table'''
@@ -141,7 +141,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
         elif isinstance(list_of_returns, str):
             returns = list_of_returns
         command = "SELECT " + returns + " FROM " + table_name + " WHERE id=" + str(row_id) + ";"
-        return_data = self._call(SQLMessage(system_name, command=command, return_data=[]))
+        return_data = self.__call(SQLMessage(system_name, command=command, return_data=[]))
         if return_data:
             return return_data[0]
         return False
@@ -151,25 +151,25 @@ class MysqlBaseClass(metaclass=ABCMeta):
         command = "UPDATE " + table_name + " SET "
         values = []
         for key in dict_of_values:
-            values.append(key + " = " + self._convert_var(dict_of_values[key]))
+            values.append(key + " = " + self.__convert_var(dict_of_values[key]))
         command += ", ".join(values) + " WHERE id=" + str(row_id) + ";"
-        return self._call(SQLMessage(system_name, command=command))
+        return self.__call(SQLMessage(system_name, command=command))
 
     def delete_row(self, system_name, table_name, row_id):
         '''delete a row by id'''
         command = "DELETE FROM " + table_name + " WHERE id=" + str(row_id) +";"
-        return self._call(SQLMessage(system_name, command=command))
+        return self.__call(SQLMessage(system_name, command=command))
 
     def delete_where(self, system_name, table_name, dict_of_values):
         '''delete a row by id'''
         command = "DELETE FROM " + table_name + " WHERE "
         values = []
         for key in dict_of_values:
-            values.append(key + " = " + self._convert_var(dict_of_values[key]))
+            values.append(key + " = " + self.__convert_var(dict_of_values[key]))
         command += " AND ".join(values) + ";"
-        return self._call(SQLMessage(system_name, command=command))
+        return self.__call(SQLMessage(system_name, command=command))
 
-    def _call(self, job):
+    def __call(self, job):
         '''underlying call'''
         with self._event_list_lock:
             self._event_list.append(job)
@@ -179,7 +179,7 @@ class MysqlBaseClass(metaclass=ABCMeta):
             return job.return_data()
         return True
 
-    def _convert_var(self, var):
+    def __convert_var(self, var):
         '''convert the value'''
         if isinstance(var, bool):
             return '"True"' if var else '"False"'
@@ -196,10 +196,10 @@ class MysqlBaseClass(metaclass=ABCMeta):
 ##THREAD##
 ##########
 
-    def _run(self):
+    def __run(self):
         '''Threadded Run'''
-        self._startup()
-        self._create_main_tables()
+        self.__startup()
+        self.__create_main_tables()
         while self._thread_run:
             self._event_lock.wait()
             while self._event_list:
@@ -208,15 +208,17 @@ class MysqlBaseClass(metaclass=ABCMeta):
                 if isinstance(job, SQLMessage):
                     if job.special_command() is not None:
                         if job.special_command() == "tablecheck":
-                            job.set_return_data(self._table_check(job.table_name(),
-                                                                  job.data(),
-                                                                  job.version()))
+                            job.set_return_data(self.__table_check(job.table_name(),
+                                                                   job.data(),
+                                                                   job.version()))
                     else: #None Special command just simple command
                         #Means command is simple command with or without return
                         if isinstance(job.return_data(), list):
-                            job.set_return_data(self._trusted_get(job.command(), job.return_dict()))
+                            job.set_return_data(
+                                self.__trusted_get(job.command(), job.return_dict())
+                            )
                         else:
-                            self._trusted_call(job.command())
+                            self.__trusted_call(job.command())
 
 
                     #finally release the waiting thread
@@ -225,35 +227,35 @@ class MysqlBaseClass(metaclass=ABCMeta):
                     print("WTF IS PASSED IN???", type(job), job)
 
             self._event_lock.clear()
-        self._shutdown()
+        self.__shutdown()
 
     @abstractmethod
-    def _startup(self):
+    def __startup(self):
         '''Setup the System Here'''
 
     @abstractmethod
-    def _shutdown(self):
+    def __shutdown(self):
         '''Shutdown the System Here'''
 
     @abstractmethod
-    def _check_version_table_exists(self):
+    def __check_version_table_exists(self):
         '''returns if the table_version exists'''
 
     @abstractmethod
-    def _trusted_call(self, call):
+    def __trusted_call(self, call):
         '''Trusted Calls can send the command in a string to here for execution'''
 
     @abstractmethod
-    def _trusted_get(self, call, return_dict=True):
+    def __trusted_get(self, call, return_dict=True):
         '''Grab a list of the tables'''
 
     @abstractmethod
-    def _update_table(self, table_name, data, version):
+    def __update_table(self, table_name, data, version):
         '''Update the table with the informaiton provided'''
 
-    def _create_main_tables(self):
+    def __create_main_tables(self):
         '''Creates Tables'''
-        if not self._check_version_table_exists():#TABLE_VERSION
+        if not self.__check_version_table_exists():#TABLE_VERSION
             table_version_columns = [
                 Column("id", "integer", primary_key=True, not_null=True),
                 Column("name", "text", unique=True, not_null=True),
@@ -261,21 +263,21 @@ class MysqlBaseClass(metaclass=ABCMeta):
             ]
             self._add_table("table_version", table_version_columns, 0, False)
 
-    def _table_check(self, table_name, data, version):
+    def __table_check(self, table_name, data, version):
         '''checks if the table exists adds it if it doesn't and update it if needed'''
-        table_version = self._table_exists(table_name)
+        table_version = self.__table_exists(table_name)
         if table_version == version:
             return True
         elif table_version == 0:
             return self._add_table(table_name, data, version)
         elif table_version < version:
-            return self._update_table(table_name, data, version)
+            return self.__update_table(table_name, data, version)
         return False
 
-    def _table_exists(self, table_name):
+    def __table_exists(self, table_name):
         '''Check if Table Exists'''
         command = 'SELECT version FROM table_version WHERE name="' + table_name + '";'
-        info = self._trusted_get(command)
+        info = self.__trusted_get(command)
         if not info:
             return 0
         return info[0]['version']
@@ -285,9 +287,9 @@ class MysqlBaseClass(metaclass=ABCMeta):
         array_of_variables = list(map(lambda v: v.to_string(), data))
         variables = ",".join(array_of_variables)
         create_table = "CREATE TABLE IF NOT EXISTS " + table_name + " (" + variables + ");"
-        self._trusted_call(create_table)
+        self.__trusted_call(create_table)
         if update_table:
-            update_table_call = "INSERT INTO table_version (name, version) VALUES ('"
-            update_table_call += table_name +"', " + str(version) + ");"
-            self._trusted_call(update_table_call)
+            update_table__call = "INSERT INTO table_version (name, version) VALUES ('"
+            update_table__call += table_name +"', " + str(version) + ");"
+            self.__trusted_call(update_table__call)
         return True

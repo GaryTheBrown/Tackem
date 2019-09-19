@@ -6,10 +6,10 @@ class Scraper():
     '''Scraper html System Here'''
     def __init__(self):
         self._tackem_system = TackemSystemRoot('scraper')
-        self._apikey = self._tackem_system.config()['apikey']
-        self._language = self._tackem_system.config()['language']
-        self._include_adult = self._tackem_system.config()['includeadult']
-        self._conn = http.client.HTTPSConnection(self._tackem_system.config()['url'])
+        self.__apikey = self._tackem_system.config()['apikey']
+        self.__language = self._tackem_system.config()['language']
+        self.__include_adult = self._tackem_system.config()['includeadult']
+        self.__conn = http.client.HTTPSConnection(self._tackem_system.config()['url'])
         self._image_config = self._configuration()
 
 ###########
@@ -22,16 +22,16 @@ class Scraper():
 #############
 ##SHORTCUTS##
 #############
-    def _base(self, adult=True, language=True):
+    def __base(self, adult=True, language=True):
         '''creates the base command keys'''
-        base = "api_key=" + self._apikey
+        base = "api_key=" + self.__apikey
         if adult:
-            base += "&include_adult=" + str(self._include_adult).lower()
+            base += "&include_adult=" + str(self.__include_adult).lower()
         if language:
-            base += "&language=" + self._language
+            base += "&language=" + self.__language
         return base
 
-    def _fail_print(self, status, reason):
+    def __fail_print(self, status, reason):
         '''message returned when the scraper failed'''
         return "Search Failed\nStatus: " + status + "\nReason: " + reason + "\n"
 
@@ -40,10 +40,10 @@ class Scraper():
 ############
     def _configuration(self):
         '''config section for startup getting info mainly image urls'''
-        command = "/3/configuration?" + self._base(False, False)
-        data = self._get_request(command)
+        command = "/3/configuration?" + self.__base(False, False)
+        data = self.__get_request(command)
         if data['success'] is False:
-            print("ERROR IN SCRAPER STARTUP:", self._fail_print(data['status'], data['reason']))
+            print("ERROR IN SCRAPER STARTUP:", self.__fail_print(data['status'], data['reason']))
             return None
         return data['response']['images']
 
@@ -53,22 +53,22 @@ class Scraper():
     def search_for_movie(self, query, page=1, year=None):
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
-        command = "/3/search/movie?" + self._base() + "&page=" + str(page)
+        command = "/3/search/movie?" + self.__base() + "&page=" + str(page)
         command += "&query=" + query_to_go
         if year:
             command += "&year=" + str(year)
-        return self._get_request(command)
+        return self.__get_request(command)
 
     def search_by_imdb_id(self, imdb_id):
         '''searches by the IMDB ID'''
-        command = "/3/find/" + str(imdb_id) + "?" + self._base(adult=False)
+        command = "/3/find/" + str(imdb_id) + "?" + self.__base(adult=False)
         command += "&external_source=imdb_id"
-        return self._get_request(command)
+        return self.__get_request(command)
 
     def get_movie_details(self, movie_id):
         '''returns the full movie details'''
-        command = "/3/movie/" + str(movie_id) + "?" + self._base(adult=False)
-        return self._get_request(command)
+        command = "/3/movie/" + str(movie_id) + "?" + self.__base(adult=False)
+        return self.__get_request(command)
 
 ##################
 ##TVSHOW SECTION##
@@ -76,35 +76,35 @@ class Scraper():
     def search_for_tvshow(self, query, page=1):
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
-        command = "/3/search/tv?" + self._base(adult=False) + "&page=" + str(page)
+        command = "/3/search/tv?" + self.__base(adult=False) + "&page=" + str(page)
         command += "&query=" + query_to_go
-        return self._get_request(command)
+        return self.__get_request(command)
 
     def search_by_tvdb_id(self, imdb_id):
         '''searches by the TVDB ID'''
-        command = "/3/find/" + str(imdb_id) + "?" + self._base(adult=False)
+        command = "/3/find/" + str(imdb_id) + "?" + self.__base(adult=False)
         command += "&external_source=tvdb_id"
-        return self._get_request(command)
+        return self.__get_request(command)
 
     def get_tvshow_details(self, tvshow_id):
         '''returns the full tv show details'''
-        command = "/3/tv/" + str(tvshow_id) + "?" + self._base(adult=False)
+        command = "/3/tv/" + str(tvshow_id) + "?" + self.__base(adult=False)
         command += "&append_to_response=external_ids"
-        return self._get_request(command)
+        return self.__get_request(command)
 
     def get_tvshow_episode_details(self, tvshow_id, season, episode):
         '''returns the full tv show details'''
         command = "/3/tv/" + str(tvshow_id) + "/season/" + str(season) + "/episode/" + str(episode)
-        command += "?" + self._base(adult=False)
-        return self._get_request(command)
+        command += "?" + self.__base(adult=False)
+        return self.__get_request(command)
 
 ############
 ##REQUESTS##
 ############
-    def _get_request(self, command):
+    def __get_request(self, command):
         '''do a get request'''
-        self._conn.request("GET", command)
-        response = self._conn.getresponse()
+        self.__conn.request("GET", command)
+        response = self.__conn.getresponse()
         return_data = {
             "status":int(response.status),
             "reason":response.reason

@@ -383,7 +383,6 @@ def input_box(input_type, variable_name, value, script="", max_length=None, mini
 def radio_option(variable_name, name, label, checked=False, disabled=False,
                  read_only=False, script=""):
     '''makes a radio option'''
-    #%%VARNAME%% %%NAME%% %%CHECKED%% %%DISABLED%% %%READONLY%% %%SCRIPT%%
     html = str(open("www/html/inputs/radio.html", "r").read())
     html = html.replace("%%VARIABLENAME%%", variable_name)
     html = html.replace("%%NAME%%", name)

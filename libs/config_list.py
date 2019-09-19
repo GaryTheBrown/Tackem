@@ -68,69 +68,69 @@ class ConfigList:
 
     def get_root_spec(self):
         '''returns the root generated spec file'''
-        return self._get_spec_part(self._objects, 0)
+        return self.__get_spec_part(self._objects, 0)
 
     def get_plugin_spec(self, single_instance):
         '''returns the plugins generated spec file'''
         indent = 2
-        return_string = self._tab(indent) + self._open_bracket(indent + 1)
-        return_string += self._name + self._close_bracket(indent + 1) + "\n"
+        return_string = self.__tab(indent) + self.__open_bracket(indent + 1)
+        return_string += self._name + self.__close_bracket(indent + 1) + "\n"
         indent += 1
         if not single_instance:
-            return_string += self._tab(indent) + self._open_bracket(indent + 1)
-            return_string += "__many__" + self._close_bracket(indent + 1) + "\n"
+            return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+            return_string += "__many__" + self.__close_bracket(indent + 1) + "\n"
             indent += 1
-        return_string += self._get_spec_part(self._objects, indent)
+        return_string += self.__get_spec_part(self._objects, indent)
         # line bellow for debugging
         # print(return_string)
         return return_string
 
-    def _get_spec_part(self, config_list, indent):
+    def __get_spec_part(self, config_list, indent):
         '''function for recursion of list'''
         return_string = ""
         list_to_loop = config_list
         if isinstance(config_list, ConfigList):
             list_to_loop = config_list.objects()
             if isinstance(config_list.rules(), ConfigRules) and config_list.rules().many():
-                return_string += self._tab(indent) + self._open_bracket(indent + 1)
-                return_string += "__many__" + self._close_bracket(indent + 1) + "\n"
+                return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+                return_string += "__many__" + self.__close_bracket(indent + 1) + "\n"
                 indent += 1
         else:
             if self._rules is not None and isinstance(self._rules, ConfigRules):
                 if self._rules.many():
-                    return_string += self._tab(indent) + self._open_bracket(indent + 1)
-                    return_string += "__many__" + self._close_bracket(indent + 1) + "\n"
+                    return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+                    return_string += "__many__" + self.__close_bracket(indent + 1) + "\n"
                     indent += 1
 
         for item in list_to_loop:
             if isinstance(item, ConfigList):
                 if item.is_section():
-                    return_string += self._get_spec_part(item, indent)
+                    return_string += self.__get_spec_part(item, indent)
                 else:
-                    return_string += self._tab(indent) + self._open_bracket(indent + 1)
-                    return_string += item.name() + self._close_bracket(indent + 1) + "\n"
-                    return_string += self._get_spec_part(item, indent + 1)
+                    return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+                    return_string += item.name() + self.__close_bracket(indent + 1) + "\n"
+                    return_string += self.__get_spec_part(item, indent + 1)
 
             elif isinstance(item, ConfigObject):
-                return_string += self._tab(indent) + item.get_config_spec()
+                return_string += self.__tab(indent) + item.get_config_spec()
 
         return return_string
 
-    def _tab(self, count):
+    def __tab(self, count):
         '''Insert the tabbing'''
         return_string = ""
         for _ in range(count):
             return_string += "    "
         return return_string
 
-    def _open_bracket(self, count):
+    def __open_bracket(self, count):
         '''Insert the open brackets'''
         return_string = ""
         for _ in range(count):
             return_string += "["
         return return_string
 
-    def _close_bracket(self, count):
+    def __close_bracket(self, count):
         '''Insert the close brackets'''
         return_string = ""
         for _ in range(count):
@@ -222,7 +222,7 @@ class ConfigList:
                                                                              variable_name_in),
                                                          visible)
                     elif isinstance(obj.rules(), ConfigRules) and obj.rules().many():
-                        many_html = self._many_section(obj, temp_config, variable_name_loop)
+                        many_html = self.__many_section(obj, temp_config, variable_name_loop)
 
                         return_html += html_part.panel(obj.label(), "", "",
                                                        variable_name_loop[:-1],
@@ -236,7 +236,7 @@ class ConfigList:
                                                        section_enabled)
         return return_html
 
-    def _many_section(self, obj, config, variable_name):
+    def __many_section(self, obj, config, variable_name):
         '''Work for the Many section done here'''
         many_html = ""
         for_each = obj.rules().for_each()

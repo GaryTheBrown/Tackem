@@ -5,22 +5,22 @@ class ConfigRules:
 
     def __init__(self, many=False, for_each=None):
         # Defaults
-        self._many = many
-        self._for_each = None
+        self.__many = many
+        self.__for_each = None
 
         #Setup Group Rules bellow
         if isinstance(for_each, (list, dict)):
-            self._for_each = for_each
-            self._many = True
+            self.__for_each = for_each
+            self.__many = True
 
     def __repr__(self):
         '''print return'''
-        return "ConfigRules(MANY=" + str(self._many) + ")"
+        return "ConfigRules(MANY=" + str(self.__many) + ")"
 
     def many(self):
         '''return if the group is __many__'''
-        return self._many
+        return self.__many
 
     def for_each(self):
         '''return the list to show for each'''
-        return self._for_each
+        return self.__for_each
