@@ -46,11 +46,12 @@ class Httpd():
                                         baseurl + "admin/", conf_root)
                 for key in self.__system.systems():
                     #load system webpages into cherrypy
-                    if self.__system.system(key).plugin_link().SETTINGS.get('single_instance', True):
-                        self.__system.system(key).plugin_link().www.mounts(key)
+                    plugin_link = self.__system.system(key).plugin_link()
+                    if plugin_link.SETTINGS.get('single_instance', True):
+                        plugin_link.www.mounts(key)
                     else:
                         instance_name = key.split()[-1]
-                        self.__system.system(key).plugin_link().www.mounts(key, instance_name)
+                        plugin_link.www.mounts(key, instance_name)
             if self.__system.config()['api']['enabled']:
                 cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
             if self.__system.config()['scraper']['enabled']:

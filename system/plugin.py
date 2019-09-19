@@ -14,7 +14,7 @@ class TackemSystemPlugin(TackemSystemBase):
         self._p_config = None
         self._p_plugin = None
         # self._p_system = None
-        temp_config = self._base_data.config['plugins'][self._plugin_type][self._plugin_name]
+        temp_config = self.get_config(['plugins', self._plugin_type, self._plugin_name], {})
         with self._base_data.config_lock:
             if self._instance:
                 self._p_config = temp_config[self._instance]

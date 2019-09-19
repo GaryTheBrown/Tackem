@@ -9,14 +9,14 @@ class API():
     def __init__(self):
         self.__tackem_system = TackemSystemFull()
 
-    def _get_api_key(self, key):
+    def __get_api_key(self, key):
         '''checks the api key against the master and user keys and sets the correct modes
         True = Master
         False = User
         None = NONE'''
         if key == self.__tackem_system.get_config(["masterapi", "key"], None):
             return True
-        elif key == self.__tackem_system.get_config(["userapi", "key"], None):
+        if key == self.__tackem_system.get_config(["userapi", "key"], None):
             return False
         return None
 
@@ -35,11 +35,11 @@ class API():
         if apikey is False:
             return "NO API KEY"
 
-        apimode = self._get_api_key(apikey)
+        apimode = self.__get_api_key(apikey)
         if apimode is None:
             return "API KEY INCORRECT"
 
-        if return_type != "text" and return_type != "json" and return_type != "html":
+        if return_type not in ["text", "json", "html"]:
             return "UKNOWN RETURN TYPE. CHOICES ARE: text json html"
 
         plugin = None
@@ -48,7 +48,7 @@ class API():
 
         #Send to the config section
         if system_name == "config":
-            return self._config_api(kwargs, apimode)
+            return self.__config_api(kwargs, apimode)
         #SEND TO A SYSTEM OR PLUGIN
         if plugin_name is not None:
             plugin = None
@@ -82,17 +82,16 @@ class API():
             return action
 
         return "Nothing Happened"
-
-    def _actions(self, action, kwargs=None):
+    def __actions(self, action, kwargs=None):
         '''all actions for the api here'''
         if kwargs is None:
             kwargs = {}
         if action == "shutdown":
-            RootEvent().set_event("shutdown")
+            RootEvent.set_event("shutdown")
         elif action == "reboot":
-            RootEvent().set_event("reboot")
+            RootEvent.set_event("reboot")
 
-    def _config_api(self, kwargs, apimode):
+    def __config_api(self, kwargs, apimode):
         '''section for the config api'''
         json_set = kwargs.get("return", "text") == "json"
         return_string = "IN THE CONFIG SECTION" + json.dumps(kwargs, ensure_ascii=False)
@@ -102,16 +101,16 @@ class API():
         value = kwargs.get("value", False)
 
         if isinstance(get, str):
-            return_string = self._get_config_option(get, apimode)
+            return_string = self.__get_config_option(get, apimode)
 
         if apimode and isinstance(set_str, str) and isinstance(value, str):
-            return_string = self._set_config_option(get, value)
+            return_string = self.__set_config_option(get, value)
 
         if json_set:
             return json.dumps(return_string, ensure_ascii=False)
         return str(return_string)
 
-    def _get_config_option(self, get, apimode):
+    def __get_config_option(self, get, apimode):
         '''the get config option api call'''
         if not apimode is True:
             if "api" in get:
@@ -123,7 +122,7 @@ class API():
         return val
 
 
-    def _set_config_option(self, set_str, value):
+    def __set_config_option(self, set_str, value):
         '''the get config option api call'''
         if not isinstance(value, str):
             return "ERROR NO VALUE GIVEN"

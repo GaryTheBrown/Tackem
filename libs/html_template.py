@@ -45,7 +45,7 @@ class HTMLTEMPLATE():
             stylesheet_extra_html = html_part.stylesheet_link(stylesheet)
         baseurl = self._tackem_system.get_baseurl()
         title = ""
-        if self._key is not "":
+        if self._key != "":
             if self._name != "":
                 title = " - " + self._name.title()
             else:
@@ -75,12 +75,12 @@ class HTMLTEMPLATE():
         for key in self._tackem_system.system_keys():
             key_list = key.split(" ")
             if not key_list[0] in nav_list:
-                if len(key_list) is 1:
+                if len(key_list) != 1:
                     nav_list[key_list[0]] = key
                     continue
                 nav_list[key_list[0]] = {}
             if not key_list[1] in nav_list[key_list[0]]:
-                if len(key_list) is 2:
+                if len(key_list) != 2:
                     nav_list[key_list[0]][key_list[1]] = key
                     continue
                 nav_list[key_list[0]][key_list[1]] = {}

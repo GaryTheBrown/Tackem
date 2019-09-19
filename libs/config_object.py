@@ -149,32 +149,32 @@ class ConfigObject(ConfigBase):
                                        script=self._script_create("onchange"),
                                        max_length=self.__maximum, button=button_html,
                                        read_only=self._read_only, disabled=self._disabled)
-        elif self.__type == self.__types[1]:
+        if self.__type == self.__types[1]:
             #Float
             return html_part.input_box(self.__input_types[1], variable_name, value,
                                        script=self._script_create("onchange"),
                                        minimum=self.__minimum, maximum=self.__maximum,
                                        button=button_html, read_only=self._read_only,
                                        disabled=self._disabled)
-        elif self.__type == self.__types[2]:
+        if self.__type == self.__types[2]:
             #String List (multi select or dropdown multi or checkboxes)
             if self.__input_type is None or self.__input_type == self.__input_types[6]:
                 return self.__select_box(variable_name, value, True)
-            elif self.__input_type == self.__input_types[2]:
+            if self.__input_type == self.__input_types[2]:
                 return self.__select_box(variable_name, value, True)
-            elif self.__input_type == self.__input_types[5]:
+            if self.__input_type == self.__input_types[5]:
                 return self.__multi_checkbox(variable_name, value)
         elif self.__type == self.__types[3]:
             #Boolean (radio or checkbox)
             if self.__input_type is None or self.__input_type == self.__input_types[3]:
                 return self.__radio(variable_name, value)
-            elif self.__input_type == self.__input_types[5]:
+            if self.__input_type == self.__input_types[5]:
                 return html_part.checkbox_single("", variable_name,
                                                  checked=value,
                                                  disabled=self._disabled,
                                                  read_only=self._read_only,
                                                  script=self._script)
-            elif self.__input_type == self.__input_types[7]:
+            if self.__input_type == self.__input_types[7]:
                 return html_part.checkbox_switch("", variable_name,
                                                  checked=value,
                                                  disabled=self._disabled,
@@ -184,7 +184,7 @@ class ConfigObject(ConfigBase):
             #Options (dropdown single or radio)
             if self.__input_type is None or self.__input_type == self.__input_types[2]:
                 return self.__select_box(variable_name, value)
-            elif self.__input_type == self.__input_types[3]:
+            if self.__input_type == self.__input_types[3]:
                 return self.__radio(variable_name, value)
         elif self.__type == self.__types[5]:
             #Integer
@@ -224,7 +224,7 @@ class ConfigObject(ConfigBase):
         '''returns multiple checkboxes'''
         checkboxes_html = ""
         for option in self.__options:
-            checkbox_bool = True if option.name() in values else False
+            checkbox_bool = bool(option.name() in values)
             checkboxes_html += option.html_checkbox(variable_name, checkbox_bool)
         return checkboxes_html
 
@@ -244,10 +244,7 @@ class ConfigObject(ConfigBase):
             return float(variable)
         if self.__type == self.__types[3]:
             if isinstance(variable, str):
-                if variable.lower() == "true":
-                    return True
-                else:
-                    return False
+                return bool(variable.lower() == "true")
             return bool(variable)
         if self.__type == self.__types[2]:
             clean_variable_list = []

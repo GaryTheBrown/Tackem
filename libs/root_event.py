@@ -6,21 +6,22 @@ class RootEvent:
     _event_type = False
     _event = Event()
 
-    def set_event(self, event_type):
+    @classmethod
+    def set_event(cls, event_type):
         '''Set an event for the root thread to do'''
-        if RootEvent._event_type is False:
-            RootEvent._event_type = event_type
-            RootEvent._event.set()
+        if cls._event_type is False:
+            cls._event_type = event_type
+            cls._event.set()
             return True
-        else:
-            return False
+        return False
 
 class RootEventMaster(RootEvent):
     '''Event to wait for the command and then return what to do.'''
-    def wait_and_get_event(self):
+    @classmethod
+    def wait_and_get_event(cls):
         '''waits for an event and returns it to root thread cleaning the event if needed'''
-        RootEvent._event.wait()
-        event_type = RootEvent._event_type
-        RootEvent._event_type = False
-        RootEvent._event.clear()
+        cls._event.wait()
+        event_type = cls._event_type
+        cls._event_type = False
+        cls._event.clear()
         return event_type

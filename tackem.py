@@ -84,7 +84,7 @@ class Tackem:
 
         self.start()
         while True:
-            event_type = RootEvent().wait_and_get_event()
+            event_type = RootEvent.wait_and_get_event()
 
             if event_type is False:
                 continue
@@ -111,6 +111,7 @@ class Tackem:
         if self.__webserver is None:
             self.__webserver = Httpd()
             return True
+        return None
 
     def __delete_webserver(self):
         '''deletes the webserver'''
@@ -125,6 +126,7 @@ class Tackem:
             return False
         if self.__webserver is not None:
             self.__webserver.start()
+        return True
 
     def __stop_webserver(self):
         '''stops the Webserver'''
@@ -134,13 +136,14 @@ class Tackem:
             return False
         if self.__webserver is not None:
             self.__webserver.stop()
+        return True
 
 ##############################################
 # Catching the ctrl + c event and doing a clean shutdown
 def ctrl_c(_, __):
     '''Function to call once ctrl + c is pressed'''
     print(" caught Shutting Down Cleanly...")
-    RootEvent().set_event("shutdown")
+    RootEvent.set_event("shutdown")
 ##############################################
 
 if __name__ == "__main__":

@@ -47,25 +47,24 @@ class Root(HTMLTEMPLATE):
         if kwargs["page_index"] == "1":
             return self._template(root_config_page(self._tackem_system.config()), False,
                                   javascript=javascript)
-        elif kwargs["page_index"] == "2":
+        if kwargs["page_index"] == "2":
             return self._template(plugin_downloader.plugin_download_page(False),
                                   False, javascript=plugin_downloader_javascript)
-        elif kwargs["page_index"] == "3":
+        if kwargs["page_index"] == "3":
             return self._template(plugin_config_page(self._tackem_system.config(),
                                                      self._tackem_system.plugins()),
                                   False, javascript=javascript)
-        elif kwargs["page_index"] == "4":
+        if kwargs["page_index"] == "4":
             self._tackem_system.set_config(['firstrun'], False)
             try:
                 self._tackem_system.config().write()
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
-            RootEvent().set_event("reboot")
+            RootEvent.set_event("reboot")
             page = str(open("www/html/reboot.html", "r").read())
             page = page.replace("%%PAGE%%", "login")
             return self._template(page, False)
-        else:
-            return self._template("TODO", False)
+        return self._template("TODO", False)
 
     @cherrypy.expose
     def download_plugin(self, name):
@@ -80,5 +79,5 @@ class Root(HTMLTEMPLATE):
             self._tackem_system.config().write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
-        RootEvent().set_event("reboot")
+        RootEvent.set_event("reboot")
         return ""

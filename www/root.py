@@ -37,7 +37,7 @@ class Root(HTMLTEMPLATE):
                 self._tackem_system.config().write()
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
-            RootEvent().set_event("reboot")
+            RootEvent.set_event("reboot")
             page = str(open("www/html/reboot.html", "r").read())
             page = page.replace("%%PAGE%%", "")
             return self._template(page, False)
@@ -108,7 +108,7 @@ class Root(HTMLTEMPLATE):
         if self._tackem_system.get_auth().enabled():
             if not self._tackem_system.get_auth().is_admin():
                 return self._error_page(401)
-        RootEvent().set_event("reboot")
+        RootEvent.set_event("reboot")
         page = str(open("www/html/reboot.html", "r").read())
         page = page.replace("%%PAGE%%", url)
         return self._template(page, False)
@@ -119,7 +119,7 @@ class Root(HTMLTEMPLATE):
         if self._tackem_system.get_auth().enabled():
             if not self._tackem_system.get_auth().is_admin():
                 return self._error_page(401)
-        RootEvent().set_event("shutdown")
+        RootEvent.set_event("shutdown")
         page = "Shuting Down Tackem..."
         return self._template(page, False)
 
@@ -163,5 +163,5 @@ class Root(HTMLTEMPLATE):
             self._tackem_system.config().write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
-        RootEvent().set_event("reboot")
+        RootEvent.set_event("reboot")
         return ""

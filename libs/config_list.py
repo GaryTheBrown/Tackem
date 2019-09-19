@@ -139,18 +139,17 @@ class ConfigList:
 
     def convert_var(self, location_list, variable):
         '''search and return type'''
-        if len(location_list) is 1:
+        if len(location_list) == 1:
             config_object = self.search_for_object_by_name(location_list[0])
             if config_object is None:
                 return None
             return config_object.convert_var(variable)
-        else:
-            if self._rules is not None and self._rules.many():
-                return self.convert_var(location_list[1:], variable)
-            config_list = self.search_for_list_by_name(location_list[0])
-            if config_list is None:
-                return None
-            return config_list.convert_var(location_list[1:], variable)
+        if self._rules is not None and self._rules.many():
+            return self.convert_var(location_list[1:], variable)
+        config_list = self.search_for_list_by_name(location_list[0])
+        if config_list is None:
+            return None
+        return config_list.convert_var(location_list[1:], variable)
 
     def search_for_object_by_name(self, name):
         '''search objects by name and return key to use'''
@@ -197,10 +196,10 @@ class ConfigList:
             variable_name_loop = variable_name
             value = config.get(obj.name(), None)
             if isinstance(obj, ConfigObject):
-                if obj.name() is not "enabled":
+                if obj.name() != "enabled":
                     return_html += obj.get_config_html(variable_name_loop, value, link)
             elif isinstance(obj, ConfigList):
-                if obj.name() is not "plugins":
+                if obj.name() != "plugins":
                     variable_name_in = variable_name_loop
                     variable_name_loop += obj.name() + "_"
                     temp_config = None
@@ -283,7 +282,7 @@ class ConfigList:
         '''A recursive way of finding a value from the config'''
         if isinstance(section_link, list):
             if section_link[0] in config:
-                if len(section_link) is 1:
+                if len(section_link) == 1:
                     return config[section_link[0]]
                 return self.config_find(config[section_link[0]], section_link[1:])
             return None

@@ -402,7 +402,7 @@ def select_box_option(name, label, selected=False,
                       disabled=False, read_only=False, script=""):
     '''makes an option for the selection box'''
     html = str(open("www/html/inputs/option.html", "r").read())
-    if isinstance(name, str) and name is not "":
+    if isinstance(name, str) and name != "":
         html = html.replace("%%NAME%%", name)
         html = html.replace("%%NAMECAPITALIZE%%", label)
     else:
