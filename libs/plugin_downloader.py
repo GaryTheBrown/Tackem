@@ -4,11 +4,11 @@ import json
 import shutil
 from glob import glob
 from datetime import datetime
-import git
 import requests
+import git
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 import libs.html_parts as html_parts
-# from system.admin import TackemSystemAdmin
+from system.admin import TackemSystemAdmin
 
 # Need to figure out how to tell the user they need to install additional software for the plugin
 
@@ -142,11 +142,8 @@ def plugin_download_page(full_system=True):
         html += html_parts.form("/", "", "Exit", "")
     else:
         html += html_parts.form("/", html_parts.hidden_page_index(3), "Next", "")
-    html += html_parts.input_button("Restart", "Restart()", False)
     if plugin_count == 0:
         html += '<script>$("button").prop("disabled", true);</script>'
-    if NEW_PLUGIN_COUNT == 0:
-        html += '<script>$(\'input[value="Restart"]\').hide();</script>'
     html += html_parts.dim_screen()
     return html
 
@@ -167,6 +164,11 @@ def download_plugin(plugin_title):
         if plugin['name'] == plugin_title:
             location = "plugins/" + plugin_type.lower() + "/" + plugin_name.lower()
             git.Repo.clone_from(plugin['clone_url'], location)
+            TackemSystemAdmin().write_config_to_disk()
+            TackemSystemAdmin().load_plugin(plugin_type, plugin_name)
+            TackemSystemAdmin().load_plugin_cfgs()
+            TackemSystemAdmin().load_config()
+
             plugin['downloaded'] = True
             break
 
@@ -181,6 +183,8 @@ def delete_plugin(plugin_title):
     name_split = plugin_title.split("-")
     plugin_type = name_split[-2].lower()
     plugin_name = name_split[-1].lower()
+    TackemSystemAdmin().write_config_to_disk()
+    TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
     folder = "plugins/" + plugin_type + "/" + plugin_name + "/"
     shutil.rmtree(folder)
     for plugin in GITHUB_PLUGINS:
@@ -190,10 +194,12 @@ def delete_plugin(plugin_title):
         os.rmdir("plugins/" + plugin_type)
     except OSError:
         pass
+    TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
+    TackemSystemAdmin().load_config()
 
-def clean_config_after_deletion(plugin_type, plugin_name, config, backup=True):
+def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
     '''function to remove data from the config'''
-    #TODO DEBUG THIS
+    config = TackemSystemAdmin().get_global_config()
     if not config['plugins'][plugin_type][plugin_name]:
         return
 
@@ -210,12 +216,16 @@ def clean_config_after_deletion(plugin_type, plugin_name, config, backup=True):
 
 def clean_db_after_deletion(plugin_type, plugin_name, sql):
     '''function to clean the Database after plugin removal'''
-    #TODO TEST THIS
     name_like = plugin_type + "_" + plugin_name + "_%"
     results = sql.select_like(SYSTEM_NAME, "table_version", {'name':name_like})
     for result in results:
         sql.call(SYSTEM_NAME, "DROP TABLE " + result['name'] + ";")
         sql.delete_row(SYSTEM_NAME, "table_version", result['id'])
+
+
+def javascript():
+    '''Javascript File'''
+    return str(open("www/javascript/config.js", "r").read())
 
 get_local_plugins()
 get_github_plugins()

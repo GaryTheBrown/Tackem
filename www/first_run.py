@@ -25,6 +25,11 @@ class Root(HTMLTEMPLATE):
         return config_javascript()
 
     @cherrypy.expose
+    def plugin_downloader_javascript(self):
+        '''Javascript File'''
+        return plugin_downloader.javascript()
+
+    @cherrypy.expose
     def get_multi_setup(self, plugin, name=""):
         '''Return the information needed for the setup of the plugin'''
         return get_config_multi_setup(self._tackem_system.plugins(), plugin,
@@ -38,12 +43,13 @@ class Root(HTMLTEMPLATE):
         except OSError:
             print("ERROR WRITING CONFIG FILE")
         javascript = "javascript"
+        plugin_downloader_javascript = "plugin_downloader_javascript"
         if kwargs["page_index"] == "1":
             return self._template(root_config_page(self._tackem_system.config()), False,
                                   javascript=javascript)
         elif kwargs["page_index"] == "2":
             return self._template(plugin_downloader.plugin_download_page(False),
-                                  False, javascript=javascript)
+                                  False, javascript=plugin_downloader_javascript)
         elif kwargs["page_index"] == "3":
             return self._template(plugin_config_page(self._tackem_system.config(),
                                                      self._tackem_system.plugins()),
@@ -75,9 +81,4 @@ class Root(HTMLTEMPLATE):
         except OSError:
             print("ERROR WRITING CONFIG FILE")
         RootEvent().set_event("reboot")
-        return ""
-
-    @cherrypy.expose
-    def is_live(self):
-        '''returns blank page'''
         return ""

@@ -51,6 +51,11 @@ class Root(HTMLTEMPLATE):
         return config_javascript()
 
     @cherrypy.expose
+    def plugin_downloader_javascript(self):
+        '''Javascript File'''
+        return plugin_downloader.javascript()
+
+    @cherrypy.expose
     def get_multi_setup(self, **kwargs):
         '''Return the information needed for the setup of the plugin'''
         if kwargs:
@@ -124,13 +129,16 @@ class Root(HTMLTEMPLATE):
         if self._tackem_system.get_auth().enabled():
             if not self._tackem_system.get_auth().is_admin():
                 return self._error_page(401)
-        javascript = "config_javascript"
+        javascript = "plugin_downloader_javascript"
         return self._template(plugin_downloader.plugin_download_page(True), False,
                               javascript=javascript)
 
     @cherrypy.expose
     def download_plugin(self, name):
         '''download the plugin program link'''
+        if self._tackem_system.get_auth().enabled():
+            if not self._tackem_system.get_auth().is_admin():
+                return self._error_page(401)
         plugin_downloader.download_plugin(name)
         return html_parts.input_button("Remove",
                                        plugin_downloader.button_remove(name), False)
@@ -138,6 +146,9 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def remove_plugin(self, name):
         '''remove the plugin program link'''
+        if self._tackem_system.get_auth().enabled():
+            if not self._tackem_system.get_auth().is_admin():
+                return self._error_page(401)
         plugin_downloader.delete_plugin(name)
         return html_parts.input_button("Add",
                                        plugin_downloader.button_add(name), False)
@@ -145,14 +156,12 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def restart(self):
         '''Restarts Tackem'''
+        if self._tackem_system.get_auth().enabled():
+            if not self._tackem_system.get_auth().is_admin():
+                return self._error_page(401)
         try:
             self._tackem_system.config().write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
         RootEvent().set_event("reboot")
-        return ""
-
-    @cherrypy.expose
-    def is_live(self):
-        '''returns blank page'''
         return ""

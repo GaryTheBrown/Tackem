@@ -8,7 +8,7 @@ class TackemSystemFull(TackemSystemBase):
         return self._base_data.config
 
     def set_config(self, location_list, value, temp_config=None):
-        '''recursive method to grab a config item read only'''
+        '''recursive method to set a config item'''
         if temp_config is None:
             temp_config = self._base_data.config
         if location_list[0] in temp_config:

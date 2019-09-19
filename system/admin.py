@@ -6,10 +6,11 @@ from system.base import TackemSystemBase
 from libs.authenticator import Authentication
 from libs.config import config_load
 from libs.config_list import ConfigList
-from libs.httpd import Httpd
 from libs.musicbrainz import MusicBrainz
 from libs.sql import setup_db
 from libs.startup_arguments import ARGS
+
+#TODO Loading Of The Module using importlib.reload([module])
 
 class TackemSystemAdmin(TackemSystemBase):
     '''Admin Control Of System Data'''
@@ -313,40 +314,6 @@ class TackemSystemAdmin(TackemSystemBase):
         '''stops the SQL System'''
         if self._base_data.sql is not None:
             self._base_data.sql.stop_thread()
-
-    #Webserver Methods
-    def load_webserver(self):
-        '''loads the webserver system'''
-        if not self._base_data.config.get('api', {}).get('enabled', True):
-            return False
-        if self._base_data.config.get('webui', {}).get('disabled', False):
-            return False
-        if self._base_data.webserver is None:
-            self._base_data.webserver = Httpd()
-            return True
-
-    def delete_webserver(self):
-        '''deletes the webserver'''
-        if self._base_data.webserver is not None:
-            self._base_data.webserver = None
-
-    def start_webserver(self):
-        '''starts the webserver'''
-        if not self._base_data.config.get('api', {}).get('enabled', True):
-            return False
-        if self._base_data.config.get('webui', {}).get('disabled', False):
-            return False
-        if self._base_data.webserver is not None:
-            self._base_data.webserver.start()
-
-    def stop_webserver(self):
-        '''stops the Webserver'''
-        if not self._base_data.config.get('api', {}).get('enabled', True):
-            return False
-        if self._base_data.config.get('webui', {}).get('disabled', False):
-            return False
-        if self._base_data.webserver is not None:
-            self._base_data.webserver.stop()
 
     #MusicBrainz Methods
     def load_musicbrainz(self):

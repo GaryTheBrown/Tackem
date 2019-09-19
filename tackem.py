@@ -5,12 +5,13 @@ import os.path
 import signal
 from libs.startup_arguments import ARGS
 from libs.root_event import RootEventMaster as RootEvent
+from libs.httpd import Httpd
 from system.admin import TackemSystemAdmin
 
 class Tackem:
     '''main program entrance'''
     def __init__(self):
-        pass
+        self.__webserver = None
 
     def start(self):
         '''Start of the program'''
@@ -36,15 +37,15 @@ class Tackem:
             print("STARTING SYSTEMS...")
             TackemSystemAdmin().start_systems()
         print("LOADING WEBSERVICES...")
-        TackemSystemAdmin().load_webserver()
+        self.__load_webserver()
         print("STARTING WEBSERVICES...")
-        TackemSystemAdmin().start_webserver()
+        self.__start_webserver()
         print("TACKEM HAS STARTED")
 
     def stop(self):
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
-        TackemSystemAdmin().stop_webserver()
+        self.__stop_webserver()
         if not TackemSystemAdmin().get_config(['firstrun'], True):
             print("STOPPING SYSTEMS...")
             TackemSystemAdmin().stop_systems()
@@ -54,7 +55,7 @@ class Tackem:
     def cleanup(self):
         '''Cleanup commands'''
         print("CLEANING UP...")
-        TackemSystemAdmin().delete_webserver()
+        self.__delete_webserver()
         TackemSystemAdmin().delete_systems()
         TackemSystemAdmin().delete_sql()
         TackemSystemAdmin().delete_plugin_cfgs()
@@ -83,7 +84,7 @@ class Tackem:
 
         self.start()
         while True:
-            event_type, event_variable = RootEvent().wait_and_get_event()
+            event_type = RootEvent().wait_and_get_event()
 
             if event_type is False:
                 continue
@@ -94,24 +95,45 @@ class Tackem:
             elif event_type == "reboot":
                 self.shutdown()
                 self.start()
-            # elif event_type == "start system":
-            #     if event_variable is False:
-            #         continue
-            #     self.system_start(event_variable)
-            # elif event_type == "stop system":
-            #     if event_variable is False:
-            #         continue
-            #     self.system_stop(event_variable)
-            # elif event_type == "restart system":
-            #     if event_variable is False:
-            #         continue
-            #     self.system_stop(event_variable)
-            #     self.system_start(event_variable)
             else:
                 print("Event Not Recognised Ignoring")
                 continue
 
         self.cleanup()
+
+    #Webserver Methods
+    def __load_webserver(self):
+        '''loads the webserver system'''
+        if not TackemSystemAdmin().get_config(['api', 'enabled'], True):
+            return False
+        if TackemSystemAdmin().get_config(['webui', 'disabled'], False):
+            return False
+        if self.__webserver is None:
+            self.__webserver = Httpd()
+            return True
+
+    def __delete_webserver(self):
+        '''deletes the webserver'''
+        if self.__webserver is not None:
+            self.__webserver = None
+
+    def __start_webserver(self):
+        '''starts the webserver'''
+        if not TackemSystemAdmin().get_config(['api', 'enabled'], True):
+            return False
+        if TackemSystemAdmin().get_config(['webui', 'disabled'], False):
+            return False
+        if self.__webserver is not None:
+            self.__webserver.start()
+
+    def __stop_webserver(self):
+        '''stops the Webserver'''
+        if not TackemSystemAdmin().get_config(['api', 'enabled'], True):
+            return False
+        if TackemSystemAdmin().get_config(['webui', 'disabled'], False):
+            return False
+        if self.__webserver is not None:
+            self.__webserver.stop()
 
 ##############################################
 # Catching the ctrl + c event and doing a clean shutdown

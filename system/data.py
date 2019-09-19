@@ -12,6 +12,5 @@ class SystemData():
     config = None
     config_lock = threading.Lock()
     sql = None
-    webserver = None
     auth = None
     musicbrainz = None
