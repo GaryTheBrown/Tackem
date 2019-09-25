@@ -1,16 +1,20 @@
 '''System for downloading plugins'''
-import os
 import json
+import os
+import platform
 import shutil
-from glob import glob
+import subprocess
+import sys
 from datetime import datetime
-import requests
+from glob import glob
 import git
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+import requests
+from libs.plugin_base import load_plugin_settings
 import libs.html_parts as html_parts
+from libs.startup_arguments import PLUGINFOLDERLOCATION, PROGRAMCONFIGLOCATION
 from system.admin import TackemSystemAdmin
 
-# Need to figure out how to tell the user they need to install additional software for the plugin
+#TODO Need to figure out how to tell the user they need to install additional software
 
 SYSTEM_NAME = "plugin_downloader"
 
@@ -67,7 +71,7 @@ def get_github_plugins():
     for item in json.loads(response.text):
         if 'Tackem-Plugin-' in item['name']:
             name_split = item['name'].split("-")
-            location = "plugins/" + name_split[-2].lower() + "/" + name_split[-1].lower()
+            location = PLUGINFOLDERLOCATION + name_split[-2].lower() + "/" + name_split[-1].lower()
             save = {
                 'name':item['name'].lstrip(),
                 'description':item['description'],
@@ -87,18 +91,6 @@ def get_github_plugins():
 
             GITHUB_PLUGINS.append(save)
 
-def button_remove(name):
-    '''returns the remove button'''
-    return "RemovePlugin('" + name + "')"
-
-def button_add(name):
-    '''returns the remove button'''
-    return "DownloadPlugin('" + name + "')"
-
-def no_button():
-    '''returns the on system text'''
-    return "[On System]"
-
 def plugin_download_page(full_system=True):
     '''returns the web page for choosing plugins'''
     html = "<h2>GITHUB PLUGINS</h2>"
@@ -106,23 +98,49 @@ def plugin_download_page(full_system=True):
     panels_html = ""
     for plugin in GITHUB_PLUGINS:
         title = plugin['plugin_type'] + " - " + plugin['plugin_name']
-        add_remove = ""
-        start_stop = ""
-        clear_config = ""
-        clear_database = ""
-        if full_system:
-            #TODO Make these check if they are there and if so show them so you can delete this info
-            # regardless of if the plugin is there.
-            clear_config = html_parts.input_button("Remove Config", "", False)
-            clear_database = html_parts.input_button("Remove Data", "", False)
         if plugin['downloaded']:
-            if full_system:
-                add_remove = html_parts.input_button("Remove", button_remove(plugin['name']), False)
-            else:
-                add_remove = no_button()
             plugin_count += 1
+
+        clear_config = html_parts.input_button_with_data(
+            "Clear Config",
+            class_name="pluginbutton",
+            data={'plugin':plugin['name']},
+            outer_div=False,
+            enabled=False,
+            visible=(full_system and plugin['downloaded'])
+        )
+        clear_database = html_parts.input_button_with_data(
+            "Clear Database",
+            class_name="pluginbutton",
+            data={'plugin':plugin['name']},
+            outer_div=False,
+            enabled=False,
+            visible=(full_system and plugin['downloaded'])
+        )
+        add_remove = html_parts.input_button_with_data(
+            ("Remove" if plugin['downloaded'] else "Add"),
+            class_name="pluginbutton",
+            data={'plugin':plugin['name']},
+            outer_div=False
+        )
+
+        stop_start_action = ""
+        stop_start_enabled = True
+        if full_system:
+            # if plugin running:
+            stop_start_action = "Start/Stop"
         else:
-            add_remove = html_parts.input_button("Add", button_add(plugin['name']), False)
+            stop_start_action = "Reload"
+            stop_start_enabled = not TackemSystemAdmin().is_plugin_loaded(plugin['plugin_type'],
+                                                                          plugin['plugin_name'])
+        start_stop = html_parts.input_button_with_data(
+            stop_start_action,
+            class_name="pluginbutton",
+            data={'plugin':plugin['name']},
+            outer_div=False,
+            enabled=stop_start_enabled,
+            visible=plugin['downloaded']
+        )
         panels_html += html_parts.plugin_panel(title, plugin['description'], clear_config,
                                                clear_database, start_stop, add_remove)
     html += panels_html
@@ -150,48 +168,66 @@ def plugin_download_page(full_system=True):
 def update_plugins():
     '''function to use list from html page to download the plugins'''
     for plugin in GITHUB_PLUGINS:
+        location = PLUGINFOLDERLOCATION + plugin['plugin_type'] + '/' + plugin['plugin_name'] + '/'
         if plugin['downloaded']:
-            plugin_location = 'plugins/' + plugin['plugin_type'] + '/' + plugin['plugin_name'] + '/'
-            git.Repo(plugin_location).remotes.origin.pull()
+            git.Repo(location).remotes.origin.pull()
+            #TODO Loading Of The Module using importlib.reload([module])
 
 def download_plugin(plugin_title):
     '''function to use list from html page to download the plugins'''
+    #TODO need to make this return info for the page to tell the user or if possible send a request
+    # for user password if can be done safely
     name_split = plugin_title.split("-")
     plugin_type = name_split[-2].lower()
     plugin_name = name_split[-1].lower()
-    os.makedirs("plugins/" + plugin_type + "/" + plugin_name, exist_ok=True)
+    os.makedirs(PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name, exist_ok=True)
     for plugin in GITHUB_PLUGINS:
         if plugin['name'] == plugin_title:
-            location = "plugins/" + plugin_type.lower() + "/" + plugin_name.lower()
+            location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
             git.Repo.clone_from(plugin['clone_url'], location)
+            install_plugin_modules(plugin_type, plugin_name)
             TackemSystemAdmin().write_config_to_disk()
-            TackemSystemAdmin().load_plugin(plugin_type, plugin_name)
+            if not TackemSystemAdmin().load_plugin(plugin_type, plugin_name):
+                return download_plugin_failed(plugin_type, plugin_name)
             TackemSystemAdmin().load_plugin_cfgs()
             TackemSystemAdmin().load_config()
 
             plugin['downloaded'] = True
-            break
+            return True
+
+def download_plugin_failed(plugin_type, plugin_name):
+    '''if the download plugin fails then find out why'''
+    return_string = "This Plugin Requires extra Programs Please Install: "
+    plugin_json_file = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/settings.json"
+    plugin_settings = load_plugin_settings(plugin_json_file)
+    if platform.system() == 'Linux':
+        return_string += " ".join(plugin_settings.get('linux_programs', ["N/A"]))
+    else:
+        return_string += "N/A"
+    return_string += "\n"
+    if os.path.isfile("/indocker"):
+        return_string += """
+You are running an docker you need to install the above programs or pick a image that contains the
+required programs for the plugin"""
+
+    return return_string
+
 
 def delete_plugin(plugin_title):
     '''deletes the plugin'''
-    #TODO DO I NEED TO KILL THE PLUGIN THROUGH HERE .ACCESS THE PLUGIN AND STOP
-    # MAYBE EVEN LOOK AT BEING ABLE TO ADD OR REMOVE PLUGINS LIVE TO SAVE RESTARTS. MAY NEED TO
-    # SPLIT THE DATA FROM TACKEM WITH CONTROLS FOR ADDING AND REMOVING PLUGINS AND MAKING IT SAFE TO
-    # DO LIVE STARTS AND STOPS. COULD LOOK INTO DOING THIS SO CONFIG UPDATES THAT DISABLES PLUGINS
-    # WILL THEN NOT NEED THE REBOOT. THIS COULD THEN BE EXPANDED TO ALLOW GIT UPDATES TO RELOAD THE
-    # PLUGIN
     name_split = plugin_title.split("-")
     plugin_type = name_split[-2].lower()
     plugin_name = name_split[-1].lower()
     TackemSystemAdmin().write_config_to_disk()
     TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
-    folder = "plugins/" + plugin_type + "/" + plugin_name + "/"
+    uninstall_plugin_modules(plugin_type, plugin_name)
+    folder = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/"
     shutil.rmtree(folder)
     for plugin in GITHUB_PLUGINS:
         if plugin['name'] == plugin_title:
             plugin['downloaded'] = False
     try:
-        os.rmdir("plugins/" + plugin_type)
+        os.rmdir(PLUGINFOLDERLOCATION + plugin_type)
     except OSError:
         pass
     TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
@@ -225,7 +261,28 @@ def clean_db_after_deletion(plugin_type, plugin_name, sql):
 
 def javascript():
     '''Javascript File'''
-    return str(open("www/javascript/config.js", "r").read())
+    return str(open("www/javascript/plugindownloader.js", "r").read())
 
+
+#plugin Modules (pip)
+def install_plugin_modules(plugin_type, plugin_name):
+    '''install plugin modiles'''
+    plugin_folder = plugin_type + "/" + plugin_name + "/"
+    requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
+    if os.path.exists(requirements_file):
+        print("installing plugin requirements..")
+        pip_call = [sys.executable, '-m', 'pip', 'install', '-r', requirements_file, '--user']
+        subprocess.check_call(pip_call)
+        print("installed plugin requirements")
+
+def uninstall_plugin_modules(plugin_type, plugin_name):
+    '''uninstall plugin modiles'''
+    plugin_folder = plugin_type + "/" + plugin_name + "/"
+    requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
+    if os.path.exists(requirements_file):
+        print("uninstalling plugin requirements..")
+        pip_call = [sys.executable, '-m', 'pip', 'uninstall', '-y', '-r', requirements_file]
+        subprocess.check_call(pip_call)
+        print("uninstalled plugin requirements")
 get_local_plugins()
 get_github_plugins()

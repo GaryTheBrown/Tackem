@@ -69,8 +69,13 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def download_plugin(self, name):
         '''download the plugin program link'''
-        plugin_downloader.download_plugin(name)
-        return plugin_downloader.no_button()
+        return str(plugin_downloader.download_plugin(name)).lower()
+
+    @cherrypy.expose
+    def remove_plugin(self, name):
+        '''remove the plugin program link'''
+        plugin_downloader.delete_plugin(name)
+        return "true"
 
     @cherrypy.expose
     def restart(self):

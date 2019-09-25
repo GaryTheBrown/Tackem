@@ -142,7 +142,7 @@ class ConfigObject(ConfigBase):
         if self.__button is None:
             button_html = ""
         else:
-            button_html = html_part.input_button(self.__button, self.__button_onclick)
+            button_html = html_part.input_button_on_click(self.__button, self.__button_onclick)
         if self.__type == self.__types[0]:
             #String
             return html_part.input_box(self.__input_types[0], variable_name, value,

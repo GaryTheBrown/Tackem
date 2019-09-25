@@ -6,19 +6,31 @@ from system.base import TackemSystemBase
 from libs.authenticator import Authentication
 from libs.config import config_load
 from libs.config_list import ConfigList
+from libs.plugin_base import load_plugin_settings
+from libs.program_checker import check_for_required_programs
 from libs.musicbrainz import MusicBrainz
 from libs.sql import setup_db
-from libs.startup_arguments import ARGS
-
-#TODO Loading Of The Module using importlib.reload([module])
+from libs.startup_arguments import ARGS, PLUGINFOLDERLOCATION
 
 class TackemSystemAdmin(TackemSystemBase):
     '''Admin Control Of System Data'''
 
+    def can_plugin_load(self, plugin_type, plugin_name):
+        '''checks if the plugin can be loaded'''
+        plugin_json_file = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/settings.json"
+        plugin_settings = load_plugin_settings(plugin_json_file)
+        if platform.system() == 'Linux':
+            return check_for_required_programs(plugin_settings.get('linux_programs', []))
+        return False
+
+    def is_plugin_loaded(self, plugin_type, plugin_name):
+        '''checks if the plugin is loaded'''
+        return plugin_name in self._base_data.plugins.get(plugin_type, {})
+
     #Plugin Methods
     def load_plugins(self):
         '''loads all plugin'''
-        for folder in glob.glob("plugins/*/*/"):
+        for folder in glob.glob(PLUGINFOLDERLOCATION + "*/*/"):
             if not "__pycache__" in folder:
                 folder_split = folder.split("/")
                 plugin_name = folder_split[-2]
@@ -27,6 +39,8 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def load_plugin(self, plugin_type, plugin_name):
         '''load a plugin'''
+        if not self.can_plugin_load(plugin_type, plugin_name):
+            return False
         with self._base_data.plugins_lock:
             plugin = importlib.import_module("plugins." + plugin_type + "." + plugin_name)
             plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux', 'Darwin', 'Windows'])

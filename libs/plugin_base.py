@@ -1,4 +1,5 @@
 '''MySQL Abstract Class System'''
+import json
 from abc import ABCMeta, abstractmethod
 from system.plugin import TackemSystemPlugin
 
@@ -40,3 +41,9 @@ class PluginBaseClass(metaclass=ABCMeta):
     def plugin_link(self):
         '''Returns the plugin Link'''
         return self._tackem_system.plugin()
+
+def load_plugin_settings(settings_json_file):
+    '''function to load the plugin settings.json'''
+    with open(settings_json_file, 'r') as json_file:
+        settings = json.load(json_file)
+    return settings

@@ -12,7 +12,8 @@ RUN groupadd -g ${GID} ${USER} \
  && apt-get install -y git python3.7 python3-pip \
  && cd /usr/bin \
  && ln -s python3 python \
- && rm -rf /var/lib/apt/lists/*
+ && rm -rf /var/lib/apt/lists/* \
+ && touch /indocker
 
 USER $USER
 

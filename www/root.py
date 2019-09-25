@@ -140,8 +140,7 @@ class Root(HTMLTEMPLATE):
             if not self._tackem_system.get_auth().is_admin():
                 return self._error_page(401)
         plugin_downloader.download_plugin(name)
-        return html_parts.input_button("Remove",
-                                       plugin_downloader.button_remove(name), False)
+        return True
 
     @cherrypy.expose
     def remove_plugin(self, name):
@@ -150,8 +149,7 @@ class Root(HTMLTEMPLATE):
             if not self._tackem_system.get_auth().is_admin():
                 return self._error_page(401)
         plugin_downloader.delete_plugin(name)
-        return html_parts.input_button("Add",
-                                       plugin_downloader.button_add(name), False)
+        return True
 
     @cherrypy.expose
     def restart(self):

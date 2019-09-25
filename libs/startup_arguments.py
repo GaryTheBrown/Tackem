@@ -6,6 +6,7 @@ PROGRAMNAME = "Tackem"
 PROGRAMVERSION = "ALPHA"
 PROGRAMGITADDRESS = "http://github.com/garythebrown/tackem/"
 PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
+PLUGINFOLDERLOCATION = "plugins/"
 
 def parse():
     '''parses the command line arguments'''

@@ -97,7 +97,10 @@ class ScraperRipper(Scraper):
             header = item['title']
             if item['release_date'] != "":
                 header += " (" + item['release_date'][:4] + ")"
-            button = ghtml_parts.input_button("CHOOSE", "PopulateMovie(" + str(item['id']) + ");")
+            button = ghtml_parts.input_button_on_click(
+                "CHOOSE",
+                "PopulateMovie(" + str(item['id']) + ");"
+            )
             full_original_language = Languages().get_name_from_2(item['original_language'])
             body = html_parts.search_info(item['title'], item['original_title'],
                                           full_original_language, item['overview'],
@@ -133,8 +136,11 @@ class ScraperRipper(Scraper):
                                       item['release_date'], item['poster_path'],
                                       self._image_config['secure_base_url'],
                                       self._image_config['poster_sizes'][2])
-        yes_button = ghtml_parts.input_button("Yes", "PopulateMovie(" + str(item['id']) + ");")
-        no_button = ghtml_parts.input_button("No", "ClearModel();")
+        yes_button = ghtml_parts.input_button_on_click(
+            "Yes",
+            "PopulateMovie(" + str(item['id']) + ");"
+        )
+        no_button = ghtml_parts.input_button_on_click("No", "ClearModel();")
         footer = html_parts.yes_no_footer(yes_button, no_button)
         return json.dumps({
             'success': True,
@@ -184,7 +190,10 @@ class ScraperRipper(Scraper):
         accordian_cards = ""
         for index, item in enumerate(response['results']):
             header = item['name']
-            button = ghtml_parts.input_button("CHOOSE", "PopulateTVShow(" + str(item['id']) + ");")
+            button = ghtml_parts.input_button_on_click(
+                "CHOOSE",
+                "PopulateTVShow(" + str(item['id']) + ");"
+            )
             full_original_language = Languages().get_name_from_2(item['original_language'])
             body = html_parts.search_info(item['name'], item['original_name'],
                                           full_original_language, item['overview'],
@@ -218,8 +227,11 @@ class ScraperRipper(Scraper):
                                       item['first_air_date'], item['poster_path'],
                                       self._image_config['secure_base_url'],
                                       self._image_config['poster_sizes'][2])
-        yes_button = ghtml_parts.input_button("Yes", "PopulateTVShow(" + str(item['id']) + ");")
-        no_button = ghtml_parts.input_button("No", "ClearModel();")
+        yes_button = ghtml_parts.input_button_on_click(
+            "Yes",
+            "PopulateTVShow(" + str(item['id']) + ");"
+        )
+        no_button = ghtml_parts.input_button_on_click("No", "ClearModel();")
         footer = html_parts.yes_no_footer(yes_button, no_button)
         return json.dumps({
             'success': True,

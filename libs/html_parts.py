@@ -252,9 +252,44 @@ def delete_instance_button(plugin_name, name):
     html = html.replace("%%PLUGINNAME%%", plugin_name)
     return html.replace("%%NAME%%", name)
 
-def input_button(value, on_click, outer_div=True):
+def input_button_with_data(value, id_name="", class_name="", data=False,
+                           outer_div=True, enabled=True, visible=True):
     '''returns a button'''
-    html = str(open("www/html/inputs/inputbutton.html", "r").read())
+    html = str(open("www/html/inputs/inputbuttonwithdata.html", "r").read())
+    html = html.replace("%%BUTTONVALUE%%", value)
+    if not outer_div:
+        html = html.replace('<div class="input-group-append">', "")
+        html = html.replace('</div>', "")
+    html = html.replace("%%IDNAME%%", id_name)
+    html = html.replace("%%CLASSNAME%%", class_name)
+    if data is False:
+        return html.replace(" %%DATA%%", "")
+    data_r = ""
+    if isinstance(data, tuple):
+        data_r = "data-" + data[0] + '="' + data[1] + '"'
+    elif isinstance(data, dict):
+        for key, value in data.items():
+            data_r += " data-" + key + '="' + value + '"'
+
+    html = html.replace("%%DATA%%", data_r)
+
+    if enabled:
+        html = html.replace("%%ENABLED%%", "")
+    else:
+        html = html.replace("%%ENABLED%%", "disabled")
+    if visible:
+        html = html.replace("%%VISIBLE%%", "")
+    else:
+        html = html.replace("%%VISIBLE%%", "style='display:none;'")
+    return html
+
+def input_button(value, on_click=False, outer_div=True):
+    '''shortcut for input_button_on_click'''
+    return input_button_on_click(value, on_click, outer_div)
+
+def input_button_on_click(value, on_click, outer_div=True):
+    '''returns a button'''
+    html = str(open("www/html/inputs/inputbuttononclick.html", "r").read())
     html = html.replace("%%BUTTONVALUE%%", value)
     if not outer_div:
         html = html.replace('<div class="input-group-append">', "")
