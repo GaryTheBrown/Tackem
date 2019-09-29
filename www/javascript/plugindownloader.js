@@ -4,70 +4,104 @@ $(function() {
         elem.prop('disabled', true);
         $("button").prop("disabled", true);
         pluginName = elem.data('plugin');
+        action = elem.val();
 
-        switch(elem.val()){
-            case "Add":
-                downloadPlugin(elem, pluginName);
-                break;
-            case "Remove":
-                removePlugin(elem, pluginName);
-                break;
-            // case "Reload":
-            //     break;
-            // case "Clear Config":
-            // case "Clear Database":
-            // case "Start":
-            // case "Stop":
-            default:
-                alert(elem.val() + " Not Programed Yet")
-                counter(0);
-                break;
-        }
-
+        $.ajax({
+            type: 'GET',
+            url: '/plugin_control?action=' + action + '&name=' + pluginName,
+            elem: elem,
+            action: action,
+            pluginName: pluginName,
+            success: function(return_string) {
+                data = JSON.parse(return_string);
+                switch(this.elem.val()){
+                    case "Add":
+                        if (data['success'] == true) {
+                            this.elem.val("Remove");
+                            alert(this.pluginName + " Downloaded");
+                            counter(+1);
+                        } else {
+                            alert(data["message"]);
+                            if (data['code']){
+                                this.elem.val("Remove");
+                                this.elem.parent().parent().find("input[value='Reload']").show();
+                                break;
+                            }
+                        }
+                        break;
+                    case "Remove":
+                        if (data['success'] == true) {
+                            this.elem.val("Add");
+                            this.elem.parent().parent().find("input[value='Reload']").hide();
+                            alert(this.pluginName + " Removed");
+                            counter(-1);
+                        } else {
+                            alert(data["message"]);
+                        }
+                        break;
+                    case "Reload":
+                        if (data['success'] == true) {
+                            this.elem.hide();
+                            counter(+1);
+                            alert(this.pluginName + " Reloaded");
+                        } else {
+                            alert(data["message"]);
+                        }
+                        break;
+                    case "Clear Config":
+                        if (data['success'] == true) {
+                            this.elem.prop("disabled", true);
+                            counter(+1);
+                            alert(this.pluginName + " Config Cleared");
+                        } else {
+                            alert(data["message"]);
+                        }
+                        break;
+                    case "Clear Database":
+                        if (data['success'] == true) {
+                            this.elem.prop("disabled", true);
+                            counter(+1);
+                            alert(this.pluginName + " Database Cleared");
+                        } else {
+                            alert(data["message"]);
+                        }
+                        break;
+                    case "Start":
+                        if (data['success'] == true) {
+                            this.elem.val("Stop");
+                            alert(this.pluginName + " Started");
+                        } else {
+                            alert(data["message"]);
+                        }
+                        break;
+                    case "Stop":
+                        if (data['success'] == true) {
+                            this.elem.val("Start");
+                            alert(this.pluginName + " Stopped");
+                        } else {
+                            alert(data["message"]);
+                        }
+                        break;
+                    default:
+                        alert(this.elem.val() + " Not Programed Yet")
+                        break;
+                }
+                counter(0)
+                this.elem.prop('disabled', false);
+            },
+        });
     });
 });
-
-function downloadPlugin(elem, pluginName){
-    $.ajax({
-        type: 'GET',
-        url: '/download_plugin?name=' + pluginName,
-        elem: elem,
-        pluginName: pluginName,
-        success: function(data) {
-            if (data != "true") {
-                alert(data);
-            } else {
-                elem.val("Remove");
-                alert(this.pluginName + " Downloaded");
-                counter(+1);
-                elem.prop('disabled', false);
-            }
-        }
-    });
-}
-
-function removePlugin(elem, pluginName){
-    $.ajax({
-        type: 'GET',
-        url: '/remove_plugin?name=' + pluginName,
-        elem: elem,
-        pluginName: pluginName,
-        success: function(data) {
-            elem.val("Add");
-            alert(this.pluginName + " Removed");
-            counter(-1);
-            elem.prop('disabled', false);
-        }
-   });
-}
 
 function counter(value){
     count = parseInt($("#plugin_count").val());
     count += value;
     $("#plugin_count").val(count);
     if (count == 0){
+        console.log("NEXT DISABLED");
         $("button").prop("disabled", true);
     }else{
+        console.log("NEXT ENABLED");
         $("button").prop("disabled", false);
     }
 

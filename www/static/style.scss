@@ -3,6 +3,12 @@ body {
 
 }
 
+code {
+    display: block;
+    white-space: pre-wrap;
+    color: inherit !important;
+}
+
 /* FOOTER */
 
 footer {
@@ -165,7 +171,7 @@ a.nav-link {
     }
 }
 
-#dim_screen { 
+#dim_screen {
     position   : absolute;
     top        : 0;
     left       : 0;
@@ -176,4 +182,4 @@ a.nav-link {
     filter     : alpha(opacity=60);
     z-index    : 5000;
     display    : none;
-    }  
+    }

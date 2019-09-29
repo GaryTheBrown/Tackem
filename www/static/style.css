@@ -2,6 +2,12 @@ body {
   background-color: black;
 }
 
+code {
+  display: block;
+  white-space: pre-wrap;
+  color: inherit !important;
+}
+
 /* FOOTER */
 footer {
   position: fixed;

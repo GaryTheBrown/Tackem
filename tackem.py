@@ -8,6 +8,9 @@ from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
 from system.admin import TackemSystemAdmin
 
+#TODO move all actions to the api. allowing localhost to use without api key or generate single
+# action keys
+
 class Tackem:
     '''main program entrance'''
     def __init__(self):

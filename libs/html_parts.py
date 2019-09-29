@@ -142,6 +142,18 @@ def item(variable_name, label, help_text, input_html, not_in_config=False):
         html = html.replace("cs_", "")
     return html
 
+def modal(title, variable_name, modal_body, modal_footer, closeable=True):
+    ''' Returnas a modal'''
+    html = str(open("www/html/sections/modal.html", "r").read())
+    html = html.replace("%%TITLE%%", title.title())
+    html = html.replace("%%VARIABLENAME%%", variable_name)
+    if closeable:
+        html = html.replace("%%CLOSEABLE%%", "")
+    else:
+        html = html.replace("%%CLOSEABLE%%", 'style="display:none"')
+    html = html.replace("%%MODALBODY%%", modal_body)
+    return html.replace("%%MODALFOOTER%%", modal_footer)
+
 def list_modal(title, variable_name, option_list):
     ''' Returnas a modal for a list of options for adding a multi plugin'''
     html = str(open("www/html/sections/list_modal.html", "r").read())
@@ -167,7 +179,7 @@ def multi_panel(variable_name, name, enable_option, delete_option, section_html,
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
-def panel(title, control, modal, variable_name, section_html, visible=True):
+def panel(title, control, modal_obj, variable_name, section_html, visible=True):
     '''A Panel for plugins or sections'''
     html = str(open("www/html/sections/panel.html", "r").read())
     html = html.replace("%%TITLE%%", title)
@@ -176,7 +188,7 @@ def panel(title, control, modal, variable_name, section_html, visible=True):
     else:
         html = html.replace("%%CONTROL%%", control)
         html = html.replace("%%TITLEB%%", "Tackem-Plugin-" + title.replace(" - ", "-"))
-    html = html.replace("%%MODAL%%", modal)
+    html = html.replace("%%MODAL%%", modal_obj)
     if variable_name == "":
         html = html.replace('id="%%VARIABLENAME%%_section"', variable_name)
     else:
@@ -269,7 +281,7 @@ def input_button_with_data(value, id_name="", class_name="", data=False,
         data_r = "data-" + data[0] + '="' + data[1] + '"'
     elif isinstance(data, dict):
         for key, value in data.items():
-            data_r += " data-" + key + '="' + value + '"'
+            data_r += " data-" + str(key) + '="' + str(value) + '"'
 
     html = html.replace("%%DATA%%", data_r)
 

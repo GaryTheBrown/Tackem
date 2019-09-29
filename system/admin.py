@@ -25,7 +25,7 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def is_plugin_loaded(self, plugin_type, plugin_name):
         '''checks if the plugin is loaded'''
-        return plugin_name in self._base_data.plugins.get(plugin_type, {})
+        return plugin_name.lower() in self._base_data.plugins.get(plugin_type.lower(), {})
 
     #Plugin Methods
     def load_plugins(self):
@@ -54,6 +54,22 @@ class TackemSystemAdmin(TackemSystemBase):
             if not plugin_type in self._base_data.plugins:
                 self._base_data.plugins[plugin_type] = {}
             self._base_data.plugins[plugin_type][plugin_name] = plugin
+        return True
+
+    def reload_plugins(self):
+        '''reloads all plugins'''
+        for plugin_type in self._base_data.plugins:
+            for plugin_name in self._base_data.plugins[plugin_type]:
+                self.reload_plugin(plugin_type, plugin_name)
+
+    def reload_plugin(self, plugin_type, plugin_name):
+        '''reloads the plugin'''
+        plugin = self._base_data.plugins[plugin_type][plugin_name]
+        try:
+            importlib.reload(plugin)
+        except ModuleNotFoundError:
+            print("Reloading Module", plugin_type, plugin_name, "Failed")
+            return False
         return True
 
     def delete_plugins(self):

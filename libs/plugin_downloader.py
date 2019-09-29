@@ -1,7 +1,6 @@
 '''System for downloading plugins'''
 import json
 import os
-import platform
 import shutil
 import subprocess
 import sys
@@ -9,17 +8,18 @@ from datetime import datetime
 from glob import glob
 import git
 import requests
-from libs.plugin_base import load_plugin_settings
+import markdown
 import libs.html_parts as html_parts
 from libs.startup_arguments import PLUGINFOLDERLOCATION, PROGRAMCONFIGLOCATION
 from system.admin import TackemSystemAdmin
 
-#TODO Need to figure out how to tell the user they need to install additional software
-
 SYSTEM_NAME = "plugin_downloader"
 
+REPO_BRANCH = "master"
 HOST_NAME = "GaryTheBrown"
 HOST_API_URL = "https://api.github.com/users/" + HOST_NAME + "/repos"
+HOST_RAW_URL = "https://raw.githubusercontent.com/" + HOST_NAME + "/"
+HOST_RAW_URL2 = "/" + REPO_BRANCH + "/"
 
 GITHUB_PLUGINS = []
 LOCAL_PLUGINS = []
@@ -91,6 +91,18 @@ def get_github_plugins():
 
             GITHUB_PLUGINS.append(save)
 
+def get_single_file(plugin_type, plugin_name, file_to_get):
+    '''grabs a single file from github'''
+    folder = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower() + "/"
+    if os.path.isfile(folder + file_to_get):
+        return str(open(folder + file_to_get, "r").read())
+    plugin = "Tackem-plugin-" + plugin_type + "-" + plugin_name
+    link = HOST_RAW_URL + plugin + HOST_RAW_URL2 + file_to_get
+    return_data = requests.get(link)
+    if return_data.status_code == 200:
+        return return_data.text
+    return None
+
 def plugin_download_page(full_system=True):
     '''returns the web page for choosing plugins'''
     html = "<h2>GITHUB PLUGINS</h2>"
@@ -99,7 +111,8 @@ def plugin_download_page(full_system=True):
     for plugin in GITHUB_PLUGINS:
         title = plugin['plugin_type'] + " - " + plugin['plugin_name']
         if plugin['downloaded']:
-            plugin_count += 1
+            if TackemSystemAdmin().is_plugin_loaded(plugin['plugin_type'], plugin['plugin_name']):
+                plugin_count += 1
 
         clear_config = html_parts.input_button_with_data(
             "Clear Config",
@@ -126,22 +139,27 @@ def plugin_download_page(full_system=True):
 
         stop_start_action = ""
         stop_start_enabled = True
+        stop_start_visible = False
+        loaded = TackemSystemAdmin().is_plugin_loaded(plugin['plugin_type'], plugin['plugin_name'])
         if full_system:
-            # if plugin running:
-            stop_start_action = "Start/Stop"
+            stop_start_visible = plugin['downloaded']
+            stop_start_action = "Stop" if loaded else "Start"
         else:
             stop_start_action = "Reload"
-            stop_start_enabled = not TackemSystemAdmin().is_plugin_loaded(plugin['plugin_type'],
-                                                                          plugin['plugin_name'])
+            stop_start_visible = plugin['downloaded'] and not loaded
+
         start_stop = html_parts.input_button_with_data(
             stop_start_action,
             class_name="pluginbutton",
             data={'plugin':plugin['name']},
             outer_div=False,
             enabled=stop_start_enabled,
-            visible=plugin['downloaded']
+            visible=stop_start_visible
         )
-        panels_html += html_parts.plugin_panel(title, plugin['description'], clear_config,
+        readme = get_readme_as_html(plugin['plugin_type'], plugin['plugin_name'])
+        if readme is None:
+            readme = plugin['description']
+        panels_html += html_parts.plugin_panel(title, readme, clear_config,
                                                clear_database, start_stop, add_remove)
     html += panels_html
     html += "<h2>LOCAL PLUGINS</h2>"
@@ -155,74 +173,129 @@ def plugin_download_page(full_system=True):
             panels_html += "<H4>" + title + "</H4>" + offical
     html += panels_html
     html += html_parts.hidden("plugin_count", str(plugin_count), True)
-    html += html_parts.hidden("new_plugin_count", str(NEW_PLUGIN_COUNT), True)
     if full_system:
         html += html_parts.form("/", "", "Exit", "")
     else:
         html += html_parts.form("/", html_parts.hidden_page_index(3), "Next", "")
     if plugin_count == 0:
         html += '<script>$("button").prop("disabled", true);</script>'
-    html += html_parts.dim_screen()
+
     return html
 
-def update_plugins():
-    '''function to use list from html page to download the plugins'''
-    for plugin in GITHUB_PLUGINS:
-        location = PLUGINFOLDERLOCATION + plugin['plugin_type'] + '/' + plugin['plugin_name'] + '/'
-        if plugin['downloaded']:
-            git.Repo(location).remotes.origin.pull()
-            #TODO Loading Of The Module using importlib.reload([module])
-
-def download_plugin(plugin_title):
-    '''function to use list from html page to download the plugins'''
-    #TODO need to make this return info for the page to tell the user or if possible send a request
-    # for user password if can be done safely
+def plugin_control(action, plugin_title):
+    '''function to link to all actions for plugin control'''
+    return_data = {
+        'success' : False,
+        'code' : 0,
+        'message' : None,
+    }
     name_split = plugin_title.split("-")
     plugin_type = name_split[-2].lower()
     plugin_name = name_split[-1].lower()
-    os.makedirs(PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name, exist_ok=True)
+
+    if action == "Add":
+        success, error = download_plugin(plugin_title, plugin_type, plugin_name)
+        if success:
+            print(plugin_type, plugin_name, "Installed")
+            return_data['success'] = True
+        else:
+            if error == 0:
+                print(plugin_type, plugin_name, " Folder Already Exists")
+                return_data['code'] = 1
+                return_data['message'] = "Folder Already Exists"
+            elif error == 1:
+                print(plugin_type, plugin_name, "Failed to Install")
+                return_data['code'] = 2
+                if os.path.isfile("/indocker"):
+                    return_data['message'] = """
+You are running inside a docker container you need to pick an image that contains the required
+programs for the plugin"""
+                else:
+                    return_data['message'] = """
+This Plugin Requires extra Programs Please see the readme"""
+
+    elif action == "Remove":
+        if delete_plugin(plugin_title, plugin_type, plugin_name):
+            print(plugin_type, plugin_name, "Deleted")
+            return_data['success'] = True
+        else:
+            print(plugin_type, plugin_name, "Removal Fail")
+            return_data['message'] = "Removal Failed"
+    elif action == "Reload":
+        if reload_plugin(plugin_type, plugin_name):
+            print(plugin_type, plugin_name, "Reloaded")
+            return_data['success'] = True
+        else:
+            print(plugin_type, plugin_name, "Reload Failed")
+            return_data['message'] = "Reload Failed"
+    elif action == "Clear Config":
+        if clean_config_after_deletion(plugin_type, plugin_name):
+            print(plugin_type, plugin_name, "Removed From Config")
+            return_data['success'] = True
+        else:
+            print(plugin_type, plugin_name, "Removal from Config Failed")
+            return_data['message'] = "Removal from Config Failed"
+    elif action == "Clear Database":
+        if clean_db_after_deletion(plugin_type, plugin_name):
+            print(plugin_type, plugin_name, "Removed From DB")
+            return_data['success'] = True
+        else:
+            print(plugin_type, plugin_name, "Removal from DB Failed")
+            return_data['message'] = "Removal from DB Failed"
+    elif action == "Start":
+        if start_plugin_systems(plugin_type, plugin_name):
+            print(plugin_type, plugin_name, "Systems Started")
+            return_data['success'] = True
+        else:
+            print(plugin_type, plugin_name, "Starting Failed")
+            return_data['message'] = "Starting Failed"
+    elif action == "Stop":
+        if stop_plugin_systems(plugin_type, plugin_name):
+            print(plugin_type, plugin_name, "Systems Stopped")
+            return_data['success'] = True
+        else:
+            print(plugin_type, plugin_name, "Stopping Failed")
+            return_data['message'] = "Stopping Failed"
+
+    return json.dumps(return_data)
+
+def get_readme_as_html(plugin_type, plugin_name):
+    '''turns the readme.nd into html'''
+    readme = get_single_file(plugin_type, plugin_name, "README.md")
+    readme = "\n".join(readme.split("\n")[3:])
+    if readme is None or readme == "":
+        return None
+    return markdown.markdown(readme, output_format="html5")
+
+def download_plugin(plugin_title, plugin_type, plugin_name):
+    '''function to use list from html page to download the plugins'''
+    try:
+        os.makedirs(PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name)
+    except OSError:
+        return False, 0
     for plugin in GITHUB_PLUGINS:
         if plugin['name'] == plugin_title:
             location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
-            git.Repo.clone_from(plugin['clone_url'], location)
+            git.Repo.clone_from(plugin['clone_url'], location, branch=REPO_BRANCH)
             install_plugin_modules(plugin_type, plugin_name)
-            TackemSystemAdmin().write_config_to_disk()
-            if not TackemSystemAdmin().load_plugin(plugin_type, plugin_name):
-                return download_plugin_failed(plugin_type, plugin_name)
-            TackemSystemAdmin().load_plugin_cfgs()
-            TackemSystemAdmin().load_config()
-
-            plugin['downloaded'] = True
-            return True
-
-def download_plugin_failed(plugin_type, plugin_name):
-    '''if the download plugin fails then find out why'''
-    return_string = "This Plugin Requires extra Programs Please Install: "
-    plugin_json_file = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/settings.json"
-    plugin_settings = load_plugin_settings(plugin_json_file)
-    if platform.system() == 'Linux':
-        return_string += " ".join(plugin_settings.get('linux_programs', ["N/A"]))
-    else:
-        return_string += "N/A"
-    return_string += "\n"
-    if os.path.isfile("/indocker"):
-        return_string += """
-You are running an docker you need to install the above programs or pick a image that contains the
-required programs for the plugin"""
-
-    return return_string
+            if reload_plugin(plugin_type, plugin_name):
+                return True, 0
+            return False, 1
 
 
-def delete_plugin(plugin_title):
+def delete_plugin(plugin_title, plugin_type, plugin_name):
     '''deletes the plugin'''
-    name_split = plugin_title.split("-")
-    plugin_type = name_split[-2].lower()
-    plugin_name = name_split[-1].lower()
-    TackemSystemAdmin().write_config_to_disk()
-    TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
-    uninstall_plugin_modules(plugin_type, plugin_name)
+    if TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
+        TackemSystemAdmin().write_config_to_disk()
+        TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
+        TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
+        uninstall_plugin_modules(plugin_type, plugin_name)
+        TackemSystemAdmin().load_config()
     folder = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/"
-    shutil.rmtree(folder)
+    try:
+        shutil.rmtree(folder)
+    except OSError:
+        return False
     for plugin in GITHUB_PLUGINS:
         if plugin['name'] == plugin_title:
             plugin['downloaded'] = False
@@ -230,8 +303,67 @@ def delete_plugin(plugin_title):
         os.rmdir(PLUGINFOLDERLOCATION + plugin_type)
     except OSError:
         pass
-    TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
+
+    return True
+
+def update_plugins():
+    '''function to use list from html page to download the plugins'''
+    for plugin in GITHUB_PLUGINS:
+        if plugin['downloaded']:
+            update_plugin(plugin['plugin_type'], plugin['plugin_name'])
+
+def update_plugin(plugin_type, plugin_name):
+    '''function to use list from html page to download the plugins'''
+    if not stop_plugin_systems(plugin_type, plugin_name):
+        return False
+    location = PLUGINFOLDERLOCATION + plugin_type + '/' + plugin_name + '/'
+    git.Repo(location).remotes.origin.pull()
+    TackemSystemAdmin().reload_plugin(plugin_type, plugin_name)
+    if start_plugin_systems(plugin_type, plugin_name):
+        return True
+    return False
+
+def get_plugin_branches(plugin_type, plugin_name):
+    '''Gets a list of branches'''
+    location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+    return [branch.name for branch in git.Repo(location).heads]
+
+def get_current_plugin_branch(plugin_type, plugin_name):
+    '''Gets the current branch'''
+    location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+    return git.Repo(location).active_branch()
+
+def change_plugin_branch(plugin_type, plugin_name, branch):
+    '''will change the branch for the plugin'''
+    location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+    repo = git.Repo(location)
+    if branch in [branch.name for branch in repo.heads]:
+        repo.heads[branch].checkout()
+        return True
+    return False
+
+def reload_plugin(plugin_type, plugin_name):
+    '''Function to attempt to reload the plugin after a failed install'''
+    TackemSystemAdmin().write_config_to_disk()
+    if not TackemSystemAdmin().load_plugin(plugin_type, plugin_name):
+        return False
+    TackemSystemAdmin().load_plugin_cfgs()
     TackemSystemAdmin().load_config()
+    return True
+
+def start_plugin_systems(plugin_type, plugin_name):
+    '''function to start up the plugins systems'''
+    if TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
+        return False
+    TackemSystemAdmin().load_plugin_systems(plugin_type, plugin_name)
+    return True
+
+def stop_plugin_systems(plugin_type, plugin_name):
+    '''function to start up the plugins systems'''
+    if not TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
+        return False
+    TackemSystemAdmin().stop_plugin_systems(plugin_type, plugin_name)
+    return True
 
 def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
     '''function to remove data from the config'''
@@ -250,8 +382,9 @@ def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
         del config['plugins'][plugin_type]
     config.write()
 
-def clean_db_after_deletion(plugin_type, plugin_name, sql):
+def clean_db_after_deletion(plugin_type, plugin_name):
     '''function to clean the Database after plugin removal'''
+    sql = TackemSystemAdmin().get_sql()
     name_like = plugin_type + "_" + plugin_name + "_%"
     results = sql.select_like(SYSTEM_NAME, "table_version", {'name':name_like})
     for result in results:
@@ -284,5 +417,7 @@ def uninstall_plugin_modules(plugin_type, plugin_name):
         pip_call = [sys.executable, '-m', 'pip', 'uninstall', '-y', '-r', requirements_file]
         subprocess.check_call(pip_call)
         print("uninstalled plugin requirements")
+
+
 get_local_plugins()
 get_github_plugins()
