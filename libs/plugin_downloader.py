@@ -384,7 +384,7 @@ def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
 
 def clean_db_after_deletion(plugin_type, plugin_name):
     '''function to clean the Database after plugin removal'''
-    sql = TackemSystemAdmin().get_sql()
+    sql = TackemSystemAdmin().sql
     name_like = plugin_type + "_" + plugin_name + "_%"
     results = sql.select_like(SYSTEM_NAME, "table_version", {'name':name_like})
     for result in results:

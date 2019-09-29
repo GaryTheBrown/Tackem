@@ -43,7 +43,7 @@ class HTMLTEMPLATE():
                 stylesheet_extra_html += html_part.stylesheet_link(key)
         elif isinstance(stylesheet, str):
             stylesheet_extra_html = html_part.stylesheet_link(stylesheet)
-        baseurl = self._tackem_system.get_baseurl()
+        baseurl = self._tackem_system.baseurl
         title = ""
         if self._key != "":
             if self._name != "":
@@ -68,8 +68,8 @@ class HTMLTEMPLATE():
     def _navbar_left_items(self):
         '''Navigation Bar Left Items For The System'''
         nav_items_html = ""
-        if self._tackem_system.get_auth().enabled():
-            if not self._tackem_system.get_auth().check_logged_in():
+        if self._tackem_system.auth and self._tackem_system.auth.enabled():
+            if not self._tackem_system.auth.check_logged_in():
                 return nav_items_html
         nav_list = {}
         for key in self._tackem_system.system_keys():
@@ -125,9 +125,9 @@ class HTMLTEMPLATE():
         navbar_shutdown_html = html_part.navbar_item("Shutdown", "shutdown")
 
         navbar_right_html = navbar_about_html
-        if self._tackem_system.get_auth().enabled():
-            if self._tackem_system.get_auth().check_logged_in():
-                if self._tackem_system.get_auth().is_admin():
+        if self._tackem_system.auth and self._tackem_system.auth.enabled():
+            if self._tackem_system.auth.check_logged_in():
+                if self._tackem_system.auth.is_admin():
                     admin_html = navbar_config_html
                     admin_html += navbar_plugin_download_html
                     admin_html += navbar_users_html
@@ -142,6 +142,7 @@ class HTMLTEMPLATE():
                 navbar_right_html += navbar_login_html
         else:
             system_html = navbar_config_html
+            system_html += navbar_plugin_download_html
             system_html += navbar_reboot_html
             system_html += navbar_shutdown_html
             navbar_right_html += html_part.navbar_dropdown_right("System", "system", system_html)

@@ -15,4 +15,4 @@ class ScraperHtml(Scraper):
     def javascript(self):
         '''index of scraper'''
         java_file = str(open(os.path.dirname(__file__) + "/javascript/base.js", "r").read())
-        return java_file.replace("%%BASEURL%%", self._tackem_system.get_baseurl())
+        return java_file.replace("%%BASEURL%%", self._tackem_system.baseurl)

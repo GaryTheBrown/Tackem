@@ -9,7 +9,7 @@ def setup_db(config):
     if config['mode'].lower() == 'sqlite3':
         sql = SqlLite()
     # elif config['mode'].lower() == 'mysql':
-    #     sql = MySql()
+    #     sql = Mysql
     else:
         print(config['mode'])
     return sql

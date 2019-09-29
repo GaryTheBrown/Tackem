@@ -9,10 +9,10 @@ class Admin(HTMLTEMPLATE):
     @cherrypy.expose
     def users(self):
         '''Grab the users info'''
-        self._tackem_system.get_auth().check_auth()
-        if not self._tackem_system.get_auth().is_admin():
+        self._tackem_system.auth.check_auth()
+        if not self._tackem_system.auth.is_admin():
             raise cherrypy.HTTPRedirect(cherrypy.url().replace("/admin/users", "/"))
-        data = self._tackem_system.get_auth().get_users()
+        data = self._tackem_system.auth.get_users()
         users_html = ""
         for item in data:
             users_html += html_parts.user_page(item['id'], item['username'], item['is_admin'])
@@ -22,7 +22,7 @@ class Admin(HTMLTEMPLATE):
     @cherrypy.expose
     def adduser(self, **kwargs):
         '''Add user to system'''
-        if not self._tackem_system.get_auth().is_admin():
+        if not self._tackem_system.auth.is_admin():
             raise cherrypy.HTTPRedirect(cherrypy.url().replace("/admin/adduser", "/"))
         username = kwargs.get("username", None)
         if username == "":
@@ -38,7 +38,7 @@ class Admin(HTMLTEMPLATE):
         else:
             is_admin = None
         if username is not None and password is not None and is_admin is not None:
-            self._tackem_system.get_auth().add_user(username, password, is_admin)
+            self._tackem_system.auth.add_user(username, password, is_admin)
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("adduser", "users"))
 
     @cherrypy.expose
@@ -46,16 +46,16 @@ class Admin(HTMLTEMPLATE):
         '''update the user info'''
         if 'user_id' in kwargs:
             user_id = kwargs['user_id']
-            if not self._tackem_system.get_auth().is_admin():
+            if not self._tackem_system.auth.is_admin():
                 url = "/admin/updateuser/" + str(user_id) + "/"
                 raise cherrypy.HTTPRedirect(cherrypy.url().replace(url, "/"))
             if 'delete' in kwargs:
-                self._tackem_system.get_auth().delete_user(user_id)
+                self._tackem_system.auth.delete_user(user_id)
             elif 'update' in kwargs:
                 username = kwargs.get("username", None)
                 password = kwargs.get("password", None)
                 if password == "":
                     password = None
                 is_admin = kwargs.get("is_admin", None)
-                self._tackem_system.get_auth().update_user(user_id, username, password, is_admin)
+                self._tackem_system.auth.update_user(user_id, username, password, is_admin)
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("updateuser", "users"))

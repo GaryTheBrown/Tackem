@@ -14,4 +14,4 @@ def mounts():
     '''where the system creates the cherrypy mounts'''
     scraper = ScraperHtml()
     scraper.ripper = ScraperRipper()
-    cherrypy.tree.mount(scraper, TackemSystemRoot('scraper').get_baseurl() + "scraper/")
+    cherrypy.tree.mount(scraper, TackemSystemRoot('scraper').baseurl + "scraper/")

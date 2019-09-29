@@ -24,14 +24,14 @@ class Authentication:
 
     def __init__(self):
         self.__system = TackemSystemRoot('authentication')
-        self.__login_url = self.__system.get_baseurl() + "login?return_url="
+        self.__login_url = self.__system.baseurl + "login?return_url="
 
     def start(self):
         '''Run starting commands need sql to run'''
-        self.__system.get_sql().table_checks("Auth", self.__db_info)
-        if self.__system.get_sql().count("Auth", self.__db_info['name']) == 0:
+        self.__system.sql.table_checks("Auth", self.__db_info)
+        if self.__system.sql.count("Auth", self.__db_info['name']) == 0:
             self.__add_admin_account()
-        elif self.__system.get_sql().count_where("Auth", self.__db_info['name'],
+        elif self.__system.sql.count_where("Auth", self.__db_info['name'],
                                                  {"is_admin":True}) == 0:
             self.__add_admin_account()
 
@@ -42,7 +42,7 @@ class Authentication:
             "password": self.__password_encryption("admin"),
             "is_admin": True
         }
-        self.__system.get_sql().insert("Auth", self.__db_info['name'], user)
+        self.__system.sql.insert("Auth", self.__db_info['name'], user)
 
     def __password_encryption(self, password):
         '''clear password to encrypted password'''
@@ -56,7 +56,7 @@ class Authentication:
         '''Login Script'''
         if username == "" or password == "":
             return False
-        data = self.__system.get_sql().select("Auth", self.__db_info['name'],
+        data = self.__system.sql.select("Auth", self.__db_info['name'],
                                               {"username":username})[0]
         if data['password'] != self.__password_encryption(password):
             return False
@@ -120,11 +120,11 @@ class Authentication:
             return False
         session_id = cherrypy.request.cookie['sessionid'].value
         user_id = self.__temp_sessions[session_id]['id']
-        data = self.__system.get_sql().select("Auth", self.__db_info['name'],
+        data = self.__system.sql.select("Auth", self.__db_info['name'],
                                               {"id":user_id})[0]
         if data['password'] != self.__password_encryption(password):
             return False
-        self.__system.get_sql().update("Auth", self.__db_info['name'], data['id'],
+        self.__system.sql.update("Auth", self.__db_info['name'], data['id'],
                                        {"password": self.__password_encryption(new_password)})
         return True
 
@@ -135,18 +135,18 @@ class Authentication:
             "password": self.__password_encryption(password),
             "is_admin": is_admin
         }
-        if self.__system.get_sql().count_where("Auth", self.__db_info['name'],
+        if self.__system.sql.count_where("Auth", self.__db_info['name'],
                                                {"username":username}) == 0:
-            self.__system.get_sql().insert("Auth", self.__db_info['name'], user)
+            self.__system.sql.insert("Auth", self.__db_info['name'], user)
 
     def delete_user(self, user_id):
         '''Delete user from system'''
-        self.__system.get_sql().delete_row("Auth", self.__db_info['name'], user_id)
+        self.__system.sql.delete_row("Auth", self.__db_info['name'], user_id)
 
     def get_users(self):
         '''Grab the users info'''
         return_list = ["id", "username", "is_admin"]
-        data = self.__system.get_sql().select("Auth", self.__db_info['name'],
+        data = self.__system.sql.select("Auth", self.__db_info['name'],
                                               list_of_returns=return_list)
         for item in data:
             item['is_admin'] = item['is_admin'] == "True"
@@ -161,7 +161,7 @@ class Authentication:
             data['password'] = self.__password_encryption(password)
         if isinstance(is_admin, bool):
             data['is_admin'] = is_admin
-        self.__system.get_sql().update("Auth", self.__db_info['name'], user_id, data)
+        self.__system.sql.update("Auth", self.__db_info['name'], user_id, data)
 
     def clear_sessions(self):
         '''clears the sessions and logs all the users out'''

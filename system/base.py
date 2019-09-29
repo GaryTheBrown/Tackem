@@ -4,15 +4,18 @@ class TackemSystemBase:
     '''Tackem System Data Base Class'''
     _base_data = SystemData()
 
-    def get_sql(self):
+    @property
+    def sql(self):
         '''get sql'''
         return self._base_data.sql
 
-    def get_auth(self):
+    @property
+    def auth(self):
         '''get auth'''
         return self._base_data.auth
 
-    def get_musicbrainz(self):
+    @property
+    def musicbrainz(self):
         '''get musicbrainz'''
         return self._base_data.musicbrainz
 
@@ -26,7 +29,8 @@ class TackemSystemBase:
             return temp_config.get(location_list[0], default)
         return default
 
-    def get_baseurl(self):
+    @property
+    def baseurl(self):
         '''grab the baseurl'''
         return self.get_config(["webui", "baseurl"], "/")
 

@@ -34,14 +34,14 @@ class Httpd():
                 'tools.response_headers.headers': [('Content-Type', 'text/plain')]
             }
         }
-        baseurl = self.__system.get_baseurl()
+        baseurl = self.__system.baseurl
         if self.__system.config()['firstrun']:
             cherrypy.tree.mount(first_run_root("", "", self.__system), baseurl,
                                 conf_root)
         else:
             if not self.__system.config()['webui']['disabled']:
                 cherrypy.tree.mount(main_root("", "", self.__system), baseurl, conf_root)
-                if self.__system.get_auth().enabled():
+                if self.__system.auth and self.__system.auth.enabled():
                     cherrypy.tree.mount(Admin("Admin", "", self.__system),
                                         baseurl + "admin/", conf_root)
                 for key in self.__system.systems():

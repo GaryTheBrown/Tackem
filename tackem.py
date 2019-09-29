@@ -26,9 +26,9 @@ class Tackem:
 
         if not TackemSystemAdmin().get_config(['firstrun'], True):
             print("LOADING DATABASE...")
-            TackemSystemAdmin().load_sql()
+            TackemSystemAdmin().load_sql
             print("STARTING DATABASE...")
-            TackemSystemAdmin().start_sql()
+            TackemSystemAdmin().start_sql
             print("LOADING MUSICBRAINZ...")
             TackemSystemAdmin().load_musicbrainz()
             print("LOADING AUTHENTICATOR...")
@@ -53,14 +53,14 @@ class Tackem:
             print("STOPPING SYSTEMS...")
             TackemSystemAdmin().stop_systems()
             print("STOPPING DATABASE...")
-            TackemSystemAdmin().stop_sql()
+            TackemSystemAdmin().stop_sql
 
     def cleanup(self):
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
         TackemSystemAdmin().delete_systems()
-        TackemSystemAdmin().delete_sql()
+        TackemSystemAdmin().delete_sql
         TackemSystemAdmin().delete_plugin_cfgs()
         TackemSystemAdmin().delete_plugins()
         TackemSystemAdmin().delete_musicbrainz()
