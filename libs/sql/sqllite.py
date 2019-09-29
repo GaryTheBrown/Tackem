@@ -8,30 +8,30 @@ class SqlLite(SqlBaseClass):
     __sql = None
     __conn = None
 
-    def __startup(self):
+    def _startup(self):
         '''Setup SQLlite Here'''
         self.__conn = sqlite3.connect(ARGS.home + '/Tackem.db')
         self.__sql = self.__conn.cursor()
 
-    def __shutdown(self):
+    def _shutdown(self):
         '''Shutdown the System Here'''
         #save any changes to the file
         self.__conn.commit()
         #close the connection
         self.__conn.close()
 
-    def __check_version_table_exists(self):
+    def _check_version_table_exists(self):
         '''returns if the table_version exists'''
         command = "SELECT name FROM sqlite_master WHERE type='table' AND name='table_version';"
-        return bool(self.__trusted_get(command, False))
+        return bool(self._trusted_get(command, False))
 
-    def __trusted_call(self, call):
+    def _trusted_call(self, call):
         '''Trusted Calls can send the command in a string to here for execution'''
         self.__conn.commit()
         self.__sql.execute(call)
         self.__conn.commit()
 
-    def __trusted_get(self, call, return_dict=True):
+    def _trusted_get(self, call, return_dict=True):
         '''Grab a list of the tables'''
         self.__conn.commit()
         self.__sql.execute(call)
@@ -49,21 +49,21 @@ class SqlLite(SqlBaseClass):
             return full_return_data
         return return_data
 
-    def __update_table(self, table_name, data, version):
+    def _update_table(self, table_name, data, version):
         '''Update the table with the informaiton provided'''
 
         #first move the current table to a new name
         command1 = "ALTER TABLE " + table_name + " RENAME TO " + table_name + "_old;"
-        self.__trusted_call(command1)
+        self._trusted_call(command1)
 
         #make the new version of the table
         self._add_table(table_name, data, version, False)
 
         #move Data across to new table
         command_get_old_table_columns = "PRAGMA table_info(" + table_name + "_old);"
-        returned_data_temp_old = self.__trusted_get(command_get_old_table_columns, False)
+        returned_data_temp_old = self._trusted_get(command_get_old_table_columns, False)
         command_get_new_table_columns = "PRAGMA table_info(" + table_name + ");"
-        returned_data_temp_new = self.__trusted_get(command_get_new_table_columns, False)
+        returned_data_temp_new = self._trusted_get(command_get_new_table_columns, False)
 
         links = {}
         for new_column in returned_data_temp_new:
@@ -86,7 +86,7 @@ class SqlLite(SqlBaseClass):
         insert = "INSERT INTO " + table_name + " (" + ", ".join(list(links.keys())) + ") VALUES "
 
         command_select_all_from_table = "SELECT * FROM " + table_name + "_old;"
-        rows = self.__trusted_get(command_select_all_from_table, False)
+        rows = self._trusted_get(command_select_all_from_table, False)
         for row in rows:
             values = []
             for key in links:
@@ -112,15 +112,15 @@ class SqlLite(SqlBaseClass):
                     values.append(temp_value)
 
             row_to_insert = insert + "(" + ", ".join(values) + ");"
-            self.__trusted_call(row_to_insert)
+            self._trusted_call(row_to_insert)
 
         #update table_version
         update_table_version = 'UPDATE table_version SET version=' + str(version)
         update_table_version += ' Where name="' + table_name + '";'
-        self.__trusted_call(update_table_version)
+        self._trusted_call(update_table_version)
 
         #delete old table
         command_delete_table = "DROP TABLE " + table_name + "_old;"
-        self.__trusted_call(command_delete_table)
+        self._trusted_call(command_delete_table)
 
         return True

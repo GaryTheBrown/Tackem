@@ -198,7 +198,7 @@ class SqlBaseClass(metaclass=ABCMeta):
 
     def __run(self):
         '''Threadded Run'''
-        self.__startup()
+        self._startup()
         self.__create_main_tables()
         while self._thread_run:
             self._event_lock.wait()
@@ -215,10 +215,10 @@ class SqlBaseClass(metaclass=ABCMeta):
                         #Means command is simple command with or without return
                         if isinstance(job.return_data(), list):
                             job.set_return_data(
-                                self.__trusted_get(job.command(), job.return_dict())
+                                self._trusted_get(job.command(), job.return_dict())
                             )
                         else:
-                            self.__trusted_call(job.command())
+                            self._trusted_call(job.command())
 
 
                     #finally release the waiting thread
@@ -227,35 +227,35 @@ class SqlBaseClass(metaclass=ABCMeta):
                     print("WTF IS PASSED IN???", type(job), job)
 
             self._event_lock.clear()
-        self.__shutdown()
+        self._shutdown()
 
     @abstractmethod
-    def __startup(self):
+    def _startup(self):
         '''Setup the System Here'''
 
     @abstractmethod
-    def __shutdown(self):
+    def _shutdown(self):
         '''Shutdown the System Here'''
 
     @abstractmethod
-    def __check_version_table_exists(self):
+    def _check_version_table_exists(self):
         '''returns if the table_version exists'''
 
     @abstractmethod
-    def __trusted_call(self, call):
+    def _trusted_call(self, call):
         '''Trusted Calls can send the command in a string to here for execution'''
 
     @abstractmethod
-    def __trusted_get(self, call, return_dict=True):
+    def _trusted_get(self, call, return_dict=True):
         '''Grab a list of the tables'''
 
     @abstractmethod
-    def __update_table(self, table_name, data, version):
+    def _update_table(self, table_name, data, version):
         '''Update the table with the informaiton provided'''
 
     def __create_main_tables(self):
         '''Creates Tables'''
-        if not self.__check_version_table_exists():#TABLE_VERSION
+        if not self._check_version_table_exists():#TABLE_VERSION
             table_version_columns = [
                 Column("id", "integer", primary_key=True, not_null=True),
                 Column("name", "text", unique=True, not_null=True),
@@ -271,13 +271,13 @@ class SqlBaseClass(metaclass=ABCMeta):
         elif table_version == 0:
             return self._add_table(table_name, data, version)
         elif table_version < version:
-            return self.__update_table(table_name, data, version)
+            return self._update_table(table_name, data, version)
         return False
 
     def __table_exists(self, table_name):
         '''Check if Table Exists'''
         command = 'SELECT version FROM table_version WHERE name="' + table_name + '";'
-        info = self.__trusted_get(command)
+        info = self._trusted_get(command)
         if not info:
             return 0
         return info[0]['version']
@@ -287,9 +287,9 @@ class SqlBaseClass(metaclass=ABCMeta):
         array_of_variables = list(map(lambda v: v.to_string(), data))
         variables = ",".join(array_of_variables)
         create_table = "CREATE TABLE IF NOT EXISTS " + table_name + " (" + variables + ");"
-        self.__trusted_call(create_table)
+        self._trusted_call(create_table)
         if update_table:
             update_table__call = "INSERT INTO table_version (name, version) VALUES ('"
             update_table__call += table_name +"', " + str(version) + ");"
-            self.__trusted_call(update_table__call)
+            self._trusted_call(update_table__call)
         return True
