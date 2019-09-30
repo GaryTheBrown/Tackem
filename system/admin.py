@@ -222,9 +222,8 @@ class TackemSystemAdmin(TackemSystemBase):
 
     def get_systems_for_plugin(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
-        with self._base_data.systems_lock:
-            system_name = plugin_type + " " + plugin_name
-            return list(key for key, _ in self._base_data.systems if system_name in key)
+        system_name = plugin_type + " " + plugin_name
+        return list(key for key in self._base_data.systems if system_name in key)
 
     def is_systems_for_plugin_exists(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''

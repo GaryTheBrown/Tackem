@@ -134,11 +134,6 @@ class Root(HTMLTEMPLATE):
                               javascript=javascript)
 
     @cherrypy.expose
-    def plugin_downloader_javascript(self):
-        '''Javascript File'''
-        return plugin_downloader.javascript()
-
-    @cherrypy.expose
     def plugin_control(self, action, name):
         '''plugin control link'''
         return plugin_downloader.plugin_control(action, name)

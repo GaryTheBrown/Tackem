@@ -105,6 +105,8 @@ def get_single_file(plugin_type, plugin_name, file_to_get):
 
 def plugin_download_page(full_system=True):
     '''returns the web page for choosing plugins'''
+    get_github_plugins()
+    get_local_plugins()
     html = "<h2>GITHUB PLUGINS</h2>"
     plugin_count = 0
     panels_html = ""
@@ -174,9 +176,8 @@ def plugin_download_page(full_system=True):
     html += panels_html
     html += html_parts.hidden("plugin_count", str(plugin_count), True)
     if full_system:
-        html += html_parts.form("/", "", "Exit", "")
-    else:
-        html += html_parts.form("/", html_parts.hidden_page_index(3), "Next", "")
+        return html
+    html += html_parts.form("/", html_parts.hidden_page_index(3), "Next", "")
     if plugin_count == 0:
         html += '<script>$("button").prop("disabled", true);</script>'
 
@@ -285,12 +286,9 @@ def download_plugin(plugin_title, plugin_type, plugin_name):
 
 def delete_plugin(plugin_title, plugin_type, plugin_name):
     '''deletes the plugin'''
-    if TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
-        TackemSystemAdmin().write_config_to_disk()
-        TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
-        TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
-        uninstall_plugin_modules(plugin_type, plugin_name)
-        TackemSystemAdmin().load_config()
+    if not stop_plugin_systems(plugin_type, plugin_name):
+        return False
+
     folder = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/"
     try:
         shutil.rmtree(folder)
@@ -355,6 +353,7 @@ def start_plugin_systems(plugin_type, plugin_name):
     '''function to start up the plugins systems'''
     if TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
         return False
+    reload_plugin(plugin_type, plugin_name)
     TackemSystemAdmin().load_plugin_systems(plugin_type, plugin_name)
     return True
 
@@ -363,6 +362,11 @@ def stop_plugin_systems(plugin_type, plugin_name):
     if not TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
         return False
     TackemSystemAdmin().stop_plugin_systems(plugin_type, plugin_name)
+    TackemSystemAdmin().write_config_to_disk()
+    TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
+    TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
+    uninstall_plugin_modules(plugin_type, plugin_name)
+    TackemSystemAdmin().load_config()
     return True
 
 def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
