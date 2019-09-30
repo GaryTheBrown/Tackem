@@ -112,8 +112,13 @@ def plugin_download_page(full_system=True):
     panels_html = ""
     for plugin in GITHUB_PLUGINS:
         title = plugin['plugin_type'] + " - " + plugin['plugin_name']
+        loaded = False
         if plugin['downloaded']:
-            if TackemSystemAdmin().is_plugin_loaded(plugin['plugin_type'], plugin['plugin_name']):
+            loaded = TackemSystemAdmin().is_plugin_loaded(
+                plugin['plugin_type'],
+                plugin['plugin_name']
+            )
+            if loaded:
                 plugin_count += 1
 
         clear_config = html_parts.input_button_with_data(
@@ -121,7 +126,7 @@ def plugin_download_page(full_system=True):
             class_name="pluginbutton",
             data={'plugin':plugin['name']},
             outer_div=False,
-            enabled=False,
+            enabled=not loaded,
             visible=(full_system and plugin['downloaded'])
         )
         clear_database = html_parts.input_button_with_data(
@@ -129,7 +134,7 @@ def plugin_download_page(full_system=True):
             class_name="pluginbutton",
             data={'plugin':plugin['name']},
             outer_div=False,
-            enabled=False,
+            enabled=not loaded,
             visible=(full_system and plugin['downloaded'])
         )
         add_remove = html_parts.input_button_with_data(
@@ -142,7 +147,7 @@ def plugin_download_page(full_system=True):
         stop_start_action = ""
         stop_start_enabled = True
         stop_start_visible = False
-        loaded = TackemSystemAdmin().is_plugin_loaded(plugin['plugin_type'], plugin['plugin_name'])
+
         if full_system:
             stop_start_visible = plugin['downloaded']
             stop_start_action = "Stop" if loaded else "Start"

@@ -18,6 +18,8 @@ $(function() {
                     case "Add":
                         if (data['success'] == true) {
                             this.elem.val("Remove");
+                            this.elem.parent().parent().find("input[value='Clear Config']").prop('disabled', false);
+                            this.elem.parent().parent().find("input[value='Clear Database']").prop('disabled', false);
                             alert(this.pluginName + " Downloaded");
                             counter(+1);
                         } else {
@@ -28,16 +30,20 @@ $(function() {
                                 break;
                             }
                         }
+                        this.elem.prop('disabled', false);
                         break;
                     case "Remove":
                         if (data['success'] == true) {
                             this.elem.val("Add");
                             this.elem.parent().parent().find("input[value='Reload']").hide();
+                            this.elem.parent().parent().find("input[value='Clear Config']").prop('disabled', true);
+                            this.elem.parent().parent().find("input[value='Clear Database']").prop('disabled', true);
                             alert(this.pluginName + " Removed");
                             counter(-1);
                         } else {
                             alert(data["message"]);
                         }
+                        this.elem.prop('disabled', false);
                         break;
                     case "Reload":
                         if (data['success'] == true) {
@@ -47,6 +53,7 @@ $(function() {
                         } else {
                             alert(data["message"]);
                         }
+                        this.elem.prop('disabled', false);
                         break;
                     case "Clear Config":
                         if (data['success'] == true) {
@@ -70,24 +77,30 @@ $(function() {
                         if (data['success'] == true) {
                             this.elem.val("Stop");
                             alert(this.pluginName + " Started");
+                            this.elem.parent().parent().find("input[value='Clear Config']").prop('disabled', true);
+                            this.elem.parent().parent().find("input[value='Clear Database']").prop('disabled', true);
                         } else {
                             alert(data["message"]);
                         }
+                        this.elem.prop('disabled', false);
                         break;
                     case "Stop":
                         if (data['success'] == true) {
                             this.elem.val("Start");
                             alert(this.pluginName + " Stopped");
+                            this.elem.parent().parent().find("input[value='Clear Config']").prop('disabled', false);
+                            this.elem.parent().parent().find("input[value='Clear Database']").prop('disabled', false);
                         } else {
                             alert(data["message"]);
                         }
+                        this.elem.prop('disabled', false);
                         break;
                     default:
                         alert(this.elem.val() + " Not Programed Yet")
+                        this.elem.prop('disabled', false);
                         break;
                 }
                 counter(0)
-                this.elem.prop('disabled', false);
             },
         });
     });
@@ -98,10 +111,8 @@ function counter(value){
     count += value;
     $("#plugin_count").val(count);
     if (count == 0){
-        console.log("NEXT DISABLED");
         $("button").prop("disabled", true);
     }else{
-        console.log("NEXT ENABLED");
         $("button").prop("disabled", false);
     }
 
