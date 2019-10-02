@@ -91,10 +91,10 @@ class Tackem:
 
             if event_type is False:
                 continue
-            elif event_type == "shutdown":
+            if event_type == "shutdown":
                 self.shutdown()
                 break
-            elif event_type == "reboot":
+            if event_type == "reboot":
                 self.shutdown()
                 self.start()
             else:
