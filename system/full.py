@@ -13,7 +13,7 @@ class TackemSystemFull(TackemSystemBase):
             temp_config = self._base_data.config
         if location_list[0] in temp_config:
             if len(location_list) > 1:
-                return self.get_config(location_list[1:], value, temp_config[location_list[0]])
+                return self.set_config(location_list[1:], value, temp_config[location_list[0]])
             temp_config[location_list[0]] = value
             return True
         return False
