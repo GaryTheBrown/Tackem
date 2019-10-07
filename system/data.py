@@ -1,8 +1,11 @@
 '''System Data'''
 import threading
 
+
 class SystemData():
     '''System Data'''
+
+
     plugins = {} # [type][ name]
     plugins_lock = threading.Lock()
     systems = {} # [type name]

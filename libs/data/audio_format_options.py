@@ -1,5 +1,7 @@
 ''' audio format options'''
 from libs.config_option import ConfigOption
+
+
 OPTIONS = [
     ConfigOption("pcm", "PCM"),
     ConfigOption("mp2", "MP2"),

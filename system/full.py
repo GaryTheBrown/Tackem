@@ -1,11 +1,15 @@
 '''Tackem System Full Class'''
 from system.base import TackemSystemBase
+
+
 class TackemSystemFull(TackemSystemBase):
     '''Tackem System Full Class'''
+
 
     def config(self):
         '''grabs the full config'''
         return self._base_data.config
+
 
     def set_config(self, location_list, value, temp_config=None):
         '''recursive method to set a config item'''
@@ -18,17 +22,21 @@ class TackemSystemFull(TackemSystemBase):
             return True
         return False
 
+
     def systems(self):
         ''' grabs all systems'''
         return self._base_data.systems
+
 
     def system(self, system_name):
         ''' grabs a system'''
         return self._base_data.systems.get(system_name, None)
 
+
     def plugins(self):
         '''return all plugins'''
         return self._base_data.plugins
+
 
     def plugin(self, plugin_type, plugin_name):
         '''return a plugin'''

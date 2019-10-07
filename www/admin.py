@@ -3,8 +3,10 @@ import cherrypy
 from libs import html_parts
 from libs.html_template import HTMLTEMPLATE
 
+
 class Admin(HTMLTEMPLATE):
     '''Admin'''
+
 
     @cherrypy.expose
     def users(self):
@@ -18,6 +20,7 @@ class Admin(HTMLTEMPLATE):
             users_html += html_parts.user_page(item['id'], item['username'], item['is_admin'])
         users_page_html = html_parts.users_page(users_html)
         return self._template(users_page_html)
+
 
     @cherrypy.expose
     def adduser(self, **kwargs):
@@ -40,6 +43,7 @@ class Admin(HTMLTEMPLATE):
         if username is not None and password is not None and is_admin is not None:
             self._tackem_system.auth.add_user(username, password, is_admin)
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("adduser", "users"))
+
 
     @cherrypy.expose
     def updateuser(self, **kwargs):

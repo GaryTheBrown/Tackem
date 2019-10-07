@@ -1,8 +1,12 @@
 '''Functions to deal with all the html template parts'''
 from libs.startup_arguments import PROGRAMVERSION
+
+
 #################
 #MASTER TEMPLATE#
 #################
+
+
 def master_template(title, body, javascript_extra, stylesheet_extra, baseurl, navbar):
     '''head section of the template'''
     html = str(open("www/html/pages/template.html", "r").read())
@@ -14,15 +18,19 @@ def master_template(title, body, javascript_extra, stylesheet_extra, baseurl, na
     html = html.replace("%%PROGRAMVERSION%%", PROGRAMVERSION)
     return html.replace("%%TITLE%%", title)
 
+
 ########
 #NAVBAR#
 ########
+
+
 def navbar_dropdown(title, dropdown_id, items):
     '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/dropdown.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
+
 
 def navbar_dropdown_left(title, dropdown_id, items):
     '''A Navbar Item left aligned (not active)'''
@@ -31,12 +39,14 @@ def navbar_dropdown_left(title, dropdown_id, items):
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
 
+
 def navbar_dropdown_right(title, dropdown_id, items):
     '''A Navbar Item right aligned (not active)'''
     html = str(open("www/html/navbar/dropdownright.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
+
 
 def navbar_drop_left(title, dropdown_id, items):
     '''A Navbar Item (not active)'''
@@ -45,6 +55,7 @@ def navbar_drop_left(title, dropdown_id, items):
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
 
+
 def navbar_drop_right(title, dropdown_id, items):
     '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/dropright.html", "r").read())
@@ -52,16 +63,19 @@ def navbar_drop_right(title, dropdown_id, items):
     html = html.replace("%%DROPDOWNID%%", dropdown_id)
     return html.replace("%%ITEMS%%", items)
 
+
 def navbar_item(title, url):
     '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/item.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     return html.replace("%%URL%%", url.replace(" ", "/"))
 
+
 def navbar_item_active(title):
     '''A Navbar Item (not active)'''
     html = str(open("www/html/navbar/itemactive.html", "r").read())
     return html.replace("%%TITLE%%", title.title())
+
 
 def navbar_master(navbar_items, navbar_right_items):
     '''master file for the navbar'''
@@ -69,39 +83,48 @@ def navbar_master(navbar_items, navbar_right_items):
     html = html.replace("%%NAVBARRIGHT%%", navbar_right_items)
     return html.replace("%%NAVBARITEMS%%", navbar_items)
 
+
 #######
 #PAGES#
 #######
+
+
 def plugin_config_page(tab_bar_tabs, sections):
     '''Plugin config page'''
     html = str(open("www/html/pages/pluginconfigpage.html", "r").read())
     html = html.replace("%%PANELTABS%%", tab_bar_tabs)
     return html.replace("%%PLUGINLIST%%", sections)
 
+
 def root_config_page(sections):
     '''Root config page'''
     html = str(open("www/html/pages/rootconfigpage.html", "r").read())
     return html.replace("%%PLUGINLIST%%", sections)
+
 
 def login_page(return_url):
     '''Root config page'''
     html = str(open("www/html/pages/login.html", "r").read())
     return html.replace("%%RETURNURL%%", return_url)
 
+
 def password_page():
     '''Root config page'''
     html = str(open("www/html/pages/password.html", "r").read())
     return html
 
+
 ##########
 #SECTIONS#
 ##########
+
 
 def accordian(accordian_name, accordian_cards):
     '''outside of the accordian'''
     html = str(open("www/html/sections/accordian.html", "r").read())
     html = html.replace("%%ACCORDIANNAME%%", accordian_name)
     return html.replace("%%ACCORDIANCARDS%%", accordian_cards)
+
 
 def accordian_card(accordian_name, number, header, button, body, show=False):
     '''section for the accordian'''
@@ -119,6 +142,7 @@ def accordian_card(accordian_name, number, header, button, body, show=False):
         html = html.replace("%%CARDSHOW%%", "")
     return html
 
+
 def form(return_url, hidden_html, button_label, page):
     '''A form with return url, hidden section customizable button label'''
     html = str(open("www/html/sections/form.html", "r").read())
@@ -126,6 +150,7 @@ def form(return_url, hidden_html, button_label, page):
     html = html.replace("%%HIDDEN%%", hidden_html)
     html = html.replace("%%BUTTONLABEL%%", button_label)
     return html.replace("%%PAGE%%", page)
+
 
 def item(variable_name, label, help_text, input_html, not_in_config=False):
     ''' The whole section for each Config Object'''
@@ -142,6 +167,7 @@ def item(variable_name, label, help_text, input_html, not_in_config=False):
         html = html.replace("cs_", "")
     return html
 
+
 def modal(title, variable_name, modal_body, modal_footer, closeable=True):
     ''' Returnas a modal'''
     html = str(open("www/html/sections/modal.html", "r").read())
@@ -154,6 +180,7 @@ def modal(title, variable_name, modal_body, modal_footer, closeable=True):
     html = html.replace("%%MODALBODY%%", modal_body)
     return html.replace("%%MODALFOOTER%%", modal_footer)
 
+
 def list_modal(title, variable_name, option_list):
     ''' Returnas a modal for a list of options for adding a multi plugin'''
     html = str(open("www/html/sections/list_modal.html", "r").read())
@@ -161,11 +188,13 @@ def list_modal(title, variable_name, option_list):
     html = html.replace("%%VARIABLENAME%%", variable_name)
     return html.replace("%%LIST%%", option_list)
 
+
 def multi_modal(title, variable_name):
     '''Returnas a modal for adding a multi plugin'''
     html = str(open("www/html/sections/multi_modal.html", "r").read())
     html = html.replace("%%TITLE%%", title.title())
     return html.replace("%%VARIABLENAME%%", variable_name)
+
 
 def multi_panel(variable_name, name, enable_option, delete_option, section_html, visible=True):
     '''Returns a panel for multi type plugin data'''
@@ -178,6 +207,7 @@ def multi_panel(variable_name, name, enable_option, delete_option, section_html,
     if not visible:
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
+
 
 def panel(title, control, modal_obj, variable_name, section_html, visible=True):
     '''A Panel for plugins or sections'''
@@ -198,6 +228,7 @@ def panel(title, control, modal_obj, variable_name, section_html, visible=True):
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
+
 def plugin_panel(title, description, clear_config, clear_database, start_stop, add_remove):
     '''A Panel for plugins or sections'''
     html = str(open("www/html/sections/plugin_panel.html", "r").read())
@@ -208,9 +239,11 @@ def plugin_panel(title, description, clear_config, clear_database, start_stop, a
     html = html.replace("%%STARTSTOP%%", start_stop)
     return html.replace("%%ADDREMOVE%%", add_remove)
 
+
 def search_modal():
     '''Returnas a modal for adding a multi plugin'''
     return str(open("www/html/sections/search_modal.html", "r").read())
+
 
 def section(section_name, section_html, visible=True):
     '''A Panel for plugins or sections'''
@@ -221,10 +254,12 @@ def section(section_name, section_html, visible=True):
         return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
     return html.replace("%%SECTIONHIDE%%", "")
 
+
 def tab_bar(tabs):
     '''Returns the tab bar section'''
     html = str(open("www/html/sections/tabbar.html", "r").read())
     return html.replace("%%TABBARITEMS%%", tabs)
+
 
 def tab_bar_item(plugin_name, active=False):
     '''Returns a tab bar item'''
@@ -235,6 +270,7 @@ def tab_bar_item(plugin_name, active=False):
         return html.replace("%%ACTIVE%%", "active")
     return html.replace("%%ACTIVE%%", "")
 
+
 def tab_pane(plugin_name, plugin_html, active=False):
     '''Returns a tab pane'''
     html = str(open("www/html/sections/tabpane.html", "r").read())
@@ -244,25 +280,31 @@ def tab_pane(plugin_name, plugin_html, active=False):
         return html.replace("%%ACTIVE%%", "active")
     return html.replace("%%ACTIVE%%", "")
 
+
 def text_item(text):
     ''' The whole section for each Config Object'''
     html = str(open("www/html/sections/text_item.html", "r").read())
     html = html.replace("%%TEXT%%", text)
     return html
 
+
 ########
 #INPUTS#
 ########
+
+
 def add_instance_button(plugin_name):
     '''returns the add instance button for multi plugins'''
     html = str(open("www/html/inputs/addinstancebutton.html", "r").read())
     return html.replace("%%PLUGINNAME%%", plugin_name)
+
 
 def delete_instance_button(plugin_name, name):
     '''returns the add instance button for multi plugins'''
     html = str(open("www/html/inputs/deleteinstancebutton.html", "r").read())
     html = html.replace("%%PLUGINNAME%%", plugin_name)
     return html.replace("%%NAME%%", name)
+
 
 def input_button_with_data(value, id_name="", class_name="", data=False,
                            outer_div=True, enabled=True, visible=True):
@@ -295,9 +337,11 @@ def input_button_with_data(value, id_name="", class_name="", data=False,
         html = html.replace("%%VISIBLE%%", "style='display:none;'")
     return html
 
+
 def input_button(value, on_click=False, outer_div=True):
     '''shortcut for input_button_on_click'''
     return input_button_on_click(value, on_click, outer_div)
+
 
 def input_button_on_click(value, on_click, outer_div=True):
     '''returns a button'''
@@ -308,12 +352,14 @@ def input_button_on_click(value, on_click, outer_div=True):
         html = html.replace('</div>', "")
     return html.replace("%%BUTTONONCLICK%%", on_click)
 
+
 def checkbox(name, variable_name, checkbox_html):
     '''returns the outside tags of the checkbox'''
     html = str(open("www/html/inputs/checkbox.html", "r").read())
     html = html.replace("%%VARIABLENAME%%", variable_name)
     html = html.replace("%%TITLE%%", name)
     return html.replace("%%CHECKBOX%%", checkbox_html)
+
 
 def checkbox_multi(label, variable_name, value, checked=True, disabled=False, read_only=False,
                    script=None):
@@ -335,6 +381,7 @@ def checkbox_multi(label, variable_name, value, checked=True, disabled=False, re
     html = html.replace("%%VALUE%%", value)
     html = html.replace("%%LABEL%%", label)
     return html.replace("%%VARIABLENAME%%", variable_name)
+
 
 def checkbox_single(name, variable_name, checked=True, disabled=False, read_only=False,
                     script=None):
@@ -360,6 +407,7 @@ def checkbox_single(name, variable_name, checked=True, disabled=False, read_only
     html = html.replace("%%SWITCH%%", "")
     return html.replace("%%VARIABLENAME%%", variable_name + name)
 
+
 def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only=False,
                     script=None):
     '''returns a single checkbox'''
@@ -383,6 +431,7 @@ def checkbox_switch(name, variable_name, checked=True, disabled=False, read_only
     html = html.replace("%%VARIABLENAME%%", variable_name + name)
     return html
 
+
 def hidden(name, value, not_in_config=False):
     '''A hidden field for the page index'''
     html = str(open("www/html/inputs/hidden.html", "r").read())
@@ -392,10 +441,12 @@ def hidden(name, value, not_in_config=False):
         html = html.replace("cs_", "")
     return html
 
+
 def hidden_page_index(page_index):
     '''A hidden field for the page index'''
     html = str(open("www/html/inputs/hiddenpageindex.html", "r").read())
     return html.replace("%%PAGEINDEX%%", str(page_index))
+
 
 def input_box(input_type, variable_name, value, script="", max_length=None, minimum=None,
               maximum=None, read_only=False, disabled=False, button=""):
@@ -427,6 +478,7 @@ def input_box(input_type, variable_name, value, script="", max_length=None, mini
         return html.replace("%%BUTTON%%", button)
     return html.replace("%%BUTTON%%", "")
 
+
 def radio_option(variable_name, name, label, checked=False, disabled=False,
                  read_only=False, script=""):
     '''makes a radio option'''
@@ -444,6 +496,7 @@ def radio_option(variable_name, name, label, checked=False, disabled=False,
         script = ""
     html = html.replace("%%SCRIPT%%", script)
     return html
+
 
 def select_box_option(name, label, selected=False,
                       disabled=False, read_only=False, script=""):
@@ -465,6 +518,7 @@ def select_box_option(name, label, selected=False,
         script = ""
     html = html.replace("%%SCRIPT%%", script)
     return html
+
 
 def select_box(variable_name, value, options_html, multiple=False, box_size=0, script="",
                read_only=False, disabled=False):
@@ -498,23 +552,29 @@ def select_box(variable_name, value, options_html, multiple=False, box_size=0, s
         options_out_html += option.html_option(value)
     return html.replace("%%OPTIONS%%", blank_options_html + options_out_html)
 
+
 ######
 #TAGS#
 ######
+
 
 def script_link(location):
     '''returns a script link item'''
     html = str(open("www/html/tags/scriptlink.html", "r").read())
     return html.replace("%%LOCATION%%", location)
 
+
 def stylesheet_link(location):
     '''returns a script link item'''
     html = str(open("www/html/tags/stylesheetlink.html", "r").read())
     return html.replace("%%LOCATION%%", location)
 
+
 #########
 ##OTHER##
 #########
+
+
 def quick_table(data):
     '''creates a table from a dictionary'''
     html = str(open("www/html/other/table.html", "r").read())
@@ -527,6 +587,7 @@ def quick_table(data):
         body_html += table_body_html.replace("%%VALUE%%", str(data[key]))
     return html.replace("%%HEADERS%%", head_html).replace("%%VALUES%%", body_html)
 
+
 def progress_bar(label, value, max_value, percent):
     '''creates a progress bar'''
     html = str(open("www/html/other/progressbar.html", "r").read())
@@ -536,17 +597,23 @@ def progress_bar(label, value, max_value, percent):
     html = html.replace("%%PERCENT%%", str(percent))
     return html
 
+
 def dim_screen():
     '''creates system for a dimmed screen'''
     return '<div id="dim_screen"></div>'
+
+
 #########
 ##ADMIN##
 #########
+
+
 def users_page(users_html):
     '''creates a progress bar'''
     html = str(open("www/html/admin/users.html", "r").read())
     html = html.replace("%%USERSHTML%%", users_html)
     return html
+
 
 def user_page(user_id, username, is_admin):
     '''creates a progress bar'''

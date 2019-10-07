@@ -6,8 +6,10 @@ from abc import ABCMeta, abstractmethod
 from .column import Column
 from .sql_message import SQLMessage
 
+
 class SqlBaseClass(metaclass=ABCMeta):
     '''base class of database access'''
+
 
     _event_lock = threading.Event()
     _event_list = []
@@ -15,10 +17,12 @@ class SqlBaseClass(metaclass=ABCMeta):
 
     _thread_run = True
 
+
     def __init__(self):
         '''INIT'''
         self._thread = threading.Thread(target=self.__run, args=())
         self._thread.setName("SQL")
+
 
     def start_thread(self):
         '''start the thread'''
@@ -27,6 +31,7 @@ class SqlBaseClass(metaclass=ABCMeta):
             return True
         return False
 
+
     def stop_thread(self):
         '''stop the thread'''
         if self._thread.is_alive():
@@ -34,17 +39,21 @@ class SqlBaseClass(metaclass=ABCMeta):
             self._event_lock.set()
             self._thread.join()
 
+
     def get_thread_run(self):
         '''return if thread is running'''
         return self._thread.is_alive()
+
 
     def call(self, system_name, call):
         '''Function to call the sql through threadding'''
         return self.__call(SQLMessage(system_name, command=call))
 
+
     def get(self, system_name, call):
         '''Function to call the sql through threadding'''
         return self.__call(SQLMessage(system_name, command=call, return_data=[]))
+
 
     def table_check(self, system_name, table_name, data, version):
         '''Function to do a table check'''
@@ -54,9 +63,11 @@ class SqlBaseClass(metaclass=ABCMeta):
                                       data=data,
                                       version=version))
 
+
     def table_checks(self, system_name, data):
         '''Function to do a table check from a dict'''
         return self.table_check(system_name, data["name"], data["data"], data["version"])
+
 
     def table_has_row(self, system_name, table_name, dict_of_queries):
         '''Check if the Table has row by looking for all the queries'''
@@ -73,6 +84,7 @@ class SqlBaseClass(metaclass=ABCMeta):
                     return return_value[0]['id']
         return 0
 
+
     def insert(self, system_name, table_name, dict_of_values):
         '''insert data into a table'''
         keys = list(dict_of_values.keys())
@@ -82,6 +94,7 @@ class SqlBaseClass(metaclass=ABCMeta):
             values.append(self.__convert_var(dict_of_values[key]))
         command += ", ".join(values) + ");"
         return self.__call(SQLMessage(system_name, command=command))
+
 
     def select(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
         '''select data from a table'''
@@ -100,6 +113,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         command += ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
+
     def select_like(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
         '''select data from a table'''
         returns = "*"
@@ -117,11 +131,13 @@ class SqlBaseClass(metaclass=ABCMeta):
         command += ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
+
     def count(self, system_name, table_name):
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[],
                                       return_dict=False))[0][0]
+
 
     def count_where(self, system_name, table_name, dict_of_values):
         '''select data from a table'''
@@ -132,6 +148,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         command += " AND ".join(values) + ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[],
                                       return_dict=False))[0][0]
+
 
     def select_by_row(self, system_name, table_name, row_id, list_of_returns=None):
         '''insert data into a table'''
@@ -146,6 +163,7 @@ class SqlBaseClass(metaclass=ABCMeta):
             return return_data[0]
         return False
 
+
     def update(self, system_name, table_name, row_id, dict_of_values):
         '''update a row'''
         command = "UPDATE " + table_name + " SET "
@@ -155,10 +173,12 @@ class SqlBaseClass(metaclass=ABCMeta):
         command += ", ".join(values) + " WHERE id=" + str(row_id) + ";"
         return self.__call(SQLMessage(system_name, command=command))
 
+
     def delete_row(self, system_name, table_name, row_id):
         '''delete a row by id'''
         command = "DELETE FROM " + table_name + " WHERE id=" + str(row_id) +";"
         return self.__call(SQLMessage(system_name, command=command))
+
 
     def delete_where(self, system_name, table_name, dict_of_values):
         '''delete a row by id'''
@@ -169,6 +189,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         command += " AND ".join(values) + ";"
         return self.__call(SQLMessage(system_name, command=command))
 
+
     def __call(self, job):
         '''underlying call'''
         with self._event_list_lock:
@@ -178,6 +199,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         if isinstance(job.return_data(), (list, dict)):
             return job.return_data()
         return True
+
 
     def __convert_var(self, var):
         '''convert the value'''
@@ -192,9 +214,11 @@ class SqlBaseClass(metaclass=ABCMeta):
         elif isinstance(var, dict):
             return '"' + json.dumps(var, ensure_ascii=False) + '"'
 
+
 ##########
 ##THREAD##
 ##########
+
 
     def __run(self):
         '''Threadded Run'''
@@ -229,29 +253,36 @@ class SqlBaseClass(metaclass=ABCMeta):
             self._event_lock.clear()
         self._shutdown()
 
+
     @abstractmethod
     def _startup(self):
         '''Setup the System Here'''
+
 
     @abstractmethod
     def _shutdown(self):
         '''Shutdown the System Here'''
 
+
     @abstractmethod
     def _check_version_table_exists(self):
         '''returns if the table_version exists'''
+
 
     @abstractmethod
     def _trusted_call(self, call):
         '''Trusted Calls can send the command in a string to here for execution'''
 
+
     @abstractmethod
     def _trusted_get(self, call, return_dict=True):
         '''Grab a list of the tables'''
 
+
     @abstractmethod
     def _update_table(self, table_name, data, version):
         '''Update the table with the informaiton provided'''
+
 
     def __create_main_tables(self):
         '''Creates Tables'''
@@ -262,6 +293,7 @@ class SqlBaseClass(metaclass=ABCMeta):
                 Column("version", "integer", not_null=True)
             ]
             self._add_table("table_version", table_version_columns, 0, False)
+
 
     def __table_check(self, table_name, data, version):
         '''checks if the table exists adds it if it doesn't and update it if needed'''
@@ -274,6 +306,7 @@ class SqlBaseClass(metaclass=ABCMeta):
             return self._update_table(table_name, data, version)
         return False
 
+
     def __table_exists(self, table_name):
         '''Check if Table Exists'''
         command = 'SELECT version FROM table_version WHERE name="' + table_name + '";'
@@ -281,6 +314,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         if not info:
             return 0
         return info[0]['version']
+
 
     def _add_table(self, table_name, data, version, update_table=True):
         ''' Adds Table to the DB and then adds it into the table version DB'''

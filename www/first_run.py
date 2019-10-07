@@ -7,8 +7,11 @@ from libs.config import javascript as config_javascript
 from libs.root_event import RootEvent
 from libs import plugin_downloader
 
+
 class Root(HTMLTEMPLATE):
     '''Setup Script'''
+
+
     @cherrypy.expose
     def index(self, **kwargs):
         '''Index Page'''
@@ -19,21 +22,25 @@ class Root(HTMLTEMPLATE):
         page = str(open("www/html/pages/firstrunindex.html", "r").read())
         return self._template(page, False)
 
+
     @cherrypy.expose
     def javascript(self):
         '''Javascript File'''
         return config_javascript()
+
 
     @cherrypy.expose
     def plugin_downloader_javascript(self):
         '''Javascript File'''
         return plugin_downloader.javascript()
 
+
     @cherrypy.expose
     def get_multi_setup(self, plugin, name=""):
         '''Return the information needed for the setup of the plugin'''
         return get_config_multi_setup(self._tackem_system.plugins(), plugin,
                                       self._tackem_system.config(), name)
+
 
     def _post_action(self, kwargs):
         '''the part of the script to do all of the pages & updates of the config'''
@@ -66,10 +73,12 @@ class Root(HTMLTEMPLATE):
             return self._template(page, False)
         return self._template("TODO", False)
 
+
     @cherrypy.expose
     def plugin_control(self, action, name):
         '''plugin control link'''
         return plugin_downloader.plugin_control(action, name)
+
 
     @cherrypy.expose
     def restart(self):

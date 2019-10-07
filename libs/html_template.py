@@ -1,8 +1,11 @@
 '''HTML TEMPLATE'''
 import libs.html_parts as html_part
 
+
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
+
+
     def __init__(self, name, key, tackem_system, base_stylesheet=None, base_javascript=None):
         self._tackem_system = tackem_system
         self._name = name
@@ -13,6 +16,7 @@ class HTMLTEMPLATE():
         if key != "":
             self._plugin = self._tackem_system.plugin()
             self._config = self._tackem_system.config()
+
 
     def _template(self, body, navbar=True, javascript=None, stylesheet=None):
         '''Create The Template Layout'''
@@ -53,6 +57,7 @@ class HTMLTEMPLATE():
         return html_part.master_template(title, body, javascript_extra_html, stylesheet_extra_html,
                                          baseurl, navbar_html)
 
+
     def _error_page(self, code):
         '''Shows the error Page'''
         #if not any codes bellow or 404
@@ -61,16 +66,17 @@ class HTMLTEMPLATE():
             page = '<h1 class="text-center">401 Not Authorised</h1>'
         return self._template(page, False)
 
+
     def _navbar(self):
         '''Navigation Bar For System'''
         return html_part.navbar_master(self._navbar_left_items(), self._navbar_right_items())
 
+
     def _navbar_left_items(self):
         '''Navigation Bar Left Items For The System'''
         nav_items_html = ""
-        if self._tackem_system.auth and self._tackem_system.auth.enabled():
-            if not self._tackem_system.auth.check_logged_in():
-                return nav_items_html
+        if not self._tackem_system.auth.check_logged_in():
+            return nav_items_html
         nav_list = {}
         for key in self._tackem_system.system_keys():
             key_list = key.split(" ")
@@ -112,6 +118,7 @@ class HTMLTEMPLATE():
                 nav_items_html += html_part.navbar_dropdown(key, key, layer2)
         return nav_items_html
 
+
     def _navbar_right_items(self):
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = html_part.navbar_item("About", "about")
@@ -125,25 +132,18 @@ class HTMLTEMPLATE():
         navbar_shutdown_html = html_part.navbar_item("Shutdown", "shutdown")
 
         navbar_right_html = navbar_about_html
-        if self._tackem_system.auth and self._tackem_system.auth.enabled():
-            if self._tackem_system.auth.check_logged_in():
-                if self._tackem_system.auth.is_admin():
-                    admin_html = navbar_config_html
-                    admin_html += navbar_plugin_download_html
-                    admin_html += navbar_users_html
-                    admin_html += navbar_reboot_html
-                    admin_html += navbar_shutdown_html
-                    navbar_right_html += html_part.navbar_dropdown_right("Admin", "admin",
-                                                                         admin_html)
-                user_html = navbar_password_html
-                user_html += navbar_logout_html
-                navbar_right_html += html_part.navbar_dropdown_right("User", "user", user_html)
-            else:
-                navbar_right_html += navbar_login_html
+        if self._tackem_system.auth.check_logged_in():
+            if self._tackem_system.auth.is_admin():
+                admin_html = navbar_config_html
+                admin_html += navbar_plugin_download_html
+                admin_html += navbar_users_html
+                admin_html += navbar_reboot_html
+                admin_html += navbar_shutdown_html
+                navbar_right_html += html_part.navbar_dropdown_right("Admin", "admin",
+                                                                     admin_html)
+            user_html = navbar_password_html
+            user_html += navbar_logout_html
+            navbar_right_html += html_part.navbar_dropdown_right("User", "user", user_html)
         else:
-            system_html = navbar_config_html
-            system_html += navbar_plugin_download_html
-            system_html += navbar_reboot_html
-            system_html += navbar_shutdown_html
-            navbar_right_html += html_part.navbar_dropdown_right("System", "system", system_html)
+            navbar_right_html += navbar_login_html
         return navbar_right_html

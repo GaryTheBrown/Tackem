@@ -12,8 +12,10 @@ from libs.musicbrainz import MusicBrainz
 from libs.sql import setup_db
 from libs.startup_arguments import ARGS, PLUGINFOLDERLOCATION
 
+
 class TackemSystemAdmin(TackemSystemBase):
     '''Admin Control Of System Data'''
+
 
     def can_plugin_load(self, plugin_type, plugin_name):
         '''checks if the plugin can be loaded'''
@@ -23,9 +25,11 @@ class TackemSystemAdmin(TackemSystemBase):
             return check_for_required_programs(plugin_settings.get('linux_programs', []))
         return False
 
+
     def is_plugin_loaded(self, plugin_type, plugin_name):
         '''checks if the plugin is loaded'''
         return plugin_name.lower() in self._base_data.plugins.get(plugin_type.lower(), {})
+
 
     #Plugin Methods
     def load_plugins(self):
@@ -36,6 +40,7 @@ class TackemSystemAdmin(TackemSystemBase):
                 plugin_name = folder_split[-2]
                 plugin_type = folder_split[-3]
                 self.load_plugin(plugin_type, plugin_name)
+
 
     def load_plugin(self, plugin_type, plugin_name):
         '''load a plugin'''
@@ -56,11 +61,13 @@ class TackemSystemAdmin(TackemSystemBase):
             self._base_data.plugins[plugin_type][plugin_name] = plugin
         return True
 
+
     def reload_plugins(self):
         '''reloads all plugins'''
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
                 self.reload_plugin(plugin_type, plugin_name)
+
 
     def reload_plugin(self, plugin_type, plugin_name):
         '''reloads the plugin'''
@@ -72,6 +79,7 @@ class TackemSystemAdmin(TackemSystemBase):
             return False
         return True
 
+
     def delete_plugins(self):
         '''deletes the plugins'''
         list_of_plugins = []
@@ -81,6 +89,7 @@ class TackemSystemAdmin(TackemSystemBase):
         for plugin_type, plugin_name in list_of_plugins:
             self.delete_plugin(plugin_type, plugin_name)
         return True
+
 
     def delete_plugin(self, plugin_type, plugin_name):
         '''deletes a plugin'''
@@ -92,15 +101,18 @@ class TackemSystemAdmin(TackemSystemBase):
                 del self._base_data.plugins[plugin_type]
         return True
 
+
     def start_plugin(self, plugin_type, plugin_name):
         '''Starts a plugins systems'''
         self.load_plugin_systems(plugin_type, plugin_name)
         self.start_plugin_systems(plugin_type, plugin_name)
 
+
     def stop_plugin(self, plugin_type, plugin_name):
         '''Stops a plugins systems'''
         self.stop_plugin_systems(plugin_type, plugin_name)
         self.delete_plugin_systems(plugin_type, plugin_name)
+
 
     #Systems Methods
     def load_systems(self):
@@ -108,6 +120,7 @@ class TackemSystemAdmin(TackemSystemBase):
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
                 self.load_plugin_systems(plugin_type, plugin_name)
+
 
     def load_system(self, system_name, single_instance=True):
         '''loads system'''
@@ -124,6 +137,7 @@ class TackemSystemAdmin(TackemSystemBase):
             temp_plugin = self._base_data.plugins[plugin_type][plugin_name]
             self._base_data.systems[system_name] = temp_plugin.Plugin(system_name, single_instance)
         return True
+
 
     def load_plugin_systems(self, plugin_type, plugin_name):
         '''loads a single plugin systems'''
@@ -142,11 +156,13 @@ class TackemSystemAdmin(TackemSystemBase):
                     all_created = False
         return all_created
 
+
     def delete_systems(self):
         '''deletes the systems'''
         for name in list(name for name in self._base_data.systems):
             self.delete_system(name)
         return True
+
 
     def delete_system(self, system_name):
         '''deletes a system'''
@@ -156,11 +172,13 @@ class TackemSystemAdmin(TackemSystemBase):
                 return True
         return False
 
+
     def delete_plugin_systems(self, plugin_type, plugin_name):
         '''deletes a plugin systems'''
         system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
         for system_name in system_names:
             self.delete_system(system_name)
+
 
     def start_systems(self):
         '''starts all of the systems'''
@@ -169,6 +187,7 @@ class TackemSystemAdmin(TackemSystemBase):
             if not self.start_system(name):
                 return_check = False
         return return_check
+
 
     def start_system(self, system_name):
         '''starts a system'''
@@ -181,11 +200,13 @@ class TackemSystemAdmin(TackemSystemBase):
                 return False
             return True
 
+
     def start_plugin_systems(self, plugin_type, plugin_name):
         '''start systems for a plugin'''
         system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
         for system_name in system_names:
             self.start_system(system_name)
+
 
     def stop_systems(self):
         '''stops all of the systems'''
@@ -200,6 +221,7 @@ class TackemSystemAdmin(TackemSystemBase):
                         running = True
             return True
 
+
     def stop_system(self, system_name):
         '''stops a system'''
         with self._base_data.systems_lock:
@@ -207,6 +229,7 @@ class TackemSystemAdmin(TackemSystemBase):
             while True:
                 if not self._base_data.systems[system_name].running():
                     return True
+
 
     def stop_plugin_systems(self, plugin_type, plugin_name):
         '''stop systems for a plugin'''
@@ -220,10 +243,12 @@ class TackemSystemAdmin(TackemSystemBase):
                     if not self._base_data.systems[system_name].running():
                         del temp_system_names[index]
 
+
     def get_systems_for_plugin(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
         system_name = plugin_type + " " + plugin_name
         return list(key for key in self._base_data.systems if system_name in key)
+
 
     def is_systems_for_plugin_exists(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
@@ -233,6 +258,7 @@ class TackemSystemAdmin(TackemSystemBase):
                 if system_name in key:
                     return True
             return False
+
 
     def is_systems_for_plugin_running(self, plugin_type, plugin_name):
         '''gets a list of systems for a plugin'''
@@ -244,6 +270,7 @@ class TackemSystemAdmin(TackemSystemBase):
                         return True
             return False
 
+
     #Plugin Cfg Methods
     def load_plugin_cfgs(self):
         '''load all plugin cfgs'''
@@ -251,6 +278,7 @@ class TackemSystemAdmin(TackemSystemBase):
             for plugin_name in self._base_data.plugins[plugin_type]:
                 self.load_plugin_cfg(plugin_type, plugin_name)
         return True
+
 
     def load_plugin_cfg(self, plugin_type, plugin_name):
         '''load a plugins cfg'''
@@ -267,11 +295,13 @@ class TackemSystemAdmin(TackemSystemBase):
                     plugin_cfg[plugin_name] = temp_plugin.CFG
         return True
 
+
     def delete_plugin_cfgs(self):
         '''deletes the plugins cfg'''
         with self._base_data.plugin_cfg_lock:
             self._base_data.plugin_cfg = {}
         return True
+
 
     def delete_plugin_cfg(self, plugin_type, plugin_name):
         '''removes a plugins cfg'''
@@ -283,6 +313,7 @@ class TackemSystemAdmin(TackemSystemBase):
                 del self._base_data.plugin_cfg[plugin_type]
         return True
 
+
     def get_plugin_cfg(self):
         '''retrieves the plugins cfg'''
         with self._base_data.plugin_cfg_lock:
@@ -293,6 +324,7 @@ class TackemSystemAdmin(TackemSystemBase):
                     cfg += self._base_data.plugin_cfg[plugin_type][plugin_name]
             return cfg
 
+
     #Config Methods
     def load_config(self):
         '''load the config'''
@@ -300,11 +332,13 @@ class TackemSystemAdmin(TackemSystemBase):
             if self._base_data.config is None:
                 self._base_data.config = config_load(ARGS.home, self.get_plugin_cfg())
 
+
     def delete_config(self):
         '''deletes the config'''
         with self._base_data.config_lock:
             if self._base_data.config is not None:
                 self._base_data.config = None
+
 
     def write_config_to_disk(self, outfile=None):
         '''writes config to file'''
@@ -314,6 +348,7 @@ class TackemSystemAdmin(TackemSystemBase):
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
 
+
     def get_plugin_config(self, plugin_type, plugin_name, instance=None):
         '''returns the config for a plugin'''
         with self._base_data.config_lock:
@@ -321,28 +356,34 @@ class TackemSystemAdmin(TackemSystemBase):
                 return self._base_data.config[plugin_type][plugin_name][instance]
             return self._base_data.config[plugin_type][plugin_name]
 
+
     def get_global_config(self):
         '''returns the global config'''
         with self._base_data.config_lock:
             return self._base_data.config
+
 
     #SQL Methods
     def load_sql(self):
         '''load SQL'''
         self._base_data.sql = setup_db(self._base_data.config['database'])
 
+
     def delete_sql(self):
         '''deletes the SQL system'''
         self._base_data.sql = None
+
 
     def start_sql(self):
         '''starts the SQL System'''
         self._base_data.sql.start_thread()
 
+
     def stop_sql(self):
         '''stops the SQL System'''
         if self._base_data.sql is not None:
             self._base_data.sql.stop_thread()
+
 
     #MusicBrainz Methods
     def load_musicbrainz(self):
@@ -350,21 +391,24 @@ class TackemSystemAdmin(TackemSystemBase):
         if self._base_data.config.get("musicbrainz", {}).get('enabled', True):
             self._base_data.musicbrainz = MusicBrainz()
 
+
     def delete_musicbrainz(self):
         '''deletes the musicbrainz'''
         if self._base_data.musicbrainz is not None:
             self._base_data.musicbrainz = None
 
+
     #Authentication Methods
     def load_auth(self):
         '''loads the auth'''
-        if self._base_data.config.get("authentication", {}).get('enabled', True):
-            self._base_data.auth = Authentication()
+        self._base_data.auth = Authentication()
+
 
     def delete_auth(self):
         '''deletes the auth'''
         if self._base_data.auth is not None:
             self._base_data.auth = None
+
 
     def start_auth(self):
         '''starts the auth'''

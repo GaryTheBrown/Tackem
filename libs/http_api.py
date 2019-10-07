@@ -2,6 +2,7 @@
 import json
 import requests
 
+
 def restful_call(url, data=False):#data = 'json'
     '''make a request to a restful api'''
     #url = 'https://url'

@@ -3,8 +3,11 @@ import musicbrainzngs
 from system.root import TackemSystemRoot
 from libs.startup_arguments import PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRESS
 
+
 class MusicBrainz():
     '''video ripping controller'''
+
+
     def __init__(self):
         self.__tackem_system = TackemSystemRoot('musicbrainz')
         if self.__tackem_system.config().get('enabled', False):
@@ -17,6 +20,7 @@ class MusicBrainz():
                     musicbrainzngs.auth(self.__tackem_system.config()['username'],
                                         self.__tackem_system.config()['password'])
             self.__logged_in = True
+
 
     #https://python-musicbrainzngs.readthedocs.io/en/v0.6/
     def get_data_for_discid(self, disc_id):

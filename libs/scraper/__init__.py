@@ -10,6 +10,7 @@ from . import html_parts
 from .scraper_html import ScraperHtml
 from .ripper import ScraperRipper
 
+
 def mounts():
     '''where the system creates the cherrypy mounts'''
     scraper = ScraperHtml()

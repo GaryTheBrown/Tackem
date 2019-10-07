@@ -8,6 +8,7 @@ PROGRAMGITADDRESS = "http://github.com/garythebrown/tackem/"
 PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
 PLUGINFOLDERLOCATION = "plugins/"
 
+
 def parse():
     '''parses the command line arguments'''
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -19,5 +20,6 @@ def parse():
                         action='version',
                         version="Tackem Version: " + PROGRAMVERSION)
     return parser.parse_args()
+
 
 ARGS = parse()

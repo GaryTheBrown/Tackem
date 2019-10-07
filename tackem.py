@@ -8,13 +8,18 @@ from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
 from system.admin import TackemSystemAdmin
 
+
 #TODO move all actions to the api. allowing localhost to use without api key or generate single
 # action keys
 
+
 class Tackem:
     '''main program entrance'''
+
+
     def __init__(self):
         self.__webserver = None
+
 
     def start(self):
         '''Start of the program'''
@@ -24,7 +29,7 @@ class Tackem:
         TackemSystemAdmin().load_plugin_cfgs()
         TackemSystemAdmin().load_config()
 
-        if not TackemSystemAdmin().get_config(['firstrun'], True):
+        if not TackemSystemAdmin().get_config(['firstrun'], True)[1]:
             print("LOADING DATABASE...")
             TackemSystemAdmin().load_sql()
             print("STARTING DATABASE...")
@@ -45,15 +50,17 @@ class Tackem:
         self.__start_webserver()
         print("TACKEM HAS STARTED")
 
+
     def stop(self):
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
         self.__stop_webserver()
-        if not TackemSystemAdmin().get_config(['firstrun'], True):
+        if not TackemSystemAdmin().get_config(['firstrun'], True)[1]:
             print("STOPPING SYSTEMS...")
             TackemSystemAdmin().stop_systems()
             print("STOPPING DATABASE...")
             TackemSystemAdmin().stop_sql()
+
 
     def cleanup(self):
         '''Cleanup commands'''
@@ -74,6 +81,7 @@ class Tackem:
         print("SAVING CONFIG FILE...")
         TackemSystemAdmin().write_config_to_disk()
         print("SHUTDOWN COMPLETED")
+
 
     def run(self):
         '''Looping function'''
@@ -103,42 +111,41 @@ class Tackem:
 
         self.cleanup()
 
+
     #Webserver Methods
     def __load_webserver(self):
         '''loads the webserver system'''
-        if not TackemSystemAdmin().get_config(['api', 'enabled'], True):
-            return False
-        if TackemSystemAdmin().get_config(['webui', 'disabled'], False):
+        if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
             return False
         if self.__webserver is None:
             self.__webserver = Httpd()
             return True
         return None
 
+
     def __delete_webserver(self):
         '''deletes the webserver'''
         if self.__webserver is not None:
             self.__webserver = None
 
+
     def __start_webserver(self):
         '''starts the webserver'''
-        if not TackemSystemAdmin().get_config(['api', 'enabled'], True):
-            return False
-        if TackemSystemAdmin().get_config(['webui', 'disabled'], False):
+        if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
             return False
         if self.__webserver is not None:
             self.__webserver.start()
         return True
 
+
     def __stop_webserver(self):
         '''stops the Webserver'''
-        if not TackemSystemAdmin().get_config(['api', 'enabled'], True):
-            return False
-        if TackemSystemAdmin().get_config(['webui', 'disabled'], False):
+        if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
             return False
         if self.__webserver is not None:
             self.__webserver.stop()
         return True
+
 
 ##############################################
 # Catching the ctrl + c event and doing a clean shutdown
@@ -147,6 +154,7 @@ def ctrl_c(_, __):
     print(" caught Shutting Down Cleanly...")
     RootEvent.set_event("shutdown")
 ##############################################
+
 
 if __name__ == "__main__":
     Tackem().run()

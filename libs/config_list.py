@@ -3,8 +3,11 @@ from libs.config_object import ConfigObject
 from libs.config_rules import ConfigRules
 import libs.html_parts as html_part
 
+
 class ConfigList:
     '''Class Controller for Config Object list'''
+
+
     def __init__(self, name, label=None, plugin=None, objects=None, rules=None, javascripts=None,
                  is_section=False, section_link=None):
         if isinstance(name, str):
@@ -28,47 +31,58 @@ class ConfigList:
         self._is_section = is_section
         self._section_link = section_link
 
+
     def __repr__(self):
         '''print return'''
         return "ConfigList(" + self._name + ")"
+
 
     def append(self, config_object):
         '''append item to the list'''
         if isinstance(config_object, (ConfigObject, ConfigList)):
             self._objects.append(config_object)
 
+
     def append_javascript(self, javascript_function):
         '''append item to the list'''
         if isinstance(javascript_function, str):
             self._javascripts.append(javascript_function)
 
+
     def name(self):
         '''get name'''
         return self._name
+
 
     def label(self):
         '''get label'''
         return self._label
 
+
     def objects(self):
         '''get objects'''
         return self._objects
+
 
     def rules(self):
         '''get rules'''
         return self._rules
 
+
     def is_section(self):
         '''get if is section'''
         return self._is_section
+
 
     def section_link(self):
         '''get link to rules for the section'''
         return self._section_link
 
+
     def get_root_spec(self):
         '''returns the root generated spec file'''
         return self.__get_spec_part(self._objects, 0)
+
 
     def get_plugin_spec(self, single_instance):
         '''returns the plugins generated spec file'''
@@ -84,6 +98,7 @@ class ConfigList:
         # line bellow for debugging
         # print(return_string)
         return return_string
+
 
     def __get_spec_part(self, config_list, indent):
         '''function for recursion of list'''
@@ -116,12 +131,14 @@ class ConfigList:
 
         return return_string
 
+
     def __tab(self, count):
         '''Insert the tabbing'''
         return_string = ""
         for _ in range(count):
             return_string += "    "
         return return_string
+
 
     def __open_bracket(self, count):
         '''Insert the open brackets'''
@@ -130,12 +147,14 @@ class ConfigList:
             return_string += "["
         return return_string
 
+
     def __close_bracket(self, count):
         '''Insert the close brackets'''
         return_string = ""
         for _ in range(count):
             return_string += "]"
         return return_string
+
 
     def convert_var(self, location_list, variable):
         '''search and return type'''
@@ -151,6 +170,7 @@ class ConfigList:
             return None
         return config_list.convert_var(location_list[1:], variable)
 
+
     def search_for_object_by_name(self, name):
         '''search objects by name and return key to use'''
         for obj in self._objects:
@@ -164,6 +184,7 @@ class ConfigList:
                         return section_obj
         return None
 
+
     def search_for_list_by_name(self, name):
         '''search by name and return key to use'''
         for obj in self._objects:
@@ -176,6 +197,7 @@ class ConfigList:
                     if section_obj.name() == name:
                         return section_obj
         return None
+
 
     def check_if_section_is_enabled(self, config=None):
         '''checks if the list has an enabled object returns its default value if it does'''
@@ -235,6 +257,7 @@ class ConfigList:
                                                        section_enabled)
         return return_html
 
+
     def __many_section(self, obj, config, variable_name):
         '''Work for the Many section done here'''
         many_html = ""
@@ -278,6 +301,7 @@ class ConfigList:
                                                                      key), enabled)
         return many_html
 
+
     def config_find(self, config, section_link):
         '''A recursive way of finding a value from the config'''
         if isinstance(section_link, list):
@@ -287,6 +311,7 @@ class ConfigList:
                 return self.config_find(config[section_link[0]], section_link[1:])
             return None
         return config[section_link]
+
 
     def section_visible(self, variable_name_loop, config, section_link):
         '''checks if the section should be shown or hidden'''

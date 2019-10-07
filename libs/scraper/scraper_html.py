@@ -3,13 +3,16 @@ import os
 import cherrypy
 from .scraper_base import Scraper
 
+
 class ScraperHtml(Scraper):
     '''Scraper html System Here'''
+
 
     @cherrypy.expose
     def index(self):
         '''index of scraper'''
         return "RUNNING"
+
 
     @cherrypy.expose
     def javascript(self):

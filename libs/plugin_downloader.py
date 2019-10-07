@@ -13,6 +13,7 @@ import libs.html_parts as html_parts
 from libs.startup_arguments import PLUGINFOLDERLOCATION, PROGRAMCONFIGLOCATION
 from system.admin import TackemSystemAdmin
 
+
 SYSTEM_NAME = "plugin_downloader"
 
 REPO_BRANCH = "master"
@@ -25,6 +26,7 @@ GITHUB_PLUGINS = []
 LOCAL_PLUGINS = []
 NEW_PLUGIN_COUNT = 0
 
+
 def is_git_repo(path):
     '''quick script to check if folder is a git repo'''
     try:
@@ -32,6 +34,7 @@ def is_git_repo(path):
         return True
     except git.InvalidGitRepositoryError:
         return False
+
 
 def is_origin_offical(path, plugin_name, plugin_type):
     '''checks if repo is linked to the offical github'''
@@ -43,6 +46,7 @@ def is_origin_offical(path, plugin_name, plugin_type):
     if plugin_name.lower() in url and plugin_type.lower() in url and HOST_NAME.lower() in url:
         return True
     return False
+
 
 def get_local_plugins():
     '''gets a list of local plugins'''
@@ -62,6 +66,7 @@ def get_local_plugins():
             }
 
             LOCAL_PLUGINS.append(local_plugin)
+
 
 def get_github_plugins():
     '''grabs the list of plugins on github and checks if local'''
@@ -91,6 +96,7 @@ def get_github_plugins():
 
             GITHUB_PLUGINS.append(save)
 
+
 def get_single_file(plugin_type, plugin_name, file_to_get):
     '''grabs a single file from github'''
     folder = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower() + "/"
@@ -102,6 +108,7 @@ def get_single_file(plugin_type, plugin_name, file_to_get):
     if return_data.status_code == 200:
         return return_data.text
     return None
+
 
 def plugin_download_page(full_system=True):
     '''returns the web page for choosing plugins'''
@@ -188,6 +195,7 @@ def plugin_download_page(full_system=True):
 
     return html
 
+
 def plugin_control(action, plugin_title):
     '''function to link to all actions for plugin control'''
     return_data = {
@@ -265,6 +273,7 @@ This Plugin Requires extra Programs Please see the readme"""
 
     return json.dumps(return_data)
 
+
 def get_readme_as_html(plugin_type, plugin_name):
     '''turns the readme.nd into html'''
     readme = get_single_file(plugin_type, plugin_name, "README.md")
@@ -272,6 +281,7 @@ def get_readme_as_html(plugin_type, plugin_name):
     if readme is None or readme == "":
         return None
     return markdown.markdown(readme, output_format="html5")
+
 
 def download_plugin(plugin_title, plugin_type, plugin_name):
     '''function to use list from html page to download the plugins'''
@@ -309,11 +319,13 @@ def delete_plugin(plugin_title, plugin_type, plugin_name):
 
     return True
 
+
 def update_plugins():
     '''function to use list from html page to download the plugins'''
     for plugin in GITHUB_PLUGINS:
         if plugin['downloaded']:
             update_plugin(plugin['plugin_type'], plugin['plugin_name'])
+
 
 def update_plugin(plugin_type, plugin_name):
     '''function to use list from html page to download the plugins'''
@@ -326,15 +338,18 @@ def update_plugin(plugin_type, plugin_name):
         return True
     return False
 
+
 def get_plugin_branches(plugin_type, plugin_name):
     '''Gets a list of branches'''
     location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
     return [branch.name for branch in git.Repo(location).heads]
 
+
 def get_current_plugin_branch(plugin_type, plugin_name):
     '''Gets the current branch'''
     location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
     return git.Repo(location).active_branch()
+
 
 def change_plugin_branch(plugin_type, plugin_name, branch):
     '''will change the branch for the plugin'''
@@ -345,6 +360,7 @@ def change_plugin_branch(plugin_type, plugin_name, branch):
         return True
     return False
 
+
 def reload_plugin(plugin_type, plugin_name):
     '''Function to attempt to reload the plugin after a failed install'''
     TackemSystemAdmin().write_config_to_disk()
@@ -354,6 +370,7 @@ def reload_plugin(plugin_type, plugin_name):
     TackemSystemAdmin().load_config()
     return True
 
+
 def start_plugin_systems(plugin_type, plugin_name):
     '''function to start up the plugins systems'''
     if TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
@@ -361,6 +378,7 @@ def start_plugin_systems(plugin_type, plugin_name):
     reload_plugin(plugin_type, plugin_name)
     TackemSystemAdmin().load_plugin_systems(plugin_type, plugin_name)
     return True
+
 
 def stop_plugin_systems(plugin_type, plugin_name):
     '''function to start up the plugins systems'''
@@ -373,6 +391,7 @@ def stop_plugin_systems(plugin_type, plugin_name):
     uninstall_plugin_modules(plugin_type, plugin_name)
     TackemSystemAdmin().load_config()
     return True
+
 
 def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
     '''function to remove data from the config'''
@@ -390,6 +409,7 @@ def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
     if not config['plugins'][plugin_type]:
         del config['plugins'][plugin_type]
     config.write()
+
 
 def clean_db_after_deletion(plugin_type, plugin_name):
     '''function to clean the Database after plugin removal'''
@@ -416,6 +436,7 @@ def install_plugin_modules(plugin_type, plugin_name):
         pip_call = [sys.executable, '-m', 'pip', 'install', '-r', requirements_file, '--user']
         subprocess.check_call(pip_call)
         print("installed plugin requirements")
+
 
 def uninstall_plugin_modules(plugin_type, plugin_name):
     '''uninstall plugin modiles'''

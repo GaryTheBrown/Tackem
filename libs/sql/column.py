@@ -1,8 +1,11 @@
 '''Column Defenition Stuff Useful for updating tables'''
 import time
 
+
 class Column:
     '''Column'''
+
+
     variable_types = {
         "bit":0,#bool
         "tinyint":1, "smallint":1, "int":1, "mediumint":1, "integer":1, "bigint":1,#ints
@@ -12,6 +15,8 @@ class Column:
         #special
         "date":3, "time":4, "timestamp":5, "datetime":6, "year":7, "enum":8, "set":9, "json":10
     }
+
+
     def __init__(self, name, variable_type=False, primary_key=False,
                  unique=False, not_null=False, default=None, default_raw=False):
 
@@ -29,9 +34,12 @@ class Column:
             self.primary_key = bool(name[5])
             self.not_null = bool(name[3])
             self.default = name[4]
+
+
     def __repr__(self):
         '''print return'''
         return "Column(" + self.to_string() + ")"
+
 
     def to_string(self):
         '''turns Column info into a string for commands'''
@@ -53,6 +61,7 @@ class Column:
             elif isinstance(self.default, bool):
                 return_string += '"True"' if self.default else '"False"'
         return return_string
+
 
     def get_default_value(self):
         '''returns the default blank to use for when not null on column'''
@@ -76,6 +85,8 @@ class Column:
         elif self.variable_types[self.variable_type] == 10:
             return_string += "''"
         return return_string
+
+
     def compare(self, to_compare):
         '''Compare the results'''
         if not to_compare.name == self.name:

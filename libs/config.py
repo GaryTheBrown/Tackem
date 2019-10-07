@@ -7,13 +7,13 @@ from libs.config_option import ConfigOption
 from libs.data.locale_options import OPTIONS as locale_options
 import libs.html_parts as html_part
 
+
 CONFIG = ConfigList("root")
 CONFIG.append(
     ConfigObject("firstrun", "", "boolean", default=True, hide_from_html=True)
 )
 CONFIG.append(
     ConfigList("authentication", objects=[
-        ConfigObject("enabled", "Enabled", "boolean", default=True, input_type="switch")
     ])
 )
 CONFIG.append(
@@ -38,8 +38,6 @@ CONFIG.append(
 )
 CONFIG.append(
     ConfigList("api", "API Interface", objects=[
-        ConfigObject("enabled", "Enabled", "boolean", default=True, toggle_section="api",
-                     input_type="switch"),
         ConfigObject("masterkey", "Master API Key", "string", default='', button="Generate API Key",
                      button_onclick="GenerateAPIKey('api_masterkey');",
                      help_text="The master API key for slaves to access"),
@@ -88,6 +86,7 @@ The base url for Cover Art Archive requests Leave alone unless you need to move 
 )
 CONFIG.append(ConfigList("plugins"))# keep this one at the end of the config section
 
+
 def config_load(path, plugin_configs):
     """Create a config file using a configspec and validate it against a Validator object"""
     temp_spec = CONFIG.get_root_spec() + plugin_configs
@@ -100,9 +99,11 @@ def config_load(path, plugin_configs):
     # print(config)
     return config
 
+
 def javascript():
     '''Javascript File'''
     return str(open("www/javascript/config.js", "r").read())
+
 
 def post_config_settings(kwargs, config, plugins):
     '''Fills in the config dict with the settings based on its name'''
@@ -123,6 +124,7 @@ def post_config_settings(kwargs, config, plugins):
             if value is not None:
                 add_val_to_config(config, key_list[1:], value)
 
+
 def add_val_to_config(config, key_list, value):
     '''recursive way of adding value into the config'''
     if len(key_list) == 1:
@@ -134,14 +136,17 @@ def add_val_to_config(config, key_list, value):
             config[key_list[0]] = {}
         add_val_to_config(config[key_list[0]], key_list[1:], value)
 
+
 def root_config_page(config):
     '''get the full root config setup page into a form'''
     return html_part.form("/", html_part.hidden_page_index(2), "Next", __root_config_page(config))
+
 
 def plugin_config_page(config, plugins):
     '''setup for Libraries into a form'''
     return html_part.form("/", html_part.hidden_page_index(4), "Save & Restart",
                           __plugin_config_page(config, plugins))
+
 
 def full_config_page(config, plugins):
     '''get the full config setup page into a form'''
@@ -149,9 +154,11 @@ def full_config_page(config, plugins):
     return html_part.form(baseurl + "config", "", "Save & Restart",
                           __root_config_page(config) + __plugin_config_page(config, plugins))
 
+
 def __root_config_page(config):
     '''get the full root config setup page'''
     return html_part.root_config_page(CONFIG.get_config_html(config))
+
 
 def __plugin_config_page(config, plugins):
     '''setup for Libraries'''
@@ -162,8 +169,8 @@ def __plugin_config_page(config, plugins):
         plugin_pane_html = ""
         plugin_tabs_html += html_part.tab_bar_item(plugin_type, first_type)
         for plugin in plugins[plugin_type]:
-            temp_plugin = plugins[plugin_type][plugin]
-            temp_config = config["plugins"][plugin_type][plugin]
+            temp_plugin = plugins.get(plugin_type, {}).get(plugin, None)
+            temp_config = config["plugins"].get(plugin_type, {}).get(plugin, {})
             variable_name = "plugins_" + plugin_type + "_" + plugin + "_"
             if temp_plugin.SETTINGS.get("single_instance", True):
                 plugin_pane_html += __single_plugin_config_page(plugin, temp_plugin, temp_config,
@@ -176,6 +183,7 @@ def __plugin_config_page(config, plugins):
             first_type = False
     return html_part.plugin_config_page(html_part.tab_bar(plugin_tabs_html), plugin_panes_html)
 
+
 def __single_plugin_config_page(plugin_name, plugin, config, variable_name):
     '''returns the single plugin pane'''
     section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
@@ -187,6 +195,7 @@ def __single_plugin_config_page(plugin_name, plugin, config, variable_name):
     plugin_html = plugin.CONFIG.get_config_html(config, variable_name)
     return html_part.panel(plugin_name, control_html, "", variable_name[:-1],
                            plugin_html, section_enabled)
+
 
 def __multi_plugin_config_page(plugin_name, plugin, config, variable_name):
     '''returns the multi plugin pane'''
@@ -211,6 +220,7 @@ def __multi_plugin_config_page(plugin_name, plugin, config, variable_name):
     return html_part.panel(plugin_name, control_html, modal, variable_name[:-1],
                            plugin_html, section_enabled)
 
+
 def _multi_plugin_config_section(plugin, config, variable_name, name):
     '''returns a section of a multi plugin'''
     section_enabled = plugin.CONFIG.check_if_section_is_enabled(config)
@@ -223,6 +233,7 @@ def _multi_plugin_config_section(plugin, config, variable_name, name):
     section_html = plugin.CONFIG.get_config_html(config, variable_name + "_" + name + "_")
     return html_part.multi_panel(variable_name, name, enable_option, delete_option,
                                  section_html, section_enabled)
+
 
 def get_config_multi_setup(plugins, plugin_path, full_config, name=""):
     '''Return the information needed for the setup of the plugin'''

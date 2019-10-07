@@ -3,8 +3,10 @@ from libs.config_base import ConfigBase
 from libs.config_option import ConfigOption
 import libs.html_parts as html_part
 
+
 class ConfigObject(ConfigBase):
     '''Class Controller for a single Config Object'''
+
 
     __types = ["string", "float", "string_list", "boolean", "option", "integer", "password"
                #, "ip_addr", "list", "force_list", "tuple", "int_list", "float_list",
@@ -16,6 +18,7 @@ class ConfigObject(ConfigBase):
     __special_input_types = ["checkbox", "color", "date", "datetime-local", "email",
                              "radio", "range", "text", "time", "url",
                             ]
+
 
     def __init__(self, name, label, variable_type, default=None,
                  replace_default_in_files=True, minimum=None, maximum=None, options=None,
@@ -46,21 +49,26 @@ class ConfigObject(ConfigBase):
         super().__init__(name, label, priority, script, hide_from_html, read_only, disabled, show,
                          hide, toggle_section, toggle_sections, enable_disable, section_controller)
 
+
     def __repr__(self):
         '''print return'''
         return "ConfigObject(" + self._name + ")"
+
 
     def default(self):
         '''return default'''
         return self.__default
 
+
     def name(self):
         '''return variable name'''
         return self._name
 
+
     def var_type(self):
         '''return variable type'''
         return self.__type
+
 
     def get_config_spec(self):
         '''Returns the line for the config option'''
@@ -114,6 +122,7 @@ class ConfigObject(ConfigBase):
         return_string += ")\n"
         return return_string
 
+
     def get_config_html(self, variable_name, value, link=None):
         '''returns the config_html'''
         if self._hide_on_html:
@@ -132,6 +141,7 @@ class ConfigObject(ConfigBase):
                     value = str(self.__default)
         return html_part.item(variable_name, self._label, self.__help_text,
                               self.get_input_html(variable_name, value), self.__not_in_config)
+
 
     def get_input_html(self, variable_name, value):
         '''Returns the Input portion of the system'''
@@ -204,6 +214,7 @@ class ConfigObject(ConfigBase):
 
         return "[BROKEN OPTION " + self._name + "]"
 
+
     def __select_box(self, variable_name, value, multiple=False):
         '''select box code'''
         options_html = ""
@@ -213,12 +224,14 @@ class ConfigObject(ConfigBase):
                                     read_only=self._read_only, disabled=self._disabled,
                                     multiple=multiple)
 
+
     def __radio(self, variable_name, value):
         '''Returns radio buttons'''
         return_string = ""
         for option in self.__options:
             return_string += option.html_radio(variable_name, value)
         return return_string
+
 
     def __multi_checkbox(self, variable_name, values):
         '''returns multiple checkboxes'''
@@ -227,6 +240,7 @@ class ConfigObject(ConfigBase):
             checkbox_bool = bool(option.name() in values)
             checkboxes_html += option.html_checkbox(variable_name, checkbox_bool)
         return checkboxes_html
+
 
     def convert_var(self, variable):
         '''Convert the variable passed in based on the type here'''
@@ -257,6 +271,7 @@ class ConfigObject(ConfigBase):
                     clean_variable_list.append(var)
             return clean_variable_list
         return None
+
 
     def search_for_option_by_name(self, name):
         '''search option by name and return key to use'''

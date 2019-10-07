@@ -1,6 +1,7 @@
 '''special system for languages including conversion between types'''
 from libs.config_option import ConfigOption
 
+
 class Language:
     '''Single Language Class'''
     def __init__(self, name, iso_639_1, iso_639_2t, iso_639_2b, family):
@@ -10,25 +11,30 @@ class Language:
         self.__iso_639_2b = iso_639_2b
         self.__family = family
 
+
     @property
     def name(self):
         '''Returns Name'''
         return self.__name
+
 
     @property
     def iso_639_1(self):
         '''Returns 2 letter code'''
         return self.__iso_639_1
 
+
     @property
     def iso_639_2t(self):
         '''Returns 3 letter local name'''
         return self.__iso_639_2t
 
+
     @property
     def iso_639_2b(self):
         '''Returns 3 letter english name'''
         return self.__iso_639_2b
+
 
     @property
     def family(self):
@@ -226,17 +232,21 @@ class Languages:
         Language("Zulu", "zu", "zul", "zul", "Niger–Congo")
     ]
 
+
     def config_option_2(self):
         '''returns a list of 2 letter codes'''
         return [ConfigOption(x.iso_639_1, x.name) for x in self.__LANGUAGES]
+
 
     def config_option_3t(self):
         '''returns a list of 3 letter local codes'''
         return [ConfigOption(x.iso_639_2t, x.name) for x in self.__LANGUAGES]
 
+
     def config_option_3b(self):
         '''returns a list of 3 letter English codes'''
         return [ConfigOption(x.iso_639_2b, x.name) for x in self.__LANGUAGES]
+
 
     def get_name_from_2(self, code):
         '''gets the name from the 2 letter code'''
@@ -245,12 +255,14 @@ class Languages:
                 return language.name
         return None
 
+
     def get_name_from_3t(self, code):
         '''gets the name from the 3 letter local code'''
         for language in self.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.name
         return None
+
 
     def get_name_from_3b(self, code):
         '''gets the name from the 3 letter English code'''
@@ -259,12 +271,14 @@ class Languages:
                 return language.name
         return None
 
+
     def convert_2_to_3t(self, code):
         '''converts from 2 letter code to 3 letter local code'''
         for language in self.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.iso_639_2t
         return None
+
 
     def convert_2_to_3b(self, code):
         '''converts from 2 letter code to 3 letter English code'''
@@ -273,12 +287,14 @@ class Languages:
                 return language.iso_639_2t
         return None
 
+
     def convert_3t_to_2(self, code):
         '''converts from 3 letter local code to 2 letter code'''
         for language in self.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.iso_639_1
         return None
+
 
     def convert_3t_to_3b(self, code):
         '''converts from 3 letter local code to 3 letter English code'''
@@ -287,12 +303,14 @@ class Languages:
                 return language.iso_639_2b
         return None
 
+
     def convert_3b_to_2(self, code):
         '''converts from 3 letter English code to 2 letter code'''
         for language in self.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.iso_639_1
         return None
+
 
     def convert_3b_to_3t(self, code):
         '''converts from 3 letter English code to 3 letter local code'''

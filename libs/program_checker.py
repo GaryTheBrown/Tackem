@@ -1,6 +1,7 @@
 '''Function to check if a program exists for the use by a plugin'''
 from shutil import which
 
+
 def check_for_required_programs(program_list, plugin=None, output=True):
     '''checks list for required programs and warns if not installed'''
     all_there = True

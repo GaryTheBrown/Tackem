@@ -1,12 +1,14 @@
 '''html parts for the scraper'''
 import os
 
+
 def fail_message(status, reason):
     '''message returned when the scraper failed'''
     html = "<h1>Search Failed</h1><br>"
     html += "<h2>Status: " + str(status) + "</h2><br>"
     html += "<h2>Reason: " + str(reason) + "</h2><br>"
     return html
+
 
 def movie_page_link(query, page=1, year=None, label=None):
     '''creates a link for pagination of movie results'''
@@ -17,6 +19,7 @@ def movie_page_link(query, page=1, year=None, label=None):
     html += label if label else str(page)
     html += "</a> "
     return html
+
 
 def search_info(title, original_title, original_language, overview,
                 release_date, poster_path, image_url, poster_size):
@@ -33,6 +36,7 @@ def search_info(title, original_title, original_language, overview,
         html = html.replace("%%POSTERURL%%", "")
     return html
 
+
 def tvshow_page_link(query, page=1, label=None):
     '''creates a link for pagination of tv show results'''
     html = "<a href='#' class='onclick' onclick='SearchTVShow("
@@ -40,6 +44,7 @@ def tvshow_page_link(query, page=1, label=None):
     html += label if label else str(page)
     html += "</a> "
     return html
+
 
 def yes_no_footer(yes_button, no_button):
     '''Footer for yes no'''

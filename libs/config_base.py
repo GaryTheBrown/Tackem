@@ -1,6 +1,10 @@
 '''Base class for config object and config option'''
+
+
 class ConfigBase:
     '''Base Functions shared between config_object and config_option'''
+
+
     def __init__(self, name, label, priority, script, hide_from_html, read_only, disabled, show,
                  hide, toggle_section, toggle_sections, enable_disable, section_controller):
         self._name = name
@@ -17,25 +21,31 @@ class ConfigBase:
         self._enable_disable = enable_disable
         self._section_controller = section_controller
 
+
     def label(self):
         '''return label'''
         return self._label
+
 
     def read_only(self):
         '''returns read only'''
         return self._read_only
 
+
     def disabled(self):
         '''return disabled'''
         return self._disabled
+
 
     def priority(self):
         '''return priority'''
         return self._priority
 
+
     def section_controller(self):
         '''returns the link to the controller'''
         return self._section_controller
+
 
     def show_or_hide(self, key):
         '''returns if the key should be hidden or shown'''
@@ -52,6 +62,7 @@ class ConfigBase:
                 return False
         return None
 
+
     def __script_create_check(self):
         '''checks if any scripts are in the option'''
         if self._show:
@@ -63,6 +74,7 @@ class ConfigBase:
         if self._toggle_sections:
             return True
         return False
+
 
     def _script_create(self, script_call):
         '''returns the script'''
@@ -95,21 +107,26 @@ class ConfigBase:
         else:
             return ""
 
+
     def _show_call(self, value):
         '''Returns the JS function for show'''
         return "$('#" + value + "_section').show();"
+
 
     def _hide_call(self, value):
         '''Returns the JS function for hide'''
         return "$('#" + value + "_section').hide();"
 
+
     def _toggle_section_call(self, value):
         '''returns the JS function for toggle section'''
         return "ToggleSection('" + value + "');"
 
+
     def _toggle_sections_call(self, show, hide):
         '''returns the JS function for toggle sections'''
         return "ToggleSections([" + combine(show) + "],[" + combine(hide) + "]);"
+
 
 def is_double_list(var):
     '''Checks the shape of the var '''
@@ -117,6 +134,7 @@ def is_double_list(var):
         if isinstance(var[0], list) and isinstance(var[1], list):
             return True
     return False
+
 
 def combine(value):
     '''Quick Cmbine'''

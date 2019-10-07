@@ -2,8 +2,12 @@
 import http.client
 import json
 from system.root import TackemSystemRoot
+
+
 class Scraper():
     '''Scraper html System Here'''
+
+
     def __init__(self):
         self._tackem_system = TackemSystemRoot('scraper')
         self.__apikey = self._tackem_system.config()['apikey']
@@ -12,16 +16,22 @@ class Scraper():
         self.__conn = http.client.HTTPSConnection(self._tackem_system.config()['url'])
         self._image_config = self._configuration()
 
+
 ###########
 ##GETTERS##
 ###########
+
+
     def image_base(self):
         '''returns the base address for the image'''
         return self._image_config['secure_base_url']
 
+
 #############
 ##SHORTCUTS##
 #############
+
+
     def __base(self, adult=True, language=True):
         '''creates the base command keys'''
         base = "api_key=" + self.__apikey
@@ -31,13 +41,17 @@ class Scraper():
             base += "&language=" + self.__language
         return base
 
+
     def __fail_print(self, status, reason):
         '''message returned when the scraper failed'''
         return "Search Failed\nStatus: " + status + "\nReason: " + reason + "\n"
 
+
 ############
 ##COMMANDS##
 ############
+
+
     def _configuration(self):
         '''config section for startup getting info mainly image urls'''
         command = "/3/configuration?" + self.__base(False, False)
@@ -47,9 +61,12 @@ class Scraper():
             return None
         return data['response']['images']
 
+
 #################
 ##MOVIE SECTION##
 #################
+
+
     def search_for_movie(self, query, page=1, year=None):
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
@@ -59,20 +76,25 @@ class Scraper():
             command += "&year=" + str(year)
         return self.__get_request(command)
 
+
     def search_by_imdb_id(self, imdb_id):
         '''searches by the IMDB ID'''
         command = "/3/find/" + str(imdb_id) + "?" + self.__base(adult=False)
         command += "&external_source=imdb_id"
         return self.__get_request(command)
 
+
     def get_movie_details(self, movie_id):
         '''returns the full movie details'''
         command = "/3/movie/" + str(movie_id) + "?" + self.__base(adult=False)
         return self.__get_request(command)
 
+
 ##################
 ##TVSHOW SECTION##
 ##################
+
+
     def search_for_tvshow(self, query, page=1):
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
@@ -80,11 +102,13 @@ class Scraper():
         command += "&query=" + query_to_go
         return self.__get_request(command)
 
+
     def search_by_tvdb_id(self, imdb_id):
         '''searches by the TVDB ID'''
         command = "/3/find/" + str(imdb_id) + "?" + self.__base(adult=False)
         command += "&external_source=tvdb_id"
         return self.__get_request(command)
+
 
     def get_tvshow_details(self, tvshow_id):
         '''returns the full tv show details'''
@@ -92,15 +116,19 @@ class Scraper():
         command += "&append_to_response=external_ids"
         return self.__get_request(command)
 
+
     def get_tvshow_episode_details(self, tvshow_id, season, episode):
         '''returns the full tv show details'''
         command = "/3/tv/" + str(tvshow_id) + "/season/" + str(season) + "/episode/" + str(episode)
         command += "?" + self.__base(adult=False)
         return self.__get_request(command)
 
+
 ############
 ##REQUESTS##
 ############
+
+
     def __get_request(self, command):
         '''do a get request'''
         self.__conn.request("GET", command)
@@ -114,6 +142,7 @@ class Scraper():
         if success:
             return_data['response'] = json.loads(response.read().decode("utf-8"))
         return return_data
+
 
 # payload = "{}"
 # conn.request("GET", , payload)
