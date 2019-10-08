@@ -44,7 +44,7 @@ class APIConfig(APIBase):
         self._check_user(user)
         self.__check_for_blocked_locations(location)
         value = self.__check_location(location)
-        self._tackem_system.set_config(location, body['value'])
+        TackemSystemFull().set_config(location, body['value'])
 
         return json.dumps({
             "system" : "config",
