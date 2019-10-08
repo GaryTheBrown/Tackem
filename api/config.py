@@ -1,4 +1,4 @@
-'''ROOT API'''
+'''CONFIG API'''
 import json
 import cherrypy
 from system.full import TackemSystemFull
