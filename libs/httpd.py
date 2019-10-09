@@ -60,8 +60,8 @@ class Httpd():
                     else:
                         instance_name = key.split()[-1]
                         plugin_link.www.mounts(key, instance_name)
-            if self.__system.config()['api']['enabled']:
-                cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
+
+            cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
             if self.__system.config()['scraper']['enabled']:
                 scraper.mounts()
 
