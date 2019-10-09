@@ -72,12 +72,12 @@ class API(APIBase):
         _, userapi = TackemSystemFull().get_config(["userapi", "key"], None)
         if key is None or not isinstance(key, str):
             return self.GUEST
-        if key == "aaa": ## masterapi:
+        if key == masterapi:
             return self.MASTER
-        if key == "bbb": ## userapi:
+        if key == userapi:
             return self.USER
-        if key == "ccc":
-            return self.PLUGIN
+        # if key == "ccc":
+        #     return self.PLUGIN
         return self.GUEST
 
 
