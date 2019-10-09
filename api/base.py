@@ -1,7 +1,6 @@
 '''Base Template For the API'''
 import json
 import cherrypy
-from system.full import TackemSystemFull
 
 
 class APIBase():
@@ -32,36 +31,6 @@ class APIBase():
     def DELETE(self, **kwargs): # pylint: disable=invalid-name,no-self-use
         '''DELETE Function'''
         raise cherrypy.HTTPError(status=404)
-
-
-    def _check_api_key(self, key):
-        '''checks the api key against the master and user keys and returns the level'''
-        _, masterapi = TackemSystemFull().get_config(["masterapi", "key"], None)
-        _, userapi = TackemSystemFull().get_config(["userapi", "key"], None)
-        if key is None or not isinstance(key, str):
-            return self.GUEST
-        if key == "aaa": ## masterapi:
-            return self.MASTER
-        if key == "bbb": ## userapi:
-            return self.USER
-        if key == "ccc":
-            return self.PLUGIN
-        return self.GUEST
-
-
-    def _check_session_id(self):
-        '''checks the session Id is in the list'''
-        if not TackemSystemFull().auth.check_logged_in():
-            return self.GUEST
-        if TackemSystemFull().auth.is_admin():
-            return self.MASTER
-        return self.USER
-
-
-    def _check_user(self, user, is_admin=False):
-        '''checks that the user is allowed'''
-        if user == self.GUEST or (is_admin and user == self.USER):
-            raise cherrypy.HTTPError(status=401)  #Unauthorized
 
 
     def _get_request_body(self):
