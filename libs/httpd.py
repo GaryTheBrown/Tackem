@@ -66,12 +66,12 @@ class Httpd():
                 scraper.mounts()
 
 
-    def start(self):
+    def start(self) -> None:
         '''Start the server'''
         cherrypy.engine.start()
 
 
-    def stop(self):
+    def stop(self) -> None:
         '''Stop the server'''
         cherrypy.engine.exit()
         cherrypy.server.httpserver = None

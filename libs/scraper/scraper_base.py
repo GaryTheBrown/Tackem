@@ -22,7 +22,7 @@ class Scraper():
 ###########
 
 
-    def image_base(self):
+    def image_base(self) -> str:
         '''returns the base address for the image'''
         return self._image_config['secure_base_url']
 
@@ -32,7 +32,7 @@ class Scraper():
 #############
 
 
-    def __base(self, adult=True, language=True):
+    def __base(self, adult: bool = True, language: bool = True) -> str:
         '''creates the base command keys'''
         base = "api_key=" + self.__apikey
         if adult:
@@ -42,7 +42,7 @@ class Scraper():
         return base
 
 
-    def __fail_print(self, status, reason):
+    def __fail_print(self, status: str, reason: str) -> str:
         '''message returned when the scraper failed'''
         return "Search Failed\nStatus: " + status + "\nReason: " + reason + "\n"
 
@@ -67,7 +67,7 @@ class Scraper():
 #################
 
 
-    def search_for_movie(self, query, page=1, year=None):
+    def search_for_movie(self, query: str, page: int = 1, year: int = None) -> dict:
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
         command = "/3/search/movie?" + self.__base() + "&page=" + str(page)
@@ -77,14 +77,14 @@ class Scraper():
         return self.__get_request(command)
 
 
-    def search_by_imdb_id(self, imdb_id):
+    def search_by_imdb_id(self, imdb_id) -> dict:
         '''searches by the IMDB ID'''
         command = "/3/find/" + str(imdb_id) + "?" + self.__base(adult=False)
         command += "&external_source=imdb_id"
         return self.__get_request(command)
 
 
-    def get_movie_details(self, movie_id):
+    def get_movie_details(self, movie_id) -> dict:
         '''returns the full movie details'''
         command = "/3/movie/" + str(movie_id) + "?" + self.__base(adult=False)
         return self.__get_request(command)
@@ -95,7 +95,7 @@ class Scraper():
 ##################
 
 
-    def search_for_tvshow(self, query, page=1):
+    def search_for_tvshow(self, query: str, page: int = 1) -> dict:
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
         command = "/3/search/tv?" + self.__base(adult=False) + "&page=" + str(page)
@@ -103,21 +103,21 @@ class Scraper():
         return self.__get_request(command)
 
 
-    def search_by_tvdb_id(self, imdb_id):
+    def search_by_tvdb_id(self, imdb_id) -> dict:
         '''searches by the TVDB ID'''
         command = "/3/find/" + str(imdb_id) + "?" + self.__base(adult=False)
         command += "&external_source=tvdb_id"
         return self.__get_request(command)
 
 
-    def get_tvshow_details(self, tvshow_id):
+    def get_tvshow_details(self, tvshow_id) -> dict:
         '''returns the full tv show details'''
         command = "/3/tv/" + str(tvshow_id) + "?" + self.__base(adult=False)
         command += "&append_to_response=external_ids"
         return self.__get_request(command)
 
 
-    def get_tvshow_episode_details(self, tvshow_id, season, episode):
+    def get_tvshow_episode_details(self, tvshow_id, season, episode) -> dict:
         '''returns the full tv show details'''
         command = "/3/tv/" + str(tvshow_id) + "/season/" + str(season) + "/episode/" + str(episode)
         command += "?" + self.__base(adult=False)
@@ -129,7 +129,7 @@ class Scraper():
 ############
 
 
-    def __get_request(self, command):
+    def __get_request(self, command: str) -> dict:
         '''do a get request'''
         self.__conn.request("GET", command)
         response = self.__conn.getresponse()

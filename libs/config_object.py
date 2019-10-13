@@ -1,4 +1,5 @@
 '''Class Controller for a single Config Object'''
+from typing import Union
 from libs.config_base import ConfigBase
 from libs.config_option import ConfigOption
 import libs.html_parts as html_part
@@ -20,12 +21,34 @@ class ConfigObject(ConfigBase):
                             ]
 
 
-    def __init__(self, name, label, variable_type, default=None,
-                 replace_default_in_files=True, minimum=None, maximum=None, options=None,
-                 input_type=None, help_text=None, script=None, button=None, button_onclick=None,
-                 hide_from_html=False, read_only=False, disabled=False, priority=0, show=None,
-                 hide=None, toggle_section=None, toggle_sections=None, enable_disable=None,
-                 section_controller=None, not_in_config=False, value_link=None):
+    def __init__(
+            self,
+            name: str,
+            label: str,
+            variable_type: str,
+            default=None,
+            replace_default_in_files: bool = True,
+            minimum: Union[int, None] = None,
+            maximum: Union[int, None] = None,
+            options=None,
+            input_type=None,
+            help_text=None,
+            script=None,
+            button=None,
+            button_onclick=None,
+            hide_from_html: bool = False,
+            read_only: bool = False,
+            disabled: bool = False,
+            priority: int = 0,
+            show=None,
+            hide=None,
+            toggle_section=None,
+            toggle_sections=None,
+            enable_disable=None,
+            section_controller=None,
+            not_in_config: bool = False,
+            value_link=None
+        ):
         '''initalise the object'''
         self.__variable_name = name.replace(" ", "").lower()
         if isinstance(variable_type, str) and variable_type in self.__types:
@@ -50,7 +73,7 @@ class ConfigObject(ConfigBase):
                          hide, toggle_section, toggle_sections, enable_disable, section_controller)
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         '''print return'''
         return "ConfigObject(" + self._name + ")"
 
@@ -60,17 +83,17 @@ class ConfigObject(ConfigBase):
         return self.__default
 
 
-    def name(self):
+    def name(self) -> str:
         '''return variable name'''
         return self._name
 
 
-    def var_type(self):
+    def var_type(self) -> str:
         '''return variable type'''
         return self.__type
 
 
-    def get_config_spec(self):
+    def get_config_spec(self) -> str:
         '''Returns the line for the config option'''
         if self.__not_in_config:
             return ""
@@ -123,7 +146,7 @@ class ConfigObject(ConfigBase):
         return return_string
 
 
-    def get_config_html(self, variable_name, value, link=None):
+    def get_config_html(self, variable_name: str, value, link: Union[str, None] = None) -> str:
         '''returns the config_html'''
         if self._hide_on_html:
             return ""
@@ -143,7 +166,7 @@ class ConfigObject(ConfigBase):
                               self.get_input_html(variable_name, value), self.__not_in_config)
 
 
-    def get_input_html(self, variable_name, value):
+    def get_input_html(self, variable_name: str, value) -> str:
         '''Returns the Input portion of the system'''
         if self._hide_on_html:
             return ""
@@ -215,7 +238,7 @@ class ConfigObject(ConfigBase):
         return "[BROKEN OPTION " + self._name + "]"
 
 
-    def __select_box(self, variable_name, value, multiple=False):
+    def __select_box(self, variable_name: str, value, multiple: bool = False) -> str:
         '''select box code'''
         options_html = ""
         for option in self.__options:
@@ -225,7 +248,7 @@ class ConfigObject(ConfigBase):
                                     multiple=multiple)
 
 
-    def __radio(self, variable_name, value):
+    def __radio(self, variable_name: str, value) -> str:
         '''Returns radio buttons'''
         return_string = ""
         for option in self.__options:
@@ -233,7 +256,7 @@ class ConfigObject(ConfigBase):
         return return_string
 
 
-    def __multi_checkbox(self, variable_name, values):
+    def __multi_checkbox(self, variable_name: str, values: list) -> str:
         '''returns multiple checkboxes'''
         checkboxes_html = ""
         for option in self.__options:
@@ -273,7 +296,7 @@ class ConfigObject(ConfigBase):
         return None
 
 
-    def search_for_option_by_name(self, name):
+    def search_for_option_by_name(self, name: str) -> Union[ConfigOption, None]:
         '''search option by name and return key to use'''
         for obj in self.__options:
             if isinstance(obj, ConfigOption):

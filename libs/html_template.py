@@ -1,4 +1,5 @@
 '''HTML TEMPLATE'''
+from typing import Union
 import libs.html_parts as html_part
 
 
@@ -6,7 +7,14 @@ class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
 
 
-    def __init__(self, name, key, tackem_system, base_stylesheet=None, base_javascript=None):
+    def __init__(
+            self,
+            name: str,
+            key: str,
+            tackem_system,
+            base_stylesheet: Union[str, None] = None,
+            base_javascript: Union[str, None] = None
+        ):
         self._tackem_system = tackem_system
         self._name = name
         self._key = key
@@ -14,11 +22,17 @@ class HTMLTEMPLATE():
         self._base_javascript = base_javascript
 
         if key != "":
-            self._plugin = self._tackem_system.plugin()
-            self._config = self._tackem_system.config()
+            self._plugin = self._tackem_system.plugin
+            self._config = self._tackem_system.config
 
 
-    def _template(self, body, navbar=True, javascript=None, stylesheet=None):
+    def _template(
+            self,
+            body: str,
+            navbar: bool = True,
+            javascript: Union[str, None] = None,
+            stylesheet: Union[str, None] = None
+        ) -> str:
         '''Create The Template Layout'''
         navbar_html = ""
         if isinstance(navbar, str):
@@ -58,7 +72,10 @@ class HTMLTEMPLATE():
                                          baseurl, navbar_html)
 
 
-    def _error_page(self, code):
+    def _error_page(
+            self,
+            code: int
+        ) -> str:
         '''Shows the error Page'''
         #if not any codes bellow or 404
         page = '<h1 class="text-center">404 Not Found</h1>'
@@ -67,12 +84,12 @@ class HTMLTEMPLATE():
         return self._template(page, False)
 
 
-    def _navbar(self):
+    def _navbar(self) -> str:
         '''Navigation Bar For System'''
         return html_part.navbar_master(self._navbar_left_items(), self._navbar_right_items())
 
 
-    def _navbar_left_items(self):
+    def _navbar_left_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
         nav_items_html = ""
         if not self._tackem_system.auth.check_logged_in():
@@ -119,7 +136,7 @@ class HTMLTEMPLATE():
         return nav_items_html
 
 
-    def _navbar_right_items(self):
+    def _navbar_right_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = html_part.navbar_item("About", "about")
         navbar_config_html = html_part.navbar_item("Config", "config")

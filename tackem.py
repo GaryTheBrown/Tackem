@@ -3,6 +3,7 @@
 import os
 import os.path
 import signal
+from typing import Union
 from libs.startup_arguments import ARGS
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
@@ -21,7 +22,7 @@ class Tackem:
         self.__webserver = None
 
 
-    def start(self):
+    def start(self) -> None:
         '''Start of the program'''
         print("LOADING PLUGINS...")
         TackemSystemAdmin().load_plugins()
@@ -51,7 +52,7 @@ class Tackem:
         print("TACKEM HAS STARTED")
 
 
-    def stop(self):
+    def stop(self) -> None:
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
         self.__stop_webserver()
@@ -62,7 +63,7 @@ class Tackem:
             TackemSystemAdmin().stop_sql()
 
 
-    def cleanup(self):
+    def cleanup(self) -> None:
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
@@ -75,7 +76,7 @@ class Tackem:
         TackemSystemAdmin().delete_config()
 
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         '''Shutdown commands'''
         self.stop()
         print("SAVING CONFIG FILE...")
@@ -83,7 +84,7 @@ class Tackem:
         print("SHUTDOWN COMPLETED")
 
 
-    def run(self):
+    def run(self) -> None:
         '''Looping function'''
 
         #First check if home folder exists (useable to run first time script)
@@ -113,7 +114,7 @@ class Tackem:
 
 
     #Webserver Methods
-    def __load_webserver(self):
+    def __load_webserver(self) -> Union[bool, None]:
         '''loads the webserver system'''
         if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
             return False
@@ -123,13 +124,15 @@ class Tackem:
         return None
 
 
-    def __delete_webserver(self):
+    def __delete_webserver(self) -> bool:
         '''deletes the webserver'''
         if self.__webserver is not None:
             self.__webserver = None
+            return True
+        return False
 
 
-    def __start_webserver(self):
+    def __start_webserver(self) -> bool:
         '''starts the webserver'''
         if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
             return False
@@ -138,7 +141,7 @@ class Tackem:
         return True
 
 
-    def __stop_webserver(self):
+    def __stop_webserver(self) -> bool:
         '''stops the Webserver'''
         if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
             return False

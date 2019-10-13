@@ -13,7 +13,7 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def index(self):
+    def index(self) -> str:
         '''Index Page'''
         # self._tackem_system.auth.check_auth()
         index_page = str(open("www/html/pages/homepage.html", "r").read())
@@ -22,7 +22,7 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def about(self):
+    def about(self) -> str:
         '''About Page'''
         index_page = str(open("www/html/pages/about.html", "r").read())
 
@@ -30,11 +30,11 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def config(self, **kwargs):
+    def config(self, **kwargs) -> str:
         '''Config System'''
         self._tackem_system.auth.check_auth()
         if not self._tackem_system.auth.is_admin():
-            return self._error_page(401)
+            raise cherrypy.HTTPError(status=401)
         if kwargs:
             post_config_settings(kwargs, self._tackem_system.config(),
                                  self._tackem_system.plugins())
@@ -52,30 +52,30 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def config_javascript(self):
+    def config_javascript(self) -> str:
         '''Javascript File'''
         return config_javascript()
 
 
     @cherrypy.expose
-    def plugin_downloader_javascript(self):
+    def plugin_downloader_javascript(self) -> str:
         '''Javascript File'''
         return plugin_downloader.javascript()
 
 
     @cherrypy.expose
-    def get_multi_setup(self, **kwargs):
+    def get_multi_setup(self, **kwargs) -> str:
         '''Return the information needed for the setup of the plugin'''
         if kwargs:
             plugin = kwargs.get("plugin")
             name = kwargs.get("name", "")
             return get_config_multi_setup(self._tackem_system.plugins(), plugin,
                                           self._tackem_system.config(), name)
-        return "ERROR YOU SHOULD NOT BE HERE"
+        raise cherrypy.HTTPError(status=404)
 
 
     @cherrypy.expose
-    def login(self, **kwargs):
+    def login(self, **kwargs) -> str:
         '''Login Page'''
         return_url = kwargs.get('return_url', "%%BASEURL%%")
         username = kwargs.get('username', "")
@@ -88,7 +88,7 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def password(self, **kwargs):
+    def password(self, **kwargs) -> str:
         '''Login Page'''
         self._tackem_system.auth.check_auth()
         password_page = html_parts.password_page()
@@ -103,16 +103,16 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def logout(self):
+    def logout(self) -> None:
         '''Logout Page'''
         self._tackem_system.auth.logout()
 
 
     @cherrypy.expose
-    def reboot(self, url="login"):
+    def reboot(self, url: str = "login") -> str:
         '''Login Page'''
         if not self._tackem_system.auth.is_admin():
-            return self._error_page(401)
+            raise cherrypy.HTTPError(status=401)
         RootEvent.set_event("reboot")
         page = str(open("www/html/reboot.html", "r").read())
         page = page.replace("%%PAGE%%", url)
@@ -120,36 +120,36 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def shutdown(self):
+    def shutdown(self) -> str:
         '''Login Page'''
         if not self._tackem_system.auth.is_admin():
-            return self._error_page(401)
+            raise cherrypy.HTTPError(status=401)
         RootEvent.set_event("shutdown")
         page = "Shuting Down Tackem..."
         return self._template(page, False)
 
 
     @cherrypy.expose
-    def plugin_download(self):
+    def plugin_download(self) -> str:
         '''url for system access to plugin downloaded'''
         if not self._tackem_system.auth.is_admin():
-            return self._error_page(401)
+            raise cherrypy.HTTPError(status=401)
         javascript = "plugin_downloader_javascript"
         return self._template(plugin_downloader.plugin_download_page(True), False,
                               javascript=javascript)
 
 
     @cherrypy.expose
-    def plugin_control(self, action, name):
+    def plugin_control(self, action, name) -> str:
         '''plugin control link'''
         return plugin_downloader.plugin_control(action, name)
 
 
     @cherrypy.expose
-    def restart(self):
+    def restart(self) -> str:
         '''Restarts Tackem'''
         if not self._tackem_system.auth.is_admin():
-            return self._error_page(401)
+            raise cherrypy.HTTPError(status=401)
         try:
             self._tackem_system.config().write()
         except OSError:

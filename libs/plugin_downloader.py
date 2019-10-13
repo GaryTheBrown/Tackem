@@ -11,109 +11,13 @@ import requests
 import markdown
 import libs.html_parts as html_parts
 from libs.startup_arguments import PLUGINFOLDERLOCATION, PROGRAMCONFIGLOCATION
-from system.admin import TackemSystemAdmin
+from system.plugin_downloader import TackemSystemPluginDownloader
 
 
-SYSTEM_NAME = "plugin_downloader"
-
-REPO_BRANCH = "master"
-HOST_NAME = "GaryTheBrown"
-HOST_API_URL = "https://api.github.com/users/" + HOST_NAME + "/repos"
-HOST_RAW_URL = "https://raw.githubusercontent.com/" + HOST_NAME + "/"
-HOST_RAW_URL2 = "/" + REPO_BRANCH + "/"
-
-GITHUB_PLUGINS = []
-LOCAL_PLUGINS = []
-NEW_PLUGIN_COUNT = 0
-
-
-def is_git_repo(path):
-    '''quick script to check if folder is a git repo'''
-    try:
-        _ = git.Repo(path).git_dir
-        return True
-    except git.InvalidGitRepositoryError:
-        return False
-
-
-def is_origin_offical(path, plugin_name, plugin_type):
-    '''checks if repo is linked to the offical github'''
-    url = ""
-    try:
-        url = git.Repo(path).remotes.origin.url.lower()
-    except git.InvalidGitRepositoryError:
-        return False
-    if plugin_name.lower() in url and plugin_type.lower() in url and HOST_NAME.lower() in url:
-        return True
-    return False
-
-
-def get_local_plugins():
-    '''gets a list of local plugins'''
-    LOCAL_PLUGINS.clear()
-    for folder in glob("plugins/*/*/"):
-        if not "__pycache__" in folder:
-            folder_split = folder.split("/")
-            local_plugin = {
-                'folder':folder,
-                'plugin_name':folder_split[-2],
-                'plugin_type':folder_split[-3],
-                'repo':is_git_repo(folder),
-                'offical': is_origin_offical(folder,
-                                             folder_split[-2].capitalize(),
-                                             folder_split[-3].capitalize()
-                                            )
-            }
-
-            LOCAL_PLUGINS.append(local_plugin)
-
-
-def get_github_plugins():
-    '''grabs the list of plugins on github and checks if local'''
-    GITHUB_PLUGINS.clear()
-    response = requests.get(HOST_API_URL)
-
-    for item in json.loads(response.text):
-        if 'Tackem-Plugin-' in item['name']:
-            name_split = item['name'].split("-")
-            location = PLUGINFOLDERLOCATION + name_split[-2].lower() + "/" + name_split[-1].lower()
-            save = {
-                'name':item['name'].lstrip(),
-                'description':item['description'],
-                'clone_url':item['clone_url'],
-                #Local Info
-                'plugin_name':name_split[-1],
-                'plugin_type':name_split[-2],
-                'downloaded':False
-            }
-            if os.path.exists(location):
-                try:
-                    url = git.Repo(location).remotes.origin.url
-                except git.InvalidGitRepositoryError:
-                    url = ""
-                if item['name'] in url and HOST_NAME in url and "github.com" in url:
-                    save['downloaded'] = True
-
-            GITHUB_PLUGINS.append(save)
-
-
-def get_single_file(plugin_type, plugin_name, file_to_get):
-    '''grabs a single file from github'''
-    folder = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower() + "/"
-    if os.path.isfile(folder + file_to_get):
-        return str(open(folder + file_to_get, "r").read())
-    plugin = "Tackem-plugin-" + plugin_type + "-" + plugin_name
-    link = HOST_RAW_URL + plugin + HOST_RAW_URL2 + file_to_get
-    return_data = requests.get(link)
-    if return_data.status_code == 200:
-        return return_data.text
-    return None
-
-
-def plugin_download_page(full_system=True):
+def plugin_download_page(full_system: bool = True) -> str:
     '''returns the web page for choosing plugins'''
-    get_github_plugins()
-    get_local_plugins()
+    TackemSystemPluginDownloader().get_github_plugins()
+    TackemSystemPluginDownloader().get_local_plugins()
     html = "<h2>GITHUB PLUGINS</h2>"
     plugin_count = 0
     panels_html = ""
@@ -121,7 +25,7 @@ def plugin_download_page(full_system=True):
         title = plugin['plugin_type'] + " - " + plugin['plugin_name']
         loaded = False
         if plugin['downloaded']:
-            loaded = TackemSystemAdmin().is_plugin_loaded(
+            loaded = TackemSystemPluginDownloader().is_plugin_loaded(
                 plugin['plugin_type'],
                 plugin['plugin_name']
             )
@@ -145,7 +49,7 @@ def plugin_download_page(full_system=True):
             visible=(full_system and plugin['downloaded'])
         )
         add_remove = html_parts.input_button_with_data(
-            ("Remove" if plugin['downloaded'] else "Add"),
+            ("Delete" if plugin['downloaded'] else "Download"),
             class_name="pluginbutton",
             data={'plugin':plugin['name']},
             outer_div=False
@@ -196,7 +100,7 @@ def plugin_download_page(full_system=True):
     return html
 
 
-def plugin_control(action, plugin_title):
+def plugin_control(action: str, plugin_title: str) -> str:
     '''function to link to all actions for plugin control'''
     return_data = {
         'success' : False,
@@ -274,16 +178,8 @@ This Plugin Requires extra Programs Please see the readme"""
     return json.dumps(return_data)
 
 
-def get_readme_as_html(plugin_type, plugin_name):
-    '''turns the readme.nd into html'''
-    readme = get_single_file(plugin_type, plugin_name, "README.md")
-    readme = "\n".join(readme.split("\n")[3:])
-    if readme is None or readme == "":
-        return None
-    return markdown.markdown(readme, output_format="html5")
 
-
-def download_plugin(plugin_title, plugin_type, plugin_name):
+def download_plugin(plugin_title, plugin_type, plugin_name) -> tuple(bool, int):
     '''function to use list from html page to download the plugins'''
     try:
         os.makedirs(PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name)
@@ -299,7 +195,7 @@ def download_plugin(plugin_title, plugin_type, plugin_name):
             return False, 1
 
 
-def delete_plugin(plugin_title, plugin_type, plugin_name):
+def delete_plugin(plugin_title: str, plugin_type: str, plugin_name: str) -> None:
     '''deletes the plugin'''
     if not stop_plugin_systems(plugin_type, plugin_name):
         return False
@@ -320,14 +216,14 @@ def delete_plugin(plugin_title, plugin_type, plugin_name):
     return True
 
 
-def update_plugins():
+def update_plugins() -> None:
     '''function to use list from html page to download the plugins'''
     for plugin in GITHUB_PLUGINS:
         if plugin['downloaded']:
             update_plugin(plugin['plugin_type'], plugin['plugin_name'])
 
 
-def update_plugin(plugin_type, plugin_name):
+def update_plugin(plugin_type: str, plugin_name: str) -> bool:
     '''function to use list from html page to download the plugins'''
     if not stop_plugin_systems(plugin_type, plugin_name):
         return False
@@ -339,19 +235,19 @@ def update_plugin(plugin_type, plugin_name):
     return False
 
 
-def get_plugin_branches(plugin_type, plugin_name):
+def get_plugin_branches(plugin_type: str, plugin_name: str) -> list:
     '''Gets a list of branches'''
     location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
     return [branch.name for branch in git.Repo(location).heads]
 
 
-def get_current_plugin_branch(plugin_type, plugin_name):
+def get_current_plugin_branch(plugin_type: str, plugin_name: str) -> str:
     '''Gets the current branch'''
     location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
     return git.Repo(location).active_branch()
 
 
-def change_plugin_branch(plugin_type, plugin_name, branch):
+def change_plugin_branch(plugin_type: str, plugin_name: str, branch: str) -> bool:
     '''will change the branch for the plugin'''
     location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
     repo = git.Repo(location)
@@ -361,7 +257,7 @@ def change_plugin_branch(plugin_type, plugin_name, branch):
     return False
 
 
-def reload_plugin(plugin_type, plugin_name):
+def reload_plugin(plugin_type: str, plugin_name: str) -> bool:
     '''Function to attempt to reload the plugin after a failed install'''
     TackemSystemAdmin().write_config_to_disk()
     if not TackemSystemAdmin().load_plugin(plugin_type, plugin_name):
@@ -371,7 +267,7 @@ def reload_plugin(plugin_type, plugin_name):
     return True
 
 
-def start_plugin_systems(plugin_type, plugin_name):
+def start_plugin_systems(plugin_type: str, plugin_name: str) -> bool:
     '''function to start up the plugins systems'''
     if TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
         return False
@@ -380,7 +276,7 @@ def start_plugin_systems(plugin_type, plugin_name):
     return True
 
 
-def stop_plugin_systems(plugin_type, plugin_name):
+def stop_plugin_systems(plugin_type: str, plugin_name: str) -> bool:
     '''function to start up the plugins systems'''
     if not TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
         return False
@@ -393,7 +289,7 @@ def stop_plugin_systems(plugin_type, plugin_name):
     return True
 
 
-def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
+def clean_config_after_deletion(plugin_type: str, plugin_name: str, backup: bool - True) -> None:
     '''function to remove data from the config'''
     config = TackemSystemAdmin().get_global_config()
     if not config['plugins'][plugin_type][plugin_name]:
@@ -411,7 +307,7 @@ def clean_config_after_deletion(plugin_type, plugin_name, backup=True):
     config.write()
 
 
-def clean_db_after_deletion(plugin_type, plugin_name):
+def clean_db_after_deletion(plugin_type: str, plugin_name: str) -> None:
     '''function to clean the Database after plugin removal'''
     sql = TackemSystemAdmin().sql
     name_like = plugin_type + "_" + plugin_name + "_%"
@@ -421,24 +317,15 @@ def clean_db_after_deletion(plugin_type, plugin_name):
         sql.delete_row(SYSTEM_NAME, "table_version", result['id'])
 
 
-def javascript():
+def javascript() -> str:
     '''Javascript File'''
     return str(open("www/javascript/plugindownloader.js", "r").read())
 
 
-#plugin Modules (pip)
-def install_plugin_modules(plugin_type, plugin_name):
-    '''install plugin modiles'''
-    plugin_folder = plugin_type + "/" + plugin_name + "/"
-    requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
-    if os.path.exists(requirements_file):
-        print("installing plugin requirements..")
-        pip_call = [sys.executable, '-m', 'pip', 'install', '-r', requirements_file, '--user']
-        subprocess.check_call(pip_call)
-        print("installed plugin requirements")
 
 
-def uninstall_plugin_modules(plugin_type, plugin_name):
+
+def uninstall_plugin_modules(plugin_type: str, plugin_name: str) -> None:
     '''uninstall plugin modiles'''
     plugin_folder = plugin_type + "/" + plugin_name + "/"
     requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"

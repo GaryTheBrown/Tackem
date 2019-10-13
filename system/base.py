@@ -27,7 +27,7 @@ class TackemSystemBase:
         return self._base_data.musicbrainz
 
 
-    def get_config(self, location_list, default, temp_config=None):
+    def get_config(self, location_list: list, default, temp_config=None) -> tuple:
         '''recursive method to grab a config item read only'''
         if temp_config is None:
             temp_config = self._base_data.config

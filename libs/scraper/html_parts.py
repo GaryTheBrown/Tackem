@@ -1,8 +1,9 @@
 '''html parts for the scraper'''
+from typing import Union
 import os
 
 
-def fail_message(status, reason):
+def fail_message(status, reason) -> str:
     '''message returned when the scraper failed'''
     html = "<h1>Search Failed</h1><br>"
     html += "<h2>Status: " + str(status) + "</h2><br>"
@@ -10,7 +11,12 @@ def fail_message(status, reason):
     return html
 
 
-def movie_page_link(query, page=1, year=None, label=None):
+def movie_page_link(
+        query: str,
+        page: int = 1,
+        year: Union[int, None] = None,
+        label: Union[str, None] = None
+    ) -> str:
     '''creates a link for pagination of movie results'''
     html = "<a href='#' class='onclick' onclick='SearchMovie("
     html += '"' + query + '"' + ", year="
@@ -21,8 +27,16 @@ def movie_page_link(query, page=1, year=None, label=None):
     return html
 
 
-def search_info(title, original_title, original_language, overview,
-                release_date, poster_path, image_url, poster_size):
+def search_info(
+        title: str,
+        original_title: str,
+        original_language: str,
+        overview: str,
+        release_date: str,
+        poster_path: str,
+        image_url: str,
+        poster_size: str
+    ) -> str:
     '''creates a movie pane for the search results'''
     html = str(open(os.path.dirname(__file__) + "/html/moviesearchitem.html", "r").read())
     html = html.replace("%%TITLE%%", title)
@@ -37,7 +51,7 @@ def search_info(title, original_title, original_language, overview,
     return html
 
 
-def tvshow_page_link(query, page=1, label=None):
+def tvshow_page_link(query: str, page: int = 1, label: Union[str, None] = None) -> str:
     '''creates a link for pagination of tv show results'''
     html = "<a href='#' class='onclick' onclick='SearchTVShow("
     html += '"' + query + '"' + ", page=" + str(page) + ");'>"
@@ -46,7 +60,7 @@ def tvshow_page_link(query, page=1, label=None):
     return html
 
 
-def yes_no_footer(yes_button, no_button):
+def yes_no_footer(yes_button: str, no_button: str) -> str:
     '''Footer for yes no'''
     html = str(open(os.path.dirname(__file__) + "/html/yesnofooter.html", "r").read())
     html = html.replace("%%NOBUTTON%%", yes_button)

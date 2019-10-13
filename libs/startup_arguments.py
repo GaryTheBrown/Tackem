@@ -9,7 +9,7 @@ PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
 PLUGINFOLDERLOCATION = "plugins/"
 
 
-def parse():
+def __parse():
     '''parses the command line arguments'''
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--home',
@@ -22,4 +22,4 @@ def parse():
     return parser.parse_args()
 
 
-ARGS = parse()
+ARGS = __parse()

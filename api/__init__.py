@@ -46,7 +46,7 @@ class API(APIBase):
         return self
 
 
-    def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
+    def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
         user = kwargs.get("user", self.GUEST)
         action = kwargs.get("action", None)
@@ -66,7 +66,7 @@ class API(APIBase):
         })
 
 
-    def _check_api_key(self, key):
+    def _check_api_key(self, key: str) -> int:
         '''checks the api key against the master and user keys and returns the level'''
         _, masterapi = TackemSystemFull().get_config(["masterapi", "key"], None)
         _, userapi = TackemSystemFull().get_config(["userapi", "key"], None)
@@ -81,16 +81,10 @@ class API(APIBase):
         return self.GUEST
 
 
-    def _check_session_id(self):
+    def _check_session_id(self) -> int:
         '''checks the session Id is in the list'''
         if not TackemSystemFull().auth.check_logged_in():
             return self.GUEST
         if TackemSystemFull().auth.is_admin():
             return self.MASTER
         return self.USER
-
-
-    def _check_user(self, user, is_admin=False):
-        '''checks that the user is allowed'''
-        if user == self.GUEST or (is_admin and user == self.USER):
-            raise cherrypy.HTTPError(status=401)  #Unauthorized

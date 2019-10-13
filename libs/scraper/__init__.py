@@ -11,7 +11,7 @@ from .scraper_html import ScraperHtml
 from .ripper import ScraperRipper
 
 
-def mounts():
+def mounts() -> None:
     '''where the system creates the cherrypy mounts'''
     scraper = ScraperHtml()
     scraper.ripper = ScraperRipper()

@@ -8,7 +8,7 @@ class PluginBaseClass(metaclass=ABCMeta):
     '''base class of the plugins'''
 
 
-    def __init__(self, system_name, single_instance=False):
+    def __init__(self, system_name: str, single_instance: bool = False):
         self._running = False
         self._system = None
         self._name = system_name
@@ -35,22 +35,22 @@ class PluginBaseClass(metaclass=ABCMeta):
         '''stop the plugin'''
 
 
-    def running(self):
+    def running(self) -> bool:
         '''is it running?'''
         return self._running
 
 
-    def name(self):
+    def name(self) -> str:
         '''Returns the Plugin Name'''
         return self._name
 
 
     def plugin_link(self):
         '''Returns the plugin Link'''
-        return self._tackem_system.plugin()
+        return self._tackem_system.plugin
 
 
-def load_plugin_settings(settings_json_file):
+def load_plugin_settings(settings_json_file: str) -> dict:
     '''function to load the plugin settings.json'''
     with open(settings_json_file, 'r') as json_file:
         settings = json.load(json_file)

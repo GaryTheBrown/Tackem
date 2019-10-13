@@ -9,7 +9,7 @@ class RootEvent:
 
 
     @classmethod
-    def set_event(cls, event_type):
+    def set_event(cls, event_type: str) -> bool:
         '''Set an event for the root thread to do'''
         if cls._event_type is False:
             cls._event_type = event_type
@@ -23,7 +23,7 @@ class RootEventMaster(RootEvent):
 
 
     @classmethod
-    def wait_and_get_event(cls):
+    def wait_and_get_event(cls) -> str:
         '''waits for an event and returns it to root thread cleaning the event if needed'''
         cls._event.wait()
         event_type = cls._event_type

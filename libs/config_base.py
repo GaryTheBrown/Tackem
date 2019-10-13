@@ -1,12 +1,25 @@
 '''Base class for config object and config option'''
-
+from typing import Union
 
 class ConfigBase:
     '''Base Functions shared between config_object and config_option'''
 
-
-    def __init__(self, name, label, priority, script, hide_from_html, read_only, disabled, show,
-                 hide, toggle_section, toggle_sections, enable_disable, section_controller):
+    def __init__(
+            self,
+            name: str,
+            label: str,
+            priority: int,
+            script: Union[str, None],
+            hide_from_html: bool,
+            read_only: bool,
+            disabled: bool,
+            show: Union[str, list, None],
+            hide: Union[str, list, None],
+            toggle_section: Union[str, None],
+            toggle_sections: Union[list, None],
+            enable_disable,
+            section_controller
+    ):
         self._name = name
         self._label = label
         self._priority = priority
@@ -98,37 +111,37 @@ class ConfigBase:
                 return_string += self._toggle_sections_call(self._toggle_sections[0],
                                                             self._toggle_sections[1])
             elif isinstance(self._toggle_sections, list):
-                for toggle_sections in self._toggle_sections:
-                    if is_double_list(toggle_sections):
-                        return_string += self._toggle_sections_call(toggle_sections[0],
-                                                                    toggle_sections[1])
+                for toggle_section in self._toggle_sections:
+                    if is_double_list(toggle_section):
+                        return_string += self._toggle_sections_call(toggle_section[0],
+                                                                    toggle_section[1])
             return_string += '"'
             return return_string
         else:
             return ""
 
 
-    def _show_call(self, value):
+    def _show_call(self, value: str) -> str:
         '''Returns the JS function for show'''
         return "$('#" + value + "_section').show();"
 
 
-    def _hide_call(self, value):
+    def _hide_call(self, value: str) -> str:
         '''Returns the JS function for hide'''
         return "$('#" + value + "_section').hide();"
 
 
-    def _toggle_section_call(self, value):
+    def _toggle_section_call(self, value: str) -> str:
         '''returns the JS function for toggle section'''
         return "ToggleSection('" + value + "');"
 
 
-    def _toggle_sections_call(self, show, hide):
+    def _toggle_sections_call(self, show: list, hide: list) -> str:
         '''returns the JS function for toggle sections'''
         return "ToggleSections([" + combine(show) + "],[" + combine(hide) + "]);"
 
 
-def is_double_list(var):
+def is_double_list(var) -> bool:
     '''Checks the shape of the var '''
     if isinstance(var, tuple):
         if isinstance(var[0], list) and isinstance(var[1], list):
@@ -136,7 +149,7 @@ def is_double_list(var):
     return False
 
 
-def combine(value):
+def combine(value: list) -> Union[str, None]:
     '''Quick Cmbine'''
     if isinstance(value, list):
         return_string = ""

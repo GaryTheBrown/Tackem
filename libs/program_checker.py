@@ -2,7 +2,11 @@
 from shutil import which
 
 
-def check_for_required_programs(program_list, plugin=None, output=True):
+def check_for_required_programs(
+        program_list: list,
+        plugin: str = None,
+        output: bool = True
+    ) -> bool:
     '''checks list for required programs and warns if not installed'''
     all_there = True
     missing_program_list = []

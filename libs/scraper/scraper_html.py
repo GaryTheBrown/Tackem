@@ -9,13 +9,13 @@ class ScraperHtml(Scraper):
 
 
     @cherrypy.expose
-    def index(self):
+    def index(self) -> str:
         '''index of scraper'''
         return "RUNNING"
 
 
     @cherrypy.expose
-    def javascript(self):
+    def javascript(self) -> str:
         '''index of scraper'''
         java_file = str(open(os.path.dirname(__file__) + "/javascript/base.js", "r").read())
         return java_file.replace("%%BASEURL%%", self._tackem_system.baseurl)

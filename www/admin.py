@@ -9,7 +9,7 @@ class Admin(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def users(self):
+    def users(self) -> str:
         '''Grab the users info'''
         self._tackem_system.auth.check_auth()
         if not self._tackem_system.auth.is_admin():
@@ -23,7 +23,7 @@ class Admin(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def adduser(self, **kwargs):
+    def adduser(self, **kwargs) -> None:
         '''Add user to system'''
         if not self._tackem_system.auth.is_admin():
             raise cherrypy.HTTPRedirect(cherrypy.url().replace("/admin/adduser", "/"))
@@ -46,7 +46,7 @@ class Admin(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def updateuser(self, **kwargs):
+    def updateuser(self, **kwargs) -> None:
         '''update the user info'''
         if 'user_id' in kwargs:
             user_id = kwargs['user_id']

@@ -13,7 +13,7 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def index(self, **kwargs):
+    def index(self, **kwargs) -> str:
         '''Index Page'''
         if cherrypy.request.method == "POST" and kwargs:
             if "page_index" in kwargs:
@@ -24,25 +24,25 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def javascript(self):
+    def javascript(self) -> str:
         '''Javascript File'''
         return config_javascript()
 
 
     @cherrypy.expose
-    def plugin_downloader_javascript(self):
+    def plugin_downloader_javascript(self) -> str:
         '''Javascript File'''
         return plugin_downloader.javascript()
 
 
     @cherrypy.expose
-    def get_multi_setup(self, plugin, name=""):
+    def get_multi_setup(self, plugin: str, name: str = "") -> str:
         '''Return the information needed for the setup of the plugin'''
         return get_config_multi_setup(self._tackem_system.plugins(), plugin,
                                       self._tackem_system.config(), name)
 
 
-    def _post_action(self, kwargs):
+    def _post_action(self, kwargs: dict) -> str:
         '''the part of the script to do all of the pages & updates of the config'''
         post_config_settings(kwargs, self._tackem_system.config(), self._tackem_system.plugins())
         try:
@@ -75,13 +75,13 @@ class Root(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def plugin_control(self, action, name):
+    def plugin_control(self, action: str, name: str) -> str:
         '''plugin control link'''
         return plugin_downloader.plugin_control(action, name)
 
 
     @cherrypy.expose
-    def restart(self):
+    def restart(self) -> str:
         '''Restarts Tackem'''
         try:
             self._tackem_system.config().write()

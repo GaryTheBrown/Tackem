@@ -1,4 +1,5 @@
 '''Plugin Control Of System Data'''
+from typing import Union
 from system.base import TackemSystemBase
 
 
@@ -6,7 +7,7 @@ class TackemSystemPlugin(TackemSystemBase):
     '''Plugin Control Of System Data'''
 
 
-    def __init__(self, plugin_type, plugin_name, instance=None):
+    def __init__(self, plugin_type: str, plugin_name: str, instance: Union[str, None] = None):
         self.__plugin_type = plugin_type
         self.__plugin_name = plugin_name
         self.__plugin_full_name = plugin_type + " " + plugin_name
@@ -16,7 +17,7 @@ class TackemSystemPlugin(TackemSystemBase):
 
         self.__p_config = None
         self.__p_plugin = None
-        self.__p_system = None
+        # self.__p_system = None
 
         _, temp_config = self.get_config(['plugins', self.__plugin_type, self.__plugin_name], {})
         with self._base_data.config_lock:
@@ -28,8 +29,9 @@ class TackemSystemPlugin(TackemSystemBase):
         with self._base_data.plugins_lock:
             self.__p_plugin = self._base_data.plugins[self.__plugin_type][self.__plugin_name]
 
-        with self._base_data.systems_lock:
-            self.__p_system = self._base_data.systems[self.__plugin_full_name]
+        # with self._base_data.systems_lock:
+        #     print(self._base_data.systems.keys())
+        #     self.__p_system = self._base_data.systems[self.__plugin_full_name]
 
 
     @property
@@ -44,10 +46,10 @@ class TackemSystemPlugin(TackemSystemBase):
         return self.__p_plugin
 
 
-    @property
-    def system(self):
-        '''return plugins system'''
-        return self.__p_system
+    # @property
+    # def system(self):
+    #     '''return plugins system'''
+    #     return self.__p_system
 
 
     @property

@@ -19,7 +19,7 @@ class APIConfig(APIBase):
         return self
 
 
-    def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
+    def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
         user = kwargs.get("user", self.GUEST)
         location = kwargs.get("location", None)
@@ -36,7 +36,7 @@ class APIConfig(APIBase):
         })
 
 
-    def POST(self, **kwargs):
+    def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
         location = kwargs.get("location", None)
@@ -56,7 +56,7 @@ class APIConfig(APIBase):
         })
 
 
-    def __check_location(self, location):
+    def __check_location(self, location: str):  # TODO DO I Union THis with all compatable options?
         '''checks the location exists in the config and returns the value'''
         if location is None:
             raise cherrypy.HTTPError(status=400)  #Bad Request
@@ -66,7 +66,7 @@ class APIConfig(APIBase):
         return value
 
 
-    def __check_for_blocked_locations(self, location):
+    def __check_for_blocked_locations(self, location: str) -> None:
         '''checks for banned locations'''
         if "masterkey" in location or "userkey" in location or location[0] == "plugins" \
             or location[0] == "systems":

@@ -4,7 +4,7 @@ $(function() {
         elem.prop('disabled', true);
         $("button").prop("disabled", true);
         pluginName = elem.data('plugin');
-        action = elem.val();
+        action = elem.val().toLowerCase().replace(/\s/g, "");
 
         $.ajax({
             type: 'GET',

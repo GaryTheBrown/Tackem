@@ -2,7 +2,13 @@
 import cherrypy
 
 
-def setup_error_pages(e400=True, e401=True, e403=True, e404=True, e500=True):
+def setup_error_pages(
+        e400: bool = True,
+        e401: bool = True,
+        e403: bool = True,
+        e404: bool = True,
+        e500: bool = True
+    ) -> None:
     '''Changes the Error Pages For The System'''
     if e400:
         cherrypy.config.update({'error_page.400': error_page_400})
@@ -20,26 +26,26 @@ def setup_error_pages(e400=True, e401=True, e403=True, e404=True, e500=True):
         cherrypy.config.update({'error_page.500': error_page_500})
 
 
-def error_page_400(status, message, traceback, version):
+def error_page_400(status, message, traceback, version) -> str:
     '''400 error page'''
     return ('Error 400 Bad Request')
 
 
-def error_page_401(status, message, traceback, version):
+def error_page_401(status, message, traceback, version) -> str:
     '''401 error page'''
     return ('Error 401 Unauthorized')
 
 
-def error_page_403(status, message, traceback, version):
+def error_page_403(status, message, traceback, version) -> str:
     '''403 error page'''
     return ('Error 403 Forbidden')
 
 
-def error_page_404(status, message, traceback, version):
+def error_page_404(status, message, traceback, version) -> str:
     '''404 error page'''
     return ('Error 404 Page not found')
 
 
-def error_page_500(status, message, traceback, version):
+def error_page_500(status, message, traceback, version) -> str:
     '''500 error page'''
     return ('Error:500 Internal Server Error')

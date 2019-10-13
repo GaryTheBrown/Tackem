@@ -1,4 +1,5 @@
 '''Class Controller for Config Object list'''
+from typing import Union
 from libs.config_object import ConfigObject
 from libs.config_rules import ConfigRules
 import libs.html_parts as html_part
@@ -8,8 +9,17 @@ class ConfigList:
     '''Class Controller for Config Object list'''
 
 
-    def __init__(self, name, label=None, plugin=None, objects=None, rules=None, javascripts=None,
-                 is_section=False, section_link=None):
+    def __init__(
+            self,
+            name: str,
+            label: Union[str, None] = None,
+            plugin: Union[str, None] = None,
+            objects: Union[ConfigObject, ConfigList, list, None] = None,
+            rules: Union[ConfigObject, None] = None,
+            javascripts: str = None,
+            is_section: bool = False,
+            section_link=None
+        ):
         if isinstance(name, str):
             self._name = name
         self._label = label if isinstance(label, str) else name
@@ -32,44 +42,44 @@ class ConfigList:
         self._section_link = section_link
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         '''print return'''
         return "ConfigList(" + self._name + ")"
 
 
-    def append(self, config_object):
+    def append(self, config_object: Union[ConfigObject, ConfigList]) -> None:
         '''append item to the list'''
         if isinstance(config_object, (ConfigObject, ConfigList)):
             self._objects.append(config_object)
 
 
-    def append_javascript(self, javascript_function):
+    def append_javascript(self, javascript_function: str) -> None:
         '''append item to the list'''
         if isinstance(javascript_function, str):
             self._javascripts.append(javascript_function)
 
 
-    def name(self):
+    def name(self) -> str:
         '''get name'''
         return self._name
 
 
-    def label(self):
+    def label(self) -> str:
         '''get label'''
         return self._label
 
 
-    def objects(self):
+    def objects(self) -> Union[ConfigObject, ConfigList, list, None]:
         '''get objects'''
         return self._objects
 
 
-    def rules(self):
+    def rules(self) -> ConfigRules:
         '''get rules'''
         return self._rules
 
 
-    def is_section(self):
+    def is_section(self) -> bool:
         '''get if is section'''
         return self._is_section
 
@@ -79,12 +89,12 @@ class ConfigList:
         return self._section_link
 
 
-    def get_root_spec(self):
+    def get_root_spec(self) -> str:
         '''returns the root generated spec file'''
         return self.__get_spec_part(self._objects, 0)
 
 
-    def get_plugin_spec(self, single_instance):
+    def get_plugin_spec(self, single_instance: bool) -> str:
         '''returns the plugins generated spec file'''
         indent = 2
         return_string = self.__tab(indent) + self.__open_bracket(indent + 1)
@@ -100,7 +110,7 @@ class ConfigList:
         return return_string
 
 
-    def __get_spec_part(self, config_list, indent):
+    def __get_spec_part(self, config_list: Union[ConfigList, list], indent: int) -> str:
         '''function for recursion of list'''
         return_string = ""
         list_to_loop = config_list
@@ -132,7 +142,7 @@ class ConfigList:
         return return_string
 
 
-    def __tab(self, count):
+    def __tab(self, count: int) -> str:
         '''Insert the tabbing'''
         return_string = ""
         for _ in range(count):
@@ -140,7 +150,7 @@ class ConfigList:
         return return_string
 
 
-    def __open_bracket(self, count):
+    def __open_bracket(self, count: int) -> str:
         '''Insert the open brackets'''
         return_string = ""
         for _ in range(count):
@@ -148,7 +158,7 @@ class ConfigList:
         return return_string
 
 
-    def __close_bracket(self, count):
+    def __close_bracket(self, count: int) -> str:
         '''Insert the close brackets'''
         return_string = ""
         for _ in range(count):
@@ -156,7 +166,7 @@ class ConfigList:
         return return_string
 
 
-    def convert_var(self, location_list, variable):
+    def convert_var(self, location_list: list, variable):
         '''search and return type'''
         if len(location_list) == 1:
             config_object = self.search_for_object_by_name(location_list[0])
@@ -171,7 +181,7 @@ class ConfigList:
         return config_list.convert_var(location_list[1:], variable)
 
 
-    def search_for_object_by_name(self, name):
+    def search_for_object_by_name(self, name: str) -> Union[ConfigObject, None]:
         '''search objects by name and return key to use'''
         for obj in self._objects:
             if isinstance(obj, ConfigObject):
@@ -185,7 +195,7 @@ class ConfigList:
         return None
 
 
-    def search_for_list_by_name(self, name):
+    def search_for_list_by_name(self, name: str) -> Union[ConfigList, None]:
         '''search by name and return key to use'''
         for obj in self._objects:
             if isinstance(obj, ConfigList) and not obj.is_section():
@@ -199,7 +209,7 @@ class ConfigList:
         return None
 
 
-    def check_if_section_is_enabled(self, config=None):
+    def check_if_section_is_enabled(self, config=None) -> bool:
         '''checks if the list has an enabled object returns its default value if it does'''
         if config is not None:
             config = config.get("enabled", None)
@@ -211,7 +221,7 @@ class ConfigList:
         return enabled_object.default()
 
 
-    def get_config_html(self, config, variable_name="", link=None):
+    def get_config_html(self, config, variable_name: str = "", link=None) -> str:
         '''returns the config_html'''
         return_html = ""
         for obj in self._objects:
@@ -258,7 +268,7 @@ class ConfigList:
         return return_html
 
 
-    def __many_section(self, obj, config, variable_name):
+    def __many_section(self, obj, config, variable_name) -> str:
         '''Work for the Many section done here'''
         many_html = ""
         for_each = obj.rules().for_each()
@@ -302,7 +312,7 @@ class ConfigList:
         return many_html
 
 
-    def config_find(self, config, section_link):
+    def config_find(self, config, section_link: list):
         '''A recursive way of finding a value from the config'''
         if isinstance(section_link, list):
             if section_link[0] in config:
