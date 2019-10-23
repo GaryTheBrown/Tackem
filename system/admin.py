@@ -18,13 +18,13 @@ class TackemSystemAdmin(TackemSystemFull):
     '''Admin Control Of System Data'''
 
 
-    def can_plugin_load(self, plugin_type: str, plugin_name: str) -> bool:
+    def can_plugin_load(self, plugin_type: str, plugin_name: str) -> tuple:
         '''checks if the plugin can be loaded'''
         plugin_json_file = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/settings.json"
         plugin_settings = load_plugin_settings(plugin_json_file)
         if platform.system() == 'Linux':
             return check_for_required_programs(plugin_settings.get('linux_programs', []))
-        return False
+        return "Platform Not Supported yet", 2
 
 
     def is_plugin_loaded(self, plugin_type: str, plugin_name: str) -> bool:
@@ -33,65 +33,66 @@ class TackemSystemAdmin(TackemSystemFull):
 
 
     #Plugin Methods
-    def load_plugins(self) -> None:
-        '''loads all plugin'''
+    def import_plugins(self) -> None:
+        '''imports all plugin'''
         for folder in glob.glob(PLUGINFOLDERLOCATION + "*/*/"):
             if not "__pycache__" in folder:
                 folder_split = folder.split("/")
                 plugin_name = folder_split[-2]
                 plugin_type = folder_split[-3]
-                self.load_plugin(plugin_type, plugin_name)
+                self.import_plugin(plugin_type, plugin_name)
 
 
-    def load_plugin(self, plugin_type: str, plugin_name: str) -> bool:
-        '''load a plugin'''
+    def import_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
+        '''import a plugin'''
         if not self.can_plugin_load(plugin_type, plugin_name):
-            return False
+            return "Plugin Cannot Import", 0
         with self._base_data.plugins_lock:
             plugin = importlib.import_module("plugins." + plugin_type + "." + plugin_name)
             plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux', 'Darwin', 'Windows'])
             if not platform.system() in plugin_platforms:
-                return False
+                return "Plugin Not Allowed On This OS", 1
             if hasattr(plugin, "check_disabled") and plugin.check_disabled():
-                return False
+                return "Is Marked as Disabled (Check Disabled)", 2
             if hasattr(plugin, "check_enabled") and not plugin.check_enabled():
-                return False
+                return "Is Marked as Disabled (Check Enabled)", 3
 
             if not plugin_type in self._base_data.plugins:
                 self._base_data.plugins[plugin_type] = {}
             self._base_data.plugins[plugin_type][plugin_name] = plugin
-        return True
+        return True, 0
 
 
-    def reload_plugins(self) -> None:
-        '''reloads all plugins'''
+    def reimport_plugins(self) -> None:
+        '''reimports all plugins'''
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
-                self.reload_plugin(plugin_type, plugin_name)
+                self.reimport_plugin(plugin_type, plugin_name)
 
 
-    def reload_plugin(self, plugin_type: str, plugin_name: str) -> bool:
-        '''reloads the plugin'''
+    def reimport_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
+        '''reimports the plugin'''
         plugin = self._base_data.plugins[plugin_type][plugin_name]
         try:
             importlib.reload(plugin)
         except ModuleNotFoundError:
-            print("Reloading Module", plugin_type, plugin_name, "Failed")
-            return False
-        return True
+            message = "Reloading Module " + plugin_type + " " + plugin_name + " Failed"
+            print(message)
+            return message, 1
+        return True, 0
 
 
-    def delete_plugins(self) -> None:
+    def remove_plugins(self) -> None:
         '''deletes the plugins'''
         list_of_plugins = []
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
                 list_of_plugins.append((plugin_type, plugin_name))
         for plugin_type, plugin_name in list_of_plugins:
-            self.delete_plugin(plugin_type, plugin_name)
+            self.remove_plugin(plugin_type, plugin_name)
 
 
-    def delete_plugin(self, plugin_type: str, plugin_name: str) -> None:
+    def remove_plugin(self, plugin_type: str, plugin_name: str) -> None:
         '''deletes a plugin'''
         with self._base_data.plugins_lock:
             if self.is_systems_for_plugin_exists(plugin_type, plugin_name):
@@ -99,7 +100,6 @@ class TackemSystemAdmin(TackemSystemFull):
             del self._base_data.plugins[plugin_type][plugin_name]
             if not self._base_data.plugins[plugin_type]:
                 del self._base_data.plugins[plugin_type]
-        return True
 
 
     def start_plugin(self, plugin_type: str, plugin_name: str) -> None:
@@ -111,7 +111,7 @@ class TackemSystemAdmin(TackemSystemFull):
     def stop_plugin(self, plugin_type: str, plugin_name: str) -> None:
         '''Stops a plugins systems'''
         self.stop_plugin_systems(plugin_type, plugin_name)
-        self.delete_plugin_systems(plugin_type, plugin_name)
+        self.remove_plugin_systems(plugin_type, plugin_name)
 
 
     #Systems Methods
@@ -158,13 +158,13 @@ class TackemSystemAdmin(TackemSystemFull):
         return all_created
 
 
-    def delete_systems(self) -> None:
+    def remove_systems(self) -> None:
         '''deletes the systems'''
         for name in list(name for name in self._base_data.systems):
-            self.delete_system(name)
+            self.remove_system(name)
 
 
-    def delete_system(self, system_name: str) -> bool:
+    def remove_system(self, system_name: str) -> bool:
         '''deletes a system'''
         with self._base_data.systems_lock:
             if not self._base_data.systems[system_name].running():
@@ -173,11 +173,11 @@ class TackemSystemAdmin(TackemSystemFull):
         return False
 
 
-    def delete_plugin_systems(self, plugin_type: str, plugin_name: str) -> None:
+    def remove_plugin_systems(self, plugin_type: str, plugin_name: str) -> None:
         '''deletes a plugin systems'''
         system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
         for system_name in system_names:
-            self.delete_system(system_name)
+            self.remove_system(system_name)
 
 
     def start_systems(self) -> bool:
@@ -241,6 +241,7 @@ class TackemSystemAdmin(TackemSystemFull):
                 for index, system_name in enumerate(temp_system_names):
                     if not self._base_data.systems[system_name].running():
                         del temp_system_names[index]
+                        break
 
 
     def get_systems_for_plugin(self, plugin_type: str, plugin_name: str) -> list:
@@ -293,13 +294,13 @@ class TackemSystemAdmin(TackemSystemFull):
                     plugin_cfg[plugin_name] = temp_plugin.CFG
 
 
-    def delete_plugin_cfgs(self) -> None:
+    def remove_plugin_cfgs(self) -> None:
         '''deletes the plugins cfg'''
         with self._base_data.plugin_cfg_lock:
             self._base_data.plugin_cfg = {}
 
 
-    def delete_plugin_cfg(self, plugin_type: str, plugin_name: str) -> bool:
+    def remove_plugin_cfg(self, plugin_type: str, plugin_name: str) -> bool:
         '''removes a plugins cfg'''
         with self._base_data.plugin_cfg_lock:
             if plugin_name not in self._base_data.plugin_cfg[plugin_type]:
@@ -329,7 +330,7 @@ class TackemSystemAdmin(TackemSystemFull):
                 self._base_data.config = config_load(ARGS.home, self.get_plugin_cfg())
 
 
-    def delete_config(self) -> None:
+    def remove_config(self) -> None:
         '''deletes the config'''
         with self._base_data.config_lock:
             if self._base_data.config is not None:
@@ -370,7 +371,7 @@ class TackemSystemAdmin(TackemSystemFull):
         self._base_data.sql = setup_db(self._base_data.config['database'])
 
 
-    def delete_sql(self) -> None:
+    def remove_sql(self) -> None:
         '''deletes the SQL system'''
         self._base_data.sql = None
 
@@ -393,7 +394,7 @@ class TackemSystemAdmin(TackemSystemFull):
             self._base_data.musicbrainz = MusicBrainz()
 
 
-    def delete_musicbrainz(self) -> None:
+    def remove_musicbrainz(self) -> None:
         '''deletes the musicbrainz'''
         if self._base_data.musicbrainz is not None:
             self._base_data.musicbrainz = None
@@ -405,7 +406,7 @@ class TackemSystemAdmin(TackemSystemFull):
         self._base_data.auth = Authentication()
 
 
-    def delete_auth(self) -> None:
+    def remove_auth(self) -> None:
         '''deletes the auth'''
         if self._base_data.auth is not None:
             self._base_data.auth = None

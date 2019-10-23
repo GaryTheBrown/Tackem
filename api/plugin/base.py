@@ -9,22 +9,12 @@ class APIPluginBase(APIBase):
     def __init__(self):
         self._system = TackemSystemPluginDownloader()
 
-    @staticmethod
-    def _plugin_page_data_return(enable: list, disable: list, show: list, hide: list) -> str:
-        '''Creates the PLugin data to return'''
-        data = {
-            'actions': {
-                'enable': enable,
-                'disable': disable,
-                'show': show,
-                'hide':hide
-            }
-        }
 
     @staticmethod
     def _return_data_plugin(
             user: int,
             action: str,
+            success: bool,
             plugin_type: str,
             plugin_name: str,
             **kwargs
@@ -34,6 +24,7 @@ class APIPluginBase(APIBase):
             user,
             "Plugin",
             action,
+            success,
             plugin_type=plugin_type,
             plugin_name=plugin_name,
             **kwargs

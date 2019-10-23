@@ -39,13 +39,20 @@ class APIBase():
         return json.loads(rawbody)
 
 
+    def _check_user(self, user: int, is_admin: bool = False) -> None:
+        '''checks that the user is allowed'''
+        if user == self.GUEST or (is_admin and user == self.USER):
+            raise cherrypy.HTTPError(status=401)  #Unauthorized
+
+
     @staticmethod
-    def _return_data(user: int, system: str, action: str, **kwargs) -> str:
+    def _return_data(user: int, system: str, action: str, success: bool, **kwargs) -> str:
         '''creates the json for returning requiring some data but allowing more'''
         base = {
             "user" : user,
             "system" : system,
             "action" : action,
+            "sucess" : success
         }
 
         for key, value in kwargs.items():
@@ -54,7 +61,13 @@ class APIBase():
         return json.dumps(base)
 
 
-    def _check_user(self, user: int, is_admin: bool = False) -> None:
-        '''checks that the user is allowed'''
-        if user == self.GUEST or (is_admin and user == self.USER):
-            raise cherrypy.HTTPError(status=401)  #Unauthorized
+    @staticmethod
+    def _actions_return(enable: list, disable: list, show: list, hide: list, rename: dict) -> dict:
+        '''Creates the PLugin data to return'''
+        return {
+            'enable': enable,
+            'disable': disable,
+            'show': show,
+            'hide': hide,
+            'rename': rename
+        }

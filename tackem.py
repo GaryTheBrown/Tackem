@@ -67,13 +67,13 @@ class Tackem:
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
-        TackemSystemAdmin().delete_systems()
-        TackemSystemAdmin().delete_sql()
-        TackemSystemAdmin().delete_plugin_cfgs()
-        TackemSystemAdmin().delete_plugins()
-        TackemSystemAdmin().delete_musicbrainz()
-        TackemSystemAdmin().delete_auth()
-        TackemSystemAdmin().delete_config()
+        TackemSystemAdmin().remove_systems()
+        TackemSystemAdmin().remove_sql()
+        TackemSystemAdmin().remove_plugin_cfgs()
+        TackemSystemAdmin().remove_plugins()
+        TackemSystemAdmin().remove_musicbrainz()
+        TackemSystemAdmin().remove_auth()
+        TackemSystemAdmin().remove_config()
 
 
     def shutdown(self) -> None:

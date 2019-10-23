@@ -1,37 +1,44 @@
-'''PLUGIN DOWNLOAD API'''
+'''PLUGIN DELETE API'''
+
 import cherrypy
 from .base import APIPluginBase
 
 
 @cherrypy.expose
-class APIPluginDownload(APIPluginBase):
-    '''PLUGIN DOWNLOAD API'''
+class APIPluginDelete(APIPluginBase):
+    '''PLUGIN DELETE API'''
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
-        return self.download_plugin(**kwargs)
+        return self.__delete_plugin(**kwargs)
 
 
     def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
-        return self.download_plugin(**kwargs)
+        return self.__delete_plugin(**kwargs)
 
 
     def PUT(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''PUT Function'''
-        return self.download_plugin(**kwargs)
+        return self.__delete_plugin(**kwargs)
 
-    def download_plugin(self, **kwargs) -> str:
+    def __delete_plugin(self, **kwargs) -> str:
         '''The Action'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
         plugin_name = kwargs.get("plugin_name", None)
 
-        return_data = self._system.download_plugin(plugin_type, plugin_name)
-        if return_data[0] is not True:
+        loaded_data = self._system.is_plugin_loaded(plugin_type, plugin_name)
+        if loaded_data is True:
+            self._system.stop_plugin_systems(plugin_type, plugin_name)
+            self._system.write_config_to_disk()
+            self._system.remove_plugin(plugin_type, plugin_name)
+
+        delete_data = self._system.delete_plugin(plugin_type, plugin_name)
+        if delete_data[0] is not True:
             return self._return_data_plugin(
                 user,
-                "Download",
+                "Delete",
                 False,
                 plugin_type,
                 plugin_name,
@@ -42,31 +49,18 @@ class APIPluginDownload(APIPluginBase):
                     [],  # hide
                     {},  # rename
                 ),
-                error=return_data[0],
-                error_number=return_data[1]
+                error=delete_data[0],
+                error_number=delete_data[1]
             )
-        self._system.install_plugin_modules(plugin_type, plugin_name)
-        return_data = self._system.reload_plugin(plugin_type, plugin_name)
-        if return_data[0] is not True:
-            return self._return_data_plugin(
-                user,
-                "Download",
-                False,
-                plugin_type,
-                plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
-                error=return_data[0],
-                error_number=return_data[1]
-            )
+
+
+        if loaded_data is True:
+            self._system.remove_plugin_cfg(plugin_type, plugin_name)
+            self._system.load_config()
+
         return self._return_data_plugin(
             user,
-            "Download",
+            "Delete",
             True,
             plugin_type,
             plugin_name,

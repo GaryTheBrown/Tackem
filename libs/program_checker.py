@@ -18,6 +18,8 @@ def check_for_required_programs(
         message = "MISSING THE FOLLOWING PROGRAMS: " + " ".join(missing_program_list)
         if plugin is not None:
             print(plugin.upper(), message)
+            return plugin.upper() + " " + message, 1
         else:
             print(message)
-    return all_there
+            return message, 1
+    return True, 0

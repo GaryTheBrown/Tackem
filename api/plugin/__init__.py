@@ -4,6 +4,12 @@ import cherrypy
 from system.full import TackemSystemFull
 from .base import APIBase
 from .download import APIPluginDownload
+from .delete import APIPluginDelete
+from .reload import APIPluginReload
+from .start import APIPluginStart
+from .stop import APIPluginStop
+from .clear_config import APIPluginClearConfig
+from .clear_database import APIPluginClearDatabase
 
 @cherrypy.expose
 class APIPlugin(APIBase):
@@ -33,5 +39,23 @@ class APIPlugin(APIBase):
 
         if action == "download":
             return APIPluginDownload()
+
+        if action == "delete":
+            return APIPluginDelete()
+
+        if action == "reload":
+            return APIPluginReload()
+
+        if action == "start":
+            return APIPluginStart()
+
+        if action == "stop":
+            return APIPluginStop()
+
+        if action == "clearconfig":
+            return APIPluginClearConfig()
+
+        if action == "cleardatabase":
+            return APIPluginClearDatabase()
 
         return self

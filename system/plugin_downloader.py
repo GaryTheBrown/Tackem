@@ -4,13 +4,12 @@ import os
 import shutil
 import subprocess
 import sys
-from datetime import datetime
 from glob import glob
 from typing import Union
 import git
 import requests
 import markdown
-from libs.startup_arguments import PLUGINFOLDERLOCATION, PROGRAMCONFIGLOCATION
+from libs.startup_arguments import PLUGINFOLDERLOCATION
 from system.admin import TackemSystemAdmin
 
 class TackemSystemPluginDownloader(TackemSystemAdmin):
@@ -29,6 +28,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
     def __init__(self):
         self.get_local_plugins()
         self.get_github_plugins()
+
 
     def is_git_repo(self, path: str) -> bool:
         '''quick script to check if folder is a git repo'''
@@ -71,8 +71,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
                 self.__LOCAL_PLUGINS.append(local_plugin)
 
-    #TODO Find out if you can use ssh way
-    #Need to also figure out what to send through the api for install and uninstall
+
     def get_github_plugins(self) -> None:
         '''grabs the list of plugins on github and checks if local'''
         self.__GITHUB_PLUGINS.clear()
@@ -130,28 +129,29 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
         return markdown.markdown(readme, output_format="html5")
 
 
-    def download_plugin(self, plugin_type: str, plugin_name: str) -> Union[str, bool]:
+    def download_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''function to use list from html page to download the plugins'''
         try:
             os.makedirs(PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name)
         except OSError:
-            return "FOLDER ALREADY EXISTS"
+            return "FOLDER ALREADY EXISTS", 0
         for plugin in self.__GITHUB_PLUGINS:
             if plugin['plugin_type'] == plugin_type and plugin['plugin_name'] == plugin_name:
                 location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
                 git.Repo.clone_from(plugin['clone_url'], location, branch=self.__REPO_BRANCH)
-                return True
-        return "PLUGIN NOT IN LIST [BUG]"
+                return True, 0
+        return "PLUGIN NOT IN LIST [BUG]", 1
 
 
-    def reload_plugin(self, plugin_type: str, plugin_name: str) -> bool:
+    def reload_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''Function to attempt to reload the plugin after a failed install'''
         self.write_config_to_disk()
-        if not self.load_plugin(plugin_type, plugin_name):
-            return False
+        return_data = self.import_plugin(plugin_type, plugin_name)
+        if return_data[0] is not True:
+            return return_data
         self.load_plugin_cfgs()
         self.load_config()
-        return True
+        return True, 0
 
 
     def install_plugin_modules(self, plugin_type: str, plugin_name: str) -> None: #(pip)
@@ -163,3 +163,33 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
             pip_call = [sys.executable, '-m', 'pip', 'install', '-r', requirements_file, '--user']
             subprocess.check_call(pip_call)
             print("installed plugin requirements")
+
+
+    def uninstall_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:
+        '''uninstall plugin modiles'''
+        plugin_folder = plugin_type + "/" + plugin_name + "/"
+        requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
+        if os.path.exists(requirements_file):
+            print("uninstalling plugin requirements..")
+            pip_call = [sys.executable, '-m', 'pip', 'uninstall', '-y', '-r', requirements_file]
+            subprocess.check_call(pip_call)
+            print("uninstalled plugin requirements")
+
+
+    def delete_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
+        '''deletes the plugin'''
+        folder = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/"
+        try:
+            shutil.rmtree(folder)
+        except OSError:
+            return "CANNOT DELETE THE FOLDER ({})".format(folder), 1
+        for plugin in self.__GITHUB_PLUGINS:
+            if plugin['plugin_type'] == plugin_type and plugin['plugin_name'] == plugin_name:
+                plugin['downloaded'] = False
+                break
+        try:
+            os.rmdir(PLUGINFOLDERLOCATION + plugin_type)
+        except OSError:
+            pass
+
+        return True, 0

@@ -276,19 +276,6 @@ def start_plugin_systems(plugin_type: str, plugin_name: str) -> bool:
     return True
 
 
-def stop_plugin_systems(plugin_type: str, plugin_name: str) -> bool:
-    '''function to start up the plugins systems'''
-    if not TackemSystemAdmin().is_plugin_loaded(plugin_type, plugin_name):
-        return False
-    TackemSystemAdmin().stop_plugin_systems(plugin_type, plugin_name)
-    TackemSystemAdmin().write_config_to_disk()
-    TackemSystemAdmin().delete_plugin(plugin_type, plugin_name)
-    TackemSystemAdmin().delete_plugin_cfg(plugin_type, plugin_name)
-    uninstall_plugin_modules(plugin_type, plugin_name)
-    TackemSystemAdmin().load_config()
-    return True
-
-
 def clean_config_after_deletion(plugin_type: str, plugin_name: str, backup: bool - True) -> None:
     '''function to remove data from the config'''
     config = TackemSystemAdmin().get_global_config()
@@ -320,20 +307,6 @@ def clean_db_after_deletion(plugin_type: str, plugin_name: str) -> None:
 def javascript() -> str:
     '''Javascript File'''
     return str(open("www/javascript/plugindownloader.js", "r").read())
-
-
-
-
-
-def uninstall_plugin_modules(plugin_type: str, plugin_name: str) -> None:
-    '''uninstall plugin modiles'''
-    plugin_folder = plugin_type + "/" + plugin_name + "/"
-    requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
-    if os.path.exists(requirements_file):
-        print("uninstalling plugin requirements..")
-        pip_call = [sys.executable, '-m', 'pip', 'uninstall', '-y', '-r', requirements_file]
-        subprocess.check_call(pip_call)
-        print("uninstalled plugin requirements")
 
 
 get_local_plugins()
