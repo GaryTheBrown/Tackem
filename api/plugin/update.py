@@ -1,40 +1,35 @@
-'''PLUGIN CLEAR CONFIG API'''
-import shutil
-from datetime import datetime
+'''PLUGIN UPDATE API'''
 import cherrypy
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from .base import APIPluginBase
 
-
 @cherrypy.expose
-class APIPluginClearConfig(APIPluginBase):
-    '''PLUGIN CLEAR CONFIG API'''
+class APIPluginUpdate(APIPluginBase):
+    '''PLUGIN UPDATE API'''
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
-        return self.__clear_config_plugin(**kwargs)
+        return self.__update_plugin(**kwargs)
 
 
     def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
-        return self.__clear_config_plugin(**kwargs)
+        return self.__update_plugin(**kwargs)
 
 
     def PUT(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''PUT Function'''
-        return self.__clear_config_plugin(**kwargs)
+        return self.__update_plugin(**kwargs)
 
-    def __clear_config_plugin(self, **kwargs) -> str:
+    def __update_plugin(self, **kwargs) -> str:
         '''The Action'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
         plugin_name = kwargs.get("plugin_name", None)
-        backup = kwargs.get("backup", True)
 
         if self._system.is_plugin_loaded(plugin_type, plugin_name):
             return self._return_data_plugin(
                 user,
-                "ClearConfig",
+                "Update",
                 False,
                 plugin_type,
                 plugin_name,
@@ -45,28 +40,31 @@ class APIPluginClearConfig(APIPluginBase):
                     [],  # hide
                     {},  # rename
                 ),
-                error=plugin_type + " " + plugin_name + " Has No Config Data",
+                error=plugin_type + " " + plugin_name + "Is Running. Stop it First",
                 error_number=0
             )
 
-        config = self._system.get_global_config()
-        if not config['plugins'][plugin_type][plugin_name]:
-            return
-
-        config_file = PROGRAMCONFIGLOCATION + "config.ini"
-        if backup:
-            config_backup = PROGRAMCONFIGLOCATION + "config.bak"
-            config_backup += datetime.now().strftime("%Y%m%d%H%M%S")
-            shutil.copyfile(config_file, config_backup)
-        config['plugins'][plugin_type][plugin_name].clear()
-        del config['plugins'][plugin_type][plugin_name]
-        if not config['plugins'][plugin_type]:
-            del config['plugins'][plugin_type]
-        config.write()
+        if not self._system.update_plugin(plugin_type, plugin_name):
+            return self._return_data_plugin(
+                user,
+                "Update",
+                False,
+                plugin_type,
+                plugin_name,
+                actions=self._actions_return(
+                    [],  # enable
+                    [],  # disable
+                    [],  # show
+                    [],  # hide
+                    {},  # rename
+                ),
+                error=plugin_type + " " + plugin_name + " Failed to Update",
+                error_number=1
+            )
 
         return self._return_data_plugin(
             user,
-            "ClearConfig",
+            "Update",
             True,
             plugin_type,
             plugin_name,

@@ -1,4 +1,5 @@
 '''PLUGIN DOWNLOAD API'''
+import os
 import cherrypy
 from .base import APIPluginBase
 
@@ -7,21 +8,25 @@ from .base import APIPluginBase
 class APIPluginDownload(APIPluginBase):
     '''PLUGIN DOWNLOAD API'''
 
+    __INDOCKER = "You are running inside a docker container you need to pick an image that contains"
+    __INDOCKER += " the required programs for the plugin"
+    __EXTRA = "This Plugin Requires extra Programs Please see the readme"
+
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
-        return self.download_plugin(**kwargs)
+        return self.__download_plugin(**kwargs)
 
 
     def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
-        return self.download_plugin(**kwargs)
+        return self.__download_plugin(**kwargs)
 
 
     def PUT(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''PUT Function'''
-        return self.download_plugin(**kwargs)
+        return self.__download_plugin(**kwargs)
 
-    def download_plugin(self, **kwargs) -> str:
+    def __download_plugin(self, **kwargs) -> str:
         '''The Action'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
@@ -48,6 +53,11 @@ class APIPluginDownload(APIPluginBase):
         self._system.install_plugin_modules(plugin_type, plugin_name)
         return_data = self._system.reload_plugin(plugin_type, plugin_name)
         if return_data[0] is not True:
+            if os.path.isfile("/indocker"):
+                message = self.__INDOCKER
+            else:
+                message = self.__EXTRA
+
             return self._return_data_plugin(
                 user,
                 "Download",
@@ -62,7 +72,8 @@ class APIPluginDownload(APIPluginBase):
                     {},  # rename
                 ),
                 error=return_data[0],
-                error_number=return_data[1]
+                error_number=return_data[1],
+                message=message
             )
         return self._return_data_plugin(
             user,

@@ -14,7 +14,7 @@ from system.admin import TackemSystemAdmin
 
 class TackemSystemPluginDownloader(TackemSystemAdmin):
     '''System for downloading plugins'''
-    __SYSTEM_NAME = "plugin_downloader"
+
     __REPO_BRANCH = "master"
     __HOST_NAME = "GaryTheBrown"
     __HOST_API_URL = "https://api.github.com/users/{}/repos".format(__HOST_NAME)
@@ -193,3 +193,39 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
             pass
 
         return True, 0
+
+
+    def update_plugins(self) -> None:
+        '''function to use list from html page to download the plugins'''
+        for plugin in self.__GITHUB_PLUGINS:
+            if plugin['downloaded']:
+                self.update_plugin(plugin['plugin_type'], plugin['plugin_name'])
+
+
+    def update_plugin(self, plugin_type: str, plugin_name: str) -> None:
+        '''function to use list from html page to download the plugins'''
+        location = PLUGINFOLDERLOCATION + plugin_type + '/' + plugin_name + '/'
+        git.Repo(location).remotes.origin.pull()
+        return True
+
+
+    def get_plugin_branches(self, plugin_type: str, plugin_name: str) -> list:
+        '''Gets a list of branches'''
+        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        return [branch.name for branch in git.Repo(location).heads]
+
+
+    def get_current_plugin_branch(self, plugin_type: str, plugin_name: str) -> str:
+        '''Gets the current branch'''
+        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        return git.Repo(location).active_branch()
+
+
+    def change_plugin_branch(self, plugin_type: str, plugin_name: str, branch: str) -> bool:
+        '''will change the branch for the plugin'''
+        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        repo = git.Repo(location)
+        if branch in [branch.name for branch in repo.heads]:
+            repo.heads[branch].checkout()
+            return True
+        return False

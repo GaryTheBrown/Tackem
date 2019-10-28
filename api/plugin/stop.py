@@ -45,3 +45,19 @@ class APIPluginStop(APIPluginBase):
                 error=plugin_type + " " + plugin_name + " Not Running",
                 error_number=0
             )
+
+        self._system.stop_plugin_systems(plugin_type, plugin_name)
+        return self._return_data_plugin(
+            user,
+            "Stop",
+            True,
+            plugin_type,
+            plugin_name,
+            actions=self._actions_return(
+                [],  # enable
+                [],  # disable
+                [],  # show
+                [],  # hide
+                {},  # rename
+            ),
+        )

@@ -45,3 +45,34 @@ class APIPluginStart(APIPluginBase):
                 error=plugin_type + " " + plugin_name + " Already Started",
                 error_number=0
             )
+        if not self._system.load_plugin_systems(plugin_type, plugin_name):
+            return self._return_data_plugin(
+                user,
+                "Start",
+                False,
+                plugin_type,
+                plugin_name,
+                actions=self._actions_return(
+                    [],  # enable
+                    [],  # disable
+                    [],  # show
+                    [],  # hide
+                    {},  # rename
+                ),
+                error=plugin_type + " " + plugin_name + " Failed to Started",
+                error_number=1
+            )
+        return self._return_data_plugin(
+            user,
+            "Download",
+            True,
+            plugin_type,
+            plugin_name,
+            actions=self._actions_return(
+                [],  # enable
+                [],  # disable
+                [],  # show
+                [],  # hide
+                {},  # rename
+            ),
+        )
