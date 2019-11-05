@@ -5,7 +5,7 @@ from libs.config import post_config_settings, plugin_config_page
 from libs.config import root_config_page, get_config_multi_setup
 from libs.config import javascript as config_javascript
 from libs.root_event import RootEvent
-from libs import plugin_downloader
+from www.plugin_downloader import plugin_download_page
 
 
 class Root(HTMLTEMPLATE):
@@ -32,7 +32,7 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def plugin_downloader_javascript(self) -> str:
         '''Javascript File'''
-        return plugin_downloader.javascript()
+        return str(open("www/javascript/plugindownloader.js", "r").read())
 
 
     @cherrypy.expose
@@ -55,7 +55,7 @@ class Root(HTMLTEMPLATE):
             return self._template(root_config_page(self._tackem_system.config()), False,
                                   javascript=javascript)
         if kwargs["page_index"] == "2":
-            return self._template(plugin_downloader.plugin_download_page(False),
+            return self._template(plugin_download_page(False),
                                   False, javascript=plugin_downloader_javascript)
         if kwargs["page_index"] == "3":
             return self._template(plugin_config_page(self._tackem_system.config(),
@@ -72,12 +72,6 @@ class Root(HTMLTEMPLATE):
             page = page.replace("%%PAGE%%", "login")
             return self._template(page, False)
         return self._template("TODO", False)
-
-
-    @cherrypy.expose
-    def plugin_control(self, action: str, name: str) -> str:
-        '''plugin control link'''
-        return plugin_downloader.plugin_control(action, name)
 
 
     @cherrypy.expose

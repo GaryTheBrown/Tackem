@@ -5,8 +5,6 @@ from libs.html_template import HTMLTEMPLATE
 from libs.config import full_config_page, get_config_multi_setup, post_config_settings
 from libs.config import javascript as config_javascript
 from libs.root_event import RootEvent
-from libs import plugin_downloader
-
 
 class Root(HTMLTEMPLATE):
     '''Root'''
@@ -55,12 +53,6 @@ class Root(HTMLTEMPLATE):
     def config_javascript(self) -> str:
         '''Javascript File'''
         return config_javascript()
-
-
-    @cherrypy.expose
-    def plugin_downloader_javascript(self) -> str:
-        '''Javascript File'''
-        return plugin_downloader.javascript()
 
 
     @cherrypy.expose
@@ -127,22 +119,6 @@ class Root(HTMLTEMPLATE):
         RootEvent.set_event("shutdown")
         page = "Shuting Down Tackem..."
         return self._template(page, False)
-
-
-    @cherrypy.expose
-    def plugin_download(self) -> str:
-        '''url for system access to plugin downloaded'''
-        if not self._tackem_system.auth.is_admin():
-            raise cherrypy.HTTPError(status=401)
-        javascript = "plugin_downloader_javascript"
-        return self._template(plugin_downloader.plugin_download_page(True), False,
-                              javascript=javascript)
-
-
-    @cherrypy.expose
-    def plugin_control(self, action, name) -> str:
-        '''plugin control link'''
-        return plugin_downloader.plugin_control(action, name)
 
 
     @cherrypy.expose

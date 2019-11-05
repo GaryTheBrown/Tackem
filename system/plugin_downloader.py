@@ -30,6 +30,18 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
         self.get_github_plugins()
 
 
+    @property
+    def github_plugins(self):
+        '''returns the github plugins'''
+        return self.__GITHUB_PLUGINS
+
+
+    @property
+    def local_plugins(self):
+        '''returns the local plugins'''
+        return self.__LOCAL_PLUGINS
+
+
     def is_git_repo(self, path: str) -> bool:
         '''quick script to check if folder is a git repo'''
         try:

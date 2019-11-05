@@ -4,6 +4,7 @@ import cherrypy
 from www.first_run import Root as first_run_root
 from www.root import Root as main_root
 from www.admin import Admin
+from www.plugin_downloader import PluginDownloader
 from api import API
 from libs import scraper
 from libs.error_pages import setup_error_pages
@@ -19,7 +20,7 @@ class Httpd():
 
         cherrypy.config.update({
             'server.socket_host': '0.0.0.0',
-            'server.socket_port': self.__system.config()['webui']['port'],
+            'server.socket_port': self.__system.config['webui']['port'],
             'server.threadPool':10,
             'server.environment':"production",
             'log.screen': False,
@@ -44,15 +45,17 @@ class Httpd():
         }
 
         baseurl = self.__system.baseurl
-        if self.__system.config()['firstrun']:
+        if self.__system.config['firstrun']:
             cherrypy.tree.mount(first_run_root("", "", self.__system), baseurl,
                                 conf_root)
         else:
-            if not self.__system.config()['webui']['disabled']:
+            if not self.__system.config['webui']['disabled']:
                 cherrypy.tree.mount(main_root("", "", self.__system), baseurl, conf_root)
                 cherrypy.tree.mount(Admin("Admin", "", self.__system),
                                     baseurl + "admin/", conf_root)
-                for key in self.__system.systems():
+                cherrypy.tree.mount(PluginDownloader("Plugin Downloader", "", self.__system),
+                                    baseurl + "admin/plugindownloader/", conf_root)
+                for key in self.__system.systems:
                     #load system webpages into cherrypy
                     plugin_link = self.__system.system(key).plugin_link()
                     if plugin_link.SETTINGS.get('single_instance', True):
@@ -61,10 +64,10 @@ class Httpd():
                         instance_name = key.split()[-1]
                         plugin_link.www.mounts(key, instance_name)
 
-            cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
-            if self.__system.config()['scraper']['enabled']:
+            if self.__system.config['scraper']['enabled']:
                 scraper.mounts()
 
+        cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
 
     def start(self) -> None:
         '''Start the server'''

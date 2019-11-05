@@ -5,9 +5,9 @@ import os.path
 import signal
 from typing import Union
 from libs.startup_arguments import ARGS
+from system.admin import TackemSystemAdmin
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
-from system.admin import TackemSystemAdmin
 
 
 #TODO move all actions to the api. allowing localhost to use without api key or generate single
@@ -25,7 +25,7 @@ class Tackem:
     def start(self) -> None:
         '''Start of the program'''
         print("LOADING PLUGINS...")
-        TackemSystemAdmin().load_plugins()
+        TackemSystemAdmin().import_plugins()
         print("LOADING CONFIG...")
         TackemSystemAdmin().load_plugin_cfgs()
         TackemSystemAdmin().load_config()

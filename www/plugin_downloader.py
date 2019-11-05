@@ -1,6 +1,31 @@
 '''System for downloading plugins'''
+import cherrypy
+from libs.html_template import HTMLTEMPLATE
 import libs.html_parts as html_parts
 from system.plugin_downloader import TackemSystemPluginDownloader
+
+
+class PluginDownloader(HTMLTEMPLATE):
+    '''Plugin Downloader'''
+
+    @cherrypy.expose
+    def index(self) -> str:
+        '''Index Page'''
+        if not self._tackem_system.auth.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        return self._template(
+            plugin_download_page(True),
+            False,
+            javascript="plugin_downloader/javascript"
+        )
+
+    @cherrypy.expose
+    def javascript(self) -> str:
+        '''Javascript File'''
+        if not self._tackem_system.auth.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        return str(open("www/javascript/plugindownloader.js", "r").read())
+
 
 
 def plugin_download_page(full_system: bool = True) -> str:
@@ -10,7 +35,7 @@ def plugin_download_page(full_system: bool = True) -> str:
     html = "<h2>GITHUB PLUGINS</h2>"
     plugin_count = 0
     panels_html = ""
-    for plugin in GITHUB_PLUGINS:
+    for plugin in TackemSystemPluginDownloader().github_plugins:
         title = plugin['plugin_type'] + " - " + plugin['plugin_name']
         loaded = False
         if plugin['downloaded']:
@@ -63,7 +88,10 @@ def plugin_download_page(full_system: bool = True) -> str:
             enabled=stop_start_enabled,
             visible=stop_start_visible
         )
-        readme = get_readme_as_html(plugin['plugin_type'], plugin['plugin_name'])
+        readme = TackemSystemPluginDownloader().get_readme_as_html(
+            plugin['plugin_type'],
+            plugin['plugin_name']
+        )
         if readme is None:
             readme = plugin['description']
         panels_html += html_parts.plugin_panel(title, readme, clear_config,
@@ -71,7 +99,7 @@ def plugin_download_page(full_system: bool = True) -> str:
     html += panels_html
     html += "<h2>LOCAL PLUGINS</h2>"
     panels_html = ""
-    for plugin in LOCAL_PLUGINS:
+    for plugin in TackemSystemPluginDownloader().local_plugins:
         if not plugin['offical']:
             title = plugin['plugin_type'] + " - " + plugin['plugin_name']
             offical = ""
@@ -87,7 +115,3 @@ def plugin_download_page(full_system: bool = True) -> str:
         html += '<script>$("button").prop("disabled", true);</script>'
 
     return html
-
-def javascript() -> str:
-    '''Javascript File'''
-    return str(open("www/javascript/plugindownloader.js", "r").read())
