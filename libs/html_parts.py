@@ -1,7 +1,7 @@
 '''Functions to deal with all the html template parts'''
 from typing import Union
 from libs.startup_arguments import PROGRAMVERSION
-
+from libs.html_system import HTMLSystem
 
 #################
 #MASTER TEMPLATE#
@@ -17,14 +17,16 @@ def master_template(
         navbar: str
     ) -> str:
     '''head section of the template'''
-    html = str(open("www/html/pages/template.html", "r").read())
-    html = html.replace("%%JAVASCRIPTEXTRA%%", javascript_extra)
-    html = html.replace("%%STYLESHEETEXTRA%%", stylesheet_extra)
-    html = html.replace("%%NAVBAR%%", navbar)
-    html = html.replace("%%BODY%%", body)
-    html = html.replace("%%BASEURL%%", baseurl)
-    html = html.replace("%%PROGRAMVERSION%%", PROGRAMVERSION)
-    return html.replace("%%TITLE%%", title)
+    return HTMLSystem.part(
+        "template",
+        JAVASCRIPTEXTRA=javascript_extra,
+        STYLESHEETEXTRA=stylesheet_extra,
+        NAVBAR=navbar,
+        BODY=body,
+        BASEURL=baseurl,
+        PROGRAMVERSION=PROGRAMVERSION,
+        TITLE=title
+    )
 
 
 ########
@@ -34,62 +36,78 @@ def master_template(
 
 def navbar_dropdown(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
-    html = str(open("www/html/navbar/dropdown.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%DROPDOWNID%%", dropdown_id)
-    return html.replace("%%ITEMS%%", items)
+    return HTMLSystem.part(
+        "navbar/dropdown",
+        TITLE=title.title(),
+        DROPDOWNID=dropdown_id,
+        ITEMS=items
+    )
 
 
 def navbar_dropdown_left(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item left aligned (not active)'''
-    html = str(open("www/html/navbar/dropdownleft.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%DROPDOWNID%%", dropdown_id)
-    return html.replace("%%ITEMS%%", items)
+    return HTMLSystem.part(
+        "navbar/dropdownleft",
+        TITLE=title.title(),
+        DROPDOWNID=dropdown_id,
+        ITEMS=items
+    )
 
 
 def navbar_dropdown_right(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item right aligned (not active)'''
-    html = str(open("www/html/navbar/dropdownright.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%DROPDOWNID%%", dropdown_id)
-    return html.replace("%%ITEMS%%", items)
+    return HTMLSystem.part(
+        "navbar/dropdownright",
+        TITLE=title.title(),
+        DROPDOWNID=dropdown_id,
+        ITEMS=items
+    )
 
 
 def navbar_drop_left(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
-    html = str(open("www/html/navbar/dropleft.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%DROPDOWNID%%", dropdown_id)
-    return html.replace("%%ITEMS%%", items)
+    return HTMLSystem.part(
+        "navbar/dropleft",
+        TITLE=title.title(),
+        DROPDOWNID=dropdown_id,
+        ITEMS=items
+    )
 
 
 def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
-    html = str(open("www/html/navbar/dropright.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%DROPDOWNID%%", dropdown_id)
-    return html.replace("%%ITEMS%%", items)
+    return HTMLSystem.part(
+        "navbar/dropright",
+        TITLE=title.title(),
+        DROPDOWNID=dropdown_id,
+        ITEMS=items
+    )
 
 
 def navbar_item(title: str, url: str) -> str:
     '''A Navbar Item (not active)'''
-    html = str(open("www/html/navbar/item.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    return html.replace("%%URL%%", url.replace(" ", "/"))
+    return HTMLSystem.part(
+        "navbar/item",
+        TITLE=title.title(),
+        URL=url.replace(" ", "/")
+    )
 
 
 def navbar_item_active(title: str) -> str:
     '''A Navbar Item (not active)'''
-    html = str(open("www/html/navbar/itemactive.html", "r").read())
-    return html.replace("%%TITLE%%", title.title())
+    return HTMLSystem.part(
+        "navbar/itemactive",
+        TITLE=title.title()
+    )
 
 
 def navbar_master(navbar_items: str, navbar_right_items: str) -> str:
     '''master file for the navbar'''
-    html = str(open("www/html/navbar/master.html", "r").read())
-    html = html.replace("%%NAVBARRIGHT%%", navbar_right_items)
-    return html.replace("%%NAVBARITEMS%%", navbar_items)
+    return HTMLSystem.part(
+        "navbar/master",
+        NAVBARRIGHT=navbar_right_items,
+        NAVBARITEMS=navbar_items
+    )
 
 
 #######
@@ -99,27 +117,32 @@ def navbar_master(navbar_items: str, navbar_right_items: str) -> str:
 
 def plugin_config_page(tab_bar_tabs: str, sections: str) -> str:
     '''Plugin config page'''
-    html = str(open("www/html/pages/pluginconfigpage.html", "r").read())
-    html = html.replace("%%PANELTABS%%", tab_bar_tabs)
-    return html.replace("%%PLUGINLIST%%", sections)
+    return HTMLSystem.part(
+        "pages/pluginconfigpage",
+        PANELTABS=tab_bar_tabs,
+        PLUGINLIST=sections
+    )
 
 
 def root_config_page(sections: str) -> str:
     '''Root config page'''
-    html = str(open("www/html/pages/rootconfigpage.html", "r").read())
-    return html.replace("%%PLUGINLIST%%", sections)
+    return HTMLSystem.part(
+        "pages/rootconfigpage",
+        PLUGINLIST=sections
+    )
 
 
 def login_page(return_url: str) -> str:
     '''Root config page'''
-    html = str(open("www/html/pages/login.html", "r").read())
-    return html.replace("%%RETURNURL%%", return_url)
+    return HTMLSystem.part(
+        "pages/login",
+        RETURNURL=return_url
+    )
 
 
 def password_page() -> str:
     '''Root config page'''
-    html = str(open("www/html/pages/password.html", "r").read())
-    return html
+    return HTMLSystem.part("pages/password")
 
 
 ##########
@@ -129,9 +152,11 @@ def password_page() -> str:
 
 def accordian(accordian_name: str, accordian_cards: str) -> str:
     '''outside of the accordian'''
-    html = str(open("www/html/sections/accordian.html", "r").read())
-    html = html.replace("%%ACCORDIANNAME%%", accordian_name)
-    return html.replace("%%ACCORDIANCARDS%%", accordian_cards)
+    return HTMLSystem.part(
+        "sections/accordian",
+        ACCORDIANNAME=accordian_name,
+        ACCORDIANCARDS=accordian_cards
+    )
 
 
 def accordian_card(
@@ -143,19 +168,16 @@ def accordian_card(
         show: bool = False
     ) -> str:
     '''section for the accordian'''
-    html = str(open("www/html/sections/accordiancard.html", "r").read())
-    html = html.replace("%%ACCORDIANNAME%%", accordian_name)
-    html = html.replace("%%CARDNUMBER%%", str(number))
-    html = html.replace("%%CARDHEADER%%", header)
-    html = html.replace("%%CARDBUTTON%%", button)
-    html = html.replace("%%CARDBODY%%", body)
-    if show:
-        html = html.replace("%%CARDOPEN%%", "true")
-        html = html.replace("%%CARDSHOW%%", "show")
-    else:
-        html = html.replace("%%CARDOPEN%%", "false")
-        html = html.replace("%%CARDSHOW%%", "")
-    return html
+    return HTMLSystem.part(
+        "sections/accordiancard",
+        ACCORDIANNAME=accordian_name,
+        CARDNUMBER=str(number),
+        CARDHEADER=header,
+        CARDBUTTON=button,
+        CARDBODY=body,
+        CARDOPEN="true" if show else "false",
+        CARDSHOW="show" if show else ""
+    )
 
 
 def form(
@@ -165,11 +187,13 @@ def form(
         page: str
     ) -> str:
     '''A form with return url, hidden section customizable button label'''
-    html = str(open("www/html/sections/form.html", "r").read())
-    html = html.replace("%%RETURNURL%%", return_url)
-    html = html.replace("%%HIDDEN%%", hidden_html)
-    html = html.replace("%%BUTTONLABEL%%", button_label)
-    return html.replace("%%PAGE%%", page)
+    return HTMLSystem.part(
+        "sections/form",
+        RETURNURL=return_url,
+        HIDDEN=hidden_html,
+        BUTTONLABEL=button_label,
+        PAGE=page
+    )
 
 
 def item(
@@ -180,15 +204,13 @@ def item(
         not_in_config: bool = False
     ) -> str:
     ''' The whole section for each Config Object'''
-    html = str(open("www/html/sections/item.html", "r").read())
-    html = html.replace("%%VARNAME%%", variable_name)
-    if not isinstance(label, str):
-        label = ""
-    html = html.replace("%%LABEL%%", label)
-    if not isinstance(help_text, str):
-        help_text = ""
-    html = html.replace("%%HELP%%", help_text)
-    html = html.replace("%%INPUT%%", input_html)
+    html = HTMLSystem.part(
+        "sections/item",
+        VARNAME=variable_name,
+        LABEL=label if isinstance(label, str) else "",
+        HELP=help_text if isinstance(help_text, str) else "",
+        INPUT=input_html)
+    #TODO need to remove this cs_ stuff
     if not_in_config:
         html = html.replace("cs_", "")
     return html
@@ -202,15 +224,14 @@ def modal(
         closeable: bool = True
     ) -> str:
     ''' Returnas a modal'''
-    html = str(open("www/html/sections/modal.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    if closeable:
-        html = html.replace("%%CLOSEABLE%%", "")
-    else:
-        html = html.replace("%%CLOSEABLE%%", 'style="display:none"')
-    html = html.replace("%%MODALBODY%%", modal_body)
-    return html.replace("%%MODALFOOTER%%", modal_footer)
+    return HTMLSystem.part(
+        "sections/modal",
+        TITLE=title.title(),
+        VARIABLENAME=variable_name,
+        CLOSEABLE="" if closeable else 'style="display:none"',
+        MODALBODY=modal_body,
+        MODALFOOTER=modal_footer
+    )
 
 
 def list_modal(
@@ -219,10 +240,12 @@ def list_modal(
         option_list: str
     ) -> str:
     ''' Returnas a modal for a list of options for adding a multi plugin'''
-    html = str(open("www/html/sections/list_modal.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    return html.replace("%%LIST%%", option_list)
+    return HTMLSystem.part(
+        "sections/list_modal",
+        TITLE=title.title(),
+        VARIABLENAME=variable_name,
+        LIST=option_list
+    )
 
 
 def multi_modal(
@@ -230,9 +253,11 @@ def multi_modal(
         variable_name: str
     ) -> str:
     '''Returnas a modal for adding a multi plugin'''
-    html = str(open("www/html/sections/multi_modal.html", "r").read())
-    html = html.replace("%%TITLE%%", title.title())
-    return html.replace("%%VARIABLENAME%%", variable_name)
+    return HTMLSystem.part(
+        "sections/multi_modal",
+        TITLE=title.title(),
+        VARIABLENAME=variable_name
+    )
 
 
 def multi_panel(
@@ -244,15 +269,15 @@ def multi_panel(
         visible: bool = True
     ) -> str:
     '''Returns a panel for multi type plugin data'''
-    html = str(open("www/html/sections/multi_panel.html", "r").read())
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    html = html.replace("%%NAME%%", name)
-    html = html.replace("%%ENABLEDOPTION%%", enable_option)
-    html = html.replace("%%DELETEOPTION%%", delete_option)
-    html = html.replace("%%SECTION%%", section_html)
-    if not visible:
-        return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
-    return html.replace("%%SECTIONHIDE%%", "")
+    return HTMLSystem.part(
+        "sections/multi_panel",
+        VARIABLENAME=variable_name,
+        NAME=name,
+        ENABLEDOPTION=enable_option,
+        DELETEDOPTION=delete_option,
+        SECTION=section_html,
+        SECTIONHIDE="" if visible else 'style="display:none"'
+    )
 
 
 def panel(
@@ -264,22 +289,17 @@ def panel(
         visible: bool = True
     ) -> str:
     '''A Panel for plugins or sections'''
-    html = str(open("www/html/sections/panel.html", "r").read())
-    html = html.replace("%%TITLE%%", title)
-    if control == "":
-        html = html.replace('<div id="%%TITLEB%%_control">%%CONTROL%%</div>', "")
-    else:
-        html = html.replace("%%CONTROL%%", control)
-        html = html.replace("%%TITLEB%%", "Tackem-Plugin-" + title.replace(" - ", "-"))
-    html = html.replace("%%MODAL%%", modal_obj)
-    if variable_name == "":
-        html = html.replace('id="%%VARIABLENAME%%_section"', variable_name)
-    else:
-        html = html.replace("%%VARIABLENAME%%", variable_name)
-    html = html.replace("%%SECTION%%", section_html)
-    if not visible:
-        return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
-    return html.replace("%%SECTIONHIDE%%", "")
+    titleb = "Tackem-Plugin-" + title.replace(" - ", "-")
+    return HTMLSystem.part(
+        "sections/panel",
+        TITLE=title,
+        TITLEB=titleb,
+        CONTROL=control,
+        MODAL=modal_obj,
+        VARIABLENAME=variable_name if variable_name != "" else titleb,
+        SECTION=section_html,
+        SETIONHIDE=""if visible else 'style="display:none"'
+    )
 
 
 def plugin_panel(
@@ -291,18 +311,20 @@ def plugin_panel(
         add_remove: str
     ) -> str:
     '''A Panel for plugins or sections'''
-    html = str(open("www/html/sections/plugin_panel.html", "r").read())
-    html = html.replace("%%TITLE%%", title)
-    html = html.replace("%%DESCRIPTION%%", description)
-    html = html.replace("%%CLEARCONFIG%%", clear_config)
-    html = html.replace("%%CLEARDATABASE%%", clear_database)
-    html = html.replace("%%STARTSTOP%%", start_stop)
-    return html.replace("%%ADDREMOVE%%", add_remove)
+    return HTMLSystem.part(
+        "sections/plugin_panel",
+        TITLE=title,
+        DESCRIPTION=description,
+        CLEARCONFIG=clear_config,
+        CLEARDATABASE=clear_database,
+        STARTSTOP=start_stop,
+        ADDREMOVE=add_remove
+    )
 
 
 def search_modal() -> str:
     '''Returnas a modal for adding a multi plugin'''
-    return str(open("www/html/sections/search_modal.html", "r").read())
+    return HTMLSystem.part("sections/seaarch_modal")
 
 
 def section(
@@ -311,45 +333,48 @@ def section(
         visible: bool = True
     ) -> str:
     '''A Panel for plugins or sections'''
-    html = str(open("www/html/sections/section.html", "r").read())
-    html = html.replace("%%SECTIONNAME%%", section_name)
-    html = html.replace("%%SECTION%%", section_html)
-    if not visible:
-        return html.replace("%%SECTIONHIDE%%", 'style="display:none"')
-    return html.replace("%%SECTIONHIDE%%", "")
+    return HTMLSystem.part(
+        "sections/section",
+        SECTIONNAME=section_name,
+        SECTION=section_html,
+        SETIONHIDE=""if visible else 'style="display:none"'
+    )
 
 
 def tab_bar(tabs: str) -> str:
     '''Returns the tab bar section'''
-    html = str(open("www/html/sections/tabbar.html", "r").read())
-    return html.replace("%%TABBARITEMS%%", tabs)
+    return HTMLSystem.part(
+        "sections/tabbar",
+        TABBARITEMS=tabs
+    )
 
 
 def tab_bar_item(plugin_name: str, active: bool = False) -> str:
     '''Returns a tab bar item'''
-    html = str(open("www/html/sections/tabbaritem.html", "r").read())
-    html = html.replace("%%PLUGINNAME%%", plugin_name)
-    html = html.replace("%%PLUGINNAMECAPITALIZE%%", plugin_name.title())
-    if active:
-        return html.replace("%%ACTIVE%%", "active")
-    return html.replace("%%ACTIVE%%", "")
+    return HTMLSystem.part(
+        "sections/tabbaritem",
+        PLUGINNAME=plugin_name,
+        PLUGINNAMECAPITALIZE=plugin_name.title(),
+        ACTIVE="active" if active else ""
+    )
 
 
 def tab_pane(plugin_name: str, plugin_html: str, active: bool = False) -> str:
     '''Returns a tab pane'''
-    html = str(open("www/html/sections/tabpane.html", "r").read())
-    html = html.replace("%%PLUGINNAME%%", plugin_name)
-    html = html.replace("%%PLUGINHTML%%", plugin_html)
-    if active:
-        return html.replace("%%ACTIVE%%", "active")
-    return html.replace("%%ACTIVE%%", "")
+    return HTMLSystem.part(
+        "sections/tabpane",
+        PLUGINNAME=plugin_name,
+        PLUGINHTML=plugin_html,
+        ACTIVE="active" if active else ""
+    )
 
 
 def text_item(text: str) -> str:
     ''' The whole section for each Config Object'''
-    html = str(open("www/html/sections/text_item.html", "r").read())
-    html = html.replace("%%TEXT%%", text)
-    return html
+    return HTMLSystem.part(
+        "sections/text_item",
+        TEXT=text
+    )
 
 
 ########
@@ -359,15 +384,19 @@ def text_item(text: str) -> str:
 
 def add_instance_button(plugin_name: str) -> str:
     '''returns the add instance button for multi plugins'''
-    html = str(open("www/html/inputs/addinstancebutton.html", "r").read())
-    return html.replace("%%PLUGINNAME%%", plugin_name)
+    return HTMLSystem.part(
+        "inputs/addinstancebutton",
+        PLUGINNAME=plugin_name
+    )
 
 
 def delete_instance_button(plugin_name: str, name: str) -> str:
     '''returns the add instance button for multi plugins'''
-    html = str(open("www/html/inputs/deleteinstancebutton.html", "r").read())
-    html = html.replace("%%PLUGINNAME%%", plugin_name)
-    return html.replace("%%NAME%%", name)
+    return HTMLSystem.part(
+        "inputs/deleteinstancebutton",
+        PLUGINNAME=plugin_name,
+        NAME=name
+    )
 
 
 def input_button_with_data(
@@ -380,15 +409,6 @@ def input_button_with_data(
         visible: bool = True
     ) -> str:
     '''returns a button'''
-    html = str(open("www/html/inputs/inputbuttonwithdata.html", "r").read())
-    html = html.replace("%%BUTTONVALUE%%", value)
-    if not outer_div:
-        html = html.replace('<div class="input-group-append">', "")
-        html = html.replace('</div>', "")
-    html = html.replace("%%IDNAME%%", id_name)
-    html = html.replace("%%CLASSNAME%%", class_name)
-    if data is False:
-        return html.replace(" %%DATA%%", "")
     data_r = ""
     if isinstance(data, tuple):
         data_r = "data-" + data[0] + '="' + data[1] + '"'
@@ -396,17 +416,15 @@ def input_button_with_data(
         for key, value in data.items():
             data_r += " data-" + str(key) + '="' + str(value) + '"'
 
-    html = html.replace("%%DATA%%", data_r)
-
-    if enabled:
-        html = html.replace("%%ENABLED%%", "")
-    else:
-        html = html.replace("%%ENABLED%%", "disabled")
-    if visible:
-        html = html.replace("%%VISIBLE%%", "")
-    else:
-        html = html.replace("%%VISIBLE%%", "style='display:none;'")
-    return html
+    return HTMLSystem.part(
+        "inputs/inputbuttonwithdataappend" if outer_div else "inputs/inputbuttonwithdata",
+        BUTTONVALUE=value,
+        IDNAME=id_name,
+        CLASSNAME=class_name,
+        DATA=data_r,
+        ENABLED="" if enabled else "disabled",
+        VISIBLE="" if visible else 'style="display:none;"'
+    )
 
 
 def input_button(value: str, on_click: Union[str, bool] = False, outer_div: bool = True) -> str:
@@ -416,21 +434,31 @@ def input_button(value: str, on_click: Union[str, bool] = False, outer_div: bool
 
 def input_button_on_click(value: str, on_click: Union[str, bool], outer_div: bool = True) -> str:
     '''returns a button'''
-    html = str(open("www/html/inputs/inputbuttononclick.html", "r").read())
-    html = html.replace("%%BUTTONVALUE%%", value)
-    if not outer_div:
-        html = html.replace('<div class="input-group-append">', "")
-        html = html.replace('</div>', "")
-    return html.replace("%%BUTTONONCLICK%%", on_click)
+    return HTMLSystem.part(
+        "inputs/inputbuttononclickappend" if outer_div else "inputs/inputbuttononclick",
+        BUTTONVALUE=value,
+        BUTTONCLICK=on_click
+    )
 
 
 def checkbox(name: str, variable_name: str, checkbox_html: str) -> str:
     '''returns the outside tags of the checkbox'''
-    html = str(open("www/html/inputs/checkbox.html", "r").read())
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    html = html.replace("%%TITLE%%", name)
-    return html.replace("%%CHECKBOX%%", checkbox_html)
+    return HTMLSystem.part(
+        "inputs/checkbox",
+        VARIABLENAME=variable_name,
+        TITLE=name,
+        CHECKBOX=checkbox_html
+    )
 
+def _script(script_string, variable_name):
+    '''Script Code For Multiple Functions'''
+    if isinstance(script_string, str):
+        return script_string
+    if script_string is None:
+        return "onchange='" + 'Switch("' + variable_name +'");' + "'"
+    if script_string is True:
+        script_string = "onchange='" + 'Switch("' + variable_name +'");'
+        return script_string + 'ToggleSection("' + variable_name[:-1] + '");' + "'"
 
 def checkbox_multi(
         label: str,
@@ -439,26 +467,20 @@ def checkbox_multi(
         checked: bool = True,
         disabled: bool = False,
         read_only: bool = False,
-        script: Union[str, None] = None
+        script: Union[str, bool, None] = None
     ) -> str:
     '''returns a multi checkbox'''
-    html = str(open("www/html/inputs/multicheckbox.html", "r").read())
-    checked = "checked" if checked else ""
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%CHECKED%%", checked)
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if script is None:
-        script = "onchange='" + 'Switch("' + variable_name +'");' + "'"
-    if script is True:
-        script = "onchange='" + 'Switch("' + variable_name +'");'
-        script += 'ToggleSection("' + variable_name[:-1] + '");' + "'"
-    html = html.replace("%%SCRIPT%%", script)
-    html = html.replace("%%SWITCH%%", "")
-    html = html.replace("%%VALUE%%", value)
-    html = html.replace("%%LABEL%%", label)
-    return html.replace("%%VARIABLENAME%%", variable_name)
+    return HTMLSystem.part(
+        "inputs/multicheckbox",
+        CHECKED="checked" if checked else "",
+        DISABLED="disabled" if disabled else "",
+        READONLY="readonly" if read_only else "",
+        SCRIPT=_script(script, variable_name),
+        SWITCH="",
+        VALUE=value,
+        LABEL=label,
+        VARIABLENAME=variable_name
+    )
 
 
 def checkbox_single(
@@ -467,29 +489,19 @@ def checkbox_single(
         checked: bool = True,
         disabled: bool = False,
         read_only: bool = False,
-        script: Union[str, None] = None
+        script: Union[str, bool, None] = None
     ) -> str:
     '''returns a single checkbox'''
-    html = str(open("www/html/inputs/singlecheckbox.html", "r").read())
-    if checked:
-        checked = "checked"
-        html = html.replace("%%ENABLED%%", "True")
-    else:
-        checked = ""
-        html = html.replace("%%ENABLED%%", "False")
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%CHECKED%%", checked)
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if script is None:
-        script = "onchange='" + 'Switch("' + variable_name + name +'");' + "'"
-    if script is True:
-        script = "onchange='" + 'Switch("' + variable_name + name +'");'
-        script += 'ToggleSection("' + variable_name[:-1] + '");' + "'"
-    html = html.replace("%%SCRIPT%%", script)
-    html = html.replace("%%SWITCH%%", "")
-    return html.replace("%%VARIABLENAME%%", variable_name + name)
+    return HTMLSystem.part(
+        "inputs/singlecheckbox",
+        ENABLED=str(checked),
+        CHECKED="checked" if checked else "",
+        DISABLED="disabled" if disabled else "",
+        READONLY="readonly" if read_only else "",
+        SCRIPT=_script(script, variable_name),
+        SWITCH="",
+        VARIABLENAME=variable_name + name
+    )
 
 
 def checkbox_switch(
@@ -498,35 +510,30 @@ def checkbox_switch(
         checked: bool = True,
         disabled: bool = False,
         read_only: bool = False,
-        script: Union[str, None] = None
+        script: Union[str, bool, None] = None
     ) -> str:
     '''returns a single checkbox'''
-    single_checkbox_html = str(open("www/html/inputs/singlecheckbox.html", "r").read())
-    switch_html = str(open("www/html/inputs/switchoptions.html", "r").read())
-    html = single_checkbox_html.replace("%%SWITCH%%", switch_html)
-    enabled = str(checked)
-    checked = "checked" if checked else ""
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%CHECKED%%", checked)
-    html = html.replace("%%ENABLED%%", enabled)
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if script is None:
-        script = "onchange='" + 'Switch("' + variable_name + name +'");' + "'"
-    if script is True:
-        script = "onchange='" + 'Switch("' + variable_name + name +'");'
-        script += 'ToggleSection("' + variable_name[:-1] + '");' + "'"
-    html = html.replace("%%SCRIPT%%", script)
-    html = html.replace("%%VARIABLENAME%%", variable_name + name)
-    return html
+    return HTMLSystem.part(
+        "inputs/singlecheckbox",
+        ENABLED=str(checked),
+        CHECKED="checked" if checked else "",
+        DISABLED="disabled" if disabled else "",
+        READONLY="readonly" if read_only else "",
+        SCRIPT=_script(script, variable_name),
+        SWITCH=HTMLSystem.open("inputs/switchoptions"),
+        VARIABLENAME=variable_name + name
+    )
 
 
 def hidden(name: str, value: str, not_in_config: bool = False) -> str:
     '''A hidden field for the page index'''
-    html = str(open("www/html/inputs/hidden.html", "r").read())
-    html = html.replace("%%NAME%%", name)
-    html = html.replace("%%VALUE%%", value)
+    html = HTMLSystem.part(
+        "inputs/hidden",
+        NAME=name,
+        VALUE=value
+    )
+
+    #TODO need to remove this cs_ stuff
     if not_in_config:
         html = html.replace("cs_", "")
     return html
@@ -534,8 +541,10 @@ def hidden(name: str, value: str, not_in_config: bool = False) -> str:
 
 def hidden_page_index(page_index: int) -> str:
     '''A hidden field for the page index'''
-    html = str(open("www/html/inputs/hiddenpageindex.html", "r").read())
-    return html.replace("%%PAGEINDEX%%", str(page_index))
+    return HTMLSystem.part(
+        "inputs/hiddenpageindex",
+        PAGEINDEX=page_index
+    )
 
 
 def input_box(
@@ -551,32 +560,19 @@ def input_box(
         button: str = ""
     ) -> str:
     '''Returns an input object'''
-    html = str(open("www/html/inputs/input.html", "r").read())
-    html = html.replace("%%INPUTTYPE%%", input_type)
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    html = html.replace("%%VALUE%%", ' value="' + str(value) + '"')
-    if not isinstance(script, str):
-        script = ""
-    html = html.replace("%%SCRIPT%%", script)
-    if isinstance(max_length, int):
-        html = html.replace("%%MAXLENGTH%%", ' maxlength="' + str(max_length) + '"')
-    else:
-        html = html.replace("%%MAXLENGTH%%", "")
-    if isinstance(minimum, int):
-        html = html.replace("%%MIN%%", ' min="' + str(minimum) + '"')
-    else:
-        html = html.replace("%%MIN%%", "")
-    if isinstance(maximum, int):
-        html = html.replace("%%MAX%%", ' max="' + str(maximum) + '"')
-    else:
-        html = html.replace("%%MAX%%", "")
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if button:
-        return html.replace("%%BUTTON%%", button)
-    return html.replace("%%BUTTON%%", "")
+    return HTMLSystem.part(
+        "inputs/input",
+        INPUTTYPE=input_type,
+        VARIABLENAME=variable_name,
+        VALUE=value,
+        SCRIPT=script if isinstance(script, str) else "",
+        MAXLENGTH=' maxlength="' + str(max_length) + '"' if isinstance(max_length, int) else "",
+        MIN=' min="' + str(minimum) + '"' if isinstance(minimum, int) else "",
+        MAX=' max="' + str(maximum) + '"' if isinstance(maximum, int) else "",
+        DISABLED="disabled" if disabled else "",
+        READONLY="readonly" if read_only else "",
+        BUTTON=button if button else ""
+    )
 
 
 def radio_option(
@@ -589,20 +585,16 @@ def radio_option(
         script: str = ""
     ) -> str:
     '''makes a radio option'''
-    html = str(open("www/html/inputs/radio.html", "r").read())
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    html = html.replace("%%NAME%%", name)
-    html = html.replace("%%LABEL%%", label)
-    checked = "checked" if checked else ""
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%CHECKED%%", checked)
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if not isinstance(script, str):
-        script = ""
-    html = html.replace("%%SCRIPT%%", script)
-    return html
+    return HTMLSystem.part(
+        "inputs/radio",
+        VARIABLENAME=variable_name,
+        NAME=name,
+        LABEL=label,
+        CHECKED="checked" if checked else "",
+        DISABLED="disabled" if disabled else "",
+        READONLY="readonly" if read_only else "",
+        SCRIPT=script if isinstance(script, str) else ""
+    )
 
 
 def select_box_option(
@@ -614,23 +606,16 @@ def select_box_option(
         script: str = ""
     ) -> str:
     '''makes an option for the selection box'''
-    html = str(open("www/html/inputs/option.html", "r").read())
-    if isinstance(name, str) and name != "":
-        html = html.replace("%%NAME%%", name)
-        html = html.replace("%%NAMECAPITALIZE%%", label)
-    else:
-        html = html.replace("%%NAME%%", "")
-        html = html.replace("%%NAMECAPITALIZE%%", " -- select an option -- ")
-    selected = "selected" if selected else ""
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%SELECTED%%", selected)
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if not isinstance(script, str):
-        script = ""
-    html = html.replace("%%SCRIPT%%", script)
-    return html
+    select_option = " -- select an option -- "
+    return HTMLSystem.part(
+        "inputs/option",
+        NAME=name if isinstance(name, str) and name != "" else "",
+        NAMECAPITALIZE=label if isinstance(name, str) and name != "" else select_option,
+        SELECTED="selected" if selected else "",
+        DISABLED="disabled" if disabled else "",
+        READONLY="readonly" if read_only else "",
+        SCRIPT=script if isinstance(script, str) else ""
+    )
 
 
 def select_box(
@@ -644,34 +629,24 @@ def select_box(
         disabled: bool = False
     ) -> str:
     '''Makes A select box'''
-    html = str(open("www/html/inputs/selectbox.html", "r").read())
-    html = html.replace("%%VARIABLENAME%%", variable_name)
-    if multiple:
-        html = html.replace('%%MULTIPLE%%', 'multiple')
-    else:
-        html = html.replace(' %%MULTIPLE%%', '')
-    if box_size > 1:
-        html = html.replace('%%SIZE%%', 'size="' + box_size + '"')
-    else:
-        html = html.replace(' %%SIZE%%', '')
-    disabled = "disabled" if disabled else ""
-    read_only = "readonly" if read_only else ""
-    html = html.replace("%%DISABLED%%", disabled)
-    html = html.replace("%%READONLY%%", read_only)
-    if isinstance(script, str):
-        html = html.replace("%%SCRIPT%%", script)
-    else:
-        html = html.replace("%%SCRIPT%%", "")
-    if value is None:
-        blank_options_html = select_box_option(False, True, True)
-    else:
-        blank_options_html = ""
-    if isinstance(options_html, str):
-        return html.replace("%%OPTIONS%%", blank_options_html + options_html)
     options_out_html = ""
-    for option in options_html:
-        options_out_html += option.html_option(value)
-    return html.replace("%%OPTIONS%%", blank_options_html + options_out_html)
+    blank_options_html = select_box_option(False, True, True) if value is None else ""
+    if isinstance(options_html, str):
+        options_out_html = options_html
+    else:
+        for option in options_html:
+            options_out_html += option.html_option(value)
+
+    return HTMLSystem.part(
+        "inputs/selectbox",
+        VARIABLENAME=variable_name,
+        MULTIPLE='multiple' if multiple else "",
+        SIZE='size="' + box_size + '"' if box_size > 1 else "",
+        DISABLED="disabled" if disabled else "",
+        READ_ONLY="readonly" if read_only else "",
+        SCRIPT=script if isinstance(script, str) else "",
+        OPTIONS=blank_options_html + options_out_html
+    )
 
 
 ######
@@ -681,14 +656,18 @@ def select_box(
 
 def script_link(location: str) -> str:
     '''returns a script link item'''
-    html = str(open("www/html/tags/scriptlink.html", "r").read())
-    return html.replace("%%LOCATION%%", location)
+    return HTMLSystem.part(
+        "tags/scriptlink",
+        LOCATION=location
+    )
 
 
 def stylesheet_link(location: str) -> str:
     '''returns a script link item'''
-    html = str(open("www/html/tags/stylesheetlink.html", "r").read())
-    return html.replace("%%LOCATION%%", location)
+    return HTMLSystem.part(
+        "tags/stylesheetlink",
+        LOCATION=location
+    )
 
 
 #########
@@ -698,30 +677,35 @@ def stylesheet_link(location: str) -> str:
 
 def quick_table(data: dict) -> str:
     '''creates a table from a dictionary'''
-    html = str(open("www/html/other/table.html", "r").read())
-    table_body_html = str(open("www/html/other/tablebody.html", "r").read())
-    table_head_html = str(open("www/html/other/tablehead.html", "r").read())
+    table_body_html = HTMLSystem.open("other/tablebody")
+    table_head_html = HTMLSystem.open("other/tablehead")
     head_html = ""
     body_html = ""
     for key in data:
         head_html += table_head_html.replace("%%HEADER%%", key)
         body_html += table_body_html.replace("%%VALUE%%", str(data[key]))
-    return html.replace("%%HEADERS%%", head_html).replace("%%VALUES%%", body_html)
+
+    return HTMLSystem.part(
+        "other/table",
+        HEADERS=head_html,
+        VALUES=body_html
+    )
 
 
 def progress_bar(label: str, value, max_value: int, percent: Union[int, float]) -> str:
     '''creates a progress bar'''
-    html = str(open("www/html/other/progressbar.html", "r").read())
-    html = html.replace("%%LABEL%%", str(label))
-    html = html.replace("%%VALUE%%", str(value))
-    html = html.replace("%%MAX%%", str(max_value))
-    html = html.replace("%%PERCENT%%", str(percent))
-    return html
+    return HTMLSystem.part(
+        "other/progressbar",
+        LABEL=label,
+        VALUE=value,
+        MAX=max_value,
+        PARCENT=percent
+    )
 
 
 def dim_screen() -> str:
     '''creates system for a dimmed screen'''
-    return '<div id="dim_screen"></div>'
+    return HTMLSystem.part("other/dimscreen")
 
 
 #########
@@ -731,20 +715,18 @@ def dim_screen() -> str:
 
 def users_page(users_html: str) -> str:
     '''creates a users page'''
-    html = str(open("www/html/admin/users.html", "r").read())
-    html = html.replace("%%USERSHTML%%", users_html)
-    return html
+    return HTMLSystem.part(
+        "admin/users",
+        USERSHTML=users_html
+    )
 
 
 def user_page(user_id: int, username: str, is_admin: bool) -> str:
     '''creates a user page'''
-    html = str(open("www/html/admin/user.html", "r").read())
-    html = html.replace("%%USERID%%", str(user_id))
-    html = html.replace("%%USERNAME%%", str(username))
-    if is_admin:
-        html = html.replace("%%ADMINTRUE%%", "checked")
-        html = html.replace("%%ADMINFALSE%%", "")
-    else:
-        html = html.replace("%%ADMINTRUE%%", "")
-        html = html.replace("%%ADMINFALSE%%", "checked")
-    return html
+    return HTMLSystem.part(
+        "admin/user",
+        USERID=user_id,
+        USERNAME=username,
+        ADMINTRUE="checked" if is_admin else "",
+        ADMINFALSE="" if is_admin else "checked"
+    )
