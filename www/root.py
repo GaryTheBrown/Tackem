@@ -3,7 +3,6 @@ import cherrypy
 from libs import html_parts
 from libs.html_template import HTMLTEMPLATE
 from libs.config import full_config_page, get_config_multi_setup, post_config_settings
-from libs.config import javascript as config_javascript
 from libs.root_event import RootEvent
 
 class Root(HTMLTEMPLATE):
@@ -52,7 +51,7 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def config_javascript(self) -> str:
         '''Javascript File'''
-        return config_javascript()
+        return str(open("www/javascript/config.js", "r").read())
 
 
     @cherrypy.expose
