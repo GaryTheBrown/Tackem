@@ -1,4 +1,5 @@
 '''Input Attributes'''
+from typing import Any
 
 class InputAttributes:
     '''Input Attributes'''
@@ -7,6 +8,7 @@ class InputAttributes:
         "size", "maxlength", "height", "width", "list", "min", "max", "pattern",
         "placeholder", "step", "alt"
     ]
+
 
     def __init__(
             self,
@@ -38,6 +40,43 @@ class InputAttributes:
                 self.__dict[key] = str(value)
 
 
+    def needed(self, *args):
+        '''checks if the items are set otherwise raises an exception'''
+        missing_list = []
+        for arg in args:
+            # if arg == "autofocus" and self.__autofocus:
+
+            # elif arg == "readonly" and self.__readonly:
+
+            # elif arg == "disabled" and self.__disabled:
+
+            # elif arg == "multiple" and self.__multiple:
+
+            # elif arg == "required" and self.__required:
+            if arg not in self.__dict:
+                missing_list.append(arg)
+
+        if missing_list:
+            raise ValueError("MISSING ARGUMENTS: " + ", ".join(missing_list))
+
+
+    def block(self, *args):
+        '''checks if any of the items are set and raises an exception if so'''
+        block_list = []
+        for arg in args:
+            if (arg == "autofocus" and self.__autofocus) \
+            or (arg == "readonly" and self.__readonly) \
+            or (arg == "disabled" and self.__disabled) \
+            or (arg == "multiple" and self.__multiple) \
+            or (arg == "required" and self.__required) \
+            or (arg in self.__dict):
+                block_list.append(arg)
+
+        if block_list:
+            raise ValueError("BLOCKED ARGUMENTS FOUND: " + ", ".join(block_list))
+
+
+    @property
     def config_spec(self) -> str:
         '''Returns the line for the config option'''
         variable_count = False
@@ -55,7 +94,7 @@ class InputAttributes:
         return return_string
 
 
-    def html(self):
+    def html(self) -> str:
         '''returns html ready string'''
         string = ""
 
@@ -76,12 +115,13 @@ class InputAttributes:
 
         return string
 
-    def get(self, key, default=None):
+
+    def get(self, key, default=None) -> Any:
         '''returns a value in the dictonary'''
         return self.__dict.get(key, default)
 
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> Any:
         '''[] getter'''
         return self.__dict.get(key, None)
 
@@ -95,7 +135,8 @@ class InputAttributes:
         '''getter itteration'''
         return iter(self.__dict)
 
-    def __len__(self):
+
+    def __len__(self) -> int:
         return len(self.__dict)
 
 

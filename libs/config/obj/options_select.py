@@ -1,35 +1,33 @@
-'''Config Object String'''
-from typing import Optional
+'''Config Object Options Select'''
+from typing import Optional, List, Union
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.data.data_list import DataList
+from libs.config.obj.data.option import ConfigObjOption
 from libs.config.rules import ConfigRules
-
 from libs.html_system import HTMLSystem
 
 
-class ConfigObjString(ConfigObjBase):
-    '''Config Item String'''
-
-
-    __config_type = "string"
-    __html_type = "text"
+class ConfigObjOptionsSelect(ConfigObjBase):
+    '''Config Item Options Select'''
 
 
     def __init__(
             self,
             var_name: str,
-            default_value: str,
+            values: List[ConfigObjOption],
+            default_value: Union[int, List[int]],
             label: str,
             priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None
     ):
-        if not isinstance(default_value, str):
-            raise ValueError("Default Value is not a String")
+        if not isinstance(values, list):
+            raise ValueError("values is not a value")
+        for value in values:
+            if not isinstance(value, ConfigObjOption):
+                raise ValueError("value is not a ConfigObjOption")
 
         super().__init__(
             var_name,
@@ -39,9 +37,9 @@ class ConfigObjString(ConfigObjBase):
             hide_on_html,
             not_in_config,
             rules,
-            input_attributes,
-            data_list
+            input_attributes
         )
+        self.__values = values
 
 
     @property
@@ -50,12 +48,8 @@ class ConfigObjString(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = self.var_name + " = " + self.__config_type + "("
-        if self.input_attributes:
-            string += self.input_attributes.config_spec
-        if self.default_value is not None:
-            string += "default="
-            string += '"' + self.default_value + '"'
+        string = self.var_name + " = options("
+        string += ", ".join([value.config_spec for value in self.__values])
         string += ")\n"
 
         return string
@@ -67,10 +61,14 @@ class ConfigObjString(ConfigObjBase):
         if self.hide_on_html:
             return ""
         return HTMLSystem.part(
-            "inputs/input",
-            INPUTTYPE=self.__html_type,
+            "inputs/select",
+            OPTIONS="".join([value.html for value in self.__values]),
             VARIABLENAME=self.var_name,
-            VALUE=self.value,
-            OTHER=self.input_attributes.html,
-            BUTTON=""#button if button else ""
+            OTHER=self.input_attributes.html
         )
+
+
+    @property
+    def values(self) -> list:
+        '''returns the values in a list'''
+        return self.__values

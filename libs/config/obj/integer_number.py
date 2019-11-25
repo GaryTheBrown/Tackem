@@ -1,35 +1,31 @@
-'''Config Object String'''
+'''Config Object Integer Number'''
 from typing import Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
-
 from libs.html_system import HTMLSystem
 
 
-class ConfigObjString(ConfigObjBase):
-    '''Config Item String'''
+class ConfigObjIntegerNumber(ConfigObjBase):
+    '''Config Item Integer Number'''
 
 
-    __config_type = "string"
-    __html_type = "text"
+    __html_type = "number"
 
 
     def __init__(
             self,
             var_name: str,
-            default_value: str,
+            default_value: int,
             label: str,
             priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
-            input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None
+            input_attributes: Optional[InputAttributes] = None
     ):
-        if not isinstance(default_value, str):
-            raise ValueError("Default Value is not a String")
+        if not isinstance(default_value, int):
+            raise ValueError("default value is not an int")
 
         super().__init__(
             var_name,
@@ -39,8 +35,7 @@ class ConfigObjString(ConfigObjBase):
             hide_on_html,
             not_in_config,
             rules,
-            input_attributes,
-            data_list
+            input_attributes
         )
 
 
@@ -50,7 +45,7 @@ class ConfigObjString(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = self.var_name + " = " + self.__config_type + "("
+        string = self.var_name + " = integer("
         if self.input_attributes:
             string += self.input_attributes.config_spec
         if self.default_value is not None:

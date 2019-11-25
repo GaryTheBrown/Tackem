@@ -1,9 +1,11 @@
 '''Config List Class'''
 from libs.config.base import ConfigBase
-from libs.config.rules import ConfigRules
-from libs.config.items.base import ConfigItemBase
+# from libs.config.rules import ConfigRules
+from libs.config.obj.base import ConfigObjBase
+
 class ConfigList(ConfigBase):
     '''Config List Class'''
+
 
     def __init__(
             self,
@@ -21,7 +23,7 @@ class ConfigList(ConfigBase):
         self.__objects = []
 
         for obj in objects:
-            if isinstance(obj, (ConfigItemBase, ConfigList)):
+            if isinstance(obj, (ConfigObjBase, ConfigList)):
                 self.__objects.append(obj)
 
 

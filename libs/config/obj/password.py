@@ -7,6 +7,7 @@ from libs.config.rules import ConfigRules
 class ConfigObjPassword(ConfigObjString):
     '''Config Item Password'''
 
+
     __config_type = "string"
     __html_type = "password"
 
@@ -19,11 +20,11 @@ class ConfigObjPassword(ConfigObjString):
             priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
-            input_attributes: Optional[InputAttributes] = None,
             rules: Optional[ConfigRules] = None,
+            input_attributes: Optional[InputAttributes] = None
     ):
         if not isinstance(default_value, str):
-            raise ValueError("Default Value is not a String")
+            raise ValueError("default value is not a string")
 
         super().__init__(
             var_name,
@@ -32,6 +33,6 @@ class ConfigObjPassword(ConfigObjString):
             priority,
             hide_on_html,
             not_in_config,
-            input_attributes,
-            rules
+            rules,
+            input_attributes
         )

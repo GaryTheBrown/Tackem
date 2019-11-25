@@ -18,6 +18,7 @@ class ConfigObjBase(ABC, ConfigBase):
         "ip_addr", "list", "force_list", "tuple", "int_list", "float_list", "bool_list",
         "ip_addr_list", "mixed_list"
     ]
+
     __input_types = [
         "button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image",
         "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text",
@@ -48,6 +49,7 @@ class ConfigObjBase(ABC, ConfigBase):
         "optgroup",
     ]
 
+
     def __init__(
             self,
             var_name: str,
@@ -57,8 +59,8 @@ class ConfigObjBase(ABC, ConfigBase):
             priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
-            input_attributes: Optional[InputAttributes] = None,
             rules: Optional[ConfigRules] = None,
+            input_attributes: Optional[InputAttributes] = None,
             data_list: Optional[DataList] = None
     ):
         super().__init__(
@@ -111,22 +113,27 @@ class ConfigObjBase(ABC, ConfigBase):
         return self.__data_list
 
 
+    @property
     @abstractmethod
     def config_spec(self) -> str:
         '''Returns the line for the config option'''
 
 
+    @property
     @abstractmethod
     def config_html(self) -> str:
         '''Returns the html for the config option'''
 
 
+    @property
     def html(self) -> str:
         '''returns the full html code including label and help text'''
+        if self.hide_on_html:
+            return ""
         return HTMLSystem.part(
             "sections/item",
             VARNAME=self.var_name,
             LABEL=self.label,
             HELP=self.help_text,
-            INPUT=self.config_html()
+            INPUT=self.config_html
         )

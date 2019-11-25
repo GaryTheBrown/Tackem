@@ -14,7 +14,7 @@ class ConfigOption(ConfigBase):
             name: str,
             label: str,
             priority: int = 0,
-            script: Union [str, None] = None,
+            script: Union[str, None] = None,
             hide_from_html: bool = False,
             read_only: bool = False,
             disabled: bool = False,

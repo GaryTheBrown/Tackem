@@ -1,7 +1,9 @@
 '''Config Base Data Class'''
+from typing import Optional
 from libs.config.rules import ConfigRules
 class ConfigBase:
     '''Config Base Class'''
+
 
     def __init__(
             self,
@@ -11,22 +13,22 @@ class ConfigBase:
             priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
-            rules=None,
+            rules: Optional[ConfigRules] = None,
         ):
         if not isinstance(var_name, str):
-            raise ValueError("Variable Name is not a String")
+            raise ValueError("variable name is not a string")
         if not isinstance(label, str):
-            raise ValueError("Label is not a String")
+            raise ValueError("label is not a string")
         if not isinstance(help_text, str):
-            raise ValueError("Help Text is not a String")
+            raise ValueError("help text is not a string")
         if not isinstance(priority, int):
-            raise ValueError("Priority is not a int")
+            raise ValueError("priority is not a int")
         if not isinstance(hide_on_html, bool):
-            raise ValueError("Hide On HTML is not a bool")
+            raise ValueError("hide On HTML is not a bool")
         if not isinstance(not_in_config, bool):
-            raise ValueError("Not In Config is not a bool")
+            raise ValueError("not in config is not a bool")
         if rules and not isinstance(rules, ConfigRules):
-            raise ValueError("rules is not a Config Rules Object")
+            raise ValueError("rules is not a config rules object")
 
         self.__objects = []
         self.__var_name = var_name
@@ -43,11 +45,11 @@ class ConfigBase:
         '''returns the name'''
         return self.__var_name
 
+
     @property
     def label(self):
         '''returns the label'''
         return self.__label
-
 
 
     @property

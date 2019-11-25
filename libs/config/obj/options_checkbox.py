@@ -1,31 +1,32 @@
-'''Config Object Boolean'''
-from typing import Optional
+'''Config Object Options Checkbox'''
+from typing import Optional, List, Union
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.data.data_list import DataList
+from libs.config.obj.data.checkbox import ConfigObjCheckbox
 from libs.config.rules import ConfigRules
 
-from libs.html_system import HTMLSystem
 
-
-class ConfigObjBoolean(ConfigObjBase):
-    '''Config Item Boolean'''
+class ConfigObjOptionsCheckBox(ConfigObjBase):
+    '''Config Item Options CheckBox'''
 
 
     def __init__(
             self,
             var_name: str,
-            default_value: bool,
+            values: List[ConfigObjCheckbox],
+            default_value: Union[int, List[int]],
             label: str,
             priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None
     ):
-        if not isinstance(default_value, bool):
-            raise ValueError("default value is not a boolean")
+        if not isinstance(values, list):
+            raise ValueError("values is not a value")
+        for value in values:
+            if not isinstance(value, ConfigObjCheckbox):
+                raise ValueError("value is not a ConfigObjCheckbox")
 
         super().__init__(
             var_name,
@@ -35,9 +36,9 @@ class ConfigObjBoolean(ConfigObjBase):
             hide_on_html,
             not_in_config,
             rules,
-            input_attributes,
-            data_list
+            input_attributes
         )
+        self.__values = values
 
 
     @property
@@ -46,9 +47,8 @@ class ConfigObjBoolean(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = self.var_name + " = boolean("
-        if self.input_attributes:
-            string += self.input_attributes.config_spec
+        string = self.var_name + " = options("
+        string += ", ".join([value.config_spec for value in self.__values])
         string += ")\n"
 
         return string
@@ -59,11 +59,10 @@ class ConfigObjBoolean(ConfigObjBase):
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
-        return HTMLSystem.part(
-            "inputs/singlecheckbox",
-            VARIABLENAME=self.var_name,
-            VALUE=self.value,
-            CHECKED="checked" if self.value else "",
-            ENABLED=str(self.value),
-            OTHER=self.input_attributes.html
-        )
+        return "".join([value.html for value in self.__values])
+
+
+    @property
+    def values(self) -> list:
+        '''returns the values in a list'''
+        return self.__values
