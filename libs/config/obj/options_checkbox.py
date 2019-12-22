@@ -16,7 +16,7 @@ class ConfigObjOptionsCheckBox(ConfigObjBase):
             values: List[ConfigObjCheckbox],
             default_value: Union[int, List[int]],
             label: str,
-            priority: int,
+            help_text: str,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
@@ -24,6 +24,8 @@ class ConfigObjOptionsCheckBox(ConfigObjBase):
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
+        if not isinstance(default_value, int) and not isinstance(default_value, list):
+            raise ValueError("default value is not a int or list")
         for value in values:
             if not isinstance(value, ConfigObjCheckbox):
                 raise ValueError("value is not a ConfigObjCheckbox")
@@ -32,7 +34,7 @@ class ConfigObjOptionsCheckBox(ConfigObjBase):
             var_name,
             default_value,
             label,
-            priority,
+            help_text,
             hide_on_html,
             not_in_config,
             rules,
@@ -59,7 +61,11 @@ class ConfigObjOptionsCheckBox(ConfigObjBase):
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
-        return "".join([value.html for value in self.__values])
+        data = ""
+        for count, value in enumerate(self.__values):
+            data += value.html((isinstance(self.value, int) and count == self.value) \
+                               or (isinstance(self.value, list) and count in self.value))
+        return data
 
 
     @property

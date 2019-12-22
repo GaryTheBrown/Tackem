@@ -161,7 +161,6 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
         return_data = self.import_plugin(plugin_type, plugin_name)
         if return_data[0] is not True:
             return return_data
-        self.load_plugin_cfgs()
         self.load_config()
         return True, 0
 

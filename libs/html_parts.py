@@ -200,20 +200,15 @@ def item(
         variable_name: str,
         label: str,
         help_text: str,
-        input_html: str,
-        not_in_config: bool = False
+        input_html: str
     ) -> str:
     ''' The whole section for each Config Object'''
-    html = HTMLSystem.part(
+    return HTMLSystem.part(
         "sections/item",
         VARNAME=variable_name,
         LABEL=label if isinstance(label, str) else "",
         HELP=help_text if isinstance(help_text, str) else "",
         INPUT=input_html)
-    #TODO need to remove this cs_ stuff
-    if not_in_config:
-        html = html.replace("cs_", "")
-    return html
 
 
 def modal(
@@ -525,18 +520,13 @@ def checkbox_switch(
     )
 
 
-def hidden(name: str, value: str, not_in_config: bool = False) -> str:
+def hidden(name: str, value: str) -> str:
     '''A hidden field for the page index'''
-    html = HTMLSystem.part(
+    return HTMLSystem.part(
         "inputs/hidden",
         NAME=name,
         VALUE=value
     )
-
-    #TODO need to remove this cs_ stuff
-    if not_in_config:
-        html = html.replace("cs_", "")
-    return html
 
 
 def hidden_page_index(page_index: int) -> str:

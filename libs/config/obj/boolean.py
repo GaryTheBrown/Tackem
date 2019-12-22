@@ -17,7 +17,7 @@ class ConfigObjBoolean(ConfigObjBase):
             var_name: str,
             default_value: bool,
             label: str,
-            priority: int,
+            help_text: str,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
@@ -31,7 +31,7 @@ class ConfigObjBoolean(ConfigObjBase):
             var_name,
             default_value,
             label,
-            priority,
+            help_text,
             hide_on_html,
             not_in_config,
             rules,
@@ -59,11 +59,15 @@ class ConfigObjBoolean(ConfigObjBase):
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
+        other = ""
+        if isinstance(self.input_attributes, InputAttributes):
+            other = self.input_attributes.html
+
         return HTMLSystem.part(
             "inputs/singlecheckbox",
             VARIABLENAME=self.var_name,
             VALUE=self.value,
             CHECKED="checked" if self.value else "",
             ENABLED=str(self.value),
-            OTHER=self.input_attributes.html
+            OTHER=other
         )

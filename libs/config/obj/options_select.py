@@ -17,7 +17,7 @@ class ConfigObjOptionsSelect(ConfigObjBase):
             values: List[ConfigObjOption],
             default_value: Union[int, List[int]],
             label: str,
-            priority: int,
+            help_text: str,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
@@ -25,6 +25,8 @@ class ConfigObjOptionsSelect(ConfigObjBase):
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
+        if not isinstance(default_value, int) and not isinstance(default_value, list):
+            raise ValueError("default value is not a int or list of ints")
         for value in values:
             if not isinstance(value, ConfigObjOption):
                 raise ValueError("value is not a ConfigObjOption")
@@ -33,7 +35,7 @@ class ConfigObjOptionsSelect(ConfigObjBase):
             var_name,
             default_value,
             label,
-            priority,
+            help_text,
             hide_on_html,
             not_in_config,
             rules,
@@ -60,11 +62,19 @@ class ConfigObjOptionsSelect(ConfigObjBase):
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
+        options = ""
+        for count, value in enumerate(self.__values):
+            options += value.html((isinstance(self.value, int) and count == self.value) \
+                               or (isinstance(self.value, list) and count in self.value))
+        other = ""
+        if isinstance(self.input_attributes, InputAttributes):
+            other = self.input_attributes.html
+
         return HTMLSystem.part(
             "inputs/select",
-            OPTIONS="".join([value.html for value in self.__values]),
+            OPTIONS=options,
             VARIABLENAME=self.var_name,
-            OTHER=self.input_attributes.html
+            OTHER=other
         )
 
 

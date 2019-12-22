@@ -4,8 +4,8 @@ import os
 import os.path
 import signal
 from typing import Union
-from libs.startup_arguments import ARGS
 from system.admin import TackemSystemAdmin
+from libs.startup_arguments import ARGS
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
 
@@ -27,7 +27,6 @@ class Tackem:
         print("LOADING PLUGINS...")
         TackemSystemAdmin().import_plugins()
         print("LOADING CONFIG...")
-        TackemSystemAdmin().load_plugin_cfgs()
         TackemSystemAdmin().load_config()
 
         if not TackemSystemAdmin().get_config(['firstrun'], True)[1]:
@@ -69,7 +68,6 @@ class Tackem:
         self.__delete_webserver()
         TackemSystemAdmin().remove_systems()
         TackemSystemAdmin().remove_sql()
-        TackemSystemAdmin().remove_plugin_cfgs()
         TackemSystemAdmin().remove_plugins()
         TackemSystemAdmin().remove_musicbrainz()
         TackemSystemAdmin().remove_auth()

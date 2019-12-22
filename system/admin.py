@@ -5,13 +5,14 @@ import platform
 from typing import Union
 from system.full import TackemSystemFull
 from libs.authenticator import Authentication
-from libs.config import config_load
-from libs.config_list import ConfigList
+from libs.config.load import config_load
+from libs.config.list import ConfigList
 from libs.plugin_base import load_plugin_settings
 from libs.program_checker import check_for_required_programs
 from libs.musicbrainz import MusicBrainz
 from libs.sql import setup_db
 from libs.startup_arguments import ARGS, PLUGINFOLDERLOCATION
+from libs.config.data import CONFIG
 
 
 class TackemSystemAdmin(TackemSystemFull):
@@ -38,8 +39,8 @@ class TackemSystemAdmin(TackemSystemFull):
         for folder in glob.glob(PLUGINFOLDERLOCATION + "*/*/"):
             if not "__pycache__" in folder:
                 folder_split = folder.split("/")
-                plugin_name = folder_split[-2]
                 plugin_type = folder_split[-3]
+                plugin_name = folder_split[-2]
                 self.import_plugin(plugin_type, plugin_name)
 
 
@@ -60,6 +61,10 @@ class TackemSystemAdmin(TackemSystemFull):
             if not plugin_type in self._base_data.plugins:
                 self._base_data.plugins[plugin_type] = {}
             self._base_data.plugins[plugin_type][plugin_name] = plugin
+
+        if not isinstance(CONFIG['plugins'][plugin_type], ConfigList):
+            CONFIG['plugins'].append(ConfigList(plugin_type, plugin_type))
+        CONFIG['plugins'][plugin_type].append(plugin.CONFIG)
         return True, 0
 
 
@@ -79,6 +84,9 @@ class TackemSystemAdmin(TackemSystemFull):
             message = "Reloading Module " + plugin_type + " " + plugin_name + " Failed"
             print(message)
             return message, 1
+
+        CONFIG['plugins'][plugin_type].delete(plugin_name)
+        CONFIG['plugins'][plugin_type].append(plugin.CONFIG)
         return True, 0
 
 
@@ -98,8 +106,11 @@ class TackemSystemAdmin(TackemSystemFull):
             if self.is_systems_for_plugin_exists(plugin_type, plugin_name):
                 self.stop_plugin(plugin_type, plugin_name)
             del self._base_data.plugins[plugin_type][plugin_name]
+            CONFIG['plugins'][plugin_type].delete(plugin_name)
             if not self._base_data.plugins[plugin_type]:
                 del self._base_data.plugins[plugin_type]
+                CONFIG['plugins'].delete(plugin_type)
+
 
 
     def start_plugin(self, plugin_type: str, plugin_name: str) -> None:
@@ -271,63 +282,12 @@ class TackemSystemAdmin(TackemSystemFull):
             return False
 
 
-    #Plugin Cfg Methods
-    def load_plugin_cfgs(self) -> None:
-        '''load all plugin cfgs'''
-        for plugin_type in self._base_data.plugins:
-            for plugin_name in self._base_data.plugins[plugin_type]:
-                self.load_plugin_cfg(plugin_type, plugin_name)
-
-
-    def load_plugin_cfg(self, plugin_type, plugin_name) -> None:
-        '''load a plugins cfg'''
-        with self._base_data.plugin_cfg_lock:
-            if not plugin_type in self._base_data.plugin_cfg:
-                self._base_data.plugin_cfg[plugin_type] = {}
-            with self._base_data.plugins_lock:
-                temp_plugin = self._base_data.plugins[plugin_type][plugin_name]
-                plugin_cfg = self._base_data.plugin_cfg[plugin_type]
-                if isinstance(temp_plugin.CONFIG, ConfigList):
-                    single_instance = temp_plugin.SETTINGS.get("single_instance", False)
-                    plugin_cfg[plugin_name] = temp_plugin.CONFIG.get_plugin_spec(single_instance)
-                else:
-                    plugin_cfg[plugin_name] = temp_plugin.CFG
-
-
-    def remove_plugin_cfgs(self) -> None:
-        '''deletes the plugins cfg'''
-        with self._base_data.plugin_cfg_lock:
-            self._base_data.plugin_cfg = {}
-
-
-    def remove_plugin_cfg(self, plugin_type: str, plugin_name: str) -> bool:
-        '''removes a plugins cfg'''
-        with self._base_data.plugin_cfg_lock:
-            if plugin_name not in self._base_data.plugin_cfg[plugin_type]:
-                return False
-            del self._base_data.plugin_cfg[plugin_type][plugin_name]
-            if not self._base_data.plugin_cfg[plugin_type]:
-                del self._base_data.plugin_cfg[plugin_type]
-        return True
-
-
-    def get_plugin_cfg(self) -> str:
-        '''retrieves the plugins cfg'''
-        with self._base_data.plugin_cfg_lock:
-            cfg = ""
-            for plugin_type in self._base_data.plugin_cfg:
-                cfg += "[[" + plugin_type + "]]\n"
-                for plugin_name in self._base_data.plugin_cfg[plugin_type]:
-                    cfg += self._base_data.plugin_cfg[plugin_type][plugin_name]
-            return cfg
-
-
     #Config Methods
     def load_config(self) -> None:
         '''load the config'''
         with self._base_data.config_lock:
             if self._base_data.config is None:
-                self._base_data.config = config_load(ARGS.home, self.get_plugin_cfg())
+                self._base_data.config = config_load(ARGS.home)
 
 
     def remove_config(self) -> None:

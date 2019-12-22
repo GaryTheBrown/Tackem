@@ -10,7 +10,6 @@ class ConfigBase:
             var_name: str,
             label: str,
             help_text: str,
-            priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
@@ -21,8 +20,6 @@ class ConfigBase:
             raise ValueError("label is not a string")
         if not isinstance(help_text, str):
             raise ValueError("help text is not a string")
-        if not isinstance(priority, int):
-            raise ValueError("priority is not a int")
         if not isinstance(hide_on_html, bool):
             raise ValueError("hide On HTML is not a bool")
         if not isinstance(not_in_config, bool):
@@ -34,17 +31,20 @@ class ConfigBase:
         self.__var_name = var_name
         self.__label = label
         self.__help_text = help_text
-        self.__priority = priority
         self.__hide_on_html = hide_on_html
         self.__not_in_config = not_in_config
         self.__rules = rules
 
 
     @property
-    def var_name(self):
+    def var_name(self) -> str:
         '''returns the name'''
         return self.__var_name
 
+    @property
+    def key(self) -> str:
+        '''returns the name'''
+        return self.__var_name.lower()
 
     @property
     def label(self):
@@ -56,12 +56,6 @@ class ConfigBase:
     def help_text(self):
         '''returns the help text'''
         return self.__help_text
-
-
-    @property
-    def priority(self):
-        '''returns the priority'''
-        return self.__priority
 
 
     @property

@@ -23,7 +23,7 @@ class ConfigRules:
 
 
     @property
-    def many(self) -> str:
+    def many(self) -> bool:
         '''return if the group is __many__'''
         return self.__many
 

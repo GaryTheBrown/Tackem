@@ -1,5 +1,7 @@
 '''Config Object Checkbox'''
+from typing import Optional
 from libs.html_system import HTMLSystem
+from libs.config.obj.data.input_attributes import InputAttributes
 
 
 class ConfigObjCheckbox:
@@ -10,37 +12,35 @@ class ConfigObjCheckbox:
             self,
             value: str,
             label: str,
-            disabled: bool = False,
             read_only: bool = False,
-            checked: bool = False,
             hide_on_html: bool = False,
             not_in_config: bool = False,
-            short_label: str = ""
+            short_label: str = "",
+            input_attributes: Optional[InputAttributes] = None,
     ):
         if not isinstance(value, str):
             raise ValueError("value is not a string")
         if not isinstance(label, str):
             raise ValueError("label is not a string")
-        if not isinstance(disabled, bool):
-            raise ValueError("disabled is not a bool")
         if not isinstance(read_only, bool):
             raise ValueError("read only is not a bool")
-        if not isinstance(checked, bool):
-            raise ValueError("checked is not a bool")
         if not isinstance(hide_on_html, bool):
             raise ValueError("hide On HTML is not a bool")
         if not isinstance(not_in_config, bool):
             raise ValueError("not in config is not a bool")
         if not isinstance(short_label, str):
             raise ValueError("short label not a string")
+        if input_attributes:
+            if not isinstance(input_attributes, InputAttributes):
+                raise ValueError("input_attributes not correct type")
+            input_attributes.block("autofocus", "multiple", "required")
 
         self.__value = value
         self.__label = label
-        self.__disabled = disabled
-        self.__checked = checked
         self.__hide_on_html = hide_on_html
         self.__not_in_config = not_in_config
         self.__short_label = short_label
+        self.__input_attributes = input_attributes
 
 
     @property
@@ -51,21 +51,19 @@ class ConfigObjCheckbox:
         return '"' + self.value + '"'
 
 
-    @property
-    def __attributes(self) -> str:
+    def __attributes(self, checked) -> str:
         '''returns the attributes as a string for the config html'''
         string = ""
-        if self.__disabled:
-            string += "disabled"
-        if self.__checked:
+        if self.__input_attributes:
+            string = self.__input_attributes.html()
+        if checked:
             string += " checked"
         if self.__short_label != "":
             string += ' label="' + self.__short_label + '"'
         return string
 
 
-    @property
-    def html(self) -> str:
+    def html(self, checked) -> str:
         '''Returns the option html for the config'''
         if self.__hide_on_html:
             return ""
@@ -73,7 +71,7 @@ class ConfigObjCheckbox:
             "inputs/single/checkbox",
             VALUE=self.__value,
             LABEL=self.__label,
-            OTHER=self.__attributes
+            OTHER=self.__attributes(checked)
         )
 
 
@@ -87,18 +85,6 @@ class ConfigObjCheckbox:
     def label(self):
         '''Returns Label'''
         return self.__label
-
-
-    @property
-    def disabled(self):
-        '''Returns Disabled'''
-        return self.__disabled
-
-
-    @property
-    def checked(self):
-        '''Returns Selected'''
-        return self.__checked
 
 
     @property
@@ -117,3 +103,9 @@ class ConfigObjCheckbox:
     def short_label(self):
         '''Returns the Shortened Label'''
         return self.__short_label
+
+
+    @property
+    def input_attributes(self) -> Optional[InputAttributes]:
+        '''returns the input attributes'''
+        return self.__input_attributes

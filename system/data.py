@@ -10,8 +10,6 @@ class SystemData():
     __plugins_lock = threading.Lock()
     __systems = {} # [type name]
     __systems_lock = threading.Lock()
-    __plugin_cfg = {} # [type name]
-    __plugin_cfg_lock = threading.Lock()
     __config = None
     __config_lock = threading.Lock()
     __sql = None
@@ -57,26 +55,6 @@ class SystemData():
     def systems_lock(self):
         '''returns the systems lock'''
         return self.__systems_lock
-
-
-    @property
-    def plugin_cfg(self):
-        '''returns the plugin config [type name]'''
-        with self.__plugin_cfg_lock:
-            return self.__plugin_cfg
-
-
-    @plugin_cfg.setter
-    def plugin_cfg(self, plugin_cfg):
-        '''sets the plugin config [type name]'''
-        with self.__plugin_cfg_lock:
-            self.__plugin_cfg = plugin_cfg
-
-
-    @property
-    def plugin_cfg_lock(self):
-        '''returns the plugin config lock'''
-        return self.__plugin_cfg_lock
 
 
     @property

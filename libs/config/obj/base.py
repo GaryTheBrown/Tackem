@@ -56,7 +56,6 @@ class ConfigObjBase(ABC, ConfigBase):
             default_value,
             label: str,
             help_text: str,
-            priority: int,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
@@ -67,20 +66,21 @@ class ConfigObjBase(ABC, ConfigBase):
             var_name,
             label,
             help_text,
-            priority,
             hide_on_html,
             not_in_config,
             rules
         )
+        if input_attributes and not isinstance(input_attributes, InputAttributes):
+            raise ValueError("input_attributes not correct type")
+        if data_list and not isinstance(data_list, DataList):
+            raise ValueError("data_list not correct type")
+
         self.__value = default_value
         self.__default_value = default_value
         self.__input_attributes = None
         self.__data_list = None
-
-        if input_attributes and isinstance(input_attributes, InputAttributes):
-            self.__input_attributes = input_attributes
-        if data_list and isinstance(data_list, DataList):
-            self.__data_list = data_list
+        self.__input_attributes = input_attributes
+        self.__data_list = data_list
 
 
     @property
@@ -137,3 +137,7 @@ class ConfigObjBase(ABC, ConfigBase):
             HELP=self.help_text,
             INPUT=self.config_html
         )
+
+    def reset_value_to_default(self):
+        '''returns the value back to default'''
+        self.__value = self.__default_value

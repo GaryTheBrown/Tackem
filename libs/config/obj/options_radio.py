@@ -16,7 +16,7 @@ class ConfigObjOptionsRadio(ConfigObjBase):
             values: List[ConfigObjRadio],
             default_value: int,
             label: str,
-            priority: int,
+            help_text: str,
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
@@ -24,15 +24,19 @@ class ConfigObjOptionsRadio(ConfigObjBase):
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
+        if not isinstance(default_value, int):
+            raise ValueError("default value is not a int")
         for value in values:
             if not isinstance(value, ConfigObjRadio):
                 raise ValueError("value is not a ConfigObjRadio")
-        input_attributes.block("multiple")
+        if input_attributes:
+            input_attributes.block("multiple")
+
         super().__init__(
             var_name,
             default_value,
             label,
-            priority,
+            help_text,
             hide_on_html,
             not_in_config,
             rules,
@@ -59,7 +63,10 @@ class ConfigObjOptionsRadio(ConfigObjBase):
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
-        return "".join([value.html for value in self.__values])
+        options = ""
+        for count, value in enumerate(self.__values):
+            options += value.html(count == self.value)
+        return options
 
 
     @property

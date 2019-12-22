@@ -36,7 +36,7 @@ class InputAttributes:
 
         #kwargs for key:value ones with data- accepted
         for key, value in kwargs.items():
-            if key[0:5] == "data-" or key in self.__kwargs:
+            if key[0:5] == "data_" or key in self.__kwargs:
                 self.__dict[key] = str(value)
 
 
@@ -99,7 +99,7 @@ class InputAttributes:
         string = ""
 
         for key, value in self.__dict.items():
-            string += " " + key + '="' + value + '"'
+            string += " " + key.replace("_", "-") + '="' + value + '"'
 
 
         if self.__autofocus:
