@@ -1,13 +1,13 @@
 '''Config Object Options Select'''
 from typing import Optional, List, Union
-from libs.config.obj.base import ConfigObjBase
+from libs.config.obj.options_base import ConfigObjOptionsBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
 
-class ConfigObjOptionsSelect(ConfigObjBase):
+class ConfigObjOptionsSelect(ConfigObjOptionsBase):
     '''Config Item Options Select'''
 
 
@@ -15,7 +15,7 @@ class ConfigObjOptionsSelect(ConfigObjBase):
             self,
             var_name: str,
             values: List[ConfigObjOption],
-            default_value: Union[int, List[int]],
+            default_value: Union[str, int, List[str], List[int]],
             label: str,
             help_text: str,
             hide_on_html: bool = False,
@@ -25,14 +25,19 @@ class ConfigObjOptionsSelect(ConfigObjBase):
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
-        if not isinstance(default_value, int) and not isinstance(default_value, list):
-            raise ValueError("default value is not a int or list of ints")
+        if not isinstance(default_value, (str, int, list)):
+            raise ValueError("default value is not a string, int or list")
+        if isinstance(default_value, list):
+            for i, val in enumerate(default_value):
+                if not isinstance(val, (str, int)):
+                    raise ValueError("default value item is not a string or int")
         for value in values:
             if not isinstance(value, ConfigObjOption):
                 raise ValueError("value is not a ConfigObjOption")
 
         super().__init__(
             var_name,
+            values,
             default_value,
             label,
             help_text,
@@ -41,44 +46,18 @@ class ConfigObjOptionsSelect(ConfigObjBase):
             rules,
             input_attributes
         )
-        self.__values = values
 
 
-    @property
-    def config_spec(self) -> str:
-        '''Returns the line for the config option'''
-        if self.not_in_config:
-            return ""
-
-        string = self.var_name + " = options("
-        string += ", ".join([value.config_spec for value in self.__values])
-        string += ")\n"
-
-        return string
-
-
-    @property
-    def config_html(self) -> str:
+    def item_html(self, variable_name: str, value) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
-        options = ""
-        for count, value in enumerate(self.__values):
-            options += value.html((isinstance(self.value, int) and count == self.value) \
-                               or (isinstance(self.value, list) and count in self.value))
-        other = ""
         if isinstance(self.input_attributes, InputAttributes):
             other = self.input_attributes.html
 
         return HTMLSystem.part(
             "inputs/select",
-            OPTIONS=options,
+            OPTIONS=super().item_html(),
             VARIABLENAME=self.var_name,
             OTHER=other
         )
-
-
-    @property
-    def values(self) -> list:
-        '''returns the values in a list'''
-        return self.__values

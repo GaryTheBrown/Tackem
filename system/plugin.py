@@ -15,41 +15,16 @@ class TackemSystemPlugin(TackemSystemBase):
         if isinstance(self.__plugin_instance, str):
             self.__plugin_full_name += " " + instance
 
-        self.__p_config = None
         self.__p_plugin = None
         # self.__p_system = None
 
-        _, temp_config = self.get_config(['plugins', self.__plugin_type, self.__plugin_name], {})
-        with self._base_data.config_lock:
-            if self.__plugin_instance:
-                self.__p_config = temp_config[self.__plugin_instance]
-            else:
-                self.__p_config = temp_config
-
-        with self._base_data.plugins_lock:
-            self.__p_plugin = self._base_data.plugins[self.__plugin_type][self.__plugin_name]
-
-        # with self._base_data.systems_lock:
-        #     print(self._base_data.systems.keys())
-        #     self.__p_system = self._base_data.systems[self.__plugin_full_name]
-
-
-    @property
-    def config(self):
-        '''return plugins config'''
-        return self.__p_config
+        self.__p_plugin = self._base_data.plugins[self.__plugin_type][self.__plugin_name]
 
 
     @property
     def plugin(self):
         '''return plugin'''
         return self.__p_plugin
-
-
-    # @property
-    # def system(self):
-    #     '''return plugins system'''
-    #     return self.__p_system
 
 
     @property

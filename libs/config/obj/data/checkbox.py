@@ -44,7 +44,7 @@ class ConfigObjCheckbox:
 
 
     @property
-    def config_spec(self) -> str:
+    def spec(self) -> str:
         '''Returns the line for the config option'''
         if self.not_in_config:
             return ""

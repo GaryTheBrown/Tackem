@@ -5,8 +5,8 @@ import os
 import cherrypy
 from libs import html_parts as ghtml_parts
 from libs.data.languages import Languages
-from .scraper_base import Scraper
-from . import html_parts
+from libs.scraper.scraper_base import Scraper
+from libs.scraper import html_parts
 
 
 class ScraperRipper(Scraper):

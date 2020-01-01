@@ -1,7 +1,8 @@
 '''Script For the Admin System'''
 import cherrypy
-from libs import html_parts
+from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
+from libs.authenticator import AUTHENTICATION
 
 
 class Admin(HTMLTEMPLATE):
@@ -11,21 +12,31 @@ class Admin(HTMLTEMPLATE):
     @cherrypy.expose
     def users(self) -> str:
         '''Grab the users info'''
-        self._tackem_system.auth.check_auth()
-        if not self._tackem_system.auth.is_admin():
+        AUTHENTICATION.check_auth()
+        if not AUTHENTICATION.is_admin():
             raise cherrypy.HTTPRedirect(cherrypy.url().replace("/admin/users", "/"))
-        data = self._tackem_system.auth.get_users()
+        data = AUTHENTICATION.get_users()
         users_html = ""
         for item in data:
-            users_html += html_parts.user_page(item['id'], item['username'], item['is_admin'])
-        users_page_html = html_parts.users_page(users_html)
-        return self._template(users_page_html)
+            users_html += HTMLSystem.part(
+                "admin/user",
+                USERID=item['id'],
+                USERNAME=item['username'],
+                ADMINTRUE="checked" if item['is_admin'] else "",
+                ADMINFALSE="" if item['is_admin'] else "checked"
+            )
+        return self._template(
+            HTMLSystem.part(
+                "admin/users",
+                USERSHTML=users_html
+            )
+        )
 
 
     @cherrypy.expose
     def adduser(self, **kwargs) -> None:
         '''Add user to system'''
-        if not self._tackem_system.auth.is_admin():
+        if not AUTHENTICATION.is_admin():
             raise cherrypy.HTTPRedirect(cherrypy.url().replace("/admin/adduser", "/"))
         username = kwargs.get("username", None)
         if username == "":
@@ -41,7 +52,7 @@ class Admin(HTMLTEMPLATE):
         else:
             is_admin = None
         if username is not None and password is not None and is_admin is not None:
-            self._tackem_system.auth.add_user(username, password, is_admin)
+            AUTHENTICATION.add_user(username, password, is_admin)
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("adduser", "users"))
 
 
@@ -50,16 +61,16 @@ class Admin(HTMLTEMPLATE):
         '''update the user info'''
         if 'user_id' in kwargs:
             user_id = kwargs['user_id']
-            if not self._tackem_system.auth.is_admin():
+            if not AUTHENTICATION.is_admin():
                 url = "/admin/updateuser/" + str(user_id) + "/"
                 raise cherrypy.HTTPRedirect(cherrypy.url().replace(url, "/"))
             if 'delete' in kwargs:
-                self._tackem_system.auth.delete_user(user_id)
+                AUTHENTICATION.delete_user(user_id)
             elif 'update' in kwargs:
                 username = kwargs.get("username", None)
                 password = kwargs.get("password", None)
                 if password == "":
                     password = None
                 is_admin = kwargs.get("is_admin", None)
-                self._tackem_system.auth.update_user(user_id, username, password, is_admin)
+                AUTHENTICATION.update_user(user_id, username, password, is_admin)
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("updateuser", "users"))

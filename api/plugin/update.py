@@ -1,6 +1,6 @@
 '''PLUGIN UPDATE API'''
 import cherrypy
-from .base import APIPluginBase
+from api.plugin.base import APIPluginBase
 
 @cherrypy.expose
 class APIPluginUpdate(APIPluginBase):

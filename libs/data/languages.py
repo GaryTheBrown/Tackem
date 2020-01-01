@@ -1,5 +1,5 @@
 '''special system for languages including conversion between types'''
-from libs.config_option import ConfigOption
+from libs.config.obj.data.option import ConfigObjOption
 
 
 class Language:
@@ -235,17 +235,17 @@ class Languages:
 
     def config_option_2(self):
         '''returns a list of 2 letter codes'''
-        return [ConfigOption(x.iso_639_1, x.name) for x in self.__LANGUAGES]
+        return [ConfigObjOption(x.iso_639_1, x.name) for x in self.__LANGUAGES]
 
 
     def config_option_3t(self):
         '''returns a list of 3 letter local codes'''
-        return [ConfigOption(x.iso_639_2t, x.name) for x in self.__LANGUAGES]
+        return [ConfigObjOption(x.iso_639_2t, x.name) for x in self.__LANGUAGES]
 
 
     def config_option_3b(self):
         '''returns a list of 3 letter English codes'''
-        return [ConfigOption(x.iso_639_2b, x.name) for x in self.__LANGUAGES]
+        return [ConfigObjOption(x.iso_639_2b, x.name) for x in self.__LANGUAGES]
 
 
     def get_name_from_2(self, code: str):

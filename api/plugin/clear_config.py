@@ -3,7 +3,8 @@ import shutil
 from datetime import datetime
 import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
-from .base import APIPluginBase
+from config_data import CONFIG
+from api.plugin.base import APIPluginBase
 
 
 @cherrypy.expose
@@ -49,8 +50,7 @@ class APIPluginClearConfig(APIPluginBase):
                 error_number=0
             )
 
-        config = self._system.get_global_config()
-        if not config['plugins'][plugin_type][plugin_name]:
+        if not CONFIG['plugins'][plugin_type][plugin_name]:
             return
 
         config_file = PROGRAMCONFIGLOCATION + "config.ini"
@@ -58,11 +58,11 @@ class APIPluginClearConfig(APIPluginBase):
             config_backup = PROGRAMCONFIGLOCATION + "config.bak"
             config_backup += datetime.now().strftime("%Y%m%d%H%M%S")
             shutil.copyfile(config_file, config_backup)
-        config['plugins'][plugin_type][plugin_name].clear()
-        del config['plugins'][plugin_type][plugin_name]
-        if not config['plugins'][plugin_type]:
-            del config['plugins'][plugin_type]
-        config.write()
+        CONFIG['plugins'][plugin_type][plugin_name].clear()
+        CONFIG['plugins'][plugin_type].delete(plugin_name)
+        if CONFIG['plugins'][plugin_type].count == 0:
+            CONFIG['plugins'].delete(plugin_type)
+        CONFIG.save()
 
         return self._return_data_plugin(
             user,

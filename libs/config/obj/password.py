@@ -16,7 +16,6 @@ class ConfigObjPassword(ConfigObjString):
     def __init__(
             self,
             var_name: str,
-            default_value: str,
             label: str,
             help_text: str,
             hide_on_html: bool = False,
@@ -25,12 +24,9 @@ class ConfigObjPassword(ConfigObjString):
             input_attributes: Optional[InputAttributes] = None,
             button: Optional[Button] = None
     ):
-        if not isinstance(default_value, str):
-            raise ValueError("default value is not a string")
-
         super().__init__(
             var_name,
-            default_value,
+            "",
             label,
             help_text,
             hide_on_html,

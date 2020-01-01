@@ -1,0 +1,11 @@
+<form action="%%BASEURL%%admin/updateuser" method="post">
+	<input type="hidden" name="user_id" value="%%USERID%%">
+	<input type="text" name="username" value="%%USERNAME%%">
+	<input type="password" name="password" value="">
+	<input type="radio" name="is_admin" value="True" %%ADMINTRUE%%>
+	<label for="inlineRadio1">True</label>
+	<input type="radio" name="is_admin" value="False" %%ADMINFALSE%%>
+	<label for="inlineRadio2">False</label>
+	<input type="submit" name="update" value="Update"/>
+	<input type="submit" name="delete" value="Delete"/>
+</form>

@@ -10,10 +10,10 @@ class Scraper():
 
     def __init__(self):
         self._tackem_system = TackemSystemRoot('scraper')
-        self.__apikey = self._tackem_system.config()['apikey']
-        self.__language = self._tackem_system.config()['language']
-        self.__include_adult = self._tackem_system.config()['includeadult']
-        self.__conn = http.client.HTTPSConnection(self._tackem_system.config()['url'])
+        self.__apikey = self._tackem_system.config['apikey']
+        self.__language = self._tackem_system.config['language']
+        self.__include_adult = self._tackem_system.config['includeadult']
+        self.__conn = http.client.HTTPSConnection(self._tackem_system.config['url'])
         self._image_config = self._configuration()
 
 

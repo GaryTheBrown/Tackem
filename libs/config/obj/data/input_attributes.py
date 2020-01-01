@@ -77,7 +77,7 @@ class InputAttributes:
 
 
     @property
-    def config_spec(self) -> str:
+    def spec(self) -> str:
         '''Returns the line for the config option'''
         variable_count = False
         return_string = ""

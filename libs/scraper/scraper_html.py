@@ -1,7 +1,7 @@
 '''Scraper System'''
 import os
 import cherrypy
-from .scraper_base import Scraper
+from libs.scraper.scraper_base import Scraper
 
 
 class ScraperHtml(Scraper):

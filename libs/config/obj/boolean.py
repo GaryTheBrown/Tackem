@@ -41,21 +41,25 @@ class ConfigObjBoolean(ConfigObjBase):
 
 
     @property
-    def config_spec(self) -> str:
+    def spec(self) -> str:
         '''Returns the line for the config option'''
         if self.not_in_config:
             return ""
 
         string = self.var_name + " = boolean("
+
         if self.input_attributes:
-            string += self.input_attributes.config_spec
+            i_a = self.input_attributes.spec
+            string += i_a
+            if i_a != "":
+                string += ", "
+        string += "default='" + ("True" if self.default_value else "False") + "'"
         string += ")\n"
 
         return string
 
 
-    @property
-    def config_html(self) -> str:
+    def item_html(self, variable_name: str, value) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
@@ -71,3 +75,11 @@ class ConfigObjBoolean(ConfigObjBase):
             ENABLED=str(self.value),
             OTHER=other
         )
+
+
+    def to_type(self, value) -> bool:
+        '''returns the value in the correct format'''
+        try:
+            return bool(value)
+        except ValueError:
+            return False

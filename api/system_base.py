@@ -1,6 +1,6 @@
 '''Base Template For the System API'''
 import json
-from .base import APIBase
+from api.base import APIBase
 
 
 class APISystemBase(APIBase):

@@ -1,5 +1,5 @@
 '''MariaDB System'''
-from .baseclass import SqlBaseClass
+from libs.sql.baseclass import SqlBaseClass
 
 
 class MySql(SqlBaseClass):

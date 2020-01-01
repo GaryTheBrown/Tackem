@@ -1,7 +1,7 @@
 '''SQLLite System'''
 import sqlite3
-from libs.startup_arguments import ARGS
-from .baseclass import SqlBaseClass
+from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from libs.sql.baseclass import SqlBaseClass
 
 
 class SqlLite(SqlBaseClass):
@@ -14,7 +14,7 @@ class SqlLite(SqlBaseClass):
 
     def _startup(self):
         '''Setup SQLlite Here'''
-        self.__conn = sqlite3.connect(ARGS.home + '/Tackem.db')
+        self.__conn = sqlite3.connect(PROGRAMCONFIGLOCATION + '/Tackem.db')
         self.__sql = self.__conn.cursor()
 
 

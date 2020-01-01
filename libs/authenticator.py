@@ -4,6 +4,7 @@ import uuid
 import hashlib
 import cherrypy
 from libs.sql.column import Column
+from config_data import CONFIG
 from system.root import TackemSystemRoot
 
 
@@ -28,7 +29,7 @@ class Authentication:
 
     def __init__(self):
         self.__system = TackemSystemRoot('authentication')
-        self.__login_url = self.__system.baseurl + "login?return_url="
+        self.__login_url = CONFIG['webui']['baseurl'].value + "login?return_url="
 
 
     def start(self) -> None:
@@ -180,3 +181,5 @@ class Authentication:
     def clear_sessions(self) -> None:
         '''clears the sessions and logs all the users out'''
         self.__temp_sessions = {}
+
+AUTHENTICATION = Authentication()

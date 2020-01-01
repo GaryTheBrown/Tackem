@@ -2,7 +2,7 @@
 import cherrypy
 from system.full import TackemSystemFull
 from system.plugin import TackemSystemPlugin
-from .base import APIBase
+from api.base import APIBase
 
 
 @cherrypy.expose

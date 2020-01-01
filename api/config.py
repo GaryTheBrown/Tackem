@@ -1,8 +1,8 @@
 '''CONFIG API'''
 import json
 import cherrypy
-from system.full import TackemSystemFull
-from .base import APIBase
+from api.base import APIBase
+from config_data import CONFIG
 
 
 @cherrypy.expose
@@ -25,7 +25,7 @@ class APIConfig(APIBase):
         location = kwargs.get("location", None)
         self._check_user(user)
         self.__check_for_blocked_locations(location)
-        value = self.__check_location(location)
+        value = CONFIG.find_and_get(location.split("-"))
 
         return json.dumps({
             "system" : "config",
@@ -43,8 +43,8 @@ class APIConfig(APIBase):
         body = self._get_request_body()
         self._check_user(user)
         self.__check_for_blocked_locations(location)
-        value = self.__check_location(location)
-        TackemSystemFull().set_config(location, body['value'])
+        value = CONFIG.find_and_get(location.split("-"))
+        CONFIG.find_and_set(location.split("-"), body['value'])
 
         return json.dumps({
             "system" : "config",
@@ -54,16 +54,6 @@ class APIConfig(APIBase):
             "before": value,
             "after": body['value']
         })
-
-
-    def __check_location(self, location: str):  # TODO DO I Union THis with all compatable options?
-        '''checks the location exists in the config and returns the value'''
-        if location is None:
-            raise cherrypy.HTTPError(status=400)  #Bad Request
-        found, value = TackemSystemFull().get_config(location, None)
-        if found is False:
-            raise cherrypy.HTTPError(status=400)  #Bad Request
-        return value
 
 
     def __check_for_blocked_locations(self, location: str) -> None:

@@ -3,8 +3,8 @@
 import threading
 import json
 from abc import ABCMeta, abstractmethod
-from .column import Column
-from .sql_message import SQLMessage
+from libs.sql.column import Column
+from libs.sql.sql_message import SQLMessage
 
 
 class SqlBaseClass(metaclass=ABCMeta):

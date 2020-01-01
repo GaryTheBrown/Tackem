@@ -10,6 +10,7 @@ import git
 import requests
 import markdown
 from libs.startup_arguments import PLUGINFOLDERLOCATION
+from config_data import CONFIG
 from system.admin import TackemSystemAdmin
 
 class TackemSystemPluginDownloader(TackemSystemAdmin):
@@ -157,11 +158,11 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
     def reload_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''Function to attempt to reload the plugin after a failed install'''
-        self.write_config_to_disk()
+        CONFIG.save()
         return_data = self.import_plugin(plugin_type, plugin_name)
         if return_data[0] is not True:
             return return_data
-        self.load_config()
+        CONFIG.load()
         return True, 0
 
 

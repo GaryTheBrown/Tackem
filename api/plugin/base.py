@@ -1,6 +1,6 @@
 '''PLUGIN BASE API'''
 from system.plugin_downloader import TackemSystemPluginDownloader
-from ..base import APIBase
+from api.base import APIBase
 
 class APIPluginBase(APIBase):
     '''CONFIG API'''

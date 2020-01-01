@@ -1,0 +1,10 @@
+<h1>TACKEM LOGIN</h1>
+<h3>Please Login To Access This Page</h3>
+<form action="%%BASEURL%%login" method="post">
+	<input type="hidden" name="return_url" value="%%RETURNURL%%">
+	<input type="text" name="username" placeholder="Username" required>
+	<input type="password" name="password" placeholder="Password" required>
+	<h3>Stay Logged In For Minutes:</h3>
+	<input type="number" name="timeout" min=1 value=60 required>
+	<button type="submit">Login</button>
+</form>

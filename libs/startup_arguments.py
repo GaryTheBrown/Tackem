@@ -7,15 +7,12 @@ PROGRAMVERSION = "ALPHA"
 PROGRAMGITADDRESS = "http://github.com/garythebrown/tackem/"
 PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
 PLUGINFOLDERLOCATION = "plugins/"
+THEMEFOLDERLOCATION = "themes/"
 
 
 def __parse():
     '''parses the command line arguments'''
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--home',
-                        help="Change the home folder location",
-                        default=os.path.expanduser(PROGRAMCONFIGLOCATION)
-                       )
     parser.add_argument('--version',
                         action='version',
                         version="Tackem Version: " + PROGRAMVERSION)

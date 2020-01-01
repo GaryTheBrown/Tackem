@@ -1,12 +1,12 @@
 '''Config Object Options Radio'''
-from typing import Optional, List
-from libs.config.obj.base import ConfigObjBase
+from typing import Optional, List, Union
+from libs.config.obj.options_base import ConfigObjOptionsBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.radio import ConfigObjRadio
 from libs.config.rules import ConfigRules
 
 
-class ConfigObjOptionsRadio(ConfigObjBase):
+class ConfigObjOptionsRadio(ConfigObjOptionsBase):
     '''Config Item Options Radio'''
 
 
@@ -14,7 +14,7 @@ class ConfigObjOptionsRadio(ConfigObjBase):
             self,
             var_name: str,
             values: List[ConfigObjRadio],
-            default_value: int,
+            default_value: Union[str, int],
             label: str,
             help_text: str,
             hide_on_html: bool = False,
@@ -24,16 +24,16 @@ class ConfigObjOptionsRadio(ConfigObjBase):
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
-        if not isinstance(default_value, int):
-            raise ValueError("default value is not a int")
-        for value in values:
-            if not isinstance(value, ConfigObjRadio):
-                raise ValueError("value is not a ConfigObjRadio")
+        if not isinstance(default_value, (str, int)):
+            raise ValueError("default value is not a int or str")
+        if all(not isinstance(x, ConfigObjRadio) for x in values):
+            raise ValueError("value is not a ConfigObjRadio")
         if input_attributes:
             input_attributes.block("multiple")
 
         super().__init__(
             var_name,
+            values,
             default_value,
             label,
             help_text,
@@ -42,24 +42,9 @@ class ConfigObjOptionsRadio(ConfigObjBase):
             rules,
             input_attributes
         )
-        self.__values = values
 
 
-    @property
-    def config_spec(self) -> str:
-        '''Returns the line for the config option'''
-        if self.not_in_config:
-            return ""
-
-        string = self.var_name + " = options("
-        string += ", ".join([value.config_spec for value in self.__values])
-        string += ")\n"
-
-        return string
-
-
-    @property
-    def config_html(self) -> str:
+    def item_html(self, variable_name: str, value,) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
@@ -69,7 +54,17 @@ class ConfigObjOptionsRadio(ConfigObjBase):
         return options
 
 
-    @property
-    def values(self) -> list:
-        '''returns the values in a list'''
-        return self.__values
+    def default_set(self, default_value, value_list=None) ->  Union[int, List[int]]:
+        '''sorts out the default value'''
+
+        if isinstance(default_value, int):
+            return default_value
+
+        if value_list is None:
+            value_list = self.__values
+
+        if isinstance(default_value, str):
+            for i, item in enumerate(value_list):
+                if item.value == default_value:
+                    return i
+        return -1

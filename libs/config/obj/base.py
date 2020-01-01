@@ -115,18 +115,21 @@ class ConfigObjBase(ABC, ConfigBase):
 
     @property
     @abstractmethod
-    def config_spec(self) -> str:
+    def spec(self) -> str:
         '''Returns the line for the config option'''
 
 
-    @property
     @abstractmethod
-    def config_html(self) -> str:
+    def item_html(self, variable_name: str, value) -> str:
         '''Returns the html for the config option'''
 
+    def to_type(self, value):
+        '''returns the value in the correct format'''
+        return value
+
 
     @property
-    def html(self) -> str:
+    def html(self, variable_name: str, value) -> str:
         '''returns the full html code including label and help text'''
         if self.hide_on_html:
             return ""
@@ -135,7 +138,7 @@ class ConfigObjBase(ABC, ConfigBase):
             VARNAME=self.var_name,
             LABEL=self.label,
             HELP=self.help_text,
-            INPUT=self.config_html
+            INPUT=self.item_html(variable_name, value)
         )
 
     def reset_value_to_default(self):

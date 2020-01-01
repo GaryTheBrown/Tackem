@@ -46,24 +46,24 @@ class ConfigObjFloatNumber(ConfigObjBase):
 
 
     @property
-    def config_spec(self) -> str:
+    def spec(self) -> str:
         '''Returns the line for the config option'''
         if self.not_in_config:
             return ""
 
         string = self.var_name + " = float("
         if self.input_attributes:
-            string += self.input_attributes.config_spec
-        if self.default_value is not None:
-            string += "default="
-            string += '"' + self.default_value + '"'
+            i_a = self.input_attributes.spec
+            string += i_a
+            if i_a != "":
+                string += ", "
+        string += "default='" + str(self.default_value) + "'"
         string += ")\n"
 
         return string
 
 
-    @property
-    def config_html(self) -> str:
+    def item_html(self, variable_name: str, value) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
@@ -81,3 +81,11 @@ class ConfigObjFloatNumber(ConfigObjBase):
             OTHER=other,
             BUTTON=button
         )
+
+
+    def to_type(self, value) -> float:
+        '''returns the value in the correct format'''
+        try:
+            return float(value)
+        except ValueError:
+            return 0.0

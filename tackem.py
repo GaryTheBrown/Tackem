@@ -5,10 +5,17 @@ import os.path
 import signal
 from typing import Union
 from system.admin import TackemSystemAdmin
-from libs.startup_arguments import ARGS
+from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
+from libs.html_system import HTMLSystem
+from libs.authenticator import AUTHENTICATION
+from config_data import CONFIG
 
+#TODO change SQL to follow the same procedure and have them all "Load" in the init
+# (config eeds the plugins)
+#TODO FIX API CONFIG FUNCTIONS
+#TODO post_to_config needs rewriting as it's no longer needs to write to the configobj but CONFIG
 
 #TODO move all actions to the api. allowing localhost to use without api key or generate single
 # action keys
@@ -27,23 +34,19 @@ class Tackem:
         print("LOADING PLUGINS...")
         TackemSystemAdmin().import_plugins()
         print("LOADING CONFIG...")
-        TackemSystemAdmin().load_config()
-
-        if not TackemSystemAdmin().get_config(['firstrun'], True)[1]:
-            print("LOADING DATABASE...")
-            TackemSystemAdmin().load_sql()
-            print("STARTING DATABASE...")
-            TackemSystemAdmin().start_sql()
-            print("LOADING MUSICBRAINZ...")
-            TackemSystemAdmin().load_musicbrainz()
-            print("LOADING AUTHENTICATOR...")
-            TackemSystemAdmin().load_auth()
-            print("STARTING AUTHENTICATOR...")
-            TackemSystemAdmin().start_auth()
-            print("LOADING SYSTEMS...")
-            TackemSystemAdmin().load_systems()
-            print("STARTING SYSTEMS...")
-            TackemSystemAdmin().start_systems()
+        CONFIG.load()
+        print("LOADING DATABASE...")
+        TackemSystemAdmin().load_sql()
+        print("STARTING DATABASE...")
+        TackemSystemAdmin().start_sql()
+        print("LOADING MUSICBRAINZ...")
+        TackemSystemAdmin().load_musicbrainz()
+        print("STARTING AUTHENTICATOR...")
+        AUTHENTICATION.start()
+        print("LOADING SYSTEMS...")
+        TackemSystemAdmin().load_systems()
+        print("STARTING SYSTEMS...")
+        TackemSystemAdmin().start_systems()
         print("LOADING WEBSERVICES...")
         self.__load_webserver()
         print("STARTING WEBSERVICES...")
@@ -55,11 +58,10 @@ class Tackem:
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
         self.__stop_webserver()
-        if not TackemSystemAdmin().get_config(['firstrun'], True)[1]:
-            print("STOPPING SYSTEMS...")
-            TackemSystemAdmin().stop_systems()
-            print("STOPPING DATABASE...")
-            TackemSystemAdmin().stop_sql()
+        print("STOPPING SYSTEMS...")
+        TackemSystemAdmin().stop_systems()
+        print("STOPPING DATABASE...")
+        TackemSystemAdmin().stop_sql()
 
 
     def cleanup(self) -> None:
@@ -70,15 +72,13 @@ class Tackem:
         TackemSystemAdmin().remove_sql()
         TackemSystemAdmin().remove_plugins()
         TackemSystemAdmin().remove_musicbrainz()
-        TackemSystemAdmin().remove_auth()
-        TackemSystemAdmin().remove_config()
 
 
     def shutdown(self) -> None:
         '''Shutdown commands'''
         self.stop()
         print("SAVING CONFIG FILE...")
-        TackemSystemAdmin().write_config_to_disk()
+        CONFIG.save()
         print("SHUTDOWN COMPLETED")
 
 
@@ -86,12 +86,11 @@ class Tackem:
         '''Looping function'''
 
         #First check if home folder exists (useable to run first time script)
-        if not os.path.exists(ARGS.home):
-            os.mkdir(ARGS.home)
+        if not os.path.exists(PROGRAMCONFIGLOCATION):
+            os.mkdir(PROGRAMCONFIGLOCATION)
 
         #Setup signal to watch for ctrl + c command
         signal.signal(signal.SIGINT, ctrl_c)
-
         self.start()
         while True:
             event_type = RootEvent.wait_and_get_event()
@@ -114,10 +113,11 @@ class Tackem:
     #Webserver Methods
     def __load_webserver(self) -> Union[bool, None]:
         '''loads the webserver system'''
-        if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
+        if CONFIG['webui']['disabled'].value:
             return False
         if self.__webserver is None:
             self.__webserver = Httpd()
+            HTMLSystem.set_theme(CONFIG['webui']['theme'].value)
             return True
         return None
 
@@ -132,7 +132,7 @@ class Tackem:
 
     def __start_webserver(self) -> bool:
         '''starts the webserver'''
-        if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
+        if CONFIG['webui']['disabled'].value:
             return False
         if self.__webserver is not None:
             self.__webserver.start()
@@ -141,7 +141,7 @@ class Tackem:
 
     def __stop_webserver(self) -> bool:
         '''stops the Webserver'''
-        if TackemSystemAdmin().get_config(['webui', 'disabled'], False)[1]:
+        if CONFIG['webui']['disabled'].value:
             return False
         if self.__webserver is not None:
             self.__webserver.stop()

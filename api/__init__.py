@@ -1,12 +1,13 @@
 '''ROOT API'''
 import json
 import cherrypy
-from system.full import TackemSystemFull
+from api.base import APIBase
+from api.config import APIConfig
+from api.plugin import APIPlugin
+from api.system import APISystem
+from config_data import CONFIG
 from libs.root_event import RootEvent
-from .base import APIBase
-from .config import APIConfig
-from .plugin import APIPlugin
-from .system import APISystem
+from libs.authenticator import AUTHENTICATION
 
 
 @cherrypy.expose
@@ -68,8 +69,8 @@ class API(APIBase):
 
     def _check_api_key(self, key: str) -> int:
         '''checks the api key against the master and user keys and returns the level'''
-        _, masterapi = TackemSystemFull().get_config(["masterapi", "key"], None)
-        _, userapi = TackemSystemFull().get_config(["userapi", "key"], None)
+        masterapi = CONFIG["api"]["masterapi"]["key"].value
+        userapi = CONFIG["api"]["userapi"]["key"].value
         if key is None or not isinstance(key, str):
             return self.GUEST
         if key == masterapi:
@@ -83,8 +84,8 @@ class API(APIBase):
 
     def _check_session_id(self) -> int:
         '''checks the session Id is in the list'''
-        if not TackemSystemFull().auth.check_logged_in():
+        if not AUTHENTICATION.check_logged_in():
             return self.GUEST
-        if TackemSystemFull().auth.is_admin():
+        if AUTHENTICATION.is_admin():
             return self.MASTER
         return self.USER
