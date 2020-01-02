@@ -126,7 +126,8 @@ class ConfigList(ConfigBase):
         '''Save the Config'''
         self.update_configobj()
         try:
-            self.__config.write(outfile=PROGRAMCONFIGLOCATION + "config.ini")
+            print()
+            self.__config.write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
 
