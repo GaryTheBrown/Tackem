@@ -2,6 +2,7 @@
 
 import cherrypy
 from api.plugin.base import APIPluginBase
+from libs.sql import Database
 
 
 @cherrypy.expose
@@ -49,14 +50,14 @@ class APIPluginClearDatabase(APIPluginBase):
             )
 
         name_like = plugin_type + "_" + plugin_name + "_%"
-        results = self._system.sql.select_like(
+        results = Database.sql().select_like(
             "api",
             "table_version",
             {'name':name_like}
         )
         for result in results:
-            self._system.sql.call("api", "DROP TABLE " + result['name'] + ";")
-            self._system.sql.delete_row("api", "table_version", result['id'])
+            Database.sql().call("api", "DROP TABLE " + result['name'] + ";")
+            Database.sql().delete_row("api", "table_version", result['id'])
 
         return self._return_data_plugin(
             user,

@@ -7,7 +7,6 @@ from libs.config.list import ConfigList
 from libs.plugin_base import load_plugin_settings
 from libs.program_checker import check_for_required_programs
 from libs.musicbrainz import MusicBrainz
-from libs.sql import setup_db
 from libs.startup_arguments import PLUGINFOLDERLOCATION
 from config_data import CONFIG
 
@@ -267,28 +266,6 @@ class TackemSystemAdmin(TackemSystemFull):
                 if self._base_data.systems[key].running():
                     return True
         return False
-
-
-    #SQL Methods
-    def load_sql(self) -> None:
-        '''load SQL'''
-        self._base_data.sql = setup_db()
-
-
-    def remove_sql(self) -> None:
-        '''deletes the SQL system'''
-        self._base_data.sql = None
-
-
-    def start_sql(self) -> None:
-        '''starts the SQL System'''
-        self._base_data.sql.start_thread()
-
-
-    def stop_sql(self) -> None:
-        '''stops the SQL System'''
-        if self._base_data.sql is not None:
-            self._base_data.sql.stop_thread()
 
 
     #MusicBrainz Methods

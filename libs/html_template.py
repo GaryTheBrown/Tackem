@@ -1,7 +1,7 @@
 '''HTML TEMPLATE'''
 from typing import Optional
-from libs.html_system import HTMLSystem
 from config_data import CONFIG
+from libs.html_system import HTMLSystem
 from libs.startup_arguments import PROGRAMVERSION
 import libs.html_parts as html_part
 

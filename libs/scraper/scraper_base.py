@@ -1,7 +1,7 @@
 '''Scraper System'''
 import http.client
 import json
-from system.root import TackemSystemRoot
+from config_data import CONFIG
 
 
 class Scraper():
@@ -9,11 +9,10 @@ class Scraper():
 
 
     def __init__(self):
-        self._tackem_system = TackemSystemRoot('scraper')
-        self.__apikey = self._tackem_system.config['apikey']
-        self.__language = self._tackem_system.config['language']
-        self.__include_adult = self._tackem_system.config['includeadult']
-        self.__conn = http.client.HTTPSConnection(self._tackem_system.config['url'])
+        self.__apikey = CONFIG['scraper']['apikey'].value
+        self.__language = CONFIG['scraper']['language'].value
+        self.__include_adult = CONFIG['scraper']['includeadult'].value
+        self.__conn = http.client.HTTPSConnection(CONFIG['scraper']['url'].value)
         self._image_config = self._configuration()
 
 

@@ -10,7 +10,6 @@ class SystemData():
     __plugins_lock = threading.Lock()
     __systems = {} # [type name]
     __systems_lock = threading.Lock()
-    __sql = None
     __musicbrainz = None
 
 
@@ -40,18 +39,6 @@ class SystemData():
         '''sets the systems'''
         with self.__systems_lock:
             self.__systems = systems
-
-
-    @property
-    def sql(self):
-        '''returns the value'''
-        return self.__sql
-
-
-    @sql.setter
-    def sql(self, sql):
-        '''returns the value'''
-        self.__sql = sql
 
 
     @property

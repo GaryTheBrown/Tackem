@@ -10,11 +10,10 @@ from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
 from libs.html_system import HTMLSystem
 from libs.authenticator import AUTHENTICATION
+from libs.sql import Database
 from config_data import CONFIG
 
-#TODO change SQL to follow the same procedure and have them all "Load" in the init
-# (config eeds the plugins)
-#TODO FIX API CONFIG FUNCTIONS
+#TODO FIX API
 #TODO post_to_config needs rewriting as it's no longer needs to write to the configobj but CONFIG
 
 #TODO move all actions to the api. allowing localhost to use without api key or generate single
@@ -36,9 +35,9 @@ class Tackem:
         print("LOADING CONFIG...")
         CONFIG.load()
         print("LOADING DATABASE...")
-        TackemSystemAdmin().load_sql()
+        Database.setup_db()
         print("STARTING DATABASE...")
-        TackemSystemAdmin().start_sql()
+        Database.start_sql()
         print("LOADING MUSICBRAINZ...")
         TackemSystemAdmin().load_musicbrainz()
         print("STARTING AUTHENTICATOR...")
@@ -61,7 +60,7 @@ class Tackem:
         print("STOPPING SYSTEMS...")
         TackemSystemAdmin().stop_systems()
         print("STOPPING DATABASE...")
-        TackemSystemAdmin().stop_sql()
+        Database.stop_sql()
 
 
     def cleanup(self) -> None:
@@ -69,7 +68,6 @@ class Tackem:
         print("CLEANING UP...")
         self.__delete_webserver()
         TackemSystemAdmin().remove_systems()
-        TackemSystemAdmin().remove_sql()
         TackemSystemAdmin().remove_plugins()
         TackemSystemAdmin().remove_musicbrainz()
 

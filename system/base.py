@@ -10,12 +10,6 @@ class TackemSystemBase:
 
 
     @property
-    def sql(self):
-        '''get sql'''
-        return self._base_data.sql
-
-
-    @property
     def musicbrainz(self):
         '''get musicbrainz'''
         return self._base_data.musicbrainz

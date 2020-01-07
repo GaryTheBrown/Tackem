@@ -7,6 +7,7 @@ from libs import html_parts as ghtml_parts
 from libs.data.languages import Languages
 from libs.scraper.scraper_base import Scraper
 from libs.scraper import html_parts
+from config_data import CONFIG
 
 
 class ScraperRipper(Scraper):
@@ -23,7 +24,7 @@ class ScraperRipper(Scraper):
     def javascript(self) -> str:
         '''index of scraper'''
         java_file = str(open(os.path.dirname(__file__) + "/javascript/ripper.js", "r").read())
-        return java_file.replace("%%BASEURL%%", self._tackem_system.baseurl)
+        return java_file.replace("%%BASEURL%%", CONFIG['webui']['baseurl'].value)
 
 
     @cherrypy.expose
