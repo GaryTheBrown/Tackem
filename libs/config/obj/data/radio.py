@@ -48,27 +48,28 @@ class ConfigObjRadio:
         return '"' + self.value + '"'
 
 
-    def __attributes(self, selected) -> str:
+    def __attributes(self, checked) -> str:
         '''returns the attributes as a string for the config html'''
         string = ""
         if self.__input_attributes:
             string = self.__input_attributes.html()
-        if selected:
-            string += " selected"
+        if checked:
+            string += " checked"
         if self.__short_label != "":
             string += ' label="' + self.__short_label + '"'
         return string
 
 
-    def html(self, selected) -> str:
+    def html(self, checked, variable_name: str) -> str:
         '''Returns the option html for the config'''
         if self.__hide_on_html:
             return ""
         return HTMLSystem.part(
             "inputs/single/radio",
             VALUE=self.__value,
+            VARIABLENAME=variable_name,
             LABEL=self.__label,
-            OTHER=self.__attributes(selected)
+            OTHER=self.__attributes(checked)
         )
 
 

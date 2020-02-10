@@ -92,7 +92,11 @@ class ConfigObjBase(ABC, ConfigBase):
     @value.setter
     def value(self, value):
         '''sets the value'''
-        self.__value = value
+        self.__value = self._set_value(value)
+
+    @abstractmethod
+    def _set_value(self, value):
+        '''hidden abstract method for setting the value with checking of type in sub classes'''
 
 
     @property
@@ -120,7 +124,7 @@ class ConfigObjBase(ABC, ConfigBase):
 
 
     @abstractmethod
-    def item_html(self, variable_name: str, value) -> str:
+    def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
 
     def to_type(self, value):
@@ -128,17 +132,18 @@ class ConfigObjBase(ABC, ConfigBase):
         return value
 
 
-    @property
-    def html(self, variable_name: str, value) -> str:
+    def html(self, variable_name: str) -> str:
         '''returns the full html code including label and help text'''
         if self.hide_on_html:
             return ""
+        var = "{}_{}".format(variable_name, self.var_name) if variable_name != "" else self.var_name
+
         return HTMLSystem.part(
-            "sections/item",
-            VARNAME=self.var_name,
+            "section/item",
+            VARNAME=var,
             LABEL=self.label,
             HELP=self.help_text,
-            INPUT=self.item_html(variable_name, value)
+            INPUT=self.item_html(var)
         )
 
     def reset_value_to_default(self):

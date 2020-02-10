@@ -1,4 +1,5 @@
 '''Config Obj String'''
+import re
 from typing import Optional
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.input_attributes import InputAttributes
@@ -39,3 +40,13 @@ class ConfigObjEmail(ConfigObjString):
             input_attributes,
             button
         )
+
+
+    def _set_value(self, value) -> Optional[str]:
+        '''hidden abstract method for setting the value with checking of type in sub classes'''
+        if not isinstance(value, str):
+            return self.default_value
+
+        if re.match("^.+@([?)[a-zA-Z0-9-.]+.([a-zA-Z]{2,3}|[0-9]{1,3})(]?)$", value) is not None:
+            return value
+        return self.default_value

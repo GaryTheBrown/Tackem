@@ -24,7 +24,7 @@ class Button():
         for key, value in self.__kwargs.items():
             data += ' data-{}="{}"'.format(key, value)
         return HTMLSystem.part(
-            "input/button_append" if self.__append else "input/button",
+            "inputs/button_append" if self.__append else "input/button",
             LABEL=self.__label,
             DATA=data,
         )

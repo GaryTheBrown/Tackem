@@ -538,18 +538,12 @@ def select_box(
 
 def script_link(location: str) -> str:
     '''returns a script link item'''
-    return HTMLSystem.part(
-        "tags/scriptlink",
-        LOCATION=location
-    )
+    return '<script src="%%BASEURL%%{}"></script>'.format(location)
 
 
 def stylesheet_link(location: str) -> str:
     '''returns a script link item'''
-    return HTMLSystem.part(
-        "tags/stylesheetlink",
-        LOCATION=location
-    )
+    return '<link href="%%BASEURL%%{}" rel="stylesheet">'.format(location)
 
 
 #########

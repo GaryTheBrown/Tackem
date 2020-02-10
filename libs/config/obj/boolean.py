@@ -40,6 +40,26 @@ class ConfigObjBoolean(ConfigObjBase):
         )
 
 
+    def _set_value(self, value) -> bool:
+        '''hidden abstract method for setting the value with checking of type in sub classes'''
+        if isinstance(value, bool):
+            return value
+
+        if isinstance(value, str):
+            if value.lower() in ["true", "on", "yes"]:
+                return True
+            if value.lower() in ["false", "off", "no"]:
+                return False
+
+        if isinstance(value, int):
+            if value is 0:
+                return False
+            return True
+
+
+        return self.default_value
+
+
     @property
     def spec(self) -> str:
         '''Returns the line for the config option'''
@@ -59,17 +79,16 @@ class ConfigObjBoolean(ConfigObjBase):
         return string
 
 
-    def item_html(self, variable_name: str, value) -> str:
+    def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
         other = ""
         if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html
-
+            other = self.input_attributes.html()
         return HTMLSystem.part(
             "inputs/singlecheckbox",
-            VARIABLENAME=self.var_name,
+            VARIABLENAME=variable_name,
             VALUE=self.value,
             CHECKED="checked" if self.value else "",
             ENABLED=str(self.value),

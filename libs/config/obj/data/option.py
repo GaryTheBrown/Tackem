@@ -59,13 +59,14 @@ class ConfigObjOption:
         return string
 
 
-    def html(self, selected) -> str:
+    def html(self, selected, variable_name: str) -> str:
         '''Returns the option html for the config'''
         if self.__hide_on_html:
             return ""
         return HTMLSystem.part(
             "inputs/single/option",
             VALUE=self.__value,
+            VARIABLENAME=variable_name,
             LABEL=self.__label,
             OTHER=self.__attributes(selected)
         )

@@ -54,20 +54,20 @@ class Httpd():
         }
 
         baseurl = CONFIG['webui']['baseurl'].value
-        if not CONFIG['webui']['disabled'].value:
-            cherrypy.tree.mount(Root("", "", self.__system), baseurl, conf_root)
-            cherrypy.tree.mount(Config("Config", "", self.__system), baseurl + "config/", conf_root)
-            cherrypy.tree.mount(Admin("Admin", "", self.__system), baseurl + "admin/", conf_root)
-            # cherrypy.tree.mount(PluginDownloader("Plugin Downloader", "", self.__system),
-            #                     baseurl + "admin/plugindownloader/", conf_root)
-            for key in self.__system.systems:
-                #load system webpages into cherrypy
-                plugin_link = self.__system.system(key).plugin_link()
-                if plugin_link.SETTINGS.get('single_instance', True):
-                    plugin_link.www.mounts(key)
-                else:
-                    instance_name = key.split()[-1]
-                    plugin_link.www.mounts(key, instance_name)
+
+        cherrypy.tree.mount(Root("", "", self.__system), baseurl, conf_root)
+        cherrypy.tree.mount(Config("Config", "", self.__system), baseurl + "config/", conf_root)
+        cherrypy.tree.mount(Admin("Admin", "", self.__system), baseurl + "admin/", conf_root)
+        # cherrypy.tree.mount(PluginDownloader("Plugin Downloader", "", self.__system),
+        #                     baseurl + "admin/plugindownloader/", conf_root)
+        for key in self.__system.systems:
+            #load system webpages into cherrypy
+            plugin_link = self.__system.system(key).plugin_link()
+            if plugin_link.SETTINGS.get('single_instance', True):
+                plugin_link.www.mounts(key)
+            else:
+                instance_name = key.split()[-1]
+                plugin_link.www.mounts(key, instance_name)
 
         if CONFIG['scraper']['enabled'].value:
             scraper.mounts()

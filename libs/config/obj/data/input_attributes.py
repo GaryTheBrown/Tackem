@@ -44,16 +44,17 @@ class InputAttributes:
         '''checks if the items are set otherwise raises an exception'''
         missing_list = []
         for arg in args:
-            # if arg == "autofocus" and self.__autofocus:
-
-            # elif arg == "readonly" and self.__readonly:
-
-            # elif arg == "disabled" and self.__disabled:
-
-            # elif arg == "multiple" and self.__multiple:
-
-            # elif arg == "required" and self.__required:
-            if arg not in self.__dict:
+            if arg == "autofocus" and not self.__autofocus:
+                missing_list.append("autofocus")
+            elif arg == "readonly" and not self.__readonly:
+                missing_list.append("readonly")
+            elif arg == "disabled" and not self.__disabled:
+                missing_list.append("disabled")
+            elif arg == "multiple" and not self.__multiple:
+                missing_list.append("multiple")
+            elif arg == "required" and not self.__required:
+                missing_list.append("required")
+            elif arg not in self.__dict:
                 missing_list.append(arg)
 
         if missing_list:

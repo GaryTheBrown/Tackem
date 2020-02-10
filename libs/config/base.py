@@ -41,16 +41,29 @@ class ConfigBase:
         '''returns the name'''
         return self.__var_name
 
+
+    @var_name.setter
+    def var_name(self, var):
+        '''sets the var name'''
+        self.__var_name = var
+
+
     @property
     def key(self) -> str:
         '''returns the name'''
         return self.__var_name.lower()
+
 
     @property
     def label(self):
         '''returns the label'''
         return self.__label
 
+
+    @label.setter
+    def label(self, var):
+        '''sets the label'''
+        self.__label = var
 
     @property
     def help_text(self):

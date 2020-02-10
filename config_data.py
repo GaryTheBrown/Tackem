@@ -7,9 +7,9 @@ from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
 from libs.config.obj.boolean import ConfigObjBoolean
-from libs.config.obj.options_radio import ConfigObjOptionsRadio
+from libs.config.obj.options.radio import ConfigObjOptionsRadio
 from libs.config.obj.data.radio import ConfigObjRadio
-from libs.config.obj.options_select import ConfigObjOptionsSelect
+from libs.config.obj.options.select import ConfigObjOptionsSelect
 from libs.config.obj.data.option import ConfigObjOption
 from libs.data.locale_options import OPTIONS as locale_options
 from libs.startup_arguments import THEMEFOLDERLOCATION
@@ -17,10 +17,10 @@ from libs.startup_arguments import THEMEFOLDERLOCATION
 CONFIG = ConfigList(
     "root",
     "Root",
-    ConfigList(
-        "authentication",
-        "Authentication"
-    ),
+    # ConfigList(
+    #     "authentication",
+    #     "Authentication"
+    # ),
     ConfigList(
         "database",
         "Database",
@@ -31,7 +31,7 @@ CONFIG = ConfigList(
                     "sqlite3",
                     "SQLite3",
                     input_attributes=InputAttributes(
-                        data_hide="database_mysql"
+                        data_hide="database_mysql_section"
                     )
                 ),
                 ConfigObjRadio(
@@ -39,7 +39,7 @@ CONFIG = ConfigList(
                     "MYSQL",
                     input_attributes=InputAttributes(
                         disabled=True,
-                        data_show="database_mysql"
+                        data_show="database_mysql_section"
                     )
                 )
             ],
@@ -94,26 +94,22 @@ CONFIG = ConfigList(
             "",
             "Master API Key",
             "The master API key for full control",
-            button=Button("Generate API Key", "generateAPIKey", True, input="api_masterkey")
+            button=Button("Generate API Key", "generateAPIKey", True, input="api_masterkey"),
+            input_attributes=InputAttributes("readonly")
         ),
         ConfigObjString(
             "userkey",
             "",
             "User API Key",
             "The user API key for limited control",
-            button=Button("Generate API Key", "generateAPIKey", True, input="api_userkey")
+            button=Button("Generate API Key", "generateAPIKey", True, input="api_userkey"),
+            input_attributes=InputAttributes("readonly")
         )
     ),
     ConfigList("plugins", "Plugins"),
     ConfigList(
         "webui",
         "Web Interface",
-        ConfigObjBoolean(
-            "disabled",
-            False,
-            "Disabled",
-            "Disable the Web Interface",
-        ),
         ConfigObjIntegerNumber(
             "port",
             8081,
@@ -169,7 +165,7 @@ CONFIG = ConfigList(
         ConfigObjOptionsSelect(
             "language",
             locale_options,
-            46,
+            "en-gb",
             "Language",
             "language to use when scraping the data"
         )

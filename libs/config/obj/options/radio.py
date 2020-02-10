@@ -1,6 +1,6 @@
 '''Config Object Options Radio'''
 from typing import Optional, List, Union
-from libs.config.obj.options_base import ConfigObjOptionsBase
+from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.radio import ConfigObjRadio
 from libs.config.rules import ConfigRules
@@ -44,27 +44,11 @@ class ConfigObjOptionsRadio(ConfigObjOptionsBase):
         )
 
 
-    def item_html(self, variable_name: str, value,) -> str:
+    def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
         options = ""
-        for count, value in enumerate(self.__values):
-            options += value.html(count == self.value)
+        for count, value in enumerate(self.values):
+            options += value.html(value.value == self.value, variable_name)
         return options
-
-
-    def default_set(self, default_value, value_list=None) ->  Union[int, List[int]]:
-        '''sorts out the default value'''
-
-        if isinstance(default_value, int):
-            return default_value
-
-        if value_list is None:
-            value_list = self.__values
-
-        if isinstance(default_value, str):
-            for i, item in enumerate(value_list):
-                if item.value == default_value:
-                    return i
-        return -1

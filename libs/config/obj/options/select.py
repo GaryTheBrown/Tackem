@@ -1,6 +1,6 @@
 '''Config Object Options Select'''
 from typing import Optional, List, Union
-from libs.config.obj.options_base import ConfigObjOptionsBase
+from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
 from libs.config.rules import ConfigRules
@@ -15,7 +15,7 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             self,
             var_name: str,
             values: List[ConfigObjOption],
-            default_value: Union[str, int, List[str], List[int]],
+            default_value: Union[str, int, float],
             label: str,
             help_text: str,
             hide_on_html: bool = False,
@@ -29,8 +29,8 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             raise ValueError("default value is not a string, int or list")
         if isinstance(default_value, list):
             for i, val in enumerate(default_value):
-                if not isinstance(val, (str, int)):
-                    raise ValueError("default value item is not a string or int")
+                if not isinstance(val, (str, int, float)):
+                    raise ValueError("default value item is not a string, int or float")
         for value in values:
             if not isinstance(value, ConfigObjOption):
                 raise ValueError("value is not a ConfigObjOption")
@@ -48,16 +48,17 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
         )
 
 
-    def item_html(self, variable_name: str, value) -> str:
+    def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
+        other = ""
         if isinstance(self.input_attributes, InputAttributes):
             other = self.input_attributes.html
 
         return HTMLSystem.part(
             "inputs/select",
-            OPTIONS=super().item_html(),
+            OPTIONS=super().item_html(variable_name),
             VARIABLENAME=self.var_name,
             OTHER=other
         )

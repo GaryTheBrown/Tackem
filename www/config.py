@@ -18,8 +18,7 @@ class Config(HTMLTEMPLATE):
         if not AUTHENTICATION.is_admin():
             raise cherrypy.HTTPError(status=401)
         # if kwargs:
-        #     post_config_settings(kwargs, self._tackem_system.config(),
-        #                          self._tackem_system.plugins())
+        #     post_config_settings(kwargs)
         #     try:
         #         CONFIG.save()
         #     except OSError:
@@ -28,13 +27,13 @@ class Config(HTMLTEMPLATE):
         #     page = str(open("www/html/reboot.html", "r").read())
         #     page = page.replace("%%PAGE%%", "")
         #     return self._template(page, False)
-        index_page = full_config_page(self._tackem_system.config(), self._tackem_system.plugins())
-        javascript = "config_javascript"
+        index_page = CONFIG.html()
+        javascript = "config/javascript"
         return self._template(index_page, javascript=javascript)
 
 
     @cherrypy.expose
-    def config_javascript(self) -> str:
+    def javascript(self) -> str:
         '''Javascript File'''
         return str(open("www/javascript/config.js", "r").read())
 

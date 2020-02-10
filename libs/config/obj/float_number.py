@@ -45,6 +45,23 @@ class ConfigObjFloatNumber(ConfigObjBase):
         self.__button = button
 
 
+    def _set_value(self, value) -> Optional[float]:
+        '''hidden abstract method for setting the value with checking of type in sub classes'''
+        if isinstance(value, float):
+            return value
+
+        if isinstance(value, str):
+            try:
+                return float(value)
+            except ValueError:
+                return self.default_value
+
+        if isinstance(value, int):
+            return float(value)
+
+        return self.default_value
+
+
     @property
     def spec(self) -> str:
         '''Returns the line for the config option'''
@@ -63,20 +80,20 @@ class ConfigObjFloatNumber(ConfigObjBase):
         return string
 
 
-    def item_html(self, variable_name: str, value) -> str:
+    def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
             return ""
         other = ""
         if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html
+            other = self.input_attributes.html()
         button = ""
         if button and not isinstance(button, Button):
             button = self.__button.html
         return HTMLSystem.part(
             "inputs/input",
             INPUTTYPE=self.__html_type,
-            VARIABLENAME=self.var_name,
+            VARIABLENAME=variable_name,
             VALUE=self.value,
             OTHER=other,
             BUTTON=button

@@ -14,7 +14,6 @@ from libs.sql import Database
 from config_data import CONFIG
 
 #TODO FIX API
-#TODO post_to_config needs rewriting as it's no longer needs to write to the configobj but CONFIG
 
 #TODO move all actions to the api. allowing localhost to use without api key or generate single
 # action keys
@@ -111,8 +110,6 @@ class Tackem:
     #Webserver Methods
     def __load_webserver(self) -> Union[bool, None]:
         '''loads the webserver system'''
-        if CONFIG['webui']['disabled'].value:
-            return False
         if self.__webserver is None:
             self.__webserver = Httpd()
             HTMLSystem.set_theme(CONFIG['webui']['theme'].value)
@@ -130,8 +127,6 @@ class Tackem:
 
     def __start_webserver(self) -> bool:
         '''starts the webserver'''
-        if CONFIG['webui']['disabled'].value:
-            return False
         if self.__webserver is not None:
             self.__webserver.start()
         return True
@@ -139,8 +134,8 @@ class Tackem:
 
     def __stop_webserver(self) -> bool:
         '''stops the Webserver'''
-        if CONFIG['webui']['disabled'].value:
-            return False
+        # if CONFIG['webui']['disabled'].value:
+        #     return False
         if self.__webserver is not None:
             self.__webserver.stop()
         return True

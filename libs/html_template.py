@@ -1,6 +1,7 @@
 '''HTML TEMPLATE'''
 from typing import Optional
 from config_data import CONFIG
+from libs.authenticator import AUTHENTICATION
 from libs.html_system import HTMLSystem
 from libs.startup_arguments import PROGRAMVERSION
 import libs.html_parts as html_part
@@ -106,7 +107,7 @@ class HTMLTEMPLATE():
     def _navbar_left_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
         nav_items_html = ""
-        if not self._tackem_system.auth.check_logged_in():
+        if not AUTHENTICATION.check_logged_in():
             return nav_items_html
         nav_list = {}
         for key in self._tackem_system.system_keys():
@@ -163,8 +164,8 @@ class HTMLTEMPLATE():
         navbar_shutdown_html = navbar_item("Shutdown", "shutdown")
 
         navbar_right_html = navbar_about_html
-        if self._tackem_system.auth.check_logged_in():
-            if self._tackem_system.auth.is_admin():
+        if AUTHENTICATION.check_logged_in():
+            if AUTHENTICATION.is_admin():
                 admin_html = navbar_item_html
                 admin_html += navbar_plugin_download_html
                 admin_html += navbar_users_html
