@@ -28,9 +28,11 @@ class ConfigList(ConfigBase):
             section_link_hide: bool = False,
             many_section=None
         ):
+        super().__init__(var_name, label, help_text, False, False, rules)
+
         if is_section and not isinstance(is_section, bool):
             raise ValueError("Is Section is not a bool")
-        super().__init__(var_name, label, help_text, False, is_section, rules)
+        self.__is_section = is_section
 
         if objects:
             if var_name == "root":
@@ -110,7 +112,7 @@ class ConfigList(ConfigBase):
     @property
     def is_section(self) -> bool:
         '''returns if the list is a section'''
-        return self.not_in_config
+        return self.__is_section
 
 
     @property
@@ -150,7 +152,6 @@ class ConfigList(ConfigBase):
         '''Save the Config'''
         self.update_configobj()
         try:
-            print("SAVING CONFIG...")
             self.__config.write()
         except OSError:
             print("ERROR WRITING CONFIG FILE")
@@ -209,9 +210,12 @@ class ConfigList(ConfigBase):
                 if item.not_in_config:
                     continue
                 if isinstance(item, ConfigList):
-                    return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
-                    return_string += item.var_name + self.__close_bracket(indent + 1) + "\n"
-                    return_string += item.get_spec_part(indent + 1)
+                    if item.is_section:
+                        return_string += item.get_spec_part(indent)
+                    else:
+                        return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+                        return_string += item.var_name + self.__close_bracket(indent + 1) + "\n"
+                        return_string += item.get_spec_part(indent + 1)
                 elif isinstance(item, ConfigObjBase):
                     return_string += self.__tab(indent) + item.spec
 
@@ -268,7 +272,7 @@ class ConfigList(ConfigBase):
         if HTMLSystem.setting("post_save"):
             return HTMLSystem.part(
                 "section/form",
-                RETURNURL="config",
+                RETURNURL="config/",
                 BUTTONLABEL="Save",
                 PAGE=page,
             )

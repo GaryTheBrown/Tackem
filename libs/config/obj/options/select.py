@@ -55,10 +55,9 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
         other = ""
         if isinstance(self.input_attributes, InputAttributes):
             other = self.input_attributes.html
-
         return HTMLSystem.part(
             "inputs/select",
             OPTIONS=super().item_html(variable_name),
-            VARIABLENAME=self.var_name,
+            VARIABLENAME=variable_name,
             OTHER=other
         )

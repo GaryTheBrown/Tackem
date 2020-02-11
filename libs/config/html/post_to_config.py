@@ -13,11 +13,21 @@ def post_config_settings(kwargs: dict):
 def add_val_to_config(config: ConfigList, key_list: list, value):
     '''recursive way of adding value into the config'''
     if len(key_list) == 1:
-        config[key_list[0]] = value
+        if key_list[0] in config.keys():
+            config[key_list[0]].value = value
+            return
+        for obj in config:
+            if isinstance(obj, ConfigList) and obj.is_section:
+                if key_list[0] in obj.keys():
+                    obj[key_list[0]].value = value
+                    return
     else:
-        if key_list[0] not in config:
-            if config.many_section:
-                config.clone_many_section(key_list[0])
-            else:
-                return
-        add_val_to_config(config[key_list[0]], key_list[1:], value)
+        if config.many_section:
+            config.clone_many_section(key_list[0])
+
+        if key_list[0] in config.keys():
+            return add_val_to_config(config[key_list[0]], key_list[1:], value)
+
+        for obj in config:
+            if obj.is_section:
+                return add_val_to_config(obj, key_list, value)

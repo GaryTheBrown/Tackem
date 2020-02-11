@@ -1,16 +1,22 @@
 $(function () {
 
+    $(() => {
+        new Config();
+    })
+
     class Config
     {
         constructor()
         {
             let obj = this;
+
             $("[data-show]").each(function(index, element){
                 $(element).on('click', Config["show"]);
                 if (obj.doICallTheClick(element)){
                     $(element).click();
                 }
             }.bind(obj));
+
             $("[data-hide]").each(function(index, element){
                 $(element).on('click', Config["hide"]);
                 if (obj.doICallTheClick(element)){
@@ -34,14 +40,14 @@ $(function () {
         {
             $(this).data("show").split(",").forEach(function(entry) {
                 $("#" + entry).show();
-            });;
+            });
 
         }
         static hide()
         {
             $(this).data("hide").split(",").forEach(function(entry) {
                 $("#" + entry).hide();
-            });;
+            });
         }
 
         static generateAPIKey()
@@ -54,7 +60,5 @@ $(function () {
         }
 
     }
-
-    let config = new Config();
 
 });
