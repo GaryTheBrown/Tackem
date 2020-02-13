@@ -137,12 +137,6 @@ CONFIG = ConfigList(
     ConfigList(
         "scraper",
         "Video Scraper (The Movie DB)",
-        ConfigObjBoolean(
-            "enabled",
-            False,
-            "Enabled",
-            ""
-        ),
         ConfigObjString(
             "apikey",
             "",
@@ -173,12 +167,6 @@ CONFIG = ConfigList(
     ConfigList(
         "musicbrainz",
         "Audio CD Scraper (MusicBrainz)",
-        ConfigObjBoolean(
-            "enabled",
-            False,
-            "Enabled",
-            ""
-        ),
         ConfigObjString(
             "username",
             "",

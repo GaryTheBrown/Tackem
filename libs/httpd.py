@@ -3,7 +3,6 @@ import os
 import cherrypy
 # from www.first_run import Root as first_run_root
 from www.root import Root
-from www.config import Config
 from www.admin import Admin
 # from www.plugin_downloader import PluginDownloader
 from api import API
@@ -56,7 +55,6 @@ class Httpd():
         baseurl = CONFIG['webui']['baseurl'].value
 
         cherrypy.tree.mount(Root("", "", self.__system), baseurl, conf_root)
-        cherrypy.tree.mount(Config("Config", "", self.__system), baseurl + "config/", conf_root)
         cherrypy.tree.mount(Admin("Admin", "", self.__system), baseurl + "admin/", conf_root)
         # cherrypy.tree.mount(PluginDownloader("Plugin Downloader", "", self.__system),
         #                     baseurl + "admin/plugindownloader/", conf_root)
@@ -69,10 +67,8 @@ class Httpd():
                 instance_name = key.split()[-1]
                 plugin_link.www.mounts(key, instance_name)
 
-        if CONFIG['scraper']['enabled'].value:
-            scraper.mounts()
-
-        # cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
+        # scraper.mounts()
+        cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
 
     def start(self) -> None:
         '''Start the server'''

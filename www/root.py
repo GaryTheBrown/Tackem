@@ -1,12 +1,8 @@
 '''Script For the Root Of The System'''
 import cherrypy
-# from libs import html_parts
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
-# from libs.config import full_config_page, get_config_multi_setup, post_config_settings
-from libs.root_event import RootEvent
 from libs.authenticator import AUTHENTICATION
-from config_data import CONFIG
 
 class Root(HTMLTEMPLATE):
     '''Root'''
@@ -25,10 +21,6 @@ class Root(HTMLTEMPLATE):
         '''About Page'''
         return self._template(HTMLSystem.open("pages/about"))
 
-    @cherrypy.expose
-    def stylesheet(self) -> str:
-        '''Javascript File'''
-        return HTMLSystem.open("style", "css")
 
     @cherrypy.expose
     def login(self, **kwargs) -> str:
@@ -61,34 +53,3 @@ class Root(HTMLTEMPLATE):
     def logout(self) -> None:
         '''Logout Page'''
         AUTHENTICATION.logout()
-
-
-    @cherrypy.expose
-    def reboot(self, url: str = "login") -> str:
-        '''Login Page'''
-        if not AUTHENTICATION.is_admin():
-            raise cherrypy.HTTPError(status=401)
-        RootEvent.set_event("reboot")
-        return self._template(HTMLSystem.part("reboot", PAGE=url), False)
-
-
-    @cherrypy.expose
-    def shutdown(self) -> str:
-        '''Login Page'''
-        if not AUTHENTICATION.is_admin():
-            raise cherrypy.HTTPError(status=401)
-        RootEvent.set_event("shutdown")
-        return self._template("Shuting Down Tackem...", False)
-
-
-    @cherrypy.expose
-    def restart(self) -> str:
-        '''Restarts Tackem'''
-        if not AUTHENTICATION.is_admin():
-            raise cherrypy.HTTPError(status=401)
-        try:
-            CONFIG.save()
-        except OSError:
-            print("ERROR WRITING CONFIG FILE")
-        RootEvent.set_event("reboot")
-        return ""

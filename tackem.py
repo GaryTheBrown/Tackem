@@ -13,11 +13,11 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-#TODO FIX API
-
 #TODO move all actions to the api. allowing localhost to use without api key or generate single
 # action keys
 
+#TODO Move plugin DOwnloader into Admin section
+#TODO SAVE THROUGH API IN CONFIG TOO.
 
 class Tackem:
     '''main program entrance'''
@@ -37,8 +37,6 @@ class Tackem:
         Database.setup_db()
         print("STARTING DATABASE...")
         Database.start_sql()
-        print("LOADING MUSICBRAINZ...")
-        TackemSystemAdmin().load_musicbrainz()
         print("STARTING AUTHENTICATOR...")
         AUTHENTICATION.start()
         print("LOADING SYSTEMS...")
@@ -68,7 +66,6 @@ class Tackem:
         self.__delete_webserver()
         TackemSystemAdmin().remove_systems()
         TackemSystemAdmin().remove_plugins()
-        TackemSystemAdmin().remove_musicbrainz()
 
 
     def shutdown(self) -> None:

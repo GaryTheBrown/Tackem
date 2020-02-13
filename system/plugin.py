@@ -15,9 +15,6 @@ class TackemSystemPlugin(TackemSystemBase):
         if isinstance(self.__plugin_instance, str):
             self.__plugin_full_name += " " + instance
 
-        self.__p_plugin = None
-        # self.__p_system = None
-
         self.__p_plugin = self._base_data.plugins[self.__plugin_type][self.__plugin_name]
 
 
@@ -43,6 +40,7 @@ class TackemSystemPlugin(TackemSystemBase):
     def plugin_instance(self):
         '''returns plugin instance name'''
         return self.__plugin_instance
+
 
     @property
     def plugin_full_name(self):

@@ -154,14 +154,14 @@ class HTMLTEMPLATE():
     def _navbar_right_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = navbar_item("About", "about")
-        navbar_item_html = navbar_item("Config", "config")
+        navbar_item_html = navbar_item("Config", "admin/config")
         navbar_plugin_download_html = navbar_item("Plugin Download", "plugin_download")
         navbar_users_html = navbar_item("Users", "admin/users")
         navbar_login_html = navbar_item("Login", "login")
         navbar_logout_html = navbar_item("Logout", "logout")
         navbar_password_html = navbar_item("Change Password", "password")
-        navbar_reboot_html = navbar_item("Reboot", "reboot")
-        navbar_shutdown_html = navbar_item("Shutdown", "shutdown")
+        navbar_reboot_html = navbar_item("Reboot", "admin/reboot")
+        navbar_shutdown_html = navbar_item("Shutdown", "admin/shutdown")
 
         navbar_right_html = navbar_about_html
         if AUTHENTICATION.check_logged_in():

@@ -63,7 +63,7 @@ class APIBase():
 
     @staticmethod
     def _actions_return(enable: list, disable: list, show: list, hide: list, rename: dict) -> dict:
-        '''Creates the PLugin data to return'''
+        '''Creates the plugin data to return'''
         return {
             'enable': enable,
             'disable': disable,

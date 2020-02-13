@@ -10,7 +10,6 @@ class SystemData():
     __plugins_lock = threading.Lock()
     __systems = {} # [type name]
     __systems_lock = threading.Lock()
-    __musicbrainz = None
 
 
     @property
@@ -39,15 +38,3 @@ class SystemData():
         '''sets the systems'''
         with self.__systems_lock:
             self.__systems = systems
-
-
-    @property
-    def musicbrainz(self):
-        '''returns the value'''
-        return self.__musicbrainz
-
-
-    @musicbrainz.setter
-    def musicbrainz(self, musicbrainz):
-        '''returns the value'''
-        self.__musicbrainz = musicbrainz

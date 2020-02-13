@@ -6,7 +6,6 @@ from system.full import TackemSystemFull
 from libs.config.list import ConfigList
 from libs.plugin_base import load_plugin_settings
 from libs.program_checker import check_for_required_programs
-from libs.musicbrainz import MusicBrainz
 from libs.startup_arguments import PLUGINFOLDERLOCATION
 from config_data import CONFIG
 
@@ -266,16 +265,3 @@ class TackemSystemAdmin(TackemSystemFull):
                 if self._base_data.systems[key].running():
                     return True
         return False
-
-
-    #MusicBrainz Methods
-    def load_musicbrainz(self) -> None:
-        '''load musicbrainz'''
-        if CONFIG['musicbrainz']['enabled']:
-            self._base_data.musicbrainz = MusicBrainz()
-
-
-    def remove_musicbrainz(self) -> None:
-        '''deletes the musicbrainz'''
-        if self._base_data.musicbrainz is not None:
-            self._base_data.musicbrainz = None

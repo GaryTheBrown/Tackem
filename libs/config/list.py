@@ -75,6 +75,14 @@ class ConfigList(ConfigBase):
         '''returns all keys for the objects'''
         return [x.var_name for x in self.__objects]
 
+    def get(self, key, default=None):
+        '''returns the data if found otherwise returns the default value'''
+        for obj in self.__objects:
+            if obj.key == key.lower():
+                return obj
+        return default
+
+
     def append(self, obj):
         '''appends the object to the list'''
         if not isinstance(obj, ConfigList) and not isinstance(obj, ConfigObjBase):
@@ -272,7 +280,7 @@ class ConfigList(ConfigBase):
         if HTMLSystem.setting("post_save"):
             return HTMLSystem.part(
                 "section/form",
-                RETURNURL="config/",
+                RETURNURL="admin/config",
                 BUTTONLABEL="Save",
                 PAGE=page,
             )

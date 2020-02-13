@@ -11,13 +11,14 @@ class Database:
     @classmethod
     def setup_db(cls):
         '''basic function to load up the DB'''
-        cls.__sql = None
-        if CONFIG['database']['mode'].value.lower() == 'sqlite3':
-            cls.__sql = SqlLite()
-        # elif CONFIG['database']['mode'].lower() == 'mysql':
-        #     cls.__sql = Mysql
-        else:
-            print(CONFIG['database']['mode'])
+        cls.__sql = SqlLite()
+        # cls.__sql = None
+        # if CONFIG['database']['mode'].value.lower() == 'sqlite3':
+        #     cls.__sql = SqlLite()
+        # # elif CONFIG['database']['mode'].lower() == 'mysql':
+        # #     cls.__sql = Mysql
+        # else:
+        #     print(CONFIG['database']['mode'].value)
 
 
     @classmethod

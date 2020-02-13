@@ -8,7 +8,6 @@ from libs.sql.column import Column
 from config_data import CONFIG
 
 
-
 class Authentication:
     '''Authentication system for all html pages listed'''
 

@@ -2,8 +2,7 @@
 import json
 import cherrypy
 from api.base import APIBase
-from api.config import APIConfig
-from api.plugin import APIPlugin
+from api.admin import APIAdmin
 from api.system import APISystem
 from config_data import CONFIG
 from libs.root_event import RootEvent
@@ -29,48 +28,31 @@ class API(APIBase):
             return self
 
         section = vpath.pop(0)
-        if section == "reboot":
-            cherrypy.request.params['action'] = "reboot"
-        elif section == "shutdown":
-            cherrypy.request.params['action'] = "shutdown"
-        elif section == "config":
-            return APIConfig()
-        elif section == "plugins":
-            return APIPlugin()
-        elif section == "system":
+        if section == "admin":
+            return APIAdmin()
+        if section == "system":
             return APISystem()
-        # elif section == "":
-        # elif section == "":
-        # elif section == "":
-        # elif section == "":
-        # elif section == "":
+        # if section == "":
+        # if section == "":
+        # if section == "":
+        # if section == "":
+        # if section == "":
         return self
 
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
         user = kwargs.get("user", self.GUEST)
-        action = kwargs.get("action", None)
-        if user == self.GUEST:
-            raise cherrypy.HTTPError(status=401)  #Unauthorized
-        if user == self.MASTER:
-            if action == "shutdown":
-                print("SHOULD SHUTDOWN")
-                RootEvent.set_event("shutdown")
-            elif action == "reboot":
-                RootEvent.set_event("reboot")
-
         return json.dumps({
             "message" : "SUCCESS IN API KEY",
             "user" : user,
-            "action": action
         })
 
 
     def _check_api_key(self, key: str) -> int:
         '''checks the api key against the master and user keys and returns the level'''
-        masterapi = CONFIG["api"]["masterapi"]["key"].value
-        userapi = CONFIG["api"]["userapi"]["key"].value
+        masterapi = CONFIG["api"]["masterkey"].value
+        userapi = CONFIG["api"]["userkey"].value
         if key is None or not isinstance(key, str):
             return self.GUEST
         if key == masterapi:

@@ -3,10 +3,29 @@ import cherrypy
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
-
+from libs.root_event import RootEvent
+from libs.config.html.post_to_config import post_config_settings
+from config_data import CONFIG
 
 class Admin(HTMLTEMPLATE):
     '''Admin'''
+
+
+    @cherrypy.expose
+    def config(self, **kwargs) -> str:
+        '''Config System'''
+        AUTHENTICATION.check_auth()
+        if not AUTHENTICATION.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        if kwargs:
+            post_config_settings(kwargs)
+            try:
+                CONFIG.save()
+            except OSError:
+                print("ERROR WRITING CONFIG FILE")
+        index_page = CONFIG.html()
+        javascript = "static/js/config.js"
+        return self._template(index_page, javascript=javascript)
 
 
     @cherrypy.expose
@@ -34,7 +53,7 @@ class Admin(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def adduser(self, **kwargs) -> None:
+    def adduser(self, **kwargs) -> None: #TODO TO API
         '''Add user to system'''
         if not AUTHENTICATION.is_admin():
             raise cherrypy.HTTPRedirect(cherrypy.url().replace("/admin/adduser", "/"))
@@ -57,7 +76,7 @@ class Admin(HTMLTEMPLATE):
 
 
     @cherrypy.expose
-    def updateuser(self, **kwargs) -> None:
+    def updateuser(self, **kwargs) -> None: #TODO TO API
         '''update the user info'''
         if 'user_id' in kwargs:
             user_id = kwargs['user_id']
@@ -74,3 +93,21 @@ class Admin(HTMLTEMPLATE):
                 is_admin = kwargs.get("is_admin", None)
                 AUTHENTICATION.update_user(user_id, username, password, is_admin)
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("updateuser", "users"))
+
+
+    @cherrypy.expose
+    def reboot(self, url: str = "login") -> str: #TODO TO API
+        '''Login Page'''
+        if not AUTHENTICATION.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        RootEvent.set_event("reboot")
+        return self._template(HTMLSystem.part("reboot", PAGE=url), False)
+
+
+    @cherrypy.expose
+    def shutdown(self) -> str: #TODO TO API
+        '''Login Page'''
+        if not AUTHENTICATION.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        RootEvent.set_event("shutdown")
+        return self._template("Shuting Down Tackem...", False)
