@@ -23,7 +23,9 @@ class API(APIBase):
         user = self._check_api_key(api_key)
         if user == self.GUEST:
             user = self._check_session_id()
+
         cherrypy.request.params['user'] = user
+
         if len(vpath) == 0:
             return self
 
@@ -32,32 +34,16 @@ class API(APIBase):
             return APIAdmin()
         if section == "system":
             return APISystem()
-        # if section == "":
-        # if section == "":
-        # if section == "":
-        # if section == "":
-        # if section == "":
         return self
-
-
-    def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
-        '''GET Function'''
-        user = kwargs.get("user", self.GUEST)
-        return json.dumps({
-            "message" : "SUCCESS IN API KEY",
-            "user" : user,
-        })
 
 
     def _check_api_key(self, key: str) -> int:
         '''checks the api key against the master and user keys and returns the level'''
-        masterapi = CONFIG["api"]["masterkey"].value
-        userapi = CONFIG["api"]["userkey"].value
         if key is None or not isinstance(key, str):
             return self.GUEST
-        if key == masterapi:
+        if key == CONFIG["api"]["masterkey"].value:
             return self.MASTER
-        if key == userapi:
+        if key == CONFIG["api"]["userkey"].value:
             return self.USER
         # if key == "ccc":
         #     return self.PLUGIN

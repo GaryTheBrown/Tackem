@@ -5,7 +5,7 @@ from config_data import CONFIG
 
 
 @cherrypy.expose
-class APIConfig(APIBase):
+class APIAdminConfig(APIBase):
     '''CONFIG API'''
 
 
@@ -54,7 +54,6 @@ class APIConfig(APIBase):
             location=location,
             before=value,
             after=body['value']
-
         )
 
 

@@ -1,6 +1,6 @@
 '''Config List Class'''
 import copy
-from typing import Optional
+from typing import Any, Optional
 from libs.config.base import ConfigBase
 from libs.config.rules import ConfigRules
 from libs.config.obj.base import ConfigObjBase
@@ -135,3 +135,46 @@ class ConfigListBase(ConfigBase):
             new.label = var_name.capitalize()
             new.var_name = var_name.lower()
             self.append(new)
+
+
+    def find_and_get(self, location: list) -> Any:
+        '''Find and Get a config Item'''
+        if location[0] in self._objects:
+            if isinstance(self._objects[location[0]], ConfigObjBase):
+                if len(location) == 1:
+                    return self._objects[location[0]].value
+                return None
+            if isinstance(self._objects[location[0]], ConfigListBase):
+                if len(location) > 1:
+                    return self._objects[location[0]].find_and_get(location[1:])
+                return None
+
+        for obj in self._objects:
+            if isinstance(obj, ConfigListBase) and obj.is_section:
+                if location[0] in obj:
+                    return obj.find_and_get(location)
+
+        return None
+
+
+    def find_and_set(self, location: list, value):
+        '''Find and set a config Item'''
+        if location[0] in self._objects:
+            if isinstance(self._objects[location[0]], ConfigObjBase):
+                if len(location) == 1:
+                    self._objects[location[0]].value = value
+                    return
+            if isinstance(self._objects[location[0]], ConfigListBase):
+                if len(location) > 1:
+                    self._objects[location[0]].find_and_set(location[1:], value)
+                    return
+
+            return
+
+        for obj in self._objects:
+            if isinstance(obj, ConfigListBase) and obj.is_section:
+                if location[0] in obj:
+                    obj.find_and_set(location, value)
+                    return
+
+        return
