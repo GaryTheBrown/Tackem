@@ -2,13 +2,8 @@
 import json
 import cherrypy
 from api.base import APIBase
-from api.config import APIConfig
-from api.plugin import APIPlugin
-from api.system import APISystem
-from config_data import CONFIG
+from api.admin.config import APIConfig
 from libs.root_event import RootEvent
-from libs.authenticator import AUTHENTICATION
-
 
 @cherrypy.expose
 class APIAdmin(APIBase):
@@ -28,13 +23,6 @@ class APIAdmin(APIBase):
             cherrypy.request.params['action'] = "shutdown"
         elif section == "config":
             return APIConfig()
-        # if section == "plugins":
-        #     return APIPlugin()
-        # if section == "":
-        # if section == "":
-        # if section == "":
-        # if section == "":
-        # if section == "":
         return self
 
 

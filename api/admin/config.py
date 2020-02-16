@@ -53,7 +53,7 @@ class APIConfig(APIBase):
             True,
             location=location,
             before=value,
-            after= body['value']
+            after=body['value']
 
         )
 
