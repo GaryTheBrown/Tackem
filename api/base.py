@@ -1,4 +1,5 @@
 '''Base Template For the API'''
+from typing import Optional
 import json
 import cherrypy
 
@@ -45,8 +46,7 @@ class APIBase():
             raise cherrypy.HTTPError(status=401)  #Unauthorized
 
 
-    @staticmethod
-    def _return_data(user: int, system: str, action: str, success: bool, **kwargs) -> str:
+    def _return_data(self, user: int, system: str, action: str, success: bool, **kwargs) -> str:
         '''creates the json for returning requiring some data but allowing more'''
         base = {
             "user" : user,
@@ -61,8 +61,14 @@ class APIBase():
         return json.dumps(base)
 
 
-    @staticmethod
-    def _actions_return(enable: list, disable: list, show: list, hide: list, rename: dict) -> dict:
+    def _actions_return(
+            self,
+            enable: Optional[list] = None,
+            disable: Optional[list] = None,
+            show: Optional[list] = None,
+            hide: Optional[list] = None,
+            rename: Optional[dict] = None
+    ) -> dict:
         '''Creates the plugin data to return'''
         return {
             'enable': enable,

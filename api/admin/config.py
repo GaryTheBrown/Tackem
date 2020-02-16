@@ -1,5 +1,4 @@
 '''CONFIG API'''
-import json
 import cherrypy
 from api.base import APIBase
 from config_data import CONFIG
@@ -27,13 +26,14 @@ class APIConfig(APIBase):
         self.__check_for_blocked_locations(location)
         value = CONFIG.find_and_get(location.split("-"))
 
-        return json.dumps({
-            "system" : "config",
-            "action" : "Get Config Option",
-            "user" : user,
-            "location": location,
-            "setting": value
-        })
+        return self._return_data(
+            user,
+            "config",
+            "Get Config Option",
+            False,
+            location=location,
+            setting=value
+        )
 
 
     def POST(self, **kwargs) -> str:
@@ -46,14 +46,16 @@ class APIConfig(APIBase):
         value = CONFIG.find_and_get(location.split("-"))
         CONFIG.find_and_set(location.split("-"), body['value'])
 
-        return json.dumps({
-            "system" : "config",
-            "action" : "Set Config Option",
-            "user" : user,
-            "location": location,
-            "before": value,
-            "after": body['value']
-        })
+        return self._return_data(
+            user,
+            "config",
+            "set Config Option",
+            True,
+            location=location,
+            before=value,
+            after= body['value']
+
+        )
 
 
     def __check_for_blocked_locations(self, location: str) -> None:
