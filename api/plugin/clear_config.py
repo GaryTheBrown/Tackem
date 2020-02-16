@@ -39,13 +39,7 @@ class APIPluginClearConfig(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=plugin_type + " " + plugin_name + " Has No Config Data",
                 error_number=0
             )
@@ -70,11 +64,5 @@ class APIPluginClearConfig(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(
-                [],  # enable
-                [],  # disable
-                [],  # show
-                [],  # hide
-                {},  # rename
-            ),
+            actions=self._actions_return(),
         )

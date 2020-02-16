@@ -42,13 +42,7 @@ class APIPluginDelete(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=delete_data[0],
                 error_number=delete_data[1]
             )
@@ -64,11 +58,5 @@ class APIPluginDelete(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(
-                [],  # enable
-                [],  # disable
-                [],  # show
-                [],  # hide
-                {},  # rename
-            ),
+            actions=self._actions_return(),
         )

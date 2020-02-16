@@ -10,8 +10,8 @@ class APIPluginBase(APIBase):
         self._system = TackemSystemPluginDownloader()
 
 
-    @staticmethod
     def _return_data_plugin(
+            self,
             user: int,
             action: str,
             success: bool,

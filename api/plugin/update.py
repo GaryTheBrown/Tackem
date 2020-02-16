@@ -33,13 +33,7 @@ class APIPluginUpdate(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=plugin_type + " " + plugin_name + "Is Running. Stop it First",
                 error_number=0
             )
@@ -51,13 +45,7 @@ class APIPluginUpdate(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=plugin_type + " " + plugin_name + " Failed to Update",
                 error_number=1
             )
@@ -68,11 +56,5 @@ class APIPluginUpdate(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(
-                [],  # enable
-                [],  # disable
-                [],  # show
-                [],  # hide
-                {},  # rename
-            ),
+            actions=self._actions_return(),
         )

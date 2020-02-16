@@ -34,13 +34,7 @@ class APIPluginReload(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=plugin_type + " " + plugin_name + " Already Reloaded",
                 error_number=4
             )
@@ -52,13 +46,7 @@ class APIPluginReload(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=return_data[0],
                 error_number=return_data[1]
             )
@@ -71,13 +59,7 @@ class APIPluginReload(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error="Plugin Failed to load",
                 error_number=5
             )

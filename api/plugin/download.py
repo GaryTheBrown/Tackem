@@ -40,13 +40,7 @@ class APIPluginDownload(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=return_data[0],
                 error_number=return_data[1]
             )
@@ -64,13 +58,7 @@ class APIPluginDownload(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(
-                    [],  # enable
-                    [],  # disable
-                    [],  # show
-                    [],  # hide
-                    {},  # rename
-                ),
+                actions=self._actions_return(),
                 error=return_data[0],
                 error_number=return_data[1],
                 message=message
@@ -81,11 +69,5 @@ class APIPluginDownload(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(
-                [],  # enable
-                [],  # disable
-                [],  # show
-                [],  # hide
-                {},  # rename
-            ),
+            actions=self._actions_return(),
         )
