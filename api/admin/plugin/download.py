@@ -1,7 +1,7 @@
 '''PLUGIN DOWNLOAD API'''
 import os
 import cherrypy
-from api.plugin.base import APIPluginBase
+from api.admin.plugin.base import APIPluginBase
 
 
 @cherrypy.expose

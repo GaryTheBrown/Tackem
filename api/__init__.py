@@ -19,17 +19,20 @@ class API(APIBase):
         user = None
         if len(vpath) == 0:
             return self
+
         api_key = vpath.pop(0)
         user = self._check_api_key(api_key)
+        section = ""
         if user == self.GUEST:
             user = self._check_session_id()
-
         cherrypy.request.params['user'] = user
+        if len(api_key) != 40:
+            section = api_key
+        else:
+            if len(vpath) == 0:
+                return self
+            section = vpath.pop(0)
 
-        if len(vpath) == 0:
-            return self
-
-        section = vpath.pop(0)
         if section == "admin":
             return APIAdmin()
         if section == "system":

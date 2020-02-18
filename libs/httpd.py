@@ -48,7 +48,8 @@ class Httpd():
             '/':{
                 'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
                 'tools.response_headers.on': True,
-                'tools.response_headers.headers': [('Content-Type', 'text/plain')]
+                'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+                'tools.json_out.on': True
             }
         }
 
@@ -56,8 +57,6 @@ class Httpd():
 
         cherrypy.tree.mount(Root("", "", self.__system), baseurl, conf_root)
         cherrypy.tree.mount(Admin("Admin", "", self.__system), baseurl + "admin/", conf_root)
-        # cherrypy.tree.mount(PluginDownloader("Plugin Downloader", "", self.__system),
-        #                     baseurl + "admin/plugindownloader/", conf_root)
         for key in self.__system.systems:
             #load system webpages into cherrypy
             plugin_link = self.__system.system(key).plugin_link()

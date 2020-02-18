@@ -58,7 +58,7 @@ class APIBase():
         for key, value in kwargs.items():
             base[key] = value
 
-        return json.dumps(base)
+        return base
 
 
     def _actions_return(

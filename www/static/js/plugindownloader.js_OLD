@@ -1,40 +1,4 @@
 $(function() {
-
-    $(() => {
-
-    });
-
-    class PluginDownloader
-    {
-        constructor()
-        {
-            $("[data-action]").each(function(){
-                    $(this).on('click', this.getData);
-            });
-        }
-
-        getData()
-        {
-            let $elem = $(this);
-            let $section = $elem.closest("section");
-            let pluginName = $section.data('pluginname');
-            let pluginType = $section.data('plugintype');
-            $elem.prop('disabled', true);
-
-            $.ajax([
-                type: 'POST',
-                url: '/api/',
-                elem: $elem,
-                section: $section,
-                success: function(return_string)
-                {
-                    data = JSON.parse(return_string);
-                    comsole.log(data);
-                }
-            ])
-        }
-
-    }
     $(".pluginbutton").on("click", function() {
         var elem = $(this);
         elem.prop('disabled', true);
@@ -57,6 +21,7 @@ $(function() {
                             this.elem.parent().parent().find("input[value='Clear Config']").prop('disabled', false);
                             this.elem.parent().parent().find("input[value='Clear Database']").prop('disabled', false);
                             alert(this.pluginName + " Downloaded");
+                            counter(+1);
                         } else {
                             alert(data["message"]);
                             if (data['code']){
@@ -74,6 +39,7 @@ $(function() {
                             this.elem.parent().parent().find("input[value='Clear Config']").prop('disabled', true);
                             this.elem.parent().parent().find("input[value='Clear Database']").prop('disabled', true);
                             alert(this.pluginName + " Removed");
+                            counter(-1);
                         } else {
                             alert(data["message"]);
                         }
@@ -82,6 +48,7 @@ $(function() {
                     case "Reload":
                         if (data['success'] == true) {
                             this.elem.hide();
+                            counter(+1);
                             alert(this.pluginName + " Reloaded");
                         } else {
                             alert(data["message"]);
@@ -91,6 +58,7 @@ $(function() {
                     case "Clear Config":
                         if (data['success'] == true) {
                             this.elem.prop("disabled", true);
+                            counter(+1);
                             alert(this.pluginName + " Config Cleared");
                         } else {
                             alert(data["message"]);
@@ -99,6 +67,7 @@ $(function() {
                     case "Clear Database":
                         if (data['success'] == true) {
                             this.elem.prop("disabled", true);
+                            counter(+1);
                             alert(this.pluginName + " Database Cleared");
                         } else {
                             alert(data["message"]);
@@ -131,7 +100,20 @@ $(function() {
                         this.elem.prop('disabled', false);
                         break;
                 }
+                counter(0)
             },
         });
     });
 });
+
+function counter(value){
+    count = parseInt($("#plugin_count").val());
+    count += value;
+    $("#plugin_count").val(count);
+    if (count == 0){
+        $("button").prop("disabled", true);
+    }else{
+        $("button").prop("disabled", false);
+    }
+
+}

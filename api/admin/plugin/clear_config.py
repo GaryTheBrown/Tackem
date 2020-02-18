@@ -4,7 +4,7 @@ from datetime import datetime
 import cherrypy
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from config_data import CONFIG
-from api.plugin.base import APIPluginBase
+from api.admin.plugin.base import APIPluginBase
 
 
 @cherrypy.expose

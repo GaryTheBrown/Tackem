@@ -3,14 +3,14 @@ import json
 import cherrypy
 from system.full import TackemSystemFull
 from api.base import APIBase
-from api.plugin.download import APIPluginDownload
-from api.plugin.delete import APIPluginDelete
-from api.plugin.update import APIPluginUpdate
-from api.plugin.reload import APIPluginReload
-from api.plugin.start import APIPluginStart
-from api.plugin.stop import APIPluginStop
-from api.plugin.clear_config import APIPluginClearConfig
-from api.plugin.clear_database import APIPluginClearDatabase
+from api.admin.plugin.download import APIPluginDownload
+from api.admin.plugin.delete import APIPluginDelete
+from api.admin.plugin.update import APIPluginUpdate
+from api.admin.plugin.reload import APIPluginReload
+from api.admin.plugin.start import APIPluginStart
+from api.admin.plugin.stop import APIPluginStop
+from api.admin.plugin.clear_config import APIPluginClearConfig
+from api.admin.plugin.clear_database import APIPluginClearDatabase
 
 @cherrypy.expose
 class APIPlugin(APIBase):

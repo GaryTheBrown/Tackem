@@ -74,7 +74,7 @@ class HTMLSystem:
     @classmethod
     def script_link(cls, location: str) -> str:
         '''returns a script link item'''
-        return HTMLSystem.part(
+        return cls.part(
             "tags/scriptlink",
             LOCATION=location
         )
@@ -83,7 +83,7 @@ class HTMLSystem:
     @classmethod
     def stylesheet_link(cls, location: str) -> str:
         '''returns a script link item'''
-        return HTMLSystem.part(
+        return cls.part(
             "tags/stylesheetlink",
             LOCATION=location
         )

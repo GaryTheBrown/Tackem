@@ -26,11 +26,6 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
     __LOCAL_PLUGINS = []
 
 
-    def __init__(self):
-        self.get_local_plugins()
-        self.get_github_plugins()
-
-
     @property
     def github_plugins(self):
         '''returns the github plugins'''

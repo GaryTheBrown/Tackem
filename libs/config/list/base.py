@@ -139,34 +139,37 @@ class ConfigListBase(ConfigBase):
 
     def find_and_get(self, location: list) -> Any:
         '''Find and Get a config Item'''
-        if location[0] in self._objects:
-            if isinstance(self._objects[location[0]], ConfigObjBase):
+        for obj in self._objects:
+            if location[0] != obj.var_name:
+                continue
+            if isinstance(obj, ConfigObjBase):
                 if len(location) == 1:
-                    return self._objects[location[0]].value
+                    return obj.value
                 return None
-            if isinstance(self._objects[location[0]], ConfigListBase):
+            if isinstance(obj, ConfigListBase):
                 if len(location) > 1:
-                    return self._objects[location[0]].find_and_get(location[1:])
+                    return obj.find_and_get(location[1:])
                 return None
 
         for obj in self._objects:
             if isinstance(obj, ConfigListBase) and obj.is_section:
                 if location[0] in obj:
                     return obj.find_and_get(location)
-
         return None
 
 
     def find_and_set(self, location: list, value):
         '''Find and set a config Item'''
-        if location[0] in self._objects:
-            if isinstance(self._objects[location[0]], ConfigObjBase):
+        for obj in self._objects:
+            if location[0] != obj.var_name:
+                continue
+            if isinstance(obj, ConfigObjBase):
                 if len(location) == 1:
-                    self._objects[location[0]].value = value
+                    obj.value = value
                     return
-            if isinstance(self._objects[location[0]], ConfigListBase):
+            if isinstance(obj, ConfigListBase):
                 if len(location) > 1:
-                    self._objects[location[0]].find_and_set(location[1:], value)
+                    obj.find_and_set(location[1:], value)
                     return
 
             return

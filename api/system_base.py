@@ -12,4 +12,4 @@ class APISystemBase(APIBase):
 
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
-        return json.dumps({"INPLUGIN": self._system.plugin_full_name})
+        return {"INPLUGIN": self._system.plugin_full_name}

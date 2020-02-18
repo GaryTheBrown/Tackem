@@ -2,40 +2,6 @@
 from typing import Union
 from libs.html_system import HTMLSystem
 
-#######
-#PAGES#
-#######
-
-
-def plugin_config_page(tab_bar_tabs: str, sections: str) -> str:
-    '''Plugin config page'''
-    return HTMLSystem.part(
-        "pages/pluginconfigpage",
-        PANELTABS=tab_bar_tabs,
-        PLUGINLIST=sections
-    )
-
-
-def root_config_page(sections: str) -> str:
-    '''Root config page'''
-    return HTMLSystem.part(
-        "pages/rootconfigpage",
-        PLUGINLIST=sections
-    )
-
-
-def login_page(return_url: str) -> str:
-    '''Root config page'''
-    return HTMLSystem.part(
-        "pages/login",
-        RETURNURL=return_url
-    )
-
-
-def password_page() -> str:
-    '''Root config page'''
-    return HTMLSystem.part("pages/password")
-
 
 ##########
 #SECTIONS#
@@ -529,21 +495,6 @@ def select_box(
         SCRIPT=script if isinstance(script, str) else "",
         OPTIONS=blank_options_html + options_out_html
     )
-
-
-######
-#TAGS#
-######
-
-
-def script_link(location: str) -> str:
-    '''returns a script link item'''
-    return '<script src="%%BASEURL%%{}"></script>'.format(location)
-
-
-def stylesheet_link(location: str) -> str:
-    '''returns a script link item'''
-    return '<link href="%%BASEURL%%{}" rel="stylesheet">'.format(location)
 
 
 #########

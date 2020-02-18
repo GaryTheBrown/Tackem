@@ -24,7 +24,7 @@ class APIAdminConfig(APIBase):
         location = kwargs.get("location", None)
         self._check_user(user)
         self.__check_for_blocked_locations(location)
-        value = CONFIG.find_and_get(location.split("-"))
+        value = CONFIG.find_and_get(location)
 
         return self._return_data(
             user,
@@ -43,8 +43,8 @@ class APIAdminConfig(APIBase):
         body = self._get_request_body()
         self._check_user(user)
         self.__check_for_blocked_locations(location)
-        value = CONFIG.find_and_get(location.split("-"))
-        CONFIG.find_and_set(location.split("-"), body['value'])
+        value = CONFIG.find_and_get(location)
+        CONFIG.find_and_set(location, body['value'])
 
         return self._return_data(
             user,

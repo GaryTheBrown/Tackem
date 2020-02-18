@@ -4,7 +4,6 @@ from config_data import CONFIG
 from libs.authenticator import AUTHENTICATION
 from libs.html_system import HTMLSystem
 from libs.startup_arguments import PROGRAMVERSION
-import libs.html_parts as html_part
 
 
 class HTMLTEMPLATE():
@@ -51,28 +50,28 @@ class HTMLTEMPLATE():
         javascript_extra_html = ""
         if isinstance(self._base_javascript, list):
             for key in self._base_javascript:
-                javascript_extra_html += html_part.script_link(key)
+                javascript_extra_html += HTMLSystem.script_link(key)
         elif isinstance(self._base_javascript, str):
-            javascript_extra_html = html_part.script_link(self._base_javascript)
+            javascript_extra_html = HTMLSystem.script_link(self._base_javascript)
 
         if isinstance(javascript, list):
             for key in javascript:
-                javascript_extra_html += html_part.script_link(key)
+                javascript_extra_html += HTMLSystem.script_link(key)
         elif isinstance(javascript, str):
-            javascript_extra_html = html_part.script_link(javascript)
+            javascript_extra_html = HTMLSystem.script_link(javascript)
 
         stylesheet_extra_html = ""
         if isinstance(self._base_stylesheet, list):
             for key in self._base_stylesheet:
-                stylesheet_extra_html += html_part.stylesheet_link(key)
+                stylesheet_extra_html += HTMLSystem.stylesheet_link(key)
         elif isinstance(self._base_stylesheet, str):
-            stylesheet_extra_html = html_part.stylesheet_link(self._base_stylesheet)
+            stylesheet_extra_html = HTMLSystem.stylesheet_link(self._base_stylesheet)
 
         if isinstance(stylesheet, list):
             for key in stylesheet:
-                stylesheet_extra_html += html_part.stylesheet_link(key)
+                stylesheet_extra_html += HTMLSystem.stylesheet_link(key)
         elif isinstance(stylesheet, str):
-            stylesheet_extra_html = html_part.stylesheet_link(stylesheet)
+            stylesheet_extra_html = HTMLSystem.stylesheet_link(stylesheet)
 
         title = ""
         if self._key != "":
@@ -155,7 +154,7 @@ class HTMLTEMPLATE():
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = navbar_item("About", "about")
         navbar_item_html = navbar_item("Config", "admin/config")
-        navbar_plugin_download_html = navbar_item("Plugin Download", "plugin_download")
+        navbar_plugin_download_html = navbar_item("Plugin Download", "admin/plugin_downloader")
         navbar_users_html = navbar_item("Users", "admin/users")
         navbar_login_html = navbar_item("Login", "login")
         navbar_logout_html = navbar_item("Logout", "logout")
