@@ -22,6 +22,7 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
+            value_link: Optional[list] = None
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
@@ -44,7 +45,8 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             hide_on_html,
             not_in_config,
             rules,
-            input_attributes
+            input_attributes,
+            value_link
         )
 
 

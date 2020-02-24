@@ -22,7 +22,8 @@ class ConfigObjBoolean(ConfigObjBase):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None
+            data_list: Optional[DataList] = None,
+            value_link: Optional[list] = None
     ):
         if not isinstance(default_value, bool):
             raise ValueError("default value is not a boolean")
@@ -36,7 +37,8 @@ class ConfigObjBoolean(ConfigObjBase):
             not_in_config,
             rules,
             input_attributes,
-            data_list
+            data_list,
+            value_link
         )
 
 

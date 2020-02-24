@@ -139,13 +139,15 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
     def download_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''function to use list from html page to download the plugins'''
+        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
         try:
-            os.makedirs(PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name)
+            os.makedirs(location)
         except OSError:
-            return "FOLDER ALREADY EXISTS", 0
+            if os.path.exists(location + "/.git"):
+                return "PLUGIN ALREADY EXISTS", 0
         for plugin in self.__GITHUB_PLUGINS:
-            if plugin['plugin_type'] == plugin_type and plugin['plugin_name'] == plugin_name:
-                location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+            if plugin['plugin_type'].lower() == plugin_type.lower() \
+                and plugin['plugin_name'].lower() == plugin_name.lower():
                 git.Repo.clone_from(plugin['clone_url'], location, branch=self.__REPO_BRANCH)
                 return True, 0
         return "PLUGIN NOT IN LIST [BUG]", 1

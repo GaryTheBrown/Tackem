@@ -28,7 +28,8 @@ class ConfigObjString(ConfigObjBase):
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
             data_list: Optional[DataList] = None,
-            button: Optional[Button] = None
+            button: Optional[Button] = None,
+            value_link: Optional[list] = None
     ):
         if not isinstance(default_value, str):
             raise ValueError("Default Value is not a String")
@@ -44,7 +45,8 @@ class ConfigObjString(ConfigObjBase):
             not_in_config,
             rules,
             input_attributes,
-            data_list
+            data_list,
+            value_link
         )
         self.__button = button
 

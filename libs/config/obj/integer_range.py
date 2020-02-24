@@ -23,7 +23,8 @@ class ConfigObjIntegerRange(ConfigObjIntegerNumber):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            button: Optional[Button] = None
+            button: Optional[Button] = None,
+            value_link: Optional[list] = None
     ):
         input_attributes.needed("min", "max", "step")
 
@@ -36,5 +37,6 @@ class ConfigObjIntegerRange(ConfigObjIntegerNumber):
             not_in_config,
             rules,
             input_attributes,
-            button
+            button,
+            value_link
         )

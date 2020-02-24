@@ -1,6 +1,4 @@
 '''special system for languages including conversion between types'''
-from libs.config.obj.data.option import ConfigObjOption
-
 
 class Language:
     '''Single Language Class'''
@@ -233,88 +231,100 @@ class Languages:
     ]
 
 
-    def config_option_2(self):
+    @classmethod
+    def config_option_2(cls, obj):
         '''returns a list of 2 letter codes'''
-        return [ConfigObjOption(x.iso_639_1, x.name) for x in self.__LANGUAGES]
+        return [obj(x.iso_639_1, x.name) for x in cls.__LANGUAGES]
 
 
-    def config_option_3t(self):
+    @classmethod
+    def config_option_3t(cls, obj):
         '''returns a list of 3 letter local codes'''
-        return [ConfigObjOption(x.iso_639_2t, x.name) for x in self.__LANGUAGES]
+        return [obj(x.iso_639_2t, x.name) for x in cls.__LANGUAGES]
 
 
-    def config_option_3b(self):
+    @classmethod
+    def config_option_3b(cls, obj):
         '''returns a list of 3 letter English codes'''
-        return [ConfigObjOption(x.iso_639_2b, x.name) for x in self.__LANGUAGES]
+        return [obj(x.iso_639_2b, x.name) for x in cls.__LANGUAGES]
 
 
-    def get_name_from_2(self, code: str):
+    @classmethod
+    def get_name_from_2(cls, code: str):
         '''gets the name from the 2 letter code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.name
         return None
 
 
-    def get_name_from_3t(self, code: str):
+    @classmethod
+    def get_name_from_3t(cls, code: str):
         '''gets the name from the 3 letter local code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.name
         return None
 
 
-    def get_name_from_3b(self, code: str):
+    @classmethod
+    def get_name_from_3b(cls, code: str):
         '''gets the name from the 3 letter English code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.name
         return None
 
 
-    def convert_2_to_3t(self, code: str):
+    @classmethod
+    def convert_2_to_3t(cls, code: str):
         '''converts from 2 letter code to 3 letter local code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.iso_639_2t
         return None
 
 
-    def convert_2_to_3b(self, code: str):
+    @classmethod
+    def convert_2_to_3b(cls, code: str):
         '''converts from 2 letter code to 3 letter English code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.iso_639_2t
         return None
 
 
-    def convert_3t_to_2(self, code: str):
+    @classmethod
+    def convert_3t_to_2(cls, code: str):
         '''converts from 3 letter local code to 2 letter code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.iso_639_1
         return None
 
 
-    def convert_3t_to_3b(self, code: str):
+    @classmethod
+    def convert_3t_to_3b(cls, code: str):
         '''converts from 3 letter local code to 3 letter English code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.iso_639_2b
         return None
 
 
-    def convert_3b_to_2(self, code: str):
+    @classmethod
+    def convert_3b_to_2(cls, code: str):
         '''converts from 3 letter English code to 2 letter code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.iso_639_1
         return None
 
 
-    def convert_3b_to_3t(self, code: str):
+    @classmethod
+    def convert_3b_to_3t(cls, code: str):
         '''converts from 3 letter English code to 3 letter local code'''
-        for language in self.__LANGUAGES:
+        for language in cls.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.iso_639_2t
         return None

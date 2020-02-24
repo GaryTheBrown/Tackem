@@ -60,7 +60,8 @@ class ConfigObjBase(ABC, ConfigBase):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None
+            data_list: Optional[DataList] = None,
+            value_link: Optional[list] = None
     ):
         super().__init__(
             var_name,
@@ -68,7 +69,8 @@ class ConfigObjBase(ABC, ConfigBase):
             help_text,
             hide_on_html,
             not_in_config,
-            rules
+            rules,
+            value_link
         )
         if input_attributes and not isinstance(input_attributes, InputAttributes):
             raise ValueError("input_attributes not correct type")

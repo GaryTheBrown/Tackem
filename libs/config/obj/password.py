@@ -22,7 +22,8 @@ class ConfigObjPassword(ConfigObjString):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            button: Optional[Button] = None
+            button: Optional[Button] = None,
+            value_link: Optional[list] = None
     ):
         super().__init__(
             var_name,
@@ -33,5 +34,6 @@ class ConfigObjPassword(ConfigObjString):
             not_in_config,
             rules,
             input_attributes,
-            button
+            button,
+            value_link
         )

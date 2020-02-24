@@ -30,7 +30,7 @@ class APIAdminConfig(APIBase):
             user,
             "config",
             "Get Config Option",
-            False,
+            True,
             location=location,
             setting=value
         )

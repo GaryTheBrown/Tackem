@@ -21,6 +21,7 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
+            value_link: Optional[list] = None
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
@@ -41,5 +42,24 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
             hide_on_html,
             not_in_config,
             rules,
-            input_attributes
+            input_attributes,
+            value_link
         )
+
+
+    @property
+    def spec(self) -> str:
+        '''Returns the line for the config option'''
+        if self.not_in_config:
+            return ""
+
+        default = self.default_value
+        if isinstance(default, list):
+            default = "[" + ", ".join(["'{}'".format(x) for x in self.default_value]) + "]"
+        else:
+            default = "'{}'".format(self.default_value)
+        string = self.var_name + " = string_list("
+        string += ", default=" + default
+        string += ")\n"
+
+        return string

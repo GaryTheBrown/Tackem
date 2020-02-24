@@ -13,6 +13,7 @@ class ConfigBase:
             hide_on_html: bool = False,
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
+            value_link: Optional[list] = None
         ):
         if not isinstance(var_name, str):
             raise ValueError("variable name is not a string")
@@ -26,6 +27,8 @@ class ConfigBase:
             raise ValueError("not in config is not a bool")
         if rules and not isinstance(rules, ConfigRules):
             raise ValueError("rules is not a config rules object")
+        if value_link and not isinstance(value_link, list):
+            raise ValueError("value link is not a list")
 
         self.__objects = []
         self.__var_name = var_name
@@ -34,6 +37,7 @@ class ConfigBase:
         self.__hide_on_html = hide_on_html
         self.__not_in_config = not_in_config
         self.__rules = rules
+        self.__value_link = value_link
 
 
     @property
@@ -87,3 +91,9 @@ class ConfigBase:
     def rules(self):
         '''returns the rules'''
         return self.__rules
+
+
+    @property
+    def value_link(self):
+        '''return the value_link'''
+        return self.__value_link

@@ -20,7 +20,7 @@ class APIPluginBase(APIBase):
             **kwargs
     ) -> str:
         '''creates the json for returning requiring some data but allowing more'''
-        return APIBase._return_data(
+        return self._return_data(
             user,
             "Plugin",
             action,

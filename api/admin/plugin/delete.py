@@ -2,7 +2,7 @@
 
 import cherrypy
 from api.admin.plugin.base import APIPluginBase
-
+from config_data import CONFIG
 
 @cherrypy.expose
 class APIPluginDelete(APIPluginBase):
@@ -31,7 +31,7 @@ class APIPluginDelete(APIPluginBase):
         loaded_data = self._system.is_plugin_loaded(plugin_type, plugin_name)
         if loaded_data is True:
             self._system.stop_plugin_systems(plugin_type, plugin_name)
-            self._system.write_config_to_disk()
+            CONFIG.save()
             self._system.remove_plugin(plugin_type, plugin_name)
 
         delete_data = self._system.delete_plugin(plugin_type, plugin_name)
@@ -42,15 +42,18 @@ class APIPluginDelete(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(),
+                actions=self._actions_return(enable=["self"]),
                 error=delete_data[0],
                 error_number=delete_data[1]
             )
 
 
         if loaded_data is True:
-            self._system.remove_plugin_cfg(plugin_type, plugin_name)
-            self._system.load_config()
+            CONFIG['plugins'][plugin_type][plugin_name].clear()
+            CONFIG['plugins'][plugin_type].delete(plugin_name)
+            if CONFIG['plugins'][plugin_type].count == 0:
+                CONFIG['plugins'].delete(plugin_type)
+            CONFIG.load()
 
         return self._return_data_plugin(
             user,
@@ -58,5 +61,5 @@ class APIPluginDelete(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(),
+            actions=self._actions_return(enabled=["download"]),
         )

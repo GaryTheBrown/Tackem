@@ -1,4 +1,4 @@
-$(function () {
+(function () {
 
     $(() => {
         new Config();
@@ -24,11 +24,7 @@ $(function () {
                 }
             }.bind(obj));
 
-            $("[data-action]").each(function(){
-                if ($(this).data("action") in Config){
-                    $(this).on('click', Config[$(this).data("action")]);
-                }
-            });
+            $("[data-action]").on('click', Config[$(this).data("action")]);
         }
 
         doICallTheClick(element)
@@ -61,4 +57,4 @@ $(function () {
 
     }
 
-});
+})();

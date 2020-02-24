@@ -24,7 +24,8 @@ class ConfigObjIntegerNumber(ConfigObjBase):
             not_in_config: bool = False,
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
-            button: Optional[Button] = None
+            button: Optional[Button] = None,
+            value_link: Optional[list] = None
     ):
         if not isinstance(default_value, int):
             raise ValueError("default value is not an int")
@@ -39,7 +40,8 @@ class ConfigObjIntegerNumber(ConfigObjBase):
             hide_on_html,
             not_in_config,
             rules,
-            input_attributes
+            input_attributes,
+            value_link
         )
 
         self.__button = button

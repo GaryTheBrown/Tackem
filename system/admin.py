@@ -1,4 +1,5 @@
 '''Admin Control Of System Data'''
+import os
 import glob
 import importlib
 import platform
@@ -36,7 +37,8 @@ class TackemSystemAdmin(TackemSystemFull):
                 folder_split = folder.split("/")
                 plugin_type = folder_split[-3]
                 plugin_name = folder_split[-2]
-                self.import_plugin(plugin_type, plugin_name)
+                if os.path.exists(folder + "__init__.py"):
+                    self.import_plugin(plugin_type, plugin_name)
 
 
     def import_plugin(self, plugin_type: str, plugin_name: str) -> tuple:

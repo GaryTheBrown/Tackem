@@ -16,46 +16,24 @@ from api.admin.plugin.clear_database import APIPluginClearDatabase
 class APIPlugin(APIBase):
     '''PLUGIN API'''
 
-    __SINGLE_ACTIONS = {
-        "download": APIPluginDownload,
-        "delete": APIPluginDelete,
-        "update": APIPluginUpdate,
-        "reload": APIPluginReload,
-        "start": APIPluginStart,
-        "stop": APIPluginStop,
-        "clearconfig": APIPluginClearConfig,
-        "cleardatabase": APIPluginClearDatabase
-    }
-
-    __ALL_ACTIONS = {
-
-    }
-
-
     def _cp_dispatch(self, vpath):
         '''cp dispatcher overwrite'''
         action = vpath.pop(0).lower()
-        cherrypy.request.params['action'] = action
 
-        #commands for no plugin names given
-        if action in self.__ALL_ACTIONS:
-            return self.__ALL_ACTIONS[action]()
-
-        plugin_type = vpath.pop(0)
-        plugin_name = vpath.pop(0)
-
-        cherrypy.request.params['plugin_type'] = plugin_type
-        cherrypy.request.params['plugin_name'] = plugin_name
-
-        plugin_instance = None
-        plugin = TackemSystemFull().plugin(plugin_type, plugin_name)
-        single_instance = plugin.SETTINGS["single_instance"]
-        if not single_instance:
-            plugin_instance = vpath.pop(0)
-            cherrypy.request.params['plugin_instance'] = plugin_instance
-
-        #commands for single plugin actions
-        if action in self.__SINGLE_ACTIONS:
-            return self.__SINGLE_ACTIONS[action]()
-
+        if action == "download":
+            return APIPluginDownload()
+        if action == "delete":
+            return APIPluginDelete()
+        if action == "update":
+            return APIPluginUpdate()
+        if action == "reload":
+            return APIPluginReload()
+        if action == "start":
+            return APIPluginStart()
+        if action == "stop":
+            return APIPluginStop()
+        if action == "clearconfig":
+            return APIPluginClearConfig()
+        if action == "cleardatabase":
+            return APIPluginClearDatabase()
         return self
