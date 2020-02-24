@@ -1,21 +1,20 @@
 ''' audio format options'''
-from libs.config.obj.data.checkbox import ConfigObjCheckbox
-
-
-OPTIONS = [
-    ConfigObjCheckbox("pcm", "PCM"),
-    ConfigObjCheckbox("mp2", "MP2"),
-    ConfigObjCheckbox("mp3", "MP3"),
-    ConfigObjCheckbox("ogg", "Vorbis (ogg)"),
-    ConfigObjCheckbox("flac", "Free Lossless Audio Codec (flac)"),
-    ConfigObjCheckbox("ac3", "Dolby Digital (AC-3)"),
-    ConfigObjCheckbox("aac", "Advanced Audio Coding (AAC)"),
-    ConfigObjCheckbox("dts5.1", "Digital Theater Systems (DTS)"),
-    ConfigObjCheckbox("dd+", "Dolby Digital Plus (DD+)"),
-    ConfigObjCheckbox("dtshdma", "DTS-HD Master Audio"),
-    ConfigObjCheckbox("dthd", "Dolby TrueHD"),
-    ConfigObjCheckbox("dtshdhr", "DTS-HD High Resolution"),
-    ConfigObjCheckbox("dtsx", "DTS:X"),
-    ConfigObjCheckbox("da", "Dolby Atmos"),
-    ConfigObjCheckbox("a3d", "Auro 3D")
-]
+def audio_format_options(obj):
+    '''returns the list of audio formats'''
+    return [
+        obj("pcm", "PCM"),
+        obj("mp2", "MP2"),
+        obj("mp3", "MP3"),
+        obj("ogg", "Vorbis (ogg)"),
+        obj("flac", "Free Lossless Audio Codec (flac)"),
+        obj("ac3", "Dolby Digital (AC-3)"),
+        obj("aac", "Advanced Audio Coding (AAC)"),
+        obj("dts5.1", "Digital Theater Systems (DTS)"),
+        obj("dd+", "Dolby Digital Plus (DD+)"),
+        obj("dtshdma", "DTS-HD Master Audio"),
+        obj("dthd", "Dolby TrueHD"),
+        obj("dtshdhr", "DTS-HD High Resolution"),
+        obj("dtsx", "DTS:X"),
+        obj("da", "Dolby Atmos"),
+        obj("a3d", "Auro 3D")
+    ]

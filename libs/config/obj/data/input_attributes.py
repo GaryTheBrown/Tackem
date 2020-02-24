@@ -37,7 +37,10 @@ class InputAttributes:
         #kwargs for key:value ones with data- accepted
         for key, value in kwargs.items():
             if key[0:5] == "data_" or key in self.__kwargs:
-                self.__dict[key] = str(value)
+                if isinstance(value, list):
+                    self.__dict[key] = ",".join(value)
+                else:
+                    self.__dict[key] = str(value)
 
 
     def needed(self, *args):
