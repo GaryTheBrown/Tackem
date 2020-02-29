@@ -9,7 +9,7 @@ RUN groupadd -g ${GID} ${USER} \
  && mkdir -p /home/${USER}/.vscode-server \
  && chown -R ${UID}:${GID} /home/$USER/ \
  && apt-get update \
- && apt-get install -y git python3.7 python3-pip \
+ && apt-get install -y git python3.8 python3-pip \
  && cd /usr/bin \
  && ln -s python3 python \
  && rm -rf /var/lib/apt/lists/* \
@@ -19,5 +19,5 @@ USER $USER
 
 ADD .pylintrc /home/${USER}/
 
-RUN python3.7 -m pip install -U pip --user \
- && python3.7 -m pip install -U pylint autopep8 coverage configobj cherrypy requests pexpect musicbrainzngs gitpython --user
+RUN python3.8 -m pip install -U pip --user \
+ && python3.8 -m pip install -U pylint autopep8 coverage configobj cherrypy requests pexpect musicbrainzngs gitpython --user

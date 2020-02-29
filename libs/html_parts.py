@@ -81,7 +81,7 @@ def modal(
         "sections/modal",
         TITLE=title.title(),
         VARIABLENAME=variable_name,
-        CLOSEABLE="" if closeable else 'style="display:none"',
+        CLOSEABLE="" if closeable else " hidden",
         MODALBODY=modal_body,
         MODALFOOTER=modal_footer
     )
@@ -129,7 +129,7 @@ def multi_panel(
         ENABLEDOPTION=enable_option,
         DELETEDOPTION=delete_option,
         SECTION=section_html,
-        SECTIONHIDE="" if visible else 'style="display:none"'
+        SECTIONHIDE="" if visible else " hidden"
     )
 
 
@@ -151,7 +151,7 @@ def panel(
         MODAL=modal_obj,
         VARIABLENAME=variable_name if variable_name != "" else titleb,
         SECTION=section_html,
-        SETIONHIDE=""if visible else 'style="display:none"'
+        SETIONHIDE=""if visible else " hidden"
     )
 
 
@@ -190,7 +190,7 @@ def section(
         "sections/section",
         SECTIONNAME=section_name,
         SECTION=section_html,
-        SETIONHIDE=""if visible else 'style="display:none"'
+        SETIONHIDE=""if visible else " hidden"
     )
 
 
@@ -276,7 +276,7 @@ def input_button_with_data(
         CLASSNAME=class_name,
         DATA=data_r,
         ENABLED="" if enabled else "disabled",
-        VISIBLE="" if visible else 'style="display:none;"'
+        VISIBLE="" if visible else " hidden"
     )
 
 

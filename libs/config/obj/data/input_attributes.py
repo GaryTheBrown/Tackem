@@ -20,6 +20,8 @@ class InputAttributes:
         self.__disabled = False
         self.__multiple = False
         self.__required = False
+        self.__selected = False
+        self.__hidden = False
         self.__dict = {}
 
         for arg in args:
@@ -33,6 +35,10 @@ class InputAttributes:
                 self.__multiple = True
             elif arg == "required":
                 self.__required = True
+            elif arg == "selected":
+                self.__selected = True
+            elif arg == "hidden":
+                self.__hidden = True
 
         #kwargs for key:value ones with data- accepted
         for key, value in kwargs.items():
@@ -57,6 +63,10 @@ class InputAttributes:
                 missing_list.append("multiple")
             elif arg == "required" and not self.__required:
                 missing_list.append("required")
+            elif arg == "selected" and not self.__selected:
+                missing_list.append("selected")
+            elif arg == "hidden" and not self.__hidden:
+                missing_list.append("hidden")
             elif arg not in self.__dict:
                 missing_list.append(arg)
 
@@ -73,6 +83,8 @@ class InputAttributes:
             or (arg == "disabled" and self.__disabled) \
             or (arg == "multiple" and self.__multiple) \
             or (arg == "required" and self.__required) \
+            or (arg == "selected" and self.__selected) \
+            or (arg == "hidden" and self.__hidden) \
             or (arg in self.__dict):
                 block_list.append(arg)
 
@@ -116,6 +128,10 @@ class InputAttributes:
             string += " multiple"
         if self.__required:
             string += " required"
+        if self.__selected:
+            string += " selected"
+        if self.__hidden:
+            string += " hidden"
 
         return string
 
@@ -172,3 +188,15 @@ class InputAttributes:
     def required(self) -> bool:
         '''returns if required'''
         return self.__required
+
+
+    @property
+    def selected(self) -> bool:
+        '''returns if selected'''
+        return self.__selected
+
+
+    @property
+    def hidden(self) -> bool:
+        '''returns if hidden'''
+        return self.__hidden

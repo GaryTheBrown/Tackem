@@ -61,10 +61,10 @@ class Httpd():
             #load system webpages into cherrypy
             plugin_link = self.__system.system(key).plugin_link()
             if plugin_link.SETTINGS.get('single_instance', True):
-                plugin_link.www.mounts(key)
+                plugin_link.www.mounts(key, baseurl)
             else:
                 instance_name = key.split()[-1]
-                plugin_link.www.mounts(key, instance_name)
+                plugin_link.www.mounts(key, baseurl, instance_name)
 
         # scraper.mounts()
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)

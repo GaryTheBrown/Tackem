@@ -2,7 +2,15 @@
 
     $(() => {
         new Config();
+        createEvents();
     })
+
+    function createEvents()
+    {
+        $('.modal').on('show.bs.modal', function (e) {
+            $(this).find(":disabled").prop('disabled', false);
+          });
+    }
 
     class Config
     {
@@ -24,7 +32,9 @@
                 }
             }.bind(obj));
 
-            $("[data-action]").on('click', Config[$(this).data("action")]);
+            $("[data-action]").each(function(index, element){
+                $(element).on('click', Config[$(element).data("action")]);
+            });
         }
 
         doICallTheClick(element)
@@ -55,6 +65,40 @@
             $('#' + $(this).data("input")).val(num);
         }
 
+        static addMulti()
+        {   let $elem = $(this);
+            let target = $(this).data("target")
+            let $modalRoot = $(`#${target}_modal`);
+            let $input = $modalRoot.find("input[type=text],select");
+            let data = target.split("_");
+
+            $input.prop("disabled", true)
+            $elem.prop("disabled", true);
+            $modalRoot.find("small").html("");
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/admin/addMulti/',
+                data: {
+                    plugin_name: data[1],
+                    plugin_type: data[2],
+                    instance: $input.val();
+                },
+                elem: $elem,
+                modalRoot: $modalRoot,
+                target: target,
+                success: function(json)
+                {
+                    if (json.sucess) {
+                        $(`#${target}_tab`).append(json.html);
+                        $modalRoot.modal('hide');
+                    } else {
+                        $modalRoot.find("small").html(json.error);
+                        $elem.prop("disabled", false);
+                    }
+                }
+            })
+        }
     }
 
 })();

@@ -54,7 +54,7 @@ class ConfigObjBoolean(ConfigObjBase):
                 return False
 
         if isinstance(value, int):
-            if value is 0:
+            if value == 0:
                 return False
             return True
 

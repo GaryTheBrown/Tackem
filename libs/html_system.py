@@ -67,7 +67,10 @@ class HTMLSystem:
         for key, arg in kwargs.items():
             html = html.replace("%%" + str(key).upper() + "%%", str(arg))
 
-        html = re.sub(r'/\%\%\w+\%\%(?<!\%\%BASEURL\%\%)/g', '', html)
+        regex = r"\%\%[A-Z0-9]*\%\%(?<!\%\%BASEURL\%\%)"
+        for string in re.findall(regex, html):
+            html = html.replace(string, "")
+
         return html
 
 

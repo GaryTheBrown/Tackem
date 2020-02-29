@@ -13,7 +13,7 @@ from api.admin.plugin.clear_config import APIPluginClearConfig
 from api.admin.plugin.clear_database import APIPluginClearDatabase
 
 @cherrypy.expose
-class APIPlugin(APIBase):
+class APIAdminPlugin(APIBase):
     '''PLUGIN API'''
 
     def _cp_dispatch(self, vpath):

@@ -3,7 +3,8 @@ import json
 import cherrypy
 from api.base import APIBase
 from api.admin.config import APIAdminConfig
-from api.admin.plugin import APIPlugin
+from api.admin.plugin import APIAdminPlugin
+from api.admin.add_multi import APIAdminAddMulti
 from libs.root_event import RootEvent
 
 @cherrypy.expose
@@ -23,8 +24,10 @@ class APIAdmin(APIBase):
             cherrypy.request.params['action'] = "shutdown"
         elif section == "config":
             return APIAdminConfig()
+        elif section == "addMulti":
+            return APIAdminAddMulti()
         elif section == "plugin":
-            return APIPlugin()
+            return APIAdminPlugin()
         return self
 
 

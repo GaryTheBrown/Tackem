@@ -18,8 +18,8 @@ class ConfigListBase(ConfigBase):
             help_text: str = "",
             rules: Optional[ConfigRules] = None,
             is_section: bool = False,
-            section_link_hide: bool = False,
-            many_section=None
+            many_section=None,
+            many_section_limit_list=None
         ):
         super().__init__(var_name, label, help_text, False, False, rules)
 
@@ -38,13 +38,15 @@ class ConfigListBase(ConfigBase):
         else:
             self._objects = []
 
-        if section_link_hide and not isinstance(section_link_hide, bool):
-            raise ValueError("Section Link Hide is not a bool")
-        self.__section_link_hide = section_link_hide
-
         if many_section and not isinstance(many_section, ConfigListBase):
             raise ValueError("Many Section is not a config List object or None")
         self.__many_section = many_section
+        if many_section_limit_list:
+            if not isinstance(many_section_limit_list, list):
+                raise ValueError("Many Section Limit List is not a list")
+            if all(not isinstance(x, str) for x in many_section_limit_list):
+                raise ValueError("All Items in the Many Section Limit List need to be strings")
+        self.__many_section_limit_list = many_section_limit_list
 
 
     def __getitem__(self, key):
@@ -117,24 +119,29 @@ class ConfigListBase(ConfigBase):
 
 
     @property
-    def section_link_hide(self) -> bool:
-        '''returns if the section link should start hidden (javascript will show it on page load'''
-        return self.__section_link_hide
-
-
-    @property
     def many_section(self):
         '''returns the Many Section'''
         return self.__many_section
 
 
-    def clone_many_section(self, var_name: str):
+    @property
+    def many_section_limit_list(self):
+        '''returns the Many Section Limit List'''
+        return self.__many_section_limit_list
+
+
+    def clone_many_section(self, var_name: str) -> bool:
         '''Clones the Many Section For Multi Instance config sections'''
+        var = var_name.lower().replace(" ", "")
+        if var in self.keys():
+            return False
         if self.many_section:
             new = copy.deepcopy(self.__many_section)
             new.label = var_name.capitalize()
-            new.var_name = var_name.lower()
+            new.var_name = var
             self.append(new)
+            return True
+        return False
 
 
     def find_and_get(self, location: list) -> Any:

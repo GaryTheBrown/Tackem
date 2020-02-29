@@ -248,7 +248,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
         if self.hide_on_html:
             return ""
         data = ""
-        for count, value in enumerate(self.__values):
+        for value in self.__values:
             data += value.html(
                 self.value == value.value,
                 variable_name

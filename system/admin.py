@@ -37,6 +37,8 @@ class TackemSystemAdmin(TackemSystemFull):
                 folder_split = folder.split("/")
                 plugin_type = folder_split[-3]
                 plugin_name = folder_split[-2]
+                if plugin_name[0] == "_" or plugin_name[0] == "_":
+                    continue
                 if os.path.exists(folder + "__init__.py"):
                     self.import_plugin(plugin_type, plugin_name)
 
@@ -59,8 +61,9 @@ class TackemSystemAdmin(TackemSystemFull):
         self._base_data.plugins[plugin_type][plugin_name] = plugin
 
         if not isinstance(CONFIG['plugins'][plugin_type], ConfigList):
-            CONFIG['plugins'].append(ConfigList(plugin_type, plugin_type))
-        CONFIG['plugins'][plugin_type].append(plugin.CONFIG)
+            CONFIG['plugins'].append(ConfigList(plugin_type, plugin_type.capitalize()))
+        if not plugin_name in CONFIG['plugins'][plugin_type].keys():
+            CONFIG['plugins'][plugin_type].append(plugin.CONFIG)
         return True, 0
 
 
@@ -125,7 +128,6 @@ class TackemSystemAdmin(TackemSystemFull):
         '''load systems fors all plugins'''
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
-                print(plugin_type, plugin_name)
                 self.load_plugin_systems(plugin_type, plugin_name)
 
 
@@ -150,14 +152,16 @@ class TackemSystemAdmin(TackemSystemFull):
         system_name = plugin_type + " " + plugin_name
         system_config = CONFIG['plugins'][plugin_type][plugin_name]
         if self._base_data.plugins[plugin_type][plugin_name].SETTINGS.get('single_instance', True):
-            if system_config['enabled']:
+            if system_config['enabled'].value:
                 if not self.load_system(system_name, True):
                     return False
             return True
         all_created = True
-        for inst in system_config:
+        for inst_obj in system_config:
+            print(type(system_config), system_config.var_name, type(inst_obj), inst_obj.var_name)
+            inst = inst_obj.var_name
             full_system_name = system_name + " " + inst
-            if system_config[inst]['enabled']:
+            if system_config[inst]['enabled'].value:
                 if not self.load_system(full_system_name, False):
                     all_created = False
         return all_created

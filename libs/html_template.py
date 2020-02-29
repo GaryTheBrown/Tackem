@@ -26,7 +26,6 @@ class HTMLTEMPLATE():
 
         if key != "":
             self._plugin = self._tackem_system.plugin
-            self._config = self._tackem_system.config
 
 
     def _template(

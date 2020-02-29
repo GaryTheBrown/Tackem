@@ -19,7 +19,7 @@ class DataList:
     def html(self):
         '''returns the data in html form'''
         return HTMLSystem.part(
-            "input/data_list",
+            "input/datalist",
             VARNAME=self.__variable_name,
             OPTIONS="".join([x.html for x in self.__options])
         )
@@ -39,6 +39,6 @@ class DataListOption:
     def html(self):
         '''returns the data in html form'''
         return HTMLSystem.part(
-            "input/data_list_option",
+            "input/datalistoption",
             VALUE=self.__value
         )

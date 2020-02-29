@@ -51,6 +51,6 @@ class ConfigObjOptionsRadio(ConfigObjOptionsBase):
         if self.hide_on_html:
             return ""
         options = ""
-        for count, value in enumerate(self.values):
+        for value in self.values:
             options += value.html(value.value == self.value, variable_name)
         return options

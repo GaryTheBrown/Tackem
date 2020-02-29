@@ -1,5 +1,4 @@
 '''Base Template For the System API'''
-import json
 from api.base import APIBase
 
 
