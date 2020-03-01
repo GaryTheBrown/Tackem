@@ -80,7 +80,7 @@ class ConfigObjString(ConfigObjBase):
         if isinstance(self.input_attributes, InputAttributes):
             other = self.input_attributes.html()
         button = ""
-        if self.__button and not isinstance(button, Button):
+        if self.__button and isinstance(self.__button, Button):
             button = self.__button.html
         return HTMLSystem.part(
             "inputs/input",

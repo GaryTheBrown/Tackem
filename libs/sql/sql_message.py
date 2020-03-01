@@ -1,4 +1,5 @@
 '''SQL MESSAGE SYSTEM DATA'''
+from typing import Optional, Union
 import threading
 
 
@@ -6,8 +7,17 @@ class SQLMessage:
     '''Struct to hold the message for easier reading in here'''
 
 
-    def __init__(self, system_name, special_command=None, command=None, table_name=None,
-                 return_data=None, data=None, version=None, return_dict=True):
+    def __init__(
+            self,
+            system_name: str,
+            special_command: Optional[str] = None,
+            command: Optional[str] = None,
+            table_name: Optional[str] = None,
+            return_data: Optional[list] = None,
+            data: Optional[list] = None,
+            version: Union[int, str] = None,
+            return_dict: bool = True
+    ):
         self._lock = threading.Lock()
         self._event_lock = threading.Event()
         #INPUTS
@@ -23,7 +33,7 @@ class SQLMessage:
         self._return_data = return_data #area to store any data to return from the data class
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         '''print return'''
         return_string = "SQLMessage(" + self._system_name + ", " + self._special_command + ")\n"
         return_string += "\t" + str(self._command) + ", " + str(self._table_name)
@@ -31,55 +41,63 @@ class SQLMessage:
         return return_string
 
 
-    def system_name(self):
+    @property
+    def system_name(self) -> str:
         '''Return system Name'''
         with self._lock:
             return self._system_name
 
 
-    def special_command(self):
+    @property
+    def special_command(self) -> Optional[str]:
         '''Return special command'''
         with self._lock:
             return self._special_command
 
 
-    def command(self):
+    @property
+    def command(self) -> str:
         '''Return command'''
         with self._lock:
             return self._command
 
 
-    def table_name(self):
+    @property
+    def table_name(self) -> str:
         '''Return table_name'''
         with self._lock:
             return self._table_name
 
 
-    def data(self):
+    @property
+    def data(self) -> list:
         '''Return data'''
         with self._lock:
             return self._data
 
 
-    def version(self):
+    @property
+    def version(self) -> int:
         '''Return version'''
         with self._lock:
             return self._version
 
 
-    def return_dict(self):
+    @property
+    def return_dict(self) -> bool:
         '''Return if return should be dict'''
         with self._lock:
             return self._return_dict
 
 
-    def return_data(self):
+    @property
+    def return_data(self) -> list:
         '''Return return data'''
         with self._lock:
             return self._return_data
 
 
-    def set_return_data(self, data):
+    def set_return_data(self, data: list):
         '''Sets Return Data'''
         with self._lock:
             self._return_data = data

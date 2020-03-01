@@ -21,19 +21,19 @@ class Database:
 
 
     @classmethod
-    def sql(cls):
+    def sql(cls) -> SqlBaseClass:
         '''returns the sql'''
         return cls.__sql
 
 
     @classmethod
-    def start_sql(cls) -> None:
+    def start_sql(cls):
         '''starts the SQL System'''
         cls.__sql.start_thread()
 
 
     @classmethod
-    def stop_sql(cls) -> None:
+    def stop_sql(cls):
         '''stops the SQL System'''
         if cls.__sql is not None:
             cls.__sql.stop_thread()

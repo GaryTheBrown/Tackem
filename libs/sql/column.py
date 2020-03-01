@@ -1,4 +1,5 @@
 '''Column Defenition Stuff Useful for updating tables'''
+from typing import Union, Any
 import time
 
 
@@ -17,8 +18,16 @@ class Column:
     }
 
 
-    def __init__(self, name, variable_type=False, primary_key=False,
-                 unique=False, not_null=False, default=None, default_raw=False):
+    def __init__(
+            self,
+            name: str,
+            variable_type: Union[bool, str] = False,
+            primary_key: bool = False,
+            unique: bool = False,
+            not_null: bool = False,
+            default: Any = None,
+            default_raw: bool = False
+    ):
 
         if isinstance(name, str):
             self.name = name
@@ -36,12 +45,12 @@ class Column:
             self.default = name[4]
 
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         '''print return'''
         return "Column(" + self.to_string() + ")"
 
 
-    def to_string(self):
+    def to_string(self) -> str:
         '''turns Column info into a string for commands'''
         return_string = '"' + self.name + '"'
         return_string += " "
@@ -63,7 +72,7 @@ class Column:
         return return_string
 
 
-    def get_default_value(self):
+    def get_default_value(self) -> str:
         '''returns the default blank to use for when not null on column'''
         return_string = ""
         if self.variable_types[self.variable_type] == 0:
@@ -87,15 +96,12 @@ class Column:
         return return_string
 
 
-    def compare(self, to_compare):
+    def compare(self, to_compare) -> bool:
         '''Compare the results'''
-        if not to_compare.name == self.name:
-            return False
-        if not to_compare.variable_type == self.variable_type:
-            return False
-        if not to_compare.primary_key == self.primary_key:
-            return False
-        if not to_compare.not_null == self.not_null:
+        if not to_compare.name == self.name \
+            or not to_compare.variable_type == self.variable_type \
+            or not to_compare.primary_key == self.primary_key \
+            or not to_compare.not_null == self.not_null:
             return False
         if self.default is None:
             return True

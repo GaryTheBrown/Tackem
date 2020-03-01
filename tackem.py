@@ -13,11 +13,6 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-#TODO move all actions to the api. allowing localhost to use without api key or generate single
-# action keys
-
-#TODO Move plugin DOwnloader into Admin section
-#TODO SAVE THROUGH API IN CONFIG TOO.
 
 class Tackem:
     '''main program entrance'''

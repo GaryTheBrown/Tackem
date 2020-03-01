@@ -1,5 +1,5 @@
 '''SQL Abstract Class System'''
-#import itertools
+from typing import Any, Optional
 import threading
 import json
 from abc import ABCMeta, abstractmethod
@@ -24,7 +24,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         self._thread.setName("SQL")
 
 
-    def start_thread(self):
+    def start_thread(self) -> bool:
         '''start the thread'''
         if not self._thread.is_alive():
             self._thread.start()
@@ -40,36 +40,51 @@ class SqlBaseClass(metaclass=ABCMeta):
             self._thread.join()
 
 
-    def get_thread_run(self):
+    def get_thread_run(self) -> bool:
         '''return if thread is running'''
         return self._thread.is_alive()
 
 
-    def call(self, system_name, call):
+    def call(self, system_name: str, call: str) -> Any:
         '''Function to call the sql through threadding'''
-        return self.__call(SQLMessage(system_name, command=call))
+        return self.__call(
+            SQLMessage(
+                system_name,
+                command=call
+            )
+        )
 
 
-    def get(self, system_name, call):
+    def get(self, system_name: str, call: str) -> Any:
         '''Function to call the sql through threadding'''
-        return self.__call(SQLMessage(system_name, command=call, return_data=[]))
+        return self.__call(
+            SQLMessage(
+                system_name,
+                command=call,
+                return_data=[]
+            )
+        )
 
 
-    def table_check(self, system_name, table_name, data, version):
+    def table_check(self, system_name: str, table_name: str, data: list, version: int) -> Any:
         '''Function to do a table check'''
-        return self.__call(SQLMessage(system_name,
-                                      special_command="tablecheck",
-                                      table_name=table_name,
-                                      data=data,
-                                      version=version))
+        return self.__call(
+            SQLMessage(
+                system_name,
+                special_command="tablecheck",
+                table_name=table_name,
+                data=data,
+                version=version
+            )
+        )
 
 
-    def table_checks(self, system_name, data):
+    def table_checks(self, system_name: str, data: list) -> Any:
         '''Function to do a table check from a dict'''
         return self.table_check(system_name, data["name"], data["data"], data["version"])
 
 
-    def table_has_row(self, system_name, table_name, dict_of_queries):
+    def table_has_row(self, system_name: str, table_name: str, dict_of_queries: dict) -> int:
         '''Check if the Table has row by looking for all the queries'''
         queries = []
         for key in dict_of_queries:
@@ -77,15 +92,14 @@ class SqlBaseClass(metaclass=ABCMeta):
 
         command = "SELECT id FROM " + table_name
         command += " WHERE " + " AND ".join(queries) + ";"
-        return_value = self.__call(SQLMessage(system_name, command=command, return_data=[]))
-        if return_value:
+        if return_value := self.__call(SQLMessage(system_name, command=command, return_data=[])):
             if isinstance(return_value, list) and len(return_value) == 1:
                 if isinstance(return_value[0], dict):
                     return return_value[0]['id']
         return 0
 
 
-    def insert(self, system_name, table_name, dict_of_values):
+    def insert(self, system_name: str, table_name: str, dict_of_values: dict) -> Any:
         '''insert data into a table'''
         keys = list(dict_of_values.keys())
         command = "INSERT INTO " + table_name + " (" + ", ".join(keys) + ") VALUES ("
@@ -96,7 +110,13 @@ class SqlBaseClass(metaclass=ABCMeta):
         return self.__call(SQLMessage(system_name, command=command))
 
 
-    def select(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
+    def select(
+            self,
+            system_name: str,
+            table_name: str,
+            dict_of_values: Optional[dict] = None,
+            list_of_returns: Optional[list] = None
+    ) -> Any:
         '''select data from a table'''
         returns = "*"
         if isinstance(list_of_returns, list):
@@ -114,7 +134,13 @@ class SqlBaseClass(metaclass=ABCMeta):
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
 
-    def select_like(self, system_name, table_name, dict_of_values=None, list_of_returns=None):
+    def select_like(
+            self,
+            system_name: str,
+            table_name: str,
+            dict_of_values: Optional[dict] = None,
+            list_of_returns: Optional[list] = None
+    ) -> Any:
         '''select data from a table'''
         returns = "*"
         if isinstance(list_of_returns, list):
@@ -132,14 +158,14 @@ class SqlBaseClass(metaclass=ABCMeta):
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
 
-    def count(self, system_name, table_name):
+    def count(self, system_name: str, table_name: str) -> Any:
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[],
                                       return_dict=False))[0][0]
 
 
-    def count_where(self, system_name, table_name, dict_of_values):
+    def count_where(self, system_name: str, table_name: str, dict_of_values: dict) -> Any:
         '''select data from a table'''
         command = "SELECT COUNT(*) FROM " + table_name + " WHERE "
         values = []
@@ -150,7 +176,13 @@ class SqlBaseClass(metaclass=ABCMeta):
                                       return_dict=False))[0][0]
 
 
-    def select_by_row(self, system_name, table_name, row_id, list_of_returns=None):
+    def select_by_row(
+            self,
+            system_name: str,
+            table_name: str,
+            row_id: int,
+            list_of_returns: Optional[list] = None
+    ) -> Any:
         '''insert data into a table'''
         returns = "*"
         if isinstance(list_of_returns, list):
@@ -164,7 +196,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         return False
 
 
-    def update(self, system_name, table_name, row_id, dict_of_values):
+    def update(self, system_name: str, table_name: str, row_id: int, dict_of_values: dict) -> Any:
         '''update a row'''
         command = "UPDATE " + table_name + " SET "
         values = []
@@ -174,13 +206,13 @@ class SqlBaseClass(metaclass=ABCMeta):
         return self.__call(SQLMessage(system_name, command=command))
 
 
-    def delete_row(self, system_name, table_name, row_id):
+    def delete_row(self, system_name: str, table_name: str, row_id: int) -> Any:
         '''delete a row by id'''
         command = "DELETE FROM " + table_name + " WHERE id=" + str(row_id) +";"
         return self.__call(SQLMessage(system_name, command=command))
 
 
-    def delete_where(self, system_name, table_name, dict_of_values):
+    def delete_where(self, system_name: str, table_name: str, dict_of_values: dict) -> Any:
         '''delete a row by id'''
         command = "DELETE FROM " + table_name + " WHERE "
         values = []
@@ -190,18 +222,18 @@ class SqlBaseClass(metaclass=ABCMeta):
         return self.__call(SQLMessage(system_name, command=command))
 
 
-    def __call(self, job):
+    def __call(self, job: SQLMessage) -> Any:
         '''underlying call'''
         with self._event_list_lock:
             self._event_list.append(job)
         self._event_lock.set()
         job.event_wait()
-        if isinstance(job.return_data(), (list, dict)):
-            return job.return_data()
+        if isinstance(job.return_data, (list, dict)):
+            return job.return_data
         return True
 
 
-    def __convert_var(self, var):
+    def __convert_var(self, var: Any) -> str:
         '''convert the value'''
         if isinstance(var, bool):
             return '"True"' if var else '"False"'
@@ -230,19 +262,19 @@ class SqlBaseClass(metaclass=ABCMeta):
                 with self._event_list_lock:
                     job = self._event_list.pop()
                 if isinstance(job, SQLMessage):
-                    if job.special_command() is not None:
-                        if job.special_command() == "tablecheck":
-                            job.set_return_data(self.__table_check(job.table_name(),
-                                                                   job.data(),
-                                                                   job.version()))
+                    if job.special_command is not None:
+                        if job.special_command == "tablecheck":
+                            job.set_return_data(self.__table_check(job.table_name,
+                                                                   job.data,
+                                                                   job.version))
                     else: #None Special command just simple command
                         #Means command is simple command with or without return
-                        if isinstance(job.return_data(), list):
+                        if isinstance(job.return_data, list):
                             job.set_return_data(
-                                self._trusted_get(job.command(), job.return_dict())
+                                self._trusted_get(job.command, job.return_dict)
                             )
                         else:
-                            self._trusted_call(job.command())
+                            self._trusted_call(job.command)
 
 
                     #finally release the waiting thread
@@ -265,22 +297,22 @@ class SqlBaseClass(metaclass=ABCMeta):
 
 
     @abstractmethod
-    def _check_version_table_exists(self):
+    def _check_version_table_exists(self) -> bool:
         '''returns if the table_version exists'''
 
 
     @abstractmethod
-    def _trusted_call(self, call):
+    def _trusted_call(self, call: str):
         '''Trusted Calls can send the command in a string to here for execution'''
 
 
     @abstractmethod
-    def _trusted_get(self, call, return_dict=True):
+    def _trusted_get(self, call: str, return_dict: bool = True) -> list:
         '''Grab a list of the tables'''
 
 
     @abstractmethod
-    def _update_table(self, table_name, data, version):
+    def _update_table(self, table_name: str, data: list, version: int) -> bool:
         '''Update the table with the informaiton provided'''
 
 
@@ -295,28 +327,33 @@ class SqlBaseClass(metaclass=ABCMeta):
             self._add_table("table_version", table_version_columns, 0, False)
 
 
-    def __table_check(self, table_name, data, version):
+    def __table_check(self, table_name: str, data: list, version: int) -> bool:
         '''checks if the table exists adds it if it doesn't and update it if needed'''
         table_version = self.__table_exists(table_name)
         if table_version == version:
             return True
-        elif table_version == 0:
+        if table_version == 0:
             return self._add_table(table_name, data, version)
-        elif table_version < version:
+        if table_version < version:
             return self._update_table(table_name, data, version)
         return False
 
 
-    def __table_exists(self, table_name):
-        '''Check if Table Exists'''
+    def __table_exists(self, table_name: str) -> int:
+        '''Check if Table Exists return version number'''
         command = 'SELECT version FROM table_version WHERE name="' + table_name + '";'
-        info = self._trusted_get(command)
-        if not info:
-            return 0
-        return info[0]['version']
+        if info := self._trusted_get(command):
+            return info[0]['version']
+        return 0
 
 
-    def _add_table(self, table_name, data, version, update_table=True):
+    def _add_table(
+            self,
+            table_name: str,
+            data: list,
+            version: int,
+            update_table: bool = True
+    ) -> bool:
         ''' Adds Table to the DB and then adds it into the table version DB'''
         array_of_variables = list(map(lambda v: v.to_string(), data))
         variables = ",".join(array_of_variables)

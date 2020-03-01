@@ -19,7 +19,7 @@ class MySql(SqlBaseClass):
     ###########
 
 
-    def _check_version_table_exists(self):
+    def _check_version_table_exists(self) -> bool:
         '''returns if the table_version exists'''
         command = 'SELECT * FROM Tackem'
         command += '.INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = "table_version"'
@@ -30,11 +30,11 @@ class MySql(SqlBaseClass):
         '''Trusted Calls can send the command in a string to here for execution'''
 
 
-    def _trusted_get(self, call, return_dict=True):
+    def _trusted_get(self, call, return_dict=True) -> list:
         '''Grab a list of the tables'''
 
 
-    def _update_table(self, table_name, data, version):
+    def _update_table(self, table_name, data, version) -> bool:
         '''Update the table with the informaiton provided'''
 
 

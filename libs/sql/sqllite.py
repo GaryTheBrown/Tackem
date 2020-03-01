@@ -26,20 +26,20 @@ class SqlLite(SqlBaseClass):
         self.__conn.close()
 
 
-    def _check_version_table_exists(self):
+    def _check_version_table_exists(self) -> bool:
         '''returns if the table_version exists'''
         command = "SELECT name FROM sqlite_master WHERE type='table' AND name='table_version';"
         return bool(self._trusted_get(command, False))
 
 
-    def _trusted_call(self, call):
+    def _trusted_call(self, call: str):
         '''Trusted Calls can send the command in a string to here for execution'''
         self.__conn.commit()
         self.__sql.execute(call)
         self.__conn.commit()
 
 
-    def _trusted_get(self, call, return_dict=True):
+    def _trusted_get(self, call: str, return_dict: bool = True) -> list:
         '''Grab a list of the tables'''
         self.__conn.commit()
         self.__sql.execute(call)
@@ -58,7 +58,7 @@ class SqlLite(SqlBaseClass):
         return return_data
 
 
-    def _update_table(self, table_name, data, version):
+    def _update_table(self, table_name: str, data: list, version: int) -> bool:
         '''Update the table with the informaiton provided'''
 
         #first move the current table to a new name
