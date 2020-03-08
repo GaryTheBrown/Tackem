@@ -5,6 +5,9 @@ from api.base import APIBase
 from api.admin.config import APIAdminConfig
 from api.admin.plugin import APIAdminPlugin
 from api.admin.add_multi import APIAdminAddMulti
+from api.admin.user_add import APIAdminUserAdd
+from api.admin.user_delete import APIAdminUserDelete
+from api.admin.user_update import APIAdminUserUpdate
 from libs.root_event import RootEvent
 
 @cherrypy.expose
@@ -17,6 +20,9 @@ class APIAdmin(APIBase):
         if len(vpath) == 0:
             return self
 
+        if cherrypy.request.params['user'] != self.MASTER:
+            raise cherrypy.HTTPError(status=401)  #Unauthorized
+
         section = vpath.pop(0)
         if section == "reboot":
             cherrypy.request.params['action'] = "reboot"
@@ -28,6 +34,12 @@ class APIAdmin(APIBase):
             return APIAdminAddMulti()
         elif section == "plugin":
             return APIAdminPlugin()
+        elif section == "userAdd":
+            return APIAdminUserAdd()
+        elif section == "userDelete":
+            return APIAdminUserDelete()
+        elif section == "userUpdate":
+            return APIAdminUserUpdate()
         return self
 
 
@@ -35,9 +47,6 @@ class APIAdmin(APIBase):
         '''GET Function'''
         user = kwargs.get("user", self.GUEST)
         action = kwargs.get("action", None)
-
-        if user != self.MASTER:
-            raise cherrypy.HTTPError(status=401)  #Unauthorized
 
         if action == "shutdown":
             print("SHOULD SHUTDOWN")

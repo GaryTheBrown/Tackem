@@ -8,7 +8,7 @@
 		<div class="col-2 font-weight-bold text-center border border-light">ACTIONS</div>
 	</div>
 	%%USERSHTML%%
-	<form action="%%BASEURL%%admin/adduser" method="post" class="col-12 row">
+	<section class="col-12 row">
 		<div class="col-1 border border-light"></div>
 		<div class="col-3 p-2 border border-light">
 			<input type="text" name="username" class="form-control" value="">
@@ -17,17 +17,10 @@
 			<input type="password" name="password" class="form-control" value="">
 		</div>
 		<div class="col-3 p-2 border border-light text-center pt-3">
-			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="radio" name="is_admin" value="True">
-				<label class="form-check-label" for="inlineRadio1">True</label>
-			</div>
-			<div class="form-check form-check-inline">
-				<input class="form-check-input" type="radio" name="is_admin" value="False" checked>
-				<label class="form-check-label" for="inlineRadio2">False</label>
-			</div>
+			<input class="form-check-input" type="checkbox" name="isadmin" value="True" data-toggle="toggle" data-onstyle="success" data-offstyle="danger">
 		</div>
 		<div class="col-2 p-2 border border-light">
-			<input type="submit" class="btn btn-success btn-block" value="Add"/>
+			<input type="button" class="btn btn-success btn-block" value="Add"/>
 		</div>
-	</form>
+	</section>
 </div>

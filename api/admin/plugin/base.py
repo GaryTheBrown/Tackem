@@ -3,7 +3,7 @@ from system.plugin_downloader import TackemSystemPluginDownloader
 from api.base import APIBase
 
 class APIPluginBase(APIBase):
-    '''CONFIG API'''
+    '''PLUGIN BASE API'''
 
 
     def __init__(self):

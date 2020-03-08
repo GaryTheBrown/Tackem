@@ -52,7 +52,7 @@ class Authentication:
 
     def __password_encryption(self, password: str) -> str:
         '''clear password to encrypted password'''
-        return hashlib.md5(password.encode('utf-8')).hexdigest()
+        return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
 
     def login(

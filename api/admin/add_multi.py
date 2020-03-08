@@ -1,4 +1,4 @@
-'''CONFIG API'''
+'''Add Multi API'''
 import cherrypy
 from api.base import APIBase
 from config_data import CONFIG
@@ -6,7 +6,7 @@ from config_data import CONFIG
 
 @cherrypy.expose
 class APIAdminAddMulti(APIBase):
-    '''CONFIG API'''
+    '''Add Multi API'''
 
     def POST(self, **kwargs) -> str:
         '''POST Function'''
