@@ -33,8 +33,10 @@
                     section: $section,
                     success: function(json)
                     {
-                        if (json.success){
-                            window.location.reload(false);
+                        console.log(json, json['success']);
+                        if (json['success']){
+                            console.log("YES");
+                            location.reload();
                         } else {
                             if(json.message){
                                 alert(message);
@@ -73,8 +75,10 @@
                 section: $section,
                 success: function(json)
                 {
-                    if (json.success){
-                        elem.prop('disabled', false);
+                    console.log(json, json['success']);
+                    if (json['success']){
+                        console.log("YES");
+                        location.reload();
                     } else {
                         if(json.message){
                             alert(message);
@@ -107,8 +111,10 @@
                 section: $section,
                 success: function(json)
                 {
-                    if (json.success){
-                        window.location.reload(false);
+                    console.log(json, json['success']);
+                    if (json['success']){
+                        console.log("YES");
+                        location.reload();
                     } else {
                         if(json.message){
                             alert(message);

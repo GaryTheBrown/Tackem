@@ -163,11 +163,11 @@ class Authentication:
         ) -> None:
         '''update the user info'''
         data = {}
-        if isinstance(username, str):
+        if isinstance(username, str) and username != "":
             data['username'] = username
-        if isinstance(password, str):
+        if isinstance(password, str) and password != "":
             data['password'] = self.__password_encryption(password)
-        if isinstance(is_admin, bool):
+        if isinstance(is_admin, bool) and is_admin != "":
             data['is_admin'] = is_admin
         Database.sql().update("Auth", self.__db_info['name'], user_id, data)
 

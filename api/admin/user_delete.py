@@ -11,8 +11,7 @@ class APIAdminUserDelete(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
-        body = self._get_request_body()
-        if not "userId" in body:
+        if not "userid" in kwargs:
             return self._return_data(
                 user,
                 "User",
@@ -21,7 +20,7 @@ class APIAdminUserDelete(APIBase):
                 error="Missing User Id",
                 errorNumber=0
             )
-        AUTHENTICATION.delete_user(body['userId'])
+        AUTHENTICATION.delete_user(kwargs['userid'])
         return self._return_data(
             user,
             "User",

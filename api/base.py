@@ -52,7 +52,7 @@ class APIBase():
             "user" : user,
             "system" : system,
             "action" : action,
-            "sucess" : success
+            "success" : success
         }
 
         for key, value in kwargs.items():

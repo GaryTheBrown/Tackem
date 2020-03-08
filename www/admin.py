@@ -96,15 +96,18 @@ class Admin(HTMLTEMPLATE):
         data = AUTHENTICATION.get_users()
         users_html = ""
         for item in data:
+            admin = "checked" if item['is_admin'] else ""
+            admin += " disabled" if item['id'] == 1 else ""
             users_html += HTMLSystem.part(
                 "section/user",
                 USERID=item['id'],
                 NAME=item['username'],
-                ISADMIN="checked" if item['is_admin'] else ""
+                ISADMIN=admin
             )
         return self._template(
             HTMLSystem.part(
                 "pages/users",
                 USERSHTML=users_html
-            )
+            ),
+             javascript="static/js/users.js"
         )

@@ -11,8 +11,7 @@ class APIAdminUserAdd(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
-        body = self._get_request_body()
-        if not "username" in body:
+        if not "username" in kwargs:
             return self._return_data(
                 user,
                 "User",
@@ -21,7 +20,7 @@ class APIAdminUserAdd(APIBase):
                 error="Missing User Name",
                 errorNumber=0
             )
-        if not "password" in body:
+        if not "password" in kwargs:
             return self._return_data(
                 user,
                 "User",
@@ -30,7 +29,7 @@ class APIAdminUserAdd(APIBase):
                 error="Missing User Password",
                 errorNumber=1
             )
-        if not "isadmin" in body:
+        if not "isadmin" in kwargs:
             return self._return_data(
                 user,
                 "User",
@@ -39,8 +38,7 @@ class APIAdminUserAdd(APIBase):
                 error="Missing is admin Setting",
                 errorNumber=2
             )
-
-        AUTHENTICATION.add_user(body['username'], body['password'], body['isadmin'])
+        AUTHENTICATION.add_user(kwargs['username'], kwargs['password'], bool(kwargs['isadmin']))
         return self._return_data(
             user,
             "User",

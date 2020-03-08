@@ -89,7 +89,7 @@
                 target: target,
                 success: function(json)
                 {
-                    if (json.sucess) {
+                    if (json.success) {
                         $(`#${target}_tab`).append(json.html);
                         $modalRoot.modal('hide');
                     } else {
