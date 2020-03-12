@@ -80,9 +80,9 @@
                 type: 'POST',
                 url: '/api/admin/addMulti/',
                 data: {
-                    plugin_name: data[1],
-                    plugin_type: data[2],
-                    instance: $input.val();
+                    plugin_name: data[2],
+                    plugin_type: data[1],
+                    instance: $input.val()
                 },
                 elem: $elem,
                 modalRoot: $modalRoot,

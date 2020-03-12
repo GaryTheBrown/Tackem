@@ -1,4 +1,5 @@
 '''SQL System'''
+from typing import Union
 from config_data import CONFIG
 from libs.sql.baseclass import SqlBaseClass
 from libs.sql.mysql import MySql

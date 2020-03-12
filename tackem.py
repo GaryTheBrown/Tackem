@@ -9,10 +9,13 @@ from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.root_event import RootEventMaster as RootEvent
 from libs.httpd import Httpd
 from libs.html_system import HTMLSystem
+from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
+#TODO FIX CONFIG MULTI ADD
+#TODO fix the plugin downloader to working
 
 class Tackem:
     '''main program entrance'''
@@ -103,6 +106,7 @@ class Tackem:
     def __load_webserver(self) -> Union[bool, None]:
         '''loads the webserver system'''
         if self.__webserver is None:
+            HTMLTEMPLATE.set_baseurl(CONFIG['webui']['baseurl'].value)
             self.__webserver = Httpd()
             HTMLSystem.set_theme(CONFIG['webui']['theme'].value)
             return True

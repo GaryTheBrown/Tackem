@@ -1,4 +1,5 @@
 '''Function to check if a program exists for the use by a plugin'''
+import platform
 from shutil import which
 
 
@@ -6,7 +7,18 @@ def check_for_required_programs(
         program_list: list,
         plugin: str = None,
         output: bool = True
-    ) -> bool:
+    ) -> tuple:
+    '''checks list for required programs and warns if not installed'''
+    if platform.system() == 'Linux':
+        return __linux(program_list, plugin, output)
+
+    return "OTHER OS's NOT IMPLEMENTET", 1
+
+def __linux(
+        program_list: list,
+        plugin: str = None,
+        output: bool = True
+    ) -> tuple:
     '''checks list for required programs and warns if not installed'''
     all_there = True
     missing_program_list = []
@@ -14,12 +26,14 @@ def check_for_required_programs(
         if which(program) is None:
             missing_program_list.append(program)
             all_there = False
-    if not all_there and output:
+    if not all_there:
         message = "MISSING THE FOLLOWING PROGRAMS: " + " ".join(missing_program_list)
         if plugin is not None:
-            print(plugin.upper(), message)
+            if output:
+                print(plugin.upper(), message)
             return plugin.upper() + " " + message, 1
         else:
-            print(message)
+            if output:
+                print(message)
             return message, 1
     return True, 0

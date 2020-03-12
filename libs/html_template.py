@@ -9,7 +9,12 @@ from libs.startup_arguments import PROGRAMVERSION
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
 
+    _baseurl = "/"
 
+    @classmethod
+    def set_baseurl(cls, baseurl):
+        '''sets the base url for use rather than accessing through the config each time'''
+        cls._baseurl = baseurl
     def __init__(
             self,
             name: str,
@@ -108,20 +113,27 @@ class HTMLTEMPLATE():
         if not AUTHENTICATION.check_logged_in():
             return nav_items_html
         nav_list = {}
+        print(self._tackem_system.system_keys())
         for key in self._tackem_system.system_keys():
             key_list = key.split(" ")
             if not key_list[0] in nav_list:
                 if len(key_list) != 1:
                     nav_list[key_list[0]] = key
                     continue
+
                 nav_list[key_list[0]] = {}
+
             if not key_list[1] in nav_list[key_list[0]]:
                 if len(key_list) != 2:
                     nav_list[key_list[0]][key_list[1]] = key
                     continue
+
                 nav_list[key_list[0]][key_list[1]] = {}
+
             if not key_list[2] in nav_list[key_list[0]][key_list[1]]:
                 nav_list[key_list[0]][key_list[1]][key_list[2]] = key
+
+        print(nav_list)
 
         for key in sorted(nav_list):
             if isinstance(nav_list[key], str):

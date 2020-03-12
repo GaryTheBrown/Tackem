@@ -11,22 +11,9 @@ from api.admin.plugin.base import APIPluginBase
 class APIPluginClearConfig(APIPluginBase):
     '''PLUGIN CLEAR CONFIG API'''
 
-    def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
-        '''GET Function'''
-        return self.__clear_config_plugin(**kwargs)
-
 
     def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
-        return self.__clear_config_plugin(**kwargs)
-
-
-    def PUT(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
-        '''PUT Function'''
-        return self.__clear_config_plugin(**kwargs)
-
-    def __clear_config_plugin(self, **kwargs) -> str:
-        '''The Action'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
         plugin_name = kwargs.get("plugin_name", None)

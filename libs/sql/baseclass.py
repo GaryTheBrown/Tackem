@@ -270,12 +270,10 @@ class SqlBaseClass(metaclass=ABCMeta):
                     else: #None Special command just simple command
                         #Means command is simple command with or without return
                         if isinstance(job.return_data, list):
-                            print("1", job.command)
                             job.set_return_data(
                                 self._trusted_get(job.command, job.return_dict)
                             )
                         else:
-                            print("2", job.command)
                             self._trusted_call(job.command)
 
 

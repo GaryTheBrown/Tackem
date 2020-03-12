@@ -20,7 +20,10 @@ class TackemSystemAdmin(TackemSystemFull):
         plugin_json_file = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/settings.json"
         plugin_settings = load_plugin_settings(plugin_json_file)
         if platform.system() == 'Linux':
-            return check_for_required_programs(plugin_settings.get('linux_programs', []))
+            return check_for_required_programs(
+                plugin_settings.get('linux_programs', []),
+                plugin_name
+            )
         return "Platform Not Supported yet", 2
 
 
@@ -45,7 +48,7 @@ class TackemSystemAdmin(TackemSystemFull):
 
     def import_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''import a plugin'''
-        if not self.can_plugin_load(plugin_type, plugin_name):
+        if self.can_plugin_load(plugin_type, plugin_name)[0] is not True:
             return "Plugin Cannot Import", 0
         plugin = importlib.import_module("plugins." + plugin_type + "." + plugin_name)
         plugin_platforms = plugin.SETTINGS.get("platforms", ['Linux', 'Darwin', 'Windows'])
@@ -150,6 +153,7 @@ class TackemSystemAdmin(TackemSystemFull):
     def load_plugin_systems(self, plugin_type: str, plugin_name: str) -> bool:
         '''loads a single plugin systems'''
         system_name = plugin_type + " " + plugin_name
+        print(system_name)
         system_config = CONFIG['plugins'][plugin_type][plugin_name]
         if self._base_data.plugins[plugin_type][plugin_name].SETTINGS.get('single_instance', True):
             if system_config['enabled'].value:
@@ -158,9 +162,9 @@ class TackemSystemAdmin(TackemSystemFull):
             return True
         all_created = True
         for inst_obj in system_config:
-            print(type(system_config), system_config.var_name, type(inst_obj), inst_obj.var_name)
             inst = inst_obj.var_name
             full_system_name = system_name + " " + inst
+            print(system_config[inst])
             if system_config[inst]['enabled'].value:
                 if not self.load_system(full_system_name, False):
                     all_created = False

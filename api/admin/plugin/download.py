@@ -13,23 +13,8 @@ class APIPluginDownload(APIPluginBase):
     __EXTRA = "This Plugin Requires extra Programs Please see the readme"
 
 
-    def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
-        '''GET Function'''
-        return self.__download_plugin(**kwargs)
-
-
     def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
-        return self.__download_plugin(**kwargs)
-
-
-    def PUT(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
-        '''PUT Function'''
-        return self.__download_plugin(**kwargs)
-
-
-    def __download_plugin(self, **kwargs) -> str:
-        '''The Action'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", "").lower()
         plugin_name = kwargs.get("plugin_name", "").lower()

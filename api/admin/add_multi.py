@@ -11,55 +11,54 @@ class APIAdminAddMulti(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
-        body = self._get_request_body()
 
         required = []
-        if (plugin_type := body.get("plugin_type", None)) is None:
+        if (plugin_type := kwargs.get("plugin_type", None)) is None:
             required.append("plugin_type")
-        if (plugin_name := body.get("plugin_name", None)) is None:
+        if (plugin_name := kwargs.get("plugin_name", None)) is None:
             required.append("plugin_name")
-        if (instance_name := body.get("instance_name", None)) is None:
-            required.append("instance_name")
+        if (instance := kwargs.get("instance", None)) is None:
+            required.append("instance")
         if required:
             return self._return_data(
                 user,
                 "addMulti",
                 "Adding Instance of {} - {}".format(plugin_type, plugin_name),
                 False,
-                instance_name=instance_name,
+                instance=instance,
                 error="Missing Data Passed. Requires {}".format(", ".join(required)),
                 errorNumber=0
             )
 
-        var = instance_name.lower().replace(" ", "")
+        var = instance.lower().replace(" ", "")
         if var in CONFIG["plugins"][plugin_type][plugin_name].keys():
             return self._return_data(
                 user,
                 "addMulti",
                 "Adding Instance of {} - {}".format(plugin_type, plugin_name),
                 False,
-                instance_name=instance_name,
+                instance=instance,
                 error="Instance already exists",
                 errorNumber=1
             )
 
-        if not CONFIG["plugins"][plugin_type][plugin_name].clone_many_section(instance_name):
+        if not CONFIG["plugins"][plugin_type][plugin_name].clone_many_section(instance):
             return self._return_data(
                 user,
                 "addMulti",
                 "Adding Instance of {} - {}".format(plugin_type, plugin_name),
                 False,
-                instance_name=instance_name,
+                instance=instance,
                 error="CLoning Data Failed",
                 errorNumber=2
             )
 
-        variable_name = "plugins_{}_{}_{}".format(plugin_type, plugin_name, instance_name)
+        variable_name = "plugins_{}_{}_{}".format(plugin_type, plugin_name, instance)
         return self._return_data(
             user,
             "config",
             "Adding Instance of {} - {}".format(plugin_type, plugin_name),
             True,
-            instance_name=instance_name,
-            html=CONFIG["plugins"][plugin_type][plugin_name][instance_name].panel(variable_name)
+            instance=instance,
+            html=CONFIG["plugins"][plugin_type][plugin_name][instance].panel(variable_name)
         )

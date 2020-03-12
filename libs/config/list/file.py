@@ -48,7 +48,7 @@ class ConfigListFile(ConfigListBase):
                     item.update_configobj(config)
                 else:
                     if not item.var_name in config:
-                        self.__config[item.var_name] = {}
+                        config[item.var_name] = {}
                     item.update_configobj(config[item.var_name])
             else:
                 config[item.var_name] = item.value
