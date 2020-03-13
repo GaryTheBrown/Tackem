@@ -10,7 +10,6 @@ from libs.html_system import HTMLSystem
 class ConfigObjOptionsSelect(ConfigObjOptionsBase):
     '''Config Item Options Select'''
 
-
     def __init__(
             self,
             var_name: str,
@@ -31,7 +30,8 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
         if isinstance(default_value, list):
             for i, val in enumerate(default_value):
                 if not isinstance(val, (str, int, float)):
-                    raise ValueError("default value item is not a string, int or float")
+                    raise ValueError(
+                        "default value item is not a string, int or float")
         for value in values:
             if not isinstance(value, ConfigObjOption):
                 raise ValueError("value is not a ConfigObjOption")
@@ -48,7 +48,6 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             input_attributes,
             value_link
         )
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''

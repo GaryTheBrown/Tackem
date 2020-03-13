@@ -4,9 +4,9 @@ from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
 
+
 class Root(HTMLTEMPLATE):
     '''Root'''
-
 
     @cherrypy.expose
     def index(self) -> str:
@@ -15,12 +15,10 @@ class Root(HTMLTEMPLATE):
 
         return self._template(HTMLSystem.open("pages/homepage"))
 
-
     @cherrypy.expose
     def about(self) -> str:
         '''About Page'''
         return self._template(HTMLSystem.open("pages/about"))
-
 
     @cherrypy.expose
     def login(self, **kwargs) -> str:
@@ -34,7 +32,6 @@ class Root(HTMLTEMPLATE):
 
         return self._template(HTMLSystem.part("pages/login", RETURNURL=return_url), navbar=False)
 
-
     @cherrypy.expose
     def password(self, **kwargs) -> str:
         '''Login Page'''
@@ -45,9 +42,9 @@ class Root(HTMLTEMPLATE):
         if password is not None and new_password is not None and new_password_check is not None:
             if new_password == new_password_check:
                 if AUTHENTICATION.change_password(password, new_password):
-                    raise cherrypy.HTTPRedirect(cherrypy.url().replace("/password", "/"))
+                    raise cherrypy.HTTPRedirect(
+                        cherrypy.url().replace("/password", "/"))
         return self._template(HTMLSystem.part("pages/password"), navbar=False)
-
 
     @cherrypy.expose
     def logout(self) -> None:

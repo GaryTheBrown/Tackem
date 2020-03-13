@@ -7,7 +7,6 @@ from libs.config.obj.data.input_attributes import InputAttributes
 class ConfigObjOption:
     '''Config Item Options'''
 
-
     def __init__(
             self,
             value: str,
@@ -38,14 +37,12 @@ class ConfigObjOption:
         self.__short_label = short_label
         self.__input_attributes = input_attributes
 
-
     @property
     def spec(self) -> str:
         '''Returns the line for the config option'''
         if self.not_in_config:
             return ""
         return '"' + self.value + '"'
-
 
     def __attributes(self, selected) -> str:
         '''returns the attributes as a string for the config html'''
@@ -57,7 +54,6 @@ class ConfigObjOption:
         if self.__short_label != "":
             string += ' label="' + self.__short_label + '"'
         return string
-
 
     def html(self, selected, variable_name: str) -> str:
         '''Returns the option html for the config'''
@@ -71,36 +67,30 @@ class ConfigObjOption:
             OTHER=self.__attributes(selected)
         )
 
-
     @property
     def value(self):
         '''Returns Value'''
         return self.__value
-
 
     @property
     def label(self):
         '''Returns Label'''
         return self.__label
 
-
     @property
     def hide_on_html(self):
         '''Returns Hide ON HTML'''
         return self.__hide_on_html
-
 
     @property
     def not_in_config(self):
         '''Returns not in Config'''
         return self.__not_in_config
 
-
     @property
     def short_label(self):
         '''Returns the Shortened Label'''
         return self.__short_label
-
 
     @property
     def input_attributes(self) -> Optional[InputAttributes]:

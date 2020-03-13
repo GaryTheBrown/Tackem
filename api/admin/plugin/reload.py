@@ -7,8 +7,7 @@ from api.admin.plugin.base import APIPluginBase
 class APIPluginReload(APIPluginBase):
     '''PLUGIN RELOAD API'''
 
-
-    def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
+    def POST(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
@@ -37,7 +36,6 @@ class APIPluginReload(APIPluginBase):
                 error=return_data[0],
                 error_number=return_data[1]
             )
-
 
         if self._system.load_plugin_systems(plugin_type, plugin_name) is not True:
             return self._return_data_plugin(

@@ -8,7 +8,6 @@ from config_data import CONFIG
 class APIAdminConfig(APIBase):
     '''CONFIG API'''
 
-
     def _cp_dispatch(self, vpath):
         '''cp dispatcher overwrite'''
         location = []
@@ -16,7 +15,6 @@ class APIAdminConfig(APIBase):
             location.append(vpath.pop(0))
         cherrypy.request.params['location'] = location
         return self
-
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
@@ -34,7 +32,6 @@ class APIAdminConfig(APIBase):
             location=location,
             setting=value
         )
-
 
     def POST(self, **kwargs) -> str:
         '''POST Function'''
@@ -56,9 +53,8 @@ class APIAdminConfig(APIBase):
             after=body['value']
         )
 
-
     def __check_for_blocked_locations(self, location: str) -> None:
         '''checks for banned locations'''
         if "masterkey" in location or "userkey" in location or location[0] == "plugins" \
-            or location[0] == "systems":
-            raise cherrypy.HTTPError(status=401)  #Unauthorized
+                or location[0] == "systems":
+            raise cherrypy.HTTPError(status=401)  # Unauthorized

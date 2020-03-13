@@ -10,7 +10,6 @@ from libs.html_system import HTMLSystem
 class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
     '''Config Item Options Radio'''
 
-
     def __init__(
             self,
             var_name: str,
@@ -45,7 +44,6 @@ class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
             input_attributes,
             value_link
         )
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''

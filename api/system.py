@@ -9,7 +9,7 @@ from api.base import APIBase
 class APISystem(APIBase):
     '''SYSTEM API'''
 
-#plugin manager api here
+# plugin manager api here
     def _cp_dispatch(self, vpath):
         '''cp dispatcher overwrite'''
         plugin_type = vpath.pop(0)
@@ -20,6 +20,7 @@ class APISystem(APIBase):
         if not single_instance:
             plugin_instance = vpath.pop(0)
 
-        plugin_system = TackemSystemPlugin(plugin_type, plugin_name, plugin_instance)
+        plugin_system = TackemSystemPlugin(
+            plugin_type, plugin_name, plugin_instance)
 
         return self

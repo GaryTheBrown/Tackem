@@ -9,7 +9,6 @@ from libs.config.rules import ConfigRules
 class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
     '''Config Item Options CheckBox'''
 
-
     def __init__(
             self,
             var_name: str,
@@ -29,7 +28,8 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
             raise ValueError("default value is not a string, int or list")
         if isinstance(default_value, list):
             if all(not isinstance(x, (str, int)) for x in default_value):
-                raise ValueError("default values list is not full of strings or ints")
+                raise ValueError(
+                    "default values list is not full of strings or ints")
         if all(not isinstance(x, ConfigObjCheckbox) for x in values):
             raise ValueError("value is not a ConfigObjCheckbox")
 
@@ -46,7 +46,6 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
             value_link
         )
 
-
     @property
     def spec(self) -> str:
         '''Returns the line for the config option'''
@@ -55,7 +54,8 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
 
         default = self.default_value
         if isinstance(default, list):
-            default = "[" + ", ".join(["'{}'".format(x) for x in self.default_value]) + "]"
+            default = "[" + ", ".join(["'{}'".format(x)
+                                       for x in self.default_value]) + "]"
         else:
             default = "'{}'".format(self.default_value)
         string = self.var_name + " = string_list("

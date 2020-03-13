@@ -3,12 +3,12 @@ import cherrypy
 
 
 def setup_error_pages(
-        e400: bool = True,
-        e401: bool = True,
-        e403: bool = True,
-        e404: bool = True,
-        e500: bool = True
-    ) -> None:
+    e400: bool = True,
+    e401: bool = True,
+    e403: bool = True,
+    e404: bool = True,
+    e500: bool = True
+) -> None:
     '''Changes the Error Pages For The System'''
     if e400:
         cherrypy.config.update({'error_page.400': error_page_400})

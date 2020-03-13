@@ -11,7 +11,6 @@ from libs.html_system import HTMLSystem
 class ConfigObjBoolean(ConfigObjBase):
     '''Config Item Boolean'''
 
-
     def __init__(
             self,
             var_name: str,
@@ -41,7 +40,6 @@ class ConfigObjBoolean(ConfigObjBase):
             value_link
         )
 
-
     def _set_value(self, value) -> bool:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, bool):
@@ -58,9 +56,7 @@ class ConfigObjBoolean(ConfigObjBase):
                 return False
             return True
 
-
         return self.default_value
-
 
     @property
     def spec(self) -> str:
@@ -75,11 +71,11 @@ class ConfigObjBoolean(ConfigObjBase):
             string += i_a
             if i_a != "":
                 string += ", "
-        string += "default='" + ("True" if self.default_value else "False") + "'"
+        string += "default='" + \
+            ("True" if self.default_value else "False") + "'"
         string += ")\n"
 
         return string
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
@@ -96,7 +92,6 @@ class ConfigObjBoolean(ConfigObjBase):
             ENABLED=str(self.value),
             OTHER=other
         )
-
 
     def to_type(self, value) -> bool:
         '''returns the value in the correct format'''

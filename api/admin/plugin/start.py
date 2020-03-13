@@ -8,7 +8,7 @@ from api.admin.plugin.base import APIPluginBase
 class APIPluginStart(APIPluginBase):
     '''PLUGIN START API'''
 
-    def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
+    def POST(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)

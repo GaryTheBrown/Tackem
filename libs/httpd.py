@@ -16,15 +16,14 @@ from system.full import TackemSystemFull
 class Httpd():
     '''HTTPD CLASS'''
 
-
     def __init__(self):
         self.__system = TackemSystemFull()
 
         cherrypy.config.update({
             'server.socket_host': '0.0.0.0',
             'server.socket_port': CONFIG['webui']['port'].value,
-            'server.threadPool':10,
-            'server.environment':"production",
+            'server.threadPool': 10,
+            'server.environment': "production",
             'log.screen': False,
             'log.access_file': '',
             'log.error_file': '',
@@ -45,7 +44,7 @@ class Httpd():
             }
 
         conf_api = {
-            '/':{
+            '/': {
                 'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
                 'tools.response_headers.on': True,
                 'tools.response_headers.headers': [('Content-Type', 'text/plain')],
@@ -56,9 +55,10 @@ class Httpd():
         baseurl = CONFIG['webui']['baseurl'].value
 
         cherrypy.tree.mount(Root("", "", self.__system), baseurl, conf_root)
-        cherrypy.tree.mount(Admin("Admin", "", self.__system), baseurl + "admin/", conf_root)
+        cherrypy.tree.mount(Admin("Admin", "", self.__system),
+                            baseurl + "admin/", conf_root)
         for key in self.__system.systems:
-            #load system webpages into cherrypy
+            # load system webpages into cherrypy
             plugin_link = self.__system.system(key).plugin_link()
             if plugin_link.SETTINGS.get('single_instance', True):
                 plugin_link.www.mounts(key, baseurl)
@@ -72,7 +72,6 @@ class Httpd():
     def start(self) -> None:
         '''Start the server'''
         cherrypy.engine.start()
-
 
     def stop(self) -> None:
         '''Stop the server'''

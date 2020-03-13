@@ -7,7 +7,6 @@ from system.plugin import TackemSystemPlugin
 class PluginBaseClass(metaclass=ABCMeta):
     '''base class of the plugins'''
 
-
     def __init__(self, system_name: str, single_instance: bool = False):
         self._running = False
         self._system = None
@@ -22,28 +21,24 @@ class PluginBaseClass(metaclass=ABCMeta):
             plugin_name = name_split[-2]
             instance = name_split[-1]
 
-        self._tackem_system = TackemSystemPlugin(plugin_type, plugin_name, instance)
-
+        self._tackem_system = TackemSystemPlugin(
+            plugin_type, plugin_name, instance)
 
     @abstractmethod
     def startup(self):
         '''Startup Script'''
 
-
     @abstractmethod
     def shutdown(self):
         '''stop the plugin'''
-
 
     def running(self) -> bool:
         '''is it running?'''
         return self._running
 
-
     def name(self) -> str:
         '''Returns the Plugin Name'''
         return self._name
-
 
     def plugin_link(self):
         '''Returns the plugin Link'''

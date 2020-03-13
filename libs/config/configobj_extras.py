@@ -11,6 +11,7 @@ def email(value):
             return value
     raise ValidateError('"{}" is not an email address'.format(value))
 
+
 EXTRA_FUNCTIONS = {
     "email": email
 }

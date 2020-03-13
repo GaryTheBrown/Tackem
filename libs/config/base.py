@@ -1,20 +1,21 @@
 '''Config Base Data Class'''
 from typing import Optional
 from libs.config.rules import ConfigRules
+
+
 class ConfigBase:
     '''Config Base Class'''
 
-
     def __init__(
-            self,
-            var_name: str,
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            value_link: Optional[list] = None
-        ):
+        self,
+        var_name: str,
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        value_link: Optional[list] = None
+    ):
         if not isinstance(var_name, str):
             raise ValueError("variable name is not a string")
         if not isinstance(label, str):
@@ -39,30 +40,25 @@ class ConfigBase:
         self.__rules = rules
         self.__value_link = value_link
 
-
     @property
     def var_name(self) -> str:
         '''returns the name'''
         return self.__var_name
-
 
     @var_name.setter
     def var_name(self, var):
         '''sets the var name'''
         self.__var_name = var
 
-
     @property
     def key(self) -> str:
         '''returns the name'''
         return self.__var_name.lower()
 
-
     @property
     def label(self):
         '''returns the label'''
         return self.__label
-
 
     @label.setter
     def label(self, var):
@@ -74,24 +70,20 @@ class ConfigBase:
         '''returns the help text'''
         return self.__help_text
 
-
     @property
     def hide_on_html(self):
         '''returns the hide on html'''
         return self.__hide_on_html
-
 
     @property
     def not_in_config(self):
         '''returns the not in config'''
         return self.__not_in_config
 
-
     @property
     def rules(self):
         '''returns the rules'''
         return self.__rules
-
 
     @property
     def value_link(self):

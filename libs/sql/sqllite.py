@@ -7,37 +7,31 @@ from libs.sql.baseclass import SqlBaseClass
 class SqlLite(SqlBaseClass):
     '''sqllite system'''
 
-
     __sql = None
     __conn = None
-
 
     def _startup(self):
         '''Setup SQLlite Here'''
         self.__conn = sqlite3.connect(PROGRAMCONFIGLOCATION + '/Tackem.db')
         self.__sql = self.__conn.cursor()
 
-
     def _shutdown(self):
         '''Shutdown the System Here'''
-        #save any changes to the file
+        # save any changes to the file
         self.__conn.commit()
-        #close the connection
+        # close the connection
         self.__conn.close()
-
 
     def _check_version_table_exists(self) -> bool:
         '''returns if the table_version exists'''
         command = "SELECT name FROM sqlite_master WHERE type='table' AND name='table_version';"
         return bool(self._trusted_get(command, False))
 
-
     def _trusted_call(self, call: str):
         '''Trusted Calls can send the command in a string to here for execution'''
         self.__conn.commit()
         self.__sql.execute(call)
         self.__conn.commit()
-
 
     def _trusted_get(self, call: str, return_dict: bool = True) -> list:
         '''Grab a list of the tables'''
@@ -57,42 +51,46 @@ class SqlLite(SqlBaseClass):
             return full_return_data
         return return_data
 
-
     def _update_table(self, table_name: str, data: list, version: int) -> bool:
         '''Update the table with the informaiton provided'''
 
-        #first move the current table to a new name
+        # first move the current table to a new name
         command1 = "ALTER TABLE " + table_name + " RENAME TO " + table_name + "_old;"
         self._trusted_call(command1)
 
-        #make the new version of the table
+        # make the new version of the table
         self._add_table(table_name, data, version, False)
 
-        #move Data across to new table
-        command_get_old_table_columns = "PRAGMA table_info(" + table_name + "_old);"
-        returned_data_temp_old = self._trusted_get(command_get_old_table_columns, False)
-        command_get_new_table_columns = "PRAGMA table_info(" + table_name + ");"
-        returned_data_temp_new = self._trusted_get(command_get_new_table_columns, False)
+        # move Data across to new table
+        command_get_old_table_columns = "PRAGMA table_info(" + \
+            table_name + "_old);"
+        returned_data_temp_old = self._trusted_get(
+            command_get_old_table_columns, False)
+        command_get_new_table_columns = "PRAGMA table_info(" + \
+            table_name + ");"
+        returned_data_temp_new = self._trusted_get(
+            command_get_new_table_columns, False)
 
         links = {}
         for new_column in returned_data_temp_new:
             for i, old_column in enumerate(returned_data_temp_old):
-                if new_column[1] == old_column[1]:#compare name
+                if new_column[1] == old_column[1]:  # compare name
                     links[new_column[1]] = [True, i]
 
         for i, new_column in enumerate(returned_data_temp_new):
-            if new_column[1] in links:#if column is already linked skip it in this run
+            if new_column[1] in links:  # if column is already linked skip it in this run
                 continue
             if not new_column[4] is None:
                 links[new_column[1]] = None
-            else: #if there is no default check if NULLABLE
+            else:  # if there is no default check if NULLABLE
                 if not new_column[3]:
                     links[new_column[1]] = [False, None]
-                else: # Get Variable type and return a value to fill in here.
+                else:  # Get Variable type and return a value to fill in here.
                     links[new_column[1]] = [False, data[i].get_default_value()]
 
-        #create insert command here
-        insert = "INSERT INTO " + table_name + " (" + ", ".join(list(links.keys())) + ") VALUES "
+        # create insert command here
+        insert = "INSERT INTO " + table_name + \
+            " (" + ", ".join(list(links.keys())) + ") VALUES "
 
         command_select_all_from_table = "SELECT * FROM " + table_name + "_old;"
         rows = self._trusted_get(command_select_all_from_table, False)
@@ -123,12 +121,13 @@ class SqlLite(SqlBaseClass):
             row_to_insert = insert + "(" + ", ".join(values) + ");"
             self._trusted_call(row_to_insert)
 
-        #update table_version
-        update_table_version = 'UPDATE table_version SET version=' + str(version)
+        # update table_version
+        update_table_version = 'UPDATE table_version SET version=' + \
+            str(version)
         update_table_version += ' Where name="' + table_name + '";'
         self._trusted_call(update_table_version)
 
-        #delete old table
+        # delete old table
         command_delete_table = "DROP TABLE " + table_name + "_old;"
         self._trusted_call(command_delete_table)
 

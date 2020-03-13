@@ -1,6 +1,7 @@
 '''Input Attributes'''
 from typing import Any
 
+
 class InputAttributes:
     '''Input Attributes'''
 
@@ -8,7 +9,6 @@ class InputAttributes:
         "size", "maxlength", "height", "width", "list", "min", "max", "pattern",
         "placeholder", "step", "alt"
     ]
-
 
     def __init__(
             self,
@@ -40,14 +40,13 @@ class InputAttributes:
             elif arg == "hidden":
                 self.__hidden = True
 
-        #kwargs for key:value ones with data- accepted
+        # kwargs for key:value ones with data- accepted
         for key, value in kwargs.items():
             if key[0:5] == "data_" or key in self.__kwargs:
                 if isinstance(value, list):
                     self.__dict[key] = ",".join(value)
                 else:
                     self.__dict[key] = str(value)
-
 
     def needed(self, *args):
         '''checks if the items are set otherwise raises an exception'''
@@ -73,24 +72,23 @@ class InputAttributes:
         if missing_list:
             raise ValueError("MISSING ARGUMENTS: " + ", ".join(missing_list))
 
-
     def block(self, *args):
         '''checks if any of the items are set and raises an exception if so'''
         block_list = []
         for arg in args:
             if (arg == "autofocus" and self.__autofocus) \
-            or (arg == "readonly" and self.__readonly) \
-            or (arg == "disabled" and self.__disabled) \
-            or (arg == "multiple" and self.__multiple) \
-            or (arg == "required" and self.__required) \
-            or (arg == "selected" and self.__selected) \
-            or (arg == "hidden" and self.__hidden) \
-            or (arg in self.__dict):
+                    or (arg == "readonly" and self.__readonly) \
+                    or (arg == "disabled" and self.__disabled) \
+                    or (arg == "multiple" and self.__multiple) \
+                    or (arg == "required" and self.__required) \
+                    or (arg == "selected" and self.__selected) \
+                    or (arg == "hidden" and self.__hidden) \
+                    or (arg in self.__dict):
                 block_list.append(arg)
 
         if block_list:
-            raise ValueError("BLOCKED ARGUMENTS FOUND: " + ", ".join(block_list))
-
+            raise ValueError("BLOCKED ARGUMENTS FOUND: " +
+                             ", ".join(block_list))
 
     @property
     def spec(self) -> str:
@@ -109,14 +107,12 @@ class InputAttributes:
             return_string += "max=" + str(_max)
         return return_string
 
-
     def html(self) -> str:
         '''returns html ready string'''
         string = ""
 
         for key, value in self.__dict.items():
             string += " " + key.replace("_", "-") + '="' + value + '"'
-
 
         if self.__autofocus:
             string += " autofocus"
@@ -135,66 +131,54 @@ class InputAttributes:
 
         return string
 
-
     def get(self, key, default=None) -> Any:
         '''returns a value in the dictonary'''
         return self.__dict.get(key, default)
-
 
     def __getitem__(self, key) -> Any:
         '''[] getter'''
         return self.__dict.get(key, None)
 
-
     def __setitem__(self, key, value):
         '''[] setter'''
         self.__dict[key] = value
-
 
     def __iter__(self):
         '''getter itteration'''
         return iter(self.__dict)
 
-
     def __len__(self) -> int:
         return len(self.__dict)
-
 
     @property
     def autofocus(self) -> bool:
         '''returns if autofocus'''
         return self.__autofocus
 
-
     @property
     def readonly(self) -> bool:
         '''returns if read only'''
         return self.__readonly
-
 
     @property
     def disabled(self) -> bool:
         '''returns if disabled'''
         return self.__disabled
 
-
     @property
     def multiple(self) -> bool:
         '''returns multiple'''
         return self.__multiple
-
 
     @property
     def required(self) -> bool:
         '''returns if required'''
         return self.__required
 
-
     @property
     def selected(self) -> bool:
         '''returns if selected'''
         return self.__selected
-
 
     @property
     def hidden(self) -> bool:

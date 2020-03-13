@@ -7,9 +7,9 @@ from libs.config.html.post_to_config import post_config_settings
 from config_data import CONFIG
 from system.plugin_downloader import TackemSystemPluginDownloader
 
+
 class Admin(HTMLTEMPLATE):
     '''Admin'''
-
 
     @cherrypy.expose
     def config(self, **kwargs) -> str:
@@ -24,7 +24,6 @@ class Admin(HTMLTEMPLATE):
             except OSError:
                 print("ERROR WRITING CONFIG FILE")
         return self._template(CONFIG.html(), javascript="static/js/config.js")
-
 
     @cherrypy.expose
     def plugin_downloader(self) -> str:
@@ -48,12 +47,10 @@ class Admin(HTMLTEMPLATE):
             if readme is None:
                 readme = plugin['description']
 
-
             is_loaded = TackemSystemPluginDownloader().is_plugin_loaded(
                 plugin['plugin_type'],
                 plugin['plugin_name']
             )
-
 
             github_plugin_html += HTMLSystem.part(
                 "section/plugindownloader",
@@ -83,9 +80,7 @@ class Admin(HTMLTEMPLATE):
             LOCALPLUGINS=local_plugin_html,
         )
 
-
         return self._template(page, javascript="static/js/plugindownloader.js")
-
 
     @cherrypy.expose
     def users(self) -> str:
@@ -109,5 +104,5 @@ class Admin(HTMLTEMPLATE):
                 "pages/users",
                 USERSHTML=users_html
             ),
-             javascript="static/js/users.js"
+            javascript="static/js/users.js"
         )

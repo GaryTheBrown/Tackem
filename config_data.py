@@ -94,7 +94,8 @@ CONFIG = ConfigList(
             "",
             "Master API Key",
             "The master API key for full control",
-            button=Button("Generate API Key", "generateAPIKey", True, input="api_masterkey"),
+            button=Button("Generate API Key", "generateAPIKey",
+                          True, input="api_masterkey"),
             input_attributes=InputAttributes("readonly")
         ),
         ConfigObjString(
@@ -102,7 +103,8 @@ CONFIG = ConfigList(
             "",
             "User API Key",
             "The user API key for limited control",
-            button=Button("Generate API Key", "generateAPIKey", True, input="api_userkey"),
+            button=Button("Generate API Key", "generateAPIKey",
+                          True, input="api_userkey"),
             input_attributes=InputAttributes("readonly")
         )
     ),
@@ -128,7 +130,8 @@ CONFIG = ConfigList(
         ),
         ConfigObjOptionsSelect(
             "theme",
-            [ConfigObjOption(x, x) for x in next(os.walk(THEMEFOLDERLOCATION))[1]],
+            [ConfigObjOption(x, x)
+             for x in next(os.walk(THEMEFOLDERLOCATION))[1]],
             "default",
             "Theme",
             "The Theme for the system"

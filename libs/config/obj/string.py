@@ -12,10 +12,8 @@ from libs.html_system import HTMLSystem
 class ConfigObjString(ConfigObjBase):
     '''Config Item String'''
 
-
     __config_type = "string"
     __html_type = "text"
-
 
     def __init__(
             self,
@@ -70,7 +68,6 @@ class ConfigObjString(ConfigObjBase):
         string += ")\n"
 
         return string
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''

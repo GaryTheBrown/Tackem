@@ -15,14 +15,15 @@ class HTMLTEMPLATE():
     def set_baseurl(cls, baseurl):
         '''sets the base url for use rather than accessing through the config each time'''
         cls._baseurl = baseurl
+
     def __init__(
-            self,
-            name: str,
-            key: str,
-            tackem_system,
-            base_stylesheet: Optional[str] = None,
-            base_javascript: Optional[str] = None
-        ):
+        self,
+        name: str,
+        key: str,
+        tackem_system,
+        base_stylesheet: Optional[str] = None,
+        base_javascript: Optional[str] = None
+    ):
         self._tackem_system = tackem_system
         self._name = name
         self._key = key
@@ -32,14 +33,13 @@ class HTMLTEMPLATE():
         if key != "":
             self._plugin = self._tackem_system.plugin
 
-
     def _template(
-            self,
-            body: str,
-            navbar: bool = True,
-            javascript: Optional[str] = None,
-            stylesheet: Optional[str] = None
-        ) -> str:
+        self,
+        body: str,
+        navbar: bool = True,
+        javascript: Optional[str] = None,
+        stylesheet: Optional[str] = None
+    ) -> str:
         '''Create The Template Layout'''
         navbar_html = ""
         if isinstance(navbar, str):
@@ -56,7 +56,8 @@ class HTMLTEMPLATE():
             for key in self._base_javascript:
                 javascript_extra_html += HTMLSystem.script_link(key)
         elif isinstance(self._base_javascript, str):
-            javascript_extra_html = HTMLSystem.script_link(self._base_javascript)
+            javascript_extra_html = HTMLSystem.script_link(
+                self._base_javascript)
 
         if isinstance(javascript, list):
             for key in javascript:
@@ -69,7 +70,8 @@ class HTMLTEMPLATE():
             for key in self._base_stylesheet:
                 stylesheet_extra_html += HTMLSystem.stylesheet_link(key)
         elif isinstance(self._base_stylesheet, str):
-            stylesheet_extra_html = HTMLSystem.stylesheet_link(self._base_stylesheet)
+            stylesheet_extra_html = HTMLSystem.stylesheet_link(
+                self._base_stylesheet)
 
         if isinstance(stylesheet, list):
             for key in stylesheet:
@@ -96,16 +98,15 @@ class HTMLTEMPLATE():
         )
 
     def _error_page(
-            self,
-            code: int
-        ) -> str:
+        self,
+        code: int
+    ) -> str:
         '''Shows the error Page'''
-        #if not any codes bellow or 404
+        # if not any codes bellow or 404
         page = '<h1 class="text-center">404 Not Found</h1>'
         if code == 401:
             page = '<h1 class="text-center">401 Not Authorised</h1>'
         return self._template(page, False)
-
 
     def _navbar_left_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
@@ -152,17 +153,18 @@ class HTMLTEMPLATE():
                             if nav_list[key][key2][key3] is self._key:
                                 layer3 += navbar_item_active(key3)
                             else:
-                                layer3 += navbar_item(key3, nav_list[key][key2][key3])
+                                layer3 += navbar_item(key3,
+                                                      nav_list[key][key2][key3])
                         layer2 += navbar_drop_right(key2, key + key2, layer3)
                 nav_items_html += navbar_dropdown(key, key, layer2)
         return nav_items_html
-
 
     def _navbar_right_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = navbar_item("About", "about")
         navbar_item_html = navbar_item("Config", "admin/config")
-        navbar_plugin_download_html = navbar_item("Plugin Download", "admin/plugin_downloader")
+        navbar_plugin_download_html = navbar_item(
+            "Plugin Download", "admin/plugin_downloader")
         navbar_users_html = navbar_item("Users", "admin/users")
         navbar_login_html = navbar_item("Login", "login")
         navbar_logout_html = navbar_item("Logout", "logout")
@@ -178,10 +180,12 @@ class HTMLTEMPLATE():
                 admin_html += navbar_users_html
                 admin_html += navbar_reboot_html
                 admin_html += navbar_shutdown_html
-                navbar_right_html += navbar_dropdown_right("Admin", "admin", admin_html)
+                navbar_right_html += navbar_dropdown_right(
+                    "Admin", "admin", admin_html)
             user_html = navbar_password_html
             user_html += navbar_logout_html
-            navbar_right_html += navbar_dropdown_right("User", "user", user_html)
+            navbar_right_html += navbar_dropdown_right(
+                "User", "user", user_html)
         else:
             navbar_right_html += navbar_login_html
         return navbar_right_html

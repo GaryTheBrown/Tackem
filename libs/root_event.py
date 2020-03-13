@@ -7,7 +7,6 @@ class RootEvent:
     _event_type = False
     _event = Event()
 
-
     @classmethod
     def set_event(cls, event_type: str) -> bool:
         '''Set an event for the root thread to do'''
@@ -20,7 +19,6 @@ class RootEvent:
 
 class RootEventMaster(RootEvent):
     '''Event to wait for the command and then return what to do.'''
-
 
     @classmethod
     def wait_and_get_event(cls) -> str:

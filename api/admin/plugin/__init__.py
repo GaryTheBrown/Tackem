@@ -12,6 +12,7 @@ from api.admin.plugin.stop import APIPluginStop
 from api.admin.plugin.clear_config import APIPluginClearConfig
 from api.admin.plugin.clear_database import APIPluginClearDatabase
 
+
 @cherrypy.expose
 class APIAdminPlugin(APIBase):
     '''PLUGIN API'''

@@ -5,13 +5,12 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
 from libs.config.rules import ConfigRules
 
+
 class ConfigObjPassword(ConfigObjString):
     '''Config Item Password'''
 
-
     __config_type = "string"
     __html_type = "password"
-
 
     def __init__(
             self,

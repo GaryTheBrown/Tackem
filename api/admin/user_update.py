@@ -8,7 +8,6 @@ from libs.authenticator import AUTHENTICATION
 class APIAdminUserUpdate(APIBase):
     '''User Update API'''
 
-
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)

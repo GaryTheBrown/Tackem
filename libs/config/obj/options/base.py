@@ -9,7 +9,6 @@ from libs.config.rules import ConfigRules
 class ConfigObjOptionsBase(ConfigObjBase):
     '''Config Item Options CheckBox'''
 
-
     def __init__(
             self,
             var_name: str,
@@ -62,7 +61,6 @@ class ConfigObjOptionsBase(ConfigObjBase):
                     return self.default_value
             return str(value)
         return self.default_value
-
 
     def __set_value_multi(self, value):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
@@ -149,10 +147,9 @@ class ConfigObjOptionsBase(ConfigObjBase):
             self.__set_value_multi_list_list(value)
         return self.default_value
 
-
     def __set_value_multi_list_str(self, value):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
-        if ";" in value or "," in value or "\n"  in value:
+        if ";" in value or "," in value or "\n" in value:
             return self.__set_value_multi_list_list(
                 [str(x).strip() for x in re.split(';|,|\n', value)]
             )
@@ -174,7 +171,6 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-
     def __set_value_multi_list_int(self, value):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(self.default_value[0], str):
@@ -191,7 +187,6 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-
     def __set_value_multi_list_float(self, value):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(self.default_value[0], str):
@@ -207,7 +202,6 @@ class ConfigObjOptionsBase(ConfigObjBase):
             return float(value)
 
         return self.default_value
-
 
     def __set_value_multi_list_list(self, value):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
@@ -228,7 +222,6 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-
     @property
     def spec(self) -> str:
         '''Returns the line for the config option'''
@@ -241,7 +234,6 @@ class ConfigObjOptionsBase(ConfigObjBase):
         string += ")\n"
 
         return string
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''

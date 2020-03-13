@@ -9,7 +9,6 @@ from libs.config.rules import ConfigRules
 class ConfigObjOptionsRadio(ConfigObjOptionsBase):
     '''Config Item Options Radio'''
 
-
     def __init__(
             self,
             var_name: str,
@@ -44,7 +43,6 @@ class ConfigObjOptionsRadio(ConfigObjOptionsBase):
             input_attributes,
             value_link
         )
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''

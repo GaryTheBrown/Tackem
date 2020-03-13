@@ -18,13 +18,13 @@ def accordian(accordian_name: str, accordian_cards: str) -> str:
 
 
 def accordian_card(
-        accordian_name: str,
-        number: int,
-        header: str,
-        button: str,
-        body: str,
-        show: bool = False
-    ) -> str:
+    accordian_name: str,
+    number: int,
+    header: str,
+    button: str,
+    body: str,
+    show: bool = False
+) -> str:
     '''section for the accordian'''
     return HTMLSystem.part(
         "sections/accordiancard",
@@ -39,11 +39,11 @@ def accordian_card(
 
 
 def form(
-        return_url: str,
-        hidden_html: str,
-        button_label: str,
-        page: str
-    ) -> str:
+    return_url: str,
+    hidden_html: str,
+    button_label: str,
+    page: str
+) -> str:
     '''A form with return url, hidden section customizable button label'''
     return HTMLSystem.part(
         "sections/form",
@@ -55,11 +55,11 @@ def form(
 
 
 def item(
-        variable_name: str,
-        label: str,
-        help_text: str,
-        input_html: str
-    ) -> str:
+    variable_name: str,
+    label: str,
+    help_text: str,
+    input_html: str
+) -> str:
     ''' The whole section for each Config Object'''
     return HTMLSystem.part(
         "sections/item",
@@ -70,12 +70,12 @@ def item(
 
 
 def modal(
-        title: str,
-        variable_name: str,
-        modal_body: str,
-        modal_footer: str,
-        closeable: bool = True
-    ) -> str:
+    title: str,
+    variable_name: str,
+    modal_body: str,
+    modal_footer: str,
+    closeable: bool = True
+) -> str:
     ''' Returnas a modal'''
     return HTMLSystem.part(
         "sections/modal",
@@ -88,10 +88,10 @@ def modal(
 
 
 def list_modal(
-        title: str,
-        variable_name: str,
-        option_list: str
-    ) -> str:
+    title: str,
+    variable_name: str,
+    option_list: str
+) -> str:
     ''' Returnas a modal for a list of options for adding a multi plugin'''
     return HTMLSystem.part(
         "sections/list_modal",
@@ -102,9 +102,9 @@ def list_modal(
 
 
 def multi_modal(
-        title: str,
-        variable_name: str
-    ) -> str:
+    title: str,
+    variable_name: str
+) -> str:
     '''Returnas a modal for adding a multi plugin'''
     return HTMLSystem.part(
         "sections/multi_modal",
@@ -114,13 +114,13 @@ def multi_modal(
 
 
 def multi_panel(
-        variable_name: str,
-        name: str,
-        enable_option: str,
-        delete_option: str,
-        section_html: str,
-        visible: bool = True
-    ) -> str:
+    variable_name: str,
+    name: str,
+    enable_option: str,
+    delete_option: str,
+    section_html: str,
+    visible: bool = True
+) -> str:
     '''Returns a panel for multi type plugin data'''
     return HTMLSystem.part(
         "sections/multi_panel",
@@ -134,13 +134,13 @@ def multi_panel(
 
 
 def panel(
-        title: str,
-        control: str,
-        modal_obj: str,
-        variable_name: str,
-        section_html: str,
-        visible: bool = True
-    ) -> str:
+    title: str,
+    control: str,
+    modal_obj: str,
+    variable_name: str,
+    section_html: str,
+    visible: bool = True
+) -> str:
     '''A Panel for plugins or sections'''
     titleb = "Tackem-Plugin-" + title.replace(" - ", "-")
     return HTMLSystem.part(
@@ -156,13 +156,13 @@ def panel(
 
 
 def plugin_panel(
-        title: str,
-        description: str,
-        clear_config: str,
-        clear_database: str,
-        start_stop: str,
-        add_remove: str
-    ) -> str:
+    title: str,
+    description: str,
+    clear_config: str,
+    clear_database: str,
+    start_stop: str,
+    add_remove: str
+) -> str:
     '''A Panel for plugins or sections'''
     return HTMLSystem.part(
         "sections/plugin_panel",
@@ -181,10 +181,10 @@ def search_modal() -> str:
 
 
 def section(
-        section_name: str,
-        section_html: str,
-        visible: bool = True
-    ) -> str:
+    section_name: str,
+    section_html: str,
+    visible: bool = True
+) -> str:
     '''A Panel for plugins or sections'''
     return HTMLSystem.part(
         "sections/section",
@@ -253,14 +253,14 @@ def delete_instance_button(plugin_name: str, name: str) -> str:
 
 
 def input_button_with_data(
-        value: str,
-        id_name: str = "",
-        class_name: str = "",
-        data: bool = False,
-        outer_div: bool = True,
-        enabled: bool = True,
-        visible: bool = True
-    ) -> str:
+    value: str,
+    id_name: str = "",
+    class_name: str = "",
+    data: bool = False,
+    outer_div: bool = True,
+    enabled: bool = True,
+    visible: bool = True
+) -> str:
     '''returns a button'''
     data_r = ""
     if isinstance(data, tuple):
@@ -303,25 +303,27 @@ def checkbox(name: str, variable_name: str, checkbox_html: str) -> str:
         CHECKBOX=checkbox_html
     )
 
+
 def _script(script_string, variable_name):
     '''Script Code For Multiple Functions'''
     if isinstance(script_string, str):
         return script_string
     if script_string is None:
-        return "onchange='" + 'Switch("' + variable_name +'");' + "'"
+        return "onchange='" + 'Switch("' + variable_name + '");' + "'"
     if script_string is True:
-        script_string = "onchange='" + 'Switch("' + variable_name +'");'
+        script_string = "onchange='" + 'Switch("' + variable_name + '");'
         return script_string + 'ToggleSection("' + variable_name[:-1] + '");' + "'"
 
+
 def checkbox_multi(
-        label: str,
-        variable_name: str,
-        value: str,
-        checked: bool = True,
-        disabled: bool = False,
-        read_only: bool = False,
-        script: Union[str, bool, None] = None
-    ) -> str:
+    label: str,
+    variable_name: str,
+    value: str,
+    checked: bool = True,
+    disabled: bool = False,
+    read_only: bool = False,
+    script: Union[str, bool, None] = None
+) -> str:
     '''returns a multi checkbox'''
     return HTMLSystem.part(
         "inputs/multicheckbox",
@@ -337,13 +339,13 @@ def checkbox_multi(
 
 
 def checkbox_single(
-        name: str,
-        variable_name: str,
-        checked: bool = True,
-        disabled: bool = False,
-        read_only: bool = False,
-        script: Union[str, bool, None] = None
-    ) -> str:
+    name: str,
+    variable_name: str,
+    checked: bool = True,
+    disabled: bool = False,
+    read_only: bool = False,
+    script: Union[str, bool, None] = None
+) -> str:
     '''returns a single checkbox'''
     return HTMLSystem.part(
         "inputs/singlecheckbox",
@@ -358,13 +360,13 @@ def checkbox_single(
 
 
 def checkbox_switch(
-        name: str,
-        variable_name: str,
-        checked: bool = True,
-        disabled: bool = False,
-        read_only: bool = False,
-        script: Union[str, bool, None] = None
-    ) -> str:
+    name: str,
+    variable_name: str,
+    checked: bool = True,
+    disabled: bool = False,
+    read_only: bool = False,
+    script: Union[str, bool, None] = None
+) -> str:
     '''returns a single checkbox'''
     return HTMLSystem.part(
         "inputs/singlecheckbox",
@@ -396,17 +398,17 @@ def hidden_page_index(page_index: int) -> str:
 
 
 def input_box(
-        input_type: str,
-        variable_name: str,
-        value: str,
-        script: str = "",
-        max_length: Union[int, None] = None,
-        minimum: Union[int, None] = None,
-        maximum: Union[int, None] = None,
-        read_only: bool = False,
-        disabled: bool = False,
-        button: str = ""
-    ) -> str:
+    input_type: str,
+    variable_name: str,
+    value: str,
+    script: str = "",
+    max_length: Union[int, None] = None,
+    minimum: Union[int, None] = None,
+    maximum: Union[int, None] = None,
+    read_only: bool = False,
+    disabled: bool = False,
+    button: str = ""
+) -> str:
     '''Returns an input object'''
     return HTMLSystem.part(
         "inputs/input",
@@ -414,7 +416,8 @@ def input_box(
         VARIABLENAME=variable_name,
         VALUE=value,
         SCRIPT=script if isinstance(script, str) else "",
-        MAXLENGTH=' maxlength="' + str(max_length) + '"' if isinstance(max_length, int) else "",
+        MAXLENGTH=' maxlength="' +
+        str(max_length) + '"' if isinstance(max_length, int) else "",
         MIN=' min="' + str(minimum) + '"' if isinstance(minimum, int) else "",
         MAX=' max="' + str(maximum) + '"' if isinstance(maximum, int) else "",
         DISABLED="disabled" if disabled else "",
@@ -424,14 +427,14 @@ def input_box(
 
 
 def radio_option(
-        variable_name: str,
-        name: str,
-        label: str,
-        checked: bool = False,
-        disabled: bool = False,
-        read_only: bool = False,
-        script: str = ""
-    ) -> str:
+    variable_name: str,
+    name: str,
+    label: str,
+    checked: bool = False,
+    disabled: bool = False,
+    read_only: bool = False,
+    script: str = ""
+) -> str:
     '''makes a radio option'''
     return HTMLSystem.part(
         "inputs/radio",
@@ -446,19 +449,20 @@ def radio_option(
 
 
 def select_box_option(
-        name: str,
-        label: str,
-        selected: bool = False,
-        disabled: bool = False,
-        read_only: bool = False,
-        script: str = ""
-    ) -> str:
+    name: str,
+    label: str,
+    selected: bool = False,
+    disabled: bool = False,
+    read_only: bool = False,
+    script: str = ""
+) -> str:
     '''makes an option for the selection box'''
     select_option = " -- select an option -- "
     return HTMLSystem.part(
         "inputs/option",
         NAME=name if isinstance(name, str) and name != "" else "",
-        NAMECAPITALIZE=label if isinstance(name, str) and name != "" else select_option,
+        NAMECAPITALIZE=label if isinstance(
+            name, str) and name != "" else select_option,
         SELECTED="selected" if selected else "",
         DISABLED="disabled" if disabled else "",
         READONLY="readonly" if read_only else "",
@@ -467,18 +471,19 @@ def select_box_option(
 
 
 def select_box(
-        variable_name: str,
-        value: Union[str, None],
-        options_html: Union[str, list],
-        multiple: bool = False,
-        box_size: int = 0,
-        script: str = "",
-        read_only: bool = False,
-        disabled: bool = False
-    ) -> str:
+    variable_name: str,
+    value: Union[str, None],
+    options_html: Union[str, list],
+    multiple: bool = False,
+    box_size: int = 0,
+    script: str = "",
+    read_only: bool = False,
+    disabled: bool = False
+) -> str:
     '''Makes A select box'''
     options_out_html = ""
-    blank_options_html = select_box_option(False, True, True) if value is None else ""
+    blank_options_html = select_box_option(
+        False, True, True) if value is None else ""
     if isinstance(options_html, str):
         options_out_html = options_html
     else:

@@ -9,9 +9,7 @@ from libs.config.rules import ConfigRules
 class ConfigObjIntegerRange(ConfigObjIntegerNumber):
     '''Config Item Integer Range'''
 
-
     __html_type = "range"
-
 
     def __init__(
             self,

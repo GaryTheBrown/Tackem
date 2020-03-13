@@ -9,8 +9,7 @@ from libs.sql import Database
 class APIPluginClearDatabase(APIPluginBase):
     '''PLUGIN CLEAR DATABASE API'''
 
-
-    def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
+    def POST(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
@@ -32,7 +31,7 @@ class APIPluginClearDatabase(APIPluginBase):
         results = Database.sql().select_like(
             "api",
             "table_version",
-            {'name':name_like}
+            {'name': name_like}
         )
         for result in results:
             Database.sql().call("api", "DROP TABLE " + result['name'] + ";")

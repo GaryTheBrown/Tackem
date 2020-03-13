@@ -9,9 +9,7 @@ from libs.config.rules import ConfigRules
 class ConfigObjFloatRange(ConfigObjFloatNumber):
     '''Config Item Float Range'''
 
-
     __html_type = "range"
-
 
     def __init__(
             self,

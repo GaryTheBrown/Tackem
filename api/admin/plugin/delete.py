@@ -4,12 +4,12 @@ import cherrypy
 from api.admin.plugin.base import APIPluginBase
 from config_data import CONFIG
 
+
 @cherrypy.expose
 class APIPluginDelete(APIPluginBase):
     '''PLUGIN DELETE API'''
 
-
-    def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
+    def POST(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", None)
@@ -33,7 +33,6 @@ class APIPluginDelete(APIPluginBase):
                 error=delete_data[0],
                 error_number=delete_data[1]
             )
-
 
         if loaded_data is True:
             CONFIG['plugins'][plugin_type][plugin_name].clear()

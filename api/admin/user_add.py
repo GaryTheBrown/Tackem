@@ -3,10 +3,10 @@ import cherrypy
 from api.base import APIBase
 from libs.authenticator import AUTHENTICATION
 
+
 @cherrypy.expose
 class APIAdminUserAdd(APIBase):
     '''User Add API'''
-
 
     def POST(self, **kwargs) -> str:
         '''POST Function'''
@@ -38,7 +38,8 @@ class APIAdminUserAdd(APIBase):
                 error="Missing is admin Setting",
                 errorNumber=2
             )
-        AUTHENTICATION.add_user(kwargs['username'], kwargs['password'], bool(kwargs['isadmin']))
+        AUTHENTICATION.add_user(
+            kwargs['username'], kwargs['password'], bool(kwargs['isadmin']))
         return self._return_data(
             user,
             "User",

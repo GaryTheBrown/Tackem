@@ -1,5 +1,7 @@
 '''Button'''
 from libs.html_system import HTMLSystem
+
+
 class Button():
     '''Button'''
 
@@ -15,7 +17,6 @@ class Button():
         self.__action = action
         self.__kwargs = kwargs
         self.__append = append
-
 
     @property
     def html(self) -> str:

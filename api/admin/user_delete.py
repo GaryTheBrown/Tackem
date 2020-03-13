@@ -3,10 +3,10 @@ import cherrypy
 from api.base import APIBase
 from libs.authenticator import AUTHENTICATION
 
+
 @cherrypy.expose
 class APIAdminUserDelete(APIBase):
     '''User Delete API'''
-
 
     def POST(self, **kwargs) -> str:
         '''POST Function'''

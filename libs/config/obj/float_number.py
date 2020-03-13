@@ -10,9 +10,7 @@ from libs.html_system import HTMLSystem
 class ConfigObjFloatNumber(ConfigObjBase):
     '''Config Item Float Number'''
 
-
     __html_type = "number"
-
 
     def __init__(
             self,
@@ -46,7 +44,6 @@ class ConfigObjFloatNumber(ConfigObjBase):
 
         self.__button = button
 
-
     def _set_value(self, value) -> Optional[float]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, float):
@@ -62,7 +59,6 @@ class ConfigObjFloatNumber(ConfigObjBase):
             return float(value)
 
         return self.default_value
-
 
     @property
     def spec(self) -> str:
@@ -80,7 +76,6 @@ class ConfigObjFloatNumber(ConfigObjBase):
         string += ")\n"
 
         return string
-
 
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
@@ -100,7 +95,6 @@ class ConfigObjFloatNumber(ConfigObjBase):
             OTHER=other,
             BUTTON=button
         )
-
 
     def to_type(self, value) -> float:
         '''returns the value in the correct format'''

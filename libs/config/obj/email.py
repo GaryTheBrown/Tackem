@@ -10,10 +10,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjEmail(ConfigObjString):
     '''Config Obj String'''
 
-
     __config_type = "email"
     __html_type = "email"
-
 
     def __init__(
             self,
@@ -42,7 +40,6 @@ class ConfigObjEmail(ConfigObjString):
             button,
             value_link
         )
-
 
     def _set_value(self, value) -> Optional[str]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''

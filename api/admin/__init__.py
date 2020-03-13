@@ -10,10 +10,10 @@ from api.admin.user_delete import APIAdminUserDelete
 from api.admin.user_update import APIAdminUserUpdate
 from libs.root_event import RootEvent
 
+
 @cherrypy.expose
 class APIAdmin(APIBase):
     '''ROOT API'''
-
 
     def _cp_dispatch(self, vpath):
         '''cp dispatcher overwrite'''
@@ -21,7 +21,7 @@ class APIAdmin(APIBase):
             return self
 
         if cherrypy.request.params['user'] != self.MASTER:
-            raise cherrypy.HTTPError(status=401)  #Unauthorized
+            raise cherrypy.HTTPError(status=401)  # Unauthorized
 
         section = vpath.pop(0)
         if section == "reboot":
@@ -42,7 +42,6 @@ class APIAdmin(APIBase):
             return APIAdminUserUpdate()
         return self
 
-
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
         user = kwargs.get("user", self.GUEST)
@@ -54,6 +53,6 @@ class APIAdmin(APIBase):
         elif action == "reboot":
             RootEvent.set_event("reboot")
         else:
-            raise cherrypy.HTTPError(status=404)  #Not Found
+            raise cherrypy.HTTPError(status=404)  # Not Found
 
         return self._return_data(user, "admin", action, True)

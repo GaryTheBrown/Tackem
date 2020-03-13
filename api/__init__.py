@@ -13,7 +13,6 @@ from libs.authenticator import AUTHENTICATION
 class API(APIBase):
     '''ROOT API'''
 
-
     def _cp_dispatch(self, vpath):
         '''cp dispatcher overwrite'''
         user = None
@@ -39,7 +38,6 @@ class API(APIBase):
             return APISystem()
         return self
 
-
     def _check_api_key(self, key: str) -> int:
         '''checks the api key against the master and user keys and returns the level'''
         if key is None or not isinstance(key, str):
@@ -51,7 +49,6 @@ class API(APIBase):
         # if key == "ccc":
         #     return self.PLUGIN
         return self.GUEST
-
 
     def _check_session_id(self) -> int:
         '''checks the session Id is in the list'''

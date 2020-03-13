@@ -2,6 +2,7 @@
 from config_data import CONFIG
 from libs.config.list import ConfigList
 
+
 def post_config_settings(kwargs: dict):
     '''Fills in the config dict with the settings based on its name'''
 

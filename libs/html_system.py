@@ -5,14 +5,15 @@ import json
 import re
 from libs.startup_arguments import THEMEFOLDERLOCATION
 
+
 class HTMLSystem:
     '''HTML Systems'''
 
     __theme = "default"
     __settings = {}
     __settings_defaults = {
-        "post_save":True,
-        "api_save":False,
+        "post_save": True,
+        "api_save": False,
     }
 
     @classmethod
@@ -21,7 +22,6 @@ class HTMLSystem:
         cls.__theme = theme
         with open(cls.__location("settings", "json"), 'r') as json_file:
             cls.__settings = json.load(json_file)
-
 
     @classmethod
     def setting(cls, setting: str) -> Any:
@@ -37,7 +37,6 @@ class HTMLSystem:
         '''creates the location'''
         location = THEMEFOLDERLOCATION + cls.__theme + "/"
         return location
-
 
     @classmethod
     def __location(cls, file: str, extension: str) -> str:
@@ -58,7 +57,6 @@ class HTMLSystem:
         '''opens the file and returns it'''
         return str(open(cls.__html_location(file, extension), "r").read())
 
-
     @classmethod
     def part(cls, file: str, **kwargs) -> str:
         '''All in one html template sorter'''
@@ -73,7 +71,6 @@ class HTMLSystem:
 
         return html
 
-
     @classmethod
     def script_link(cls, location: str) -> str:
         '''returns a script link item'''
@@ -81,7 +78,6 @@ class HTMLSystem:
             "tags/scriptlink",
             LOCATION=location
         )
-
 
     @classmethod
     def stylesheet_link(cls, location: str) -> str:

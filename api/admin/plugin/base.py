@@ -2,13 +2,12 @@
 from system.plugin_downloader import TackemSystemPluginDownloader
 from api.base import APIBase
 
+
 class APIPluginBase(APIBase):
     '''PLUGIN BASE API'''
 
-
     def __init__(self):
         self._system = TackemSystemPluginDownloader()
-
 
     def _return_data_plugin(
             self,

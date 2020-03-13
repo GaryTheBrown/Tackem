@@ -12,8 +12,7 @@ class APIPluginDownload(APIPluginBase):
     __INDOCKER += " the required programs for the plugin"
     __EXTRA = "This Plugin Requires extra Programs Please see the readme"
 
-
-    def POST(self, **kwargs) -> str: # pylint: disable=invalid-name,no-self-use
+    def POST(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
         plugin_type = kwargs.get("plugin_type", "").lower()
@@ -30,7 +29,8 @@ class APIPluginDownload(APIPluginBase):
                 error="No Plugin Details Given",
                 error_number=0
             )
-        return_data = self._system.download_plugin(plugin_type.lower(), plugin_name.lower())
+        return_data = self._system.download_plugin(
+            plugin_type.lower(), plugin_name.lower())
         if return_data[0] is not True:
             return self._return_data_plugin(
                 user,
@@ -68,5 +68,6 @@ class APIPluginDownload(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(enable=["start", "clearconfig", "cleardatabase"]),
+            actions=self._actions_return(
+                enable=["start", "clearconfig", "cleardatabase"]),
         )

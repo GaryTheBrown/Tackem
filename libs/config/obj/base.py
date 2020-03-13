@@ -7,11 +7,11 @@ from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
-#http://www.voidspace.org.uk/python/validate.html
+# http://www.voidspace.org.uk/python/validate.html
+
+
 class ConfigObjBase(ABC, ConfigBase):
     '''Shared Data for all config Objects'''
-
-
 
     __configobj_types = [
         "pass", "string", "float", "string_list", "boolean", "option", "integer", "password",
@@ -49,7 +49,6 @@ class ConfigObjBase(ABC, ConfigBase):
         "optgroup",
     ]
 
-
     def __init__(
             self,
             var_name: str,
@@ -84,12 +83,10 @@ class ConfigObjBase(ABC, ConfigBase):
         self.__input_attributes = input_attributes
         self.__data_list = data_list
 
-
     @property
     def value(self):
         '''returns the value'''
         return self.__value
-
 
     @value.setter
     def value(self, value):
@@ -100,30 +97,25 @@ class ConfigObjBase(ABC, ConfigBase):
     def _set_value(self, value):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
 
-
     @property
     def default_value(self):
         '''returns the default value'''
         return self.__default_value
-
 
     @property
     def input_attributes(self) -> Optional[InputAttributes]:
         '''returns the input attributes'''
         return self.__input_attributes
 
-
     @property
     def data_list(self) -> Optional[DataList]:
         '''returns the data list'''
         return self.__data_list
 
-
     @property
     @abstractmethod
     def spec(self) -> str:
         '''Returns the line for the config option'''
-
 
     @abstractmethod
     def item_html(self, variable_name: str) -> str:
@@ -133,12 +125,12 @@ class ConfigObjBase(ABC, ConfigBase):
         '''returns the value in the correct format'''
         return value
 
-
     def html(self, variable_name: str) -> str:
         '''returns the full html code including label and help text'''
         if self.hide_on_html:
             return ""
-        var = "{}_{}".format(variable_name, self.var_name) if variable_name != "" else self.var_name
+        var = "{}_{}".format(
+            variable_name, self.var_name) if variable_name != "" else self.var_name
 
         return HTMLSystem.part(
             "section/item",

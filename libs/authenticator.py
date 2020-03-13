@@ -11,7 +11,6 @@ from config_data import CONFIG
 class Authentication:
     '''Authentication system for all html pages listed'''
 
-
     __db_info = {
         "name": "Authentication_info",
         "data":
@@ -26,19 +25,17 @@ class Authentication:
 
     __temp_sessions = {}
 
-
     def __init__(self):
-        self.__login_url = CONFIG['webui']['baseurl'].value + "login?return_url="
-
+        self.__login_url = CONFIG['webui']['baseurl'].value + \
+            "login?return_url="
 
     def start(self) -> None:
         '''Run starting commands need sql to run'''
         Database.sql().table_checks("Auth", self.__db_info)
         if Database.sql().count("Auth", self.__db_info['name']) == 0:
             self.__add_admin_account()
-        elif Database.sql().count_where("Auth", self.__db_info['name'], {"is_admin":True}) == 0:
+        elif Database.sql().count_where("Auth", self.__db_info['name'], {"is_admin": True}) == 0:
             self.__add_admin_account()
-
 
     def __add_admin_account(self) -> None:
         '''adds an admin account'''
@@ -49,23 +46,22 @@ class Authentication:
         }
         Database.sql().insert("Auth", self.__db_info['name'], user)
 
-
     def __password_encryption(self, password: str) -> str:
         '''clear password to encrypted password'''
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
-
     def login(
-            self,
-            username: str,
-            password: str,
-            timeout: int,
-            returnurl: str
-        ) -> Union[bool, None]:
+        self,
+        username: str,
+        password: str,
+        timeout: int,
+        returnurl: str
+    ) -> Union[bool, None]:
         '''Login Script'''
         if username == "" or password == "":
             return False
-        data = Database.sql().select("Auth", self.__db_info['name'], {"username":username})[0]
+        data = Database.sql().select(
+            "Auth", self.__db_info['name'], {"username": username})[0]
         if data['password'] != self.__password_encryption(password):
             return False
         session_id = str(uuid.uuid1()).replace("-", "")
@@ -75,9 +71,10 @@ class Authentication:
         cherrypy.response.cookie['sessionid'] = session_id
         cherrypy.response.cookie['sessionid']['max-age'] = int(timeout) * 60
         if password == "admin":
-            raise cherrypy.HTTPRedirect(cherrypy.url().replace("login", "password"))
-        raise cherrypy.HTTPRedirect(cherrypy.url().replace("/login", returnurl))
-
+            raise cherrypy.HTTPRedirect(
+                cherrypy.url().replace("login", "password"))
+        raise cherrypy.HTTPRedirect(
+            cherrypy.url().replace("/login", returnurl))
 
     def logout(self) -> None:
         '''Logout Script'''
@@ -87,14 +84,13 @@ class Authentication:
         cherrypy.response.cookie['sessionid']['max-age'] = 0
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("logout", "login"))
 
-
     def check_auth(self) -> None:
         '''Check authentication'''
         if 'sessionid' in cherrypy.request.cookie.keys():
             if cherrypy.request.cookie['sessionid'].value in self.__temp_sessions:
                 return
-        raise cherrypy.HTTPRedirect(self.__login_url + cherrypy.url(relative='server'))
-
+        raise cherrypy.HTTPRedirect(
+            self.__login_url + cherrypy.url(relative='server'))
 
     def check_logged_in(self) -> bool:
         '''Check if logged in'''
@@ -102,7 +98,6 @@ class Authentication:
             if cherrypy.request.cookie['sessionid'].value in self.__temp_sessions:
                 return True
         return False
-
 
     def is_admin(self) -> bool:
         '''Returns if user is admin if logged in returns false if not logged in'''
@@ -112,7 +107,6 @@ class Authentication:
                 return self.__temp_sessions[session_id]['is_admin'] is True
         return False
 
-
     def change_password(self, password: str, new_password: str) -> bool:
         '''change the logged in users password'''
         if password == "" or new_password == "":
@@ -121,13 +115,13 @@ class Authentication:
             return False
         session_id = cherrypy.request.cookie['sessionid'].value
         user_id = self.__temp_sessions[session_id]['id']
-        data = Database.sql().select("Auth", self.__db_info['name'], {"id":user_id})[0]
+        data = Database.sql().select(
+            "Auth", self.__db_info['name'], {"id": user_id})[0]
         if data['password'] != self.__password_encryption(password):
             return False
         Database.sql().update("Auth", self.__db_info['name'], data['id'],
                               {"password": self.__password_encryption(new_password)})
         return True
-
 
     def add_user(self, username: str, password: str, is_admin: bool) -> None:
         '''Add user to system'''
@@ -136,31 +130,29 @@ class Authentication:
             "password": self.__password_encryption(password),
             "is_admin": is_admin
         }
-        if Database.sql().count_where("Auth", self.__db_info['name'], {"username":username}) == 0:
+        if Database.sql().count_where("Auth", self.__db_info['name'], {"username": username}) == 0:
             Database.sql().insert("Auth", self.__db_info['name'], user)
-
 
     def delete_user(self, user_id: int) -> None:
         '''Delete user from system'''
         Database.sql().delete_row("Auth", self.__db_info['name'], user_id)
 
-
     def get_users(self):
         '''Grab the users info'''
         return_list = ["id", "username", "is_admin"]
-        data = Database.sql().select("Auth", self.__db_info['name'], list_of_returns=return_list)
+        data = Database.sql().select(
+            "Auth", self.__db_info['name'], list_of_returns=return_list)
         for item in data:
             item['is_admin'] = item['is_admin'] == "True"
         return data
 
-
     def update_user(
-            self,
-            user_id: int,
-            username: Union[str, None] = None,
-            password: Union[str, None] = None,
-            is_admin: bool = None
-        ) -> None:
+        self,
+        user_id: int,
+        username: Union[str, None] = None,
+        password: Union[str, None] = None,
+        is_admin: bool = None
+    ) -> None:
         '''update the user info'''
         data = {}
         if isinstance(username, str) and username != "":
@@ -171,9 +163,9 @@ class Authentication:
             data['is_admin'] = is_admin
         Database.sql().update("Auth", self.__db_info['name'], user_id, data)
 
-
     def clear_sessions(self) -> None:
         '''clears the sessions and logs all the users out'''
         self.__temp_sessions = {}
+
 
 AUTHENTICATION = Authentication()

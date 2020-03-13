@@ -1,5 +1,5 @@
 '''Start Point Of Program'''
-#https://docs.cherrypy.org/en/latest/tutorials.html
+# https://docs.cherrypy.org/en/latest/tutorials.html
 import os
 import os.path
 import signal
@@ -14,16 +14,15 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-#TODO FIX CONFIG MULTI ADD
-#TODO fix the plugin downloader to working
+# TODO FIX CONFIG MULTI ADD
+# TODO fix the plugin downloader to working
+
 
 class Tackem:
     '''main program entrance'''
 
-
     def __init__(self):
         self.__webserver = None
-
 
     def start(self) -> None:
         '''Start of the program'''
@@ -47,7 +46,6 @@ class Tackem:
         self.__start_webserver()
         print("TACKEM HAS STARTED")
 
-
     def stop(self) -> None:
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
@@ -57,14 +55,12 @@ class Tackem:
         print("STOPPING DATABASE...")
         Database.stop_sql()
 
-
     def cleanup(self) -> None:
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
         TackemSystemAdmin().remove_systems()
         TackemSystemAdmin().remove_plugins()
-
 
     def shutdown(self) -> None:
         '''Shutdown commands'''
@@ -73,15 +69,14 @@ class Tackem:
         CONFIG.save()
         print("SHUTDOWN COMPLETED")
 
-
     def run(self) -> None:
         '''Looping function'''
 
-        #First check if home folder exists (useable to run first time script)
+        # First check if home folder exists (useable to run first time script)
         if not os.path.exists(PROGRAMCONFIGLOCATION):
             os.mkdir(PROGRAMCONFIGLOCATION)
 
-        #Setup signal to watch for ctrl + c command
+        # Setup signal to watch for ctrl + c command
         signal.signal(signal.SIGINT, ctrl_c)
         self.start()
         while True:
@@ -101,8 +96,8 @@ class Tackem:
 
         self.cleanup()
 
+    # Webserver Methods
 
-    #Webserver Methods
     def __load_webserver(self) -> Union[bool, None]:
         '''loads the webserver system'''
         if self.__webserver is None:
@@ -112,7 +107,6 @@ class Tackem:
             return True
         return None
 
-
     def __delete_webserver(self) -> bool:
         '''deletes the webserver'''
         if self.__webserver is not None:
@@ -120,13 +114,11 @@ class Tackem:
             return True
         return False
 
-
     def __start_webserver(self) -> bool:
         '''starts the webserver'''
         if self.__webserver is not None:
             self.__webserver.start()
         return True
-
 
     def __stop_webserver(self) -> bool:
         '''stops the Webserver'''

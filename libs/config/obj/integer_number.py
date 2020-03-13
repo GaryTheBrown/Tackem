@@ -10,9 +10,7 @@ from libs.html_system import HTMLSystem
 class ConfigObjIntegerNumber(ConfigObjBase):
     '''Config Item Integer Number'''
 
-
     __html_type = "number"
-
 
     def __init__(
             self,
@@ -45,7 +43,6 @@ class ConfigObjIntegerNumber(ConfigObjBase):
         )
 
         self.__button = button
-
 
     def _set_value(self, value) -> Optional[int]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
@@ -80,7 +77,6 @@ class ConfigObjIntegerNumber(ConfigObjBase):
 
         return string
 
-
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
         if self.hide_on_html:
@@ -99,7 +95,6 @@ class ConfigObjIntegerNumber(ConfigObjBase):
             OTHER=other,
             BUTTON=button
         )
-
 
     def to_type(self, value) -> int:
         '''returns the value in the correct format'''

@@ -14,13 +14,13 @@ class ConfigListBase(ConfigBase):
             var_name: str,
             label: str,
 
-            *objects,
-            help_text: str = "",
-            rules: Optional[ConfigRules] = None,
-            is_section: bool = False,
-            many_section=None,
-            many_section_limit_list=None
-        ):
+        *objects,
+        help_text: str = "",
+        rules: Optional[ConfigRules] = None,
+        is_section: bool = False,
+        many_section=None,
+        many_section_limit_list=None
+    ):
         super().__init__(var_name, label, help_text, False, False, rules)
 
         if is_section and not isinstance(is_section, bool):
@@ -39,15 +39,16 @@ class ConfigListBase(ConfigBase):
             self._objects = []
 
         if many_section and not isinstance(many_section, ConfigListBase):
-            raise ValueError("Many Section is not a config List object or None")
+            raise ValueError(
+                "Many Section is not a config List object or None")
         self.__many_section = many_section
         if many_section_limit_list:
             if not isinstance(many_section_limit_list, list):
                 raise ValueError("Many Section Limit List is not a list")
             if all(not isinstance(x, str) for x in many_section_limit_list):
-                raise ValueError("All Items in the Many Section Limit List need to be strings")
+                raise ValueError(
+                    "All Items in the Many Section Limit List need to be strings")
         self.__many_section_limit_list = many_section_limit_list
-
 
     def __getitem__(self, key):
         if isinstance(key, int):
@@ -57,14 +58,11 @@ class ConfigListBase(ConfigBase):
                 return obj
         return None
 
-
     def __iter__(self):
         return iter(self._objects)
 
-
     def __len__(self):
         return len(self._objects)
-
 
     def keys(self):
         '''returns all keys for the objects'''
@@ -77,13 +75,11 @@ class ConfigListBase(ConfigBase):
                 return obj
         return default
 
-
     def append(self, obj):
         '''appends the object to the list'''
         if not isinstance(obj, ConfigListBase) and not isinstance(obj, ConfigObjBase):
             raise ValueError("object is not a config Object")
         self._objects.append(obj)
-
 
     def delete(self, key: str) -> bool:
         '''removed the config object according to var_name'''
@@ -105,30 +101,25 @@ class ConfigListBase(ConfigBase):
             print("error with", self.var_name, "clear Func")
         del self._objects
 
-
     @property
     def count(self) -> int:
         '''returns the count of the config objects'''
         return len(self._objects)
-
 
     @property
     def is_section(self) -> bool:
         '''returns if the list is a section'''
         return self.__is_section
 
-
     @property
     def many_section(self):
         '''returns the Many Section'''
         return self.__many_section
 
-
     @property
     def many_section_limit_list(self):
         '''returns the Many Section Limit List'''
         return self.__many_section_limit_list
-
 
     def clone_many_section(self, var_name: str) -> bool:
         '''Clones the Many Section For Multi Instance config sections'''
@@ -142,7 +133,6 @@ class ConfigListBase(ConfigBase):
             self.append(new)
             return True
         return False
-
 
     def find_and_get(self, location: list) -> Any:
         '''Find and Get a config Item'''
@@ -163,7 +153,6 @@ class ConfigListBase(ConfigBase):
                 if location[0] in obj:
                     return obj.find_and_get(location)
         return None
-
 
     def find_and_set(self, location: list, value):
         '''Find and set a config Item'''

@@ -5,6 +5,7 @@ from libs.sql.baseclass import SqlBaseClass
 from libs.sql.mysql import MySql
 from libs.sql.sqllite import SqlLite
 
+
 class Database:
     '''SQL System'''
     __sql = None
@@ -20,18 +21,15 @@ class Database:
         else:
             print(CONFIG['database']['mode'].value)
 
-
     @classmethod
     def sql(cls) -> SqlBaseClass:
         '''returns the sql'''
         return cls.__sql
 
-
     @classmethod
     def start_sql(cls):
         '''starts the SQL System'''
         cls.__sql.start_thread()
-
 
     @classmethod
     def stop_sql(cls):
