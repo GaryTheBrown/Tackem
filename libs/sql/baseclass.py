@@ -83,8 +83,7 @@ class SqlBaseClass(metaclass=ABCMeta):
 
         command = "SELECT id FROM " + table_name
         command += " WHERE " + " AND ".join(queries) + ";"
-        if return_value:
-            = self.__call(SQLMessage(system_name, command=command, return_data=[])):
+        if return_value:= self.__call(SQLMessage(system_name, command=command, return_data=[])):
             if isinstance(return_value, list) and len(return_value) == 1:
                 if isinstance(return_value[0], dict):
                     return return_value[0]['id']
@@ -322,8 +321,7 @@ class SqlBaseClass(metaclass=ABCMeta):
     def __table_exists(self, table_name: str) -> int:
         '''Check if Table Exists return version number'''
         command = 'SELECT version FROM table_version WHERE name="' + table_name + '";'
-        if info:
-            = self._trusted_get(command):
+        if info:= self._trusted_get(command):
             return info[0]['version']
         return 0
 
