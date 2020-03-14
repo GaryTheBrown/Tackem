@@ -14,7 +14,7 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-# TODO FIX CONFIG MULTI ADD
+# TODO NEED TO MAKE THE CONFIG TURN ON/OFF SYSTEMS WHEN ENABLED/DISABLED
 # TODO fix the plugin downloader to working
 
 
@@ -122,8 +122,6 @@ class Tackem:
 
     def __stop_webserver(self) -> bool:
         '''stops the Webserver'''
-        # if CONFIG['webui']['disabled'].value:
-        #     return False
         if self.__webserver is not None:
             self.__webserver.stop()
         return True

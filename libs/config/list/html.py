@@ -128,27 +128,32 @@ class ConfigListHtml(ConfigListBase):
         for obj in self._objects:
             if not isinstance(obj, ConfigListBase):
                 raise ValueError("Object found where config lists should be")
-            html += obj.panel(variable_name)
+            html += obj.panel(variable_name, obj.label.title())
 
         html += self.__modal(variable_name)  # <- FIX MODAL NOT WORKING
-        html += HTMLSystem.part(
-            "inputs/button",
-            LABEL="Add Instance",
-            DATA=InputAttributes(
-                data_toggle="modal",
-                data_target="#{}_modal".format(variable_name)
-            ).html()
+        html += """<div class="my-4 mx-auto col-6" >{}</div>""".format(
+            HTMLSystem.part(
+                "inputs/button",
+                LABEL="Add Instance",
+                DATA=InputAttributes(
+                    data_toggle="modal",
+                    data_target="#{}_modal".format(variable_name)
+                ).html()
+            )
         )
 
         return html
 
-    def panel(self, variable_name: str) -> str:
+    def panel(self, variable_name: str, title: str = "") -> str:
         '''Generates a Single/Multi Instance Setion/Panel'''
+        variable_name += "_{}".format(title.lower())
         return HTMLSystem.part(
             "section/panel",
+            TITLE=title,
             CONTROL=self.__controls(
-                variable_name) if self.many_section else "",
+                variable_name),# if self.many_section else "",
             VARIABLENAME=variable_name,
+            PANELNAME="{}_panel".format(variable_name),
             SECTION=self.__section_data(variable_name),
             MODAL=self.__modal(variable_name)
         )
@@ -159,28 +164,20 @@ class ConfigListHtml(ConfigListBase):
             "section/modal",
             VARIABLENAME=variable_name,
             TITLE="Add New {}".format(self.label),
-            BODY=self.__modal_body(),
-            FOOTER=HTMLSystem.part(
-                "inputs/button",
-                LABEL="Add Instance",
-                DATA=InputAttributes(
-                    data_action="addMulti",
-                    data_target=variable_name
-                ).html()
-            )
+            BODY=self.__modal_body(variable_name),
         )
 
-    def __modal_body(self) -> str:
+    def __modal_body(self, variable_name: str) -> str:
         '''generates the modal body and returns it'''
         input_html = ""
         if self.many_section_limit_list:
             options_html = HTMLSystem.part(
                 "inputs/single/option",
                 LABEL="Please Select An Option",
-                input_attributes=InputAttributes("selected", "disabled").html()
+                input_attributes=InputAttributes("required", "selected", "disabled").html()
             )
             for item in self.many_section_limit_list:
-                attr = InputAttributes("disabled").html(
+                attr = InputAttributes("disabled", "required").html(
                 ) if item in self.keys() else ""
                 options_html += HTMLSystem.part(
                     "inputs/single/option",
@@ -203,6 +200,15 @@ class ConfigListHtml(ConfigListBase):
                 ).html()
             )
 
+        input_html += HTMLSystem.part(
+            "inputs/button",
+            LABEL="Add Instance",
+            DATA=InputAttributes(
+                data_action="addMulti",
+                data_target=variable_name
+            ).html()
+        )
+
         return HTMLSystem.part(
             "section/modalbody",
             LABEL="Please Enter a Name for the Instance",
@@ -220,15 +226,15 @@ class ConfigListHtml(ConfigListBase):
         '''creates the control buttons'''
         variables = variable_name.split("_")
         input_attributes = InputAttributes(
-            action="delete_multi_plugin",
+            action="deleteMulti",
             data_plugin_type=variables[1],
             data_plugin_name=variables[2],
             data_plugin_instance=self.var_name
         ).html()
 
         return HTMLSystem.part(
-            "input/button",
-            BUTTONVALUE="Delete",
+            "inputs/button",
+            LABEL="Delete",
             DATA=input_attributes
         )
 

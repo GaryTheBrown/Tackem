@@ -1,5 +1,5 @@
 '''Config List Class'''
-from configobj import ConfigObj
+from configobj import ConfigObj, Section
 from validate import Validator
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.config.configobj_extras import EXTRA_FUNCTIONS
@@ -56,18 +56,36 @@ class ConfigListFile(ConfigListBase):
         if self._objects is None:
             return
 
+
         if config is None:
             config = self.__config
-
-        for item in self._objects:
-            if isinstance(item, ConfigListBase):
-                if item.is_section:
-                    item.load_configobj(config)
-                else:
-                    item.load_configobj(config[item.var_name])
+        #todo fix this as many sections not loaded loop through config
+        for key, value in config.items():
+            restart = False
+            if isinstance(value, dict): # if item is a deeper layer
+                if key in self.keys():
+                    item = self.get(key, None)
+                    item.load_configobj(value)
+                    continue
+                if self.many_section:
+                    self.clone_many_section(key)
+                    if item := self.get(key, None):
+                        item.load_configobj(value)
+                        continue
             else:
-                if item.var_name in config:
-                    item.value = config[item.var_name]
+                if item := self.get(key, None):
+                    item.value = value
+                    continue
+                for obj in self._objects:
+                    if isinstance(obj, ConfigListBase) and obj.is_section:
+                        if item := obj.get(key, None):
+                            item.value = value
+                            restart = True
+                            break
+                if restart:
+                    continue
+            print("error {} : {} Not Found in CONFIG {}".format(key, value, self.var_name))
+
 
     def get_spec_part(self, indent: int) -> str:
         '''function for recursion of list'''

@@ -146,7 +146,6 @@ class TackemSystemAdmin(TackemSystemFull):
     def load_plugin_systems(self, plugin_type: str, plugin_name: str) -> bool:
         '''loads a single plugin systems'''
         system_name = plugin_type + " " + plugin_name
-        print(system_name)
         system_config = CONFIG['plugins'][plugin_type][plugin_name]
         if self._base_data.plugins[plugin_type][plugin_name].SETTINGS.get('single_instance', True):
             if system_config['enabled'].value:
@@ -157,7 +156,6 @@ class TackemSystemAdmin(TackemSystemFull):
         for inst_obj in system_config:
             inst = inst_obj.var_name
             full_system_name = system_name + " " + inst
-            print(system_config[inst])
             if system_config[inst]['enabled'].value:
                 if not self.load_system(full_system_name, False):
                     all_created = False

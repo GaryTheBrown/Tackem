@@ -14,6 +14,10 @@ class TackemSystemFull(TackemSystemBase):
         ''' grabs a system'''
         return self._base_data.systems.get(system_name, None)
 
+    def system_names(self):
+        '''returns a list of systems'''
+        return self._base_data.systems.keys()
+
     @property
     def plugins(self):
         '''return all plugins'''

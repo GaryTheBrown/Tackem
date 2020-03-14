@@ -9,7 +9,7 @@
     {
         $('.modal').on('show.bs.modal', function (e) {
             $(this).find(":disabled").prop('disabled', false);
-          });
+        });
     }
 
     class Config
@@ -66,7 +66,8 @@
         }
 
         static addMulti()
-        {   let $elem = $(this);
+        {
+            let $elem = $(this);
             let target = $(this).data("target")
             let $modalRoot = $(`#${target}_modal`);
             let $input = $modalRoot.find("input[type=text],select");
@@ -84,17 +85,47 @@
                     plugin_type: data[1],
                     instance: $input.val()
                 },
-                elem: $elem,
-                modalRoot: $modalRoot,
                 target: target,
                 success: function(json)
                 {
                     if (json.success) {
                         $(`#${target}_tab`).append(json.html);
+                        $("[type=checkbox]").bootstrapToggle();
+                        $("[value=Delete]").on("click", Config.deleteMulti);
                         $modalRoot.modal('hide');
                     } else {
                         $modalRoot.find("small").html(json.error);
                         $elem.prop("disabled", false);
+                        $input.prop("disabled", false);
+                    }
+                }
+            })
+        }
+
+        static deleteMulti()
+        {
+            let $elem = $(this);
+
+            let plugin_type = $(this).data("plugin_type");
+            let plugin_name = $(this).data("plugin_name");
+            let instance = $(this).data("plugin_instance");
+
+            $elem.prop("disabled", true);
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/admin/deleteMulti/',
+                data: {
+                    plugin_type: plugin_type,
+                    plugin_name: plugin_name,
+                    instance: instance
+                },
+                $elem: $elem,
+
+                success: function(json)
+                {
+                    if (json.success) {
+                        $elem.find("section").remove();
                     }
                 }
             })

@@ -11,13 +11,12 @@ class APIAdminAddMulti(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
-
         required = []
-        if (plugin_type:= kwargs.get("plugin_type", None)) is None:
+        if (plugin_type:= kwargs.get("plugin_type", "")) == "":
             required.append("plugin_type")
-        if (plugin_name:= kwargs.get("plugin_name", None)) is None:
+        if (plugin_name:= kwargs.get("plugin_name", "")) == "":
             required.append("plugin_name")
-        if (instance:= kwargs.get("instance", None)) is None:
+        if (instance:= kwargs.get("instance", "")) == "":
             required.append("instance")
         if required:
             return self._return_data(
@@ -50,7 +49,7 @@ class APIAdminAddMulti(APIBase):
                 "Adding Instance of {} - {}".format(plugin_type, plugin_name),
                 False,
                 instance=instance,
-                error="CLoning Data Failed",
+                error="Cloning Data Failed",
                 errorNumber=2
             )
 
@@ -63,5 +62,7 @@ class APIAdminAddMulti(APIBase):
             True,
             instance=instance,
             html=CONFIG["plugins"][plugin_type][plugin_name][instance].panel(
-                variable_name)
+                variable_name,
+                instance.title()
+            )
         )

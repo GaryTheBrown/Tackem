@@ -13,16 +13,14 @@ class ConfigListBase(ConfigBase):
             self,
             var_name: str,
             label: str,
-
-        *objects,
-        help_text: str = "",
-        rules: Optional[ConfigRules] = None,
-        is_section: bool = False,
-        many_section=None,
-        many_section_limit_list=None
+            *objects,
+            help_text: str = "",
+            rules: Optional[ConfigRules] = None,
+            is_section: bool = False,
+            many_section=None,
+            many_section_limit_list=None
     ):
         super().__init__(var_name, label, help_text, False, False, rules)
-
         if is_section and not isinstance(is_section, bool):
             raise ValueError("Is Section is not a bool")
         self.__is_section = is_section
@@ -64,11 +62,11 @@ class ConfigListBase(ConfigBase):
     def __len__(self):
         return len(self._objects)
 
-    def keys(self):
+    def keys(self) -> list:
         '''returns all keys for the objects'''
         return [x.var_name for x in self._objects]
 
-    def get(self, key, default=None):
+    def get(self, key, default=None) -> Any:
         '''returns the data if found otherwise returns the default value'''
         for obj in self._objects:
             if obj.key == key.lower():
@@ -117,7 +115,7 @@ class ConfigListBase(ConfigBase):
         return self.__many_section
 
     @property
-    def many_section_limit_list(self):
+    def many_section_limit_list(self) -> list:
         '''returns the Many Section Limit List'''
         return self.__many_section_limit_list
 
