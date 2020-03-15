@@ -5,6 +5,7 @@ from api.base import APIBase
 from api.admin.config import APIAdminConfig
 from api.admin.plugin import APIAdminPlugin
 from api.admin.add_multi import APIAdminAddMulti
+from api.admin.delete_multi import APIAdminDeleteMulti
 from api.admin.user_add import APIAdminUserAdd
 from api.admin.user_delete import APIAdminUserDelete
 from api.admin.user_update import APIAdminUserUpdate
@@ -32,6 +33,8 @@ class APIAdmin(APIBase):
             return APIAdminConfig()
         elif section == "addMulti":
             return APIAdminAddMulti()
+        elif section == "deleteMulti":
+            return APIAdminDeleteMulti()
         elif section == "plugin":
             return APIAdminPlugin()
         elif section == "userAdd":

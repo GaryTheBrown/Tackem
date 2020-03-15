@@ -72,6 +72,9 @@
             let $modalRoot = $(`#${target}_modal`);
             let $input = $modalRoot.find("input[type=text],select");
             let data = target.split("_");
+            let plugin_name = data[2];
+            let plugin_type = data[1];
+            let instance = $input.val().toLowerCase();;
 
             $input.prop("disabled", true)
             $elem.prop("disabled", true);
@@ -81,8 +84,8 @@
                 type: 'POST',
                 url: '/api/admin/addMulti/',
                 data: {
-                    plugin_name: data[2],
-                    plugin_type: data[1],
+                    plugin_type: plugin_type,
+                    plugin_name: plugin_name,
                     instance: $input.val()
                 },
                 target: target,
@@ -90,8 +93,9 @@
                 {
                     if (json.success) {
                         $(`#${target}_tab`).append(json.html);
-                        $("[type=checkbox]").bootstrapToggle();
-                        $("[value=Delete]").on("click", Config.deleteMulti);
+                        let $panel = $(`#plugins_${plugin_type}_${plugin_name}_${instance}_panel`);
+                        $panel.find("[type=checkbox]").bootstrapToggle();
+                        $panel.find("[data-action=deleteMulti]").on("click", Config.deleteMulti);
                         $modalRoot.modal('hide');
                     } else {
                         $modalRoot.find("small").html(json.error);
@@ -106,9 +110,9 @@
         {
             let $elem = $(this);
 
-            let plugin_type = $(this).data("plugin_type");
-            let plugin_name = $(this).data("plugin_name");
-            let instance = $(this).data("plugin_instance");
+            let plugin_type = $(this).data("plugin-type");
+            let plugin_name = $(this).data("plugin-name");
+            let instance = $(this).data("plugin-instance");
 
             $elem.prop("disabled", true);
 
@@ -125,7 +129,7 @@
                 success: function(json)
                 {
                     if (json.success) {
-                        $elem.find("section").remove();
+                        $(`#plugins_${plugin_type}_${plugin_name}_${instance}_panel`).remove();
                     }
                 }
             })

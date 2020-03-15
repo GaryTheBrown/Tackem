@@ -226,7 +226,7 @@ class ConfigListHtml(ConfigListBase):
         '''creates the control buttons'''
         variables = variable_name.split("_")
         input_attributes = InputAttributes(
-            action="deleteMulti",
+            data_action="deleteMulti",
             data_plugin_type=variables[1],
             data_plugin_name=variables[2],
             data_plugin_instance=self.var_name
