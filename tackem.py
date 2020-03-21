@@ -14,8 +14,8 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-# TODO NEED TO MAKE THE CONFIG TURN ON/OFF SYSTEMS WHEN ENABLED/DISABLED
 # TODO fix the plugin downloader to working
+# TODO fix scrapper crash
 
 
 class Tackem:
@@ -80,19 +80,30 @@ class Tackem:
         signal.signal(signal.SIGINT, ctrl_c)
         self.start()
         while True:
-            event_type = RootEvent.wait_and_get_event()
+            event, data = RootEvent.wait_and_get_event()
 
-            if event_type is False:
+            if event is False:
                 continue
-            if event_type == "shutdown":
+            if event == "shutdown":
                 self.shutdown()
                 break
-            if event_type == "reboot":
+            if event == "reboot":
                 self.shutdown()
                 self.start()
-            else:
-                print("Event Not Recognised Ignoring")
                 continue
+            if event == "start_system":
+                TackemSystemAdmin().load_system(data, len(data.split(" ")) == 2)
+                TackemSystemAdmin().start_system(data)
+                self.__restart_webserver()
+                continue
+            if event == "stop_system":
+                TackemSystemAdmin().stop_system(data)
+                TackemSystemAdmin().remove_system(data)
+                self.__restart_webserver()
+                continue
+
+            print("Event Not Recognised Ignoring")
+            continue
 
         self.cleanup()
 
@@ -126,6 +137,13 @@ class Tackem:
             self.__webserver.stop()
         return True
 
+
+    def __restart_webserver(self) -> bool:
+        '''restart the Webserver'''
+        return self.__stop_webserver() \
+            and self.__delete_webserver() \
+            and self.__load_webserver() \
+            and self.__start_webserver()
 
 ##############################################
 # Catching the ctrl + c event and doing a clean shutdown

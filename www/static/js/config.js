@@ -10,6 +10,24 @@
         $('.modal').on('show.bs.modal', function (e) {
             $(this).find(":disabled").prop('disabled', false);
         });
+
+        $("form").submit(function () {
+
+            let this_master = $(this);
+
+            this_master.find('input[type="checkbox"]').each( function () {
+                let checkbox_this = $(this);
+
+
+                if( checkbox_this.is(":checked") == true ) {
+                    checkbox_this.attr('value','1');
+                } else {
+                    checkbox_this.prop('checked',true);
+                    checkbox_this.attr('value','0');
+                }
+            })
+            return true;
+        });
     }
 
     class Config
@@ -135,5 +153,4 @@
             })
         }
     }
-
 })();

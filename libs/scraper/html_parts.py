@@ -12,10 +12,10 @@ def fail_message(status, reason) -> str:
 
 
 def movie_page_link(
-    query: str,
-    page: int = 1,
-    year: Union[int, None] = None,
-    label: Union[str, None] = None
+        query: str,
+        page: int = 1,
+        year: Union[int, None] = None,
+        label: Union[str, None] = None
 ) -> str:
     '''creates a link for pagination of movie results'''
     html = "<a href='#' class='onclick' onclick='SearchMovie("
@@ -28,14 +28,14 @@ def movie_page_link(
 
 
 def search_info(
-    title: str,
-    original_title: str,
-    original_language: str,
-    overview: str,
-    release_date: str,
-    poster_path: str,
-    image_url: str,
-    poster_size: str
+        title: str,
+        original_title: str,
+        original_language: str,
+        overview: str,
+        release_date: str,
+        poster_path: str,
+        image_url: str,
+        poster_size: str
 ) -> str:
     '''creates a movie pane for the search results'''
     html = str(open(os.path.dirname(__file__) +

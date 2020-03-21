@@ -46,9 +46,9 @@ class ConfigObjBoolean(ConfigObjBase):
             return value
 
         if isinstance(value, str):
-            if value.lower() in ["true", "on", "yes"]:
+            if value.lower() in ["true", "on", "yes", "1"]:
                 return True
-            if value.lower() in ["false", "off", "no"]:
+            if value.lower() in ["false", "off", "no", "0"]:
                 return False
 
         if isinstance(value, int):

@@ -63,7 +63,7 @@ class Admin(HTMLTEMPLATE):
                 START="" if plugin['downloaded'] and not is_loaded else "disabled",
                 STOP="" if is_loaded else "disabled",
                 DOWNLOAD="disabled" if plugin['downloaded'] else "",
-                REMOVE="" if plugin['downloaded'] else "disabled",
+                REMOVE="" if plugin['downloaded'] and not is_loaded else "disabled",
             )
 
         for plugin in TackemSystemPluginDownloader().local_plugins:

@@ -1,5 +1,5 @@
 '''Config List Class'''
-from configobj import ConfigObj, Section
+from configobj import ConfigObj
 from validate import Validator
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.config.configobj_extras import EXTRA_FUNCTIONS
@@ -59,7 +59,6 @@ class ConfigListFile(ConfigListBase):
 
         if config is None:
             config = self.__config
-        #todo fix this as many sections not loaded loop through config
         for key, value in config.items():
             restart = False
             if isinstance(value, dict): # if item is a deeper layer
