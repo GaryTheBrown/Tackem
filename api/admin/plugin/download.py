@@ -1,5 +1,4 @@
 '''PLUGIN DOWNLOAD API'''
-import os
 import cherrypy
 from api.admin.plugin.base import APIPluginBase
 
@@ -7,10 +6,6 @@ from api.admin.plugin.base import APIPluginBase
 @cherrypy.expose
 class APIPluginDownload(APIPluginBase):
     '''PLUGIN DOWNLOAD API'''
-
-    __INDOCKER = "You are running inside a docker container you need to pick an image that contains"
-    __INDOCKER += " the required programs for the plugin"
-    __EXTRA = "This Plugin Requires extra Programs Please see the readme"
 
     def POST(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
@@ -30,7 +25,9 @@ class APIPluginDownload(APIPluginBase):
                 error_number=0
             )
         return_data = self._system.download_plugin(
-            plugin_type.lower(), plugin_name.lower())
+            plugin_type.lower(), plugin_name.lower()
+        )
+
         if return_data[0] is not True:
             return self._return_data_plugin(
                 user,
@@ -43,24 +40,6 @@ class APIPluginDownload(APIPluginBase):
                 error_number=return_data[1]
             )
         self._system.install_plugin_modules(plugin_type, plugin_name)
-        return_data = self._system.reload_plugin(plugin_type, plugin_name)
-        if return_data[0] is not True:
-            if os.path.isfile("/indocker"):
-                message = self.__INDOCKER
-            else:
-                message = self.__EXTRA
-
-            return self._return_data_plugin(
-                user,
-                "Download",
-                False,
-                plugin_type,
-                plugin_name,
-                actions=self._actions_return(enable=["download"]),
-                error=return_data[0],
-                error_number=return_data[1],
-                message=message
-            )
 
         return self._return_data_plugin(
             user,
@@ -69,5 +48,5 @@ class APIPluginDownload(APIPluginBase):
             plugin_type,
             plugin_name,
             actions=self._actions_return(
-                enable=["start", "clearconfig", "cleardatabase"]),
+                enable=["load"]),
         )

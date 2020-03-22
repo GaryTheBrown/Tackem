@@ -13,18 +13,6 @@ class APIPluginUpdate(APIPluginBase):
         plugin_type = kwargs.get("plugin_type", None)
         plugin_name = kwargs.get("plugin_name", None)
 
-        if self._system.is_plugin_loaded(plugin_type, plugin_name):
-            return self._return_data_plugin(
-                user,
-                "Update",
-                False,
-                plugin_type,
-                plugin_name,
-                actions=self._actions_return(),
-                error=plugin_type + " " + plugin_name + "Is Running. Stop it First",
-                error_number=0
-            )
-
         if not self._system.update_plugin(plugin_type, plugin_name):
             return self._return_data_plugin(
                 user,
@@ -32,7 +20,7 @@ class APIPluginUpdate(APIPluginBase):
                 False,
                 plugin_type,
                 plugin_name,
-                actions=self._actions_return(),
+                actions=self._actions_return(enable=["load"]),
                 error=plugin_type + " " + plugin_name + " Failed to Update",
                 error_number=1
             )
@@ -43,5 +31,5 @@ class APIPluginUpdate(APIPluginBase):
             True,
             plugin_type,
             plugin_name,
-            actions=self._actions_return(),
+            actions=self._actions_return(enable=["load"]),
         )

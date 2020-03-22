@@ -55,15 +55,13 @@ class Admin(HTMLTEMPLATE):
             github_plugin_html += HTMLSystem.part(
                 "section/plugindownloader",
                 TITLE=title,
-                PLUGINTYPE=plugin['plugin_type'],
-                PLUGINNAME=plugin['plugin_name'],
+                PLUGINTYPE=plugin['plugin_type'].lower(),
+                PLUGINNAME=plugin['plugin_name'].lower(),
                 DESCRIPTION=readme,
-                CLEARCONFIGDISABLED="" if plugin['downloaded'] and not is_loaded else "disabled",
-                CLEARDATABASEDISABLED="" if plugin['downloaded'] and not is_loaded else "disabled",
-                START="" if plugin['downloaded'] and not is_loaded else "disabled",
-                STOP="" if is_loaded else "disabled",
+                LOAD="" if plugin['downloaded'] and not is_loaded else "disabled",
+                UNLOAD="" if is_loaded else "disabled",
                 DOWNLOAD="disabled" if plugin['downloaded'] else "",
-                REMOVE="" if plugin['downloaded'] and not is_loaded else "disabled",
+                UPDATE="" if plugin['downloaded'] and is_loaded else "disabled",
             )
 
         for plugin in TackemSystemPluginDownloader().local_plugins:

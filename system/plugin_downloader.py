@@ -69,10 +69,11 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
                     'plugin_name': folder_split[-2],
                     'plugin_type': folder_split[-3],
                     'repo': self.is_git_repo(folder),
-                    'offical': self.is_origin_offical(folder,
-                                                      folder_split[-2].capitalize(),
-                                                      folder_split[-3].capitalize()
-                                                      )
+                    'offical': self.is_origin_offical(
+                        folder,
+                        folder_split[-2].capitalize(),
+                        folder_split[-3].capitalize()
+                    )
                 }
 
                 self.__LOCAL_PLUGINS.append(local_plugin)
@@ -107,10 +108,10 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
                 self.__GITHUB_PLUGINS.append(save)
 
     def get_single_file(
-        self,
-        plugin_type: str,
-        plugin_name: str,
-        file_to_get: str
+            self,
+            plugin_type: str,
+            plugin_name: str,
+            file_to_get: str
     ) -> Union[str, None]:
         '''grabs a single file from github'''
         folder = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + \
@@ -148,14 +149,14 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
                 return True, 0
         return "PLUGIN NOT IN LIST [BUG]", 1
 
-    def reload_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
-        '''Function to attempt to reload the plugin after a failed install'''
-        CONFIG.save()
-        return_data = self.import_plugin(plugin_type, plugin_name)
-        if return_data[0] is not True:
-            return return_data
-        CONFIG.load()
-        return True, 0
+    # def reload_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
+    #     '''Function to attempt to reload the plugin after a failed install'''
+    #     CONFIG.save()
+    #     return_data = self.load_plugin(plugin_type, plugin_name)
+    #     if return_data[0] is not True:
+    #         return return_data
+    #     CONFIG.load()
+    #     return True, 0
 
     def install_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:  # (pip)
         '''install plugin modiles'''
@@ -168,16 +169,16 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
             subprocess.check_call(pip_call)
             print("installed plugin requirements")
 
-    def uninstall_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:
-        '''uninstall plugin modiles'''
-        plugin_folder = plugin_type + "/" + plugin_name + "/"
-        requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
-        if os.path.exists(requirements_file):
-            print("uninstalling plugin requirements..")
-            pip_call = [sys.executable, '-m', 'pip',
-                        'uninstall', '-y', '-r', requirements_file]
-            subprocess.check_call(pip_call)
-            print("uninstalled plugin requirements")
+    # def uninstall_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:
+    #     '''uninstall plugin modiles'''
+    #     plugin_folder = plugin_type + "/" + plugin_name + "/"
+    #     requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
+    #     if os.path.exists(requirements_file):
+    #         print("uninstalling plugin requirements..")
+    #         pip_call = [sys.executable, '-m', 'pip',
+    #                     'uninstall', '-y', '-r', requirements_file]
+    #         subprocess.check_call(pip_call)
+    #         print("uninstalled plugin requirements")
 
     def delete_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''deletes the plugin'''

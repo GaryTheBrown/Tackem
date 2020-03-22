@@ -83,7 +83,6 @@ class ConfigListFile(ConfigListBase):
                             break
                 if restart:
                     continue
-            print("error {} : {} Not Found in CONFIG {}".format(key, value, self.var_name))
 
 
     def get_spec_part(self, indent: int) -> str:

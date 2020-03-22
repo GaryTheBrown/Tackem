@@ -14,7 +14,6 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-# TODO fix the plugin downloader to working
 # TODO fix scrapper crash
 
 
@@ -27,7 +26,7 @@ class Tackem:
     def start(self) -> None:
         '''Start of the program'''
         print("LOADING PLUGINS...")
-        TackemSystemAdmin().import_plugins()
+        TackemSystemAdmin().load_plugins()
         print("LOADING CONFIG...")
         CONFIG.load()
         print("LOADING DATABASE...")
@@ -59,8 +58,8 @@ class Tackem:
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
-        TackemSystemAdmin().remove_systems()
-        TackemSystemAdmin().remove_plugins()
+        TackemSystemAdmin().unload_systems()
+        TackemSystemAdmin().unload_plugins()
 
     def shutdown(self) -> None:
         '''Shutdown commands'''
@@ -98,7 +97,7 @@ class Tackem:
                 continue
             if event == "stop_system":
                 TackemSystemAdmin().stop_system(data)
-                TackemSystemAdmin().remove_system(data)
+                TackemSystemAdmin().unload_system(data)
                 self.__restart_webserver()
                 continue
 
