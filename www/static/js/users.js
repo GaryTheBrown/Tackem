@@ -29,13 +29,9 @@
                     data: {
                         userid: userid
                     },
-                    elem: $elem,
-                    section: $section,
                     success: function(json)
                     {
-                        console.log(json, json['success']);
                         if (json['success']){
-                            console.log("YES");
                             location.reload();
                         } else {
                             if(json.message){
@@ -59,7 +55,6 @@
             let password = $section.find("[name='password']").val();
             let isadmin = $section.find("[name='isadmin']").is(':checked');
 
-
             $elem.prop('disabled', true);
 
             $.ajax({
@@ -71,13 +66,9 @@
                     password: password,
                     isadmin: isadmin,
                 },
-                elem: $elem,
-                section: $section,
                 success: function(json)
                 {
-                    console.log(json, json['success']);
                     if (json['success']){
-                        console.log("YES");
                         location.reload();
                     } else {
                         if(json.message){
@@ -96,7 +87,6 @@
             let password = $section.find("[name='password']").val();
             let isadmin = $section.find("[name='isadmin']").is(':checked');
 
-
             $elem.prop('disabled', true);
 
             $.ajax({
@@ -107,19 +97,14 @@
                     password: password,
                     isadmin: isadmin,
                 },
-                elem: $elem,
-                section: $section,
                 success: function(json)
                 {
-                    console.log(json, json['success']);
                     if (json['success']){
-                        console.log("YES");
                         location.reload();
                     } else {
                         if(json.message){
                             alert(message);
                         }
-
                     }
                 }
             })
