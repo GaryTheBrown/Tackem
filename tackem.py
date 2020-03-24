@@ -14,7 +14,19 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-# TODO fix scrapper crash
+# TODO fix scraper crash
+# TODO wework Scraper to use the API.
+# TODO bring Libraries back into the main program
+# TODO need a way of having plugins require Other Plugins
+# the plugin will auto download all required plugins
+# these plugins should not allow you to enable them unless the required plugins are setup.
+# Link to Library types allowed, all(*) or None.
+# the plugin then needs a way of passing data to another plugin not through API.
+# maybe a plugin message system.
+
+# TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
+# TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
+# TODO the same for all plugins
 
 
 class Tackem:

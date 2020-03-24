@@ -14,11 +14,18 @@ class Scraper():
         self.__conn = http.client.HTTPSConnection(
             CONFIG['scraper']['url'].value)
         self._image_config = self._configuration()
+        self.__working = bool(self._image_config)
 
 
 ###########
 ##GETTERS##
 ###########
+
+    @property
+    def working(self) -> bool:
+        '''returns if the system is working'''
+        return self.__working
+
 
     def image_base(self) -> str:
         '''returns the base address for the image'''
@@ -40,7 +47,7 @@ class Scraper():
 
     def __fail_print(self, status: str, reason: str) -> str:
         '''message returned when the scraper failed'''
-        return "Search Failed\nStatus: " + status + "\nReason: " + reason + "\n"
+        return "Search Failed\nStatus: {}\nReason: {}\n".format(status, reason)
 
 
 ############
@@ -52,8 +59,13 @@ class Scraper():
         command = "/3/configuration?" + self.__base(False, False)
         data = self.__get_request(command)
         if data['success'] is False:
-            print("ERROR IN SCRAPER STARTUP:", self.__fail_print(
-                data['status'], data['reason']))
+            if data["status"] != 401:
+                print(
+                    "ERROR IN SCRAPER STARTUP:",
+                    self.__fail_print(
+                        data['status'], data['reason']
+                    )
+                )
             return None
         return data['response']['images']
 
@@ -133,7 +145,3 @@ class Scraper():
             return_data['response'] = json.loads(
                 response.read().decode("utf-8"))
         return return_data
-
-
-# payload = "{}"
-# conn.request("GET", , payload)

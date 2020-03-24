@@ -1,12 +1,9 @@
 '''HTTPD SYSTEM'''
 import os
 import cherrypy
-# from www.first_run import Root as first_run_root
 from www.root import Root
 from www.admin import Admin
-# from www.plugin_downloader import PluginDownloader
 from api import API
-from libs import scraper
 from libs.error_pages import setup_error_pages
 from libs.startup_arguments import THEMEFOLDERLOCATION
 from config_data import CONFIG
@@ -66,7 +63,6 @@ class Httpd():
                 instance_name = key.split()[-1]
                 plugin_link.www.mounts(key, instance_name)
 
-        # scraper.mounts()
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
 
     def start(self) -> None:

@@ -1,5 +1,4 @@
-'''ROOT API'''
-import json
+'''ADMIN ROOT API'''
 import cherrypy
 from api.base import APIBase
 from api.admin.config import APIAdminConfig
