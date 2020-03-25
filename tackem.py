@@ -14,9 +14,9 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
-# TODO fix scraper crash
-# TODO wework Scraper to use the API.
-# TODO bring Libraries back into the main program
+# TODO intergrate Libraries into main program
+# is it going to be a single or multi instance?
+
 # TODO need a way of having plugins require Other Plugins
 # the plugin will auto download all required plugins
 # these plugins should not allow you to enable them unless the required plugins are setup.
@@ -47,6 +47,8 @@ class Tackem:
         Database.start_sql()
         print("STARTING AUTHENTICATOR...")
         AUTHENTICATION.start()
+        print("STARTING LIBRARIES...")
+        print("TODO")
         print("LOADING SYSTEMS...")
         TackemSystemAdmin().load_systems()
         print("STARTING SYSTEMS...")
@@ -63,6 +65,8 @@ class Tackem:
         self.__stop_webserver()
         print("STOPPING SYSTEMS...")
         TackemSystemAdmin().stop_systems()
+        print("STOPPING LIBRARIES...")
+        print("TODO")
         print("STOPPING DATABASE...")
         Database.stop_sql()
 

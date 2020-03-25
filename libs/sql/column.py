@@ -48,9 +48,7 @@ class Column:
 
     def to_string(self) -> str:
         '''turns Column info into a string for commands'''
-        return_string = '"' + self.name + '"'
-        return_string += " "
-        return_string += self.variable_type
+        return_string = '"' + self.name + '"' + " " + self.variable_type
         if self.primary_key:
             return_string += " PRIMARY KEY"
         if self.not_null:
@@ -69,36 +67,35 @@ class Column:
 
     def get_default_value(self) -> str:
         '''returns the default blank to use for when not null on column'''
-        return_string = ""
         if self.variable_types[self.variable_type] == 0:
-            return_string += "False"
-        elif self.variable_types[self.variable_type] == 1:
-            return_string += "0"
-        elif self.variable_types[self.variable_type] == 2:
-            return_string += "''"
-        elif self.variable_types[self.variable_type] == 3:
-            return_string += time.strftime('%Y-%m-%d')
-        elif self.variable_types[self.variable_type] == 4:
-            return_string += time.strftime('%H:%M:%S')
-        elif self.variable_types[self.variable_type] == 5:
-            return_string += time.strftime('%Y-%m-%d %H:%M:%S')
-        elif self.variable_types[self.variable_type] == 6:
-            return_string += time.strftime('%Y-%m-%d %H:%M:%S')
-        elif self.variable_types[self.variable_type] == 7:
-            return_string += time.strftime('%Y')
-        elif self.variable_types[self.variable_type] == 10:
-            return_string += "''"
-        return return_string
+            return "False"
+        if self.variable_types[self.variable_type] == 1:
+            return "0"
+        if self.variable_types[self.variable_type] == 2:
+            return "''"
+        if self.variable_types[self.variable_type] == 3:
+            return time.strftime('%Y-%m-%d')
+        if self.variable_types[self.variable_type] == 4:
+            return time.strftime('%H:%M:%S')
+        if self.variable_types[self.variable_type] == 5:
+            return time.strftime('%Y-%m-%d %H:%M:%S')
+        if self.variable_types[self.variable_type] == 6:
+            return time.strftime('%Y-%m-%d %H:%M:%S')
+        if self.variable_types[self.variable_type] == 7:
+            return time.strftime('%Y')
+        if self.variable_types[self.variable_type] == 10:
+            return "''"
+        return ""
 
     def compare(self, to_compare) -> bool:
         '''Compare the results'''
-        if not to_compare.name == self.name \
-                or not to_compare.variable_type == self.variable_type \
-                or not to_compare.primary_key == self.primary_key \
-                or not to_compare.not_null == self.not_null:
+        if to_compare.name != self.name \
+                or to_compare.variable_type != self.variable_type \
+                or to_compare.primary_key != self.primary_key \
+                or to_compare.not_null != self.not_null:
             return False
         if self.default is None:
             return True
-        if not to_compare.default == self.default:
+        if to_compare.default != self.default:
             return False
         return True

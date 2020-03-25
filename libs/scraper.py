@@ -26,7 +26,6 @@ class Scraper():
         '''returns if the system is working'''
         return self.__working
 
-
     def image_base(self) -> str:
         '''returns the base address for the image'''
         return self._image_config['secure_base_url']
@@ -145,3 +144,6 @@ class Scraper():
             return_data['response'] = json.loads(
                 response.read().decode("utf-8"))
         return return_data
+
+
+SCRAPER = Scraper()

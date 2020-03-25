@@ -6,6 +6,7 @@ from libs.config.obj.password import ConfigObjPassword
 from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
+from libs.config.obj.enabled import ConfigObjEnabled
 from libs.config.obj.boolean import ConfigObjBoolean
 from libs.config.obj.options.radio import ConfigObjOptionsRadio
 from libs.config.obj.data.radio import ConfigObjRadio
@@ -94,8 +95,12 @@ CONFIG = ConfigList(
             "",
             "Master API Key",
             "The master API key for full control",
-            button=Button("Generate API Key", "generateAPIKey",
-                          True, input="api_masterkey"),
+            button=Button(
+                "Generate API Key",
+                "generateAPIKey",
+                True,
+                input="api_masterkey"
+            ),
             input_attributes=InputAttributes("readonly")
         ),
         ConfigObjString(
@@ -103,12 +108,71 @@ CONFIG = ConfigList(
             "",
             "User API Key",
             "The user API key for limited control",
-            button=Button("Generate API Key", "generateAPIKey",
-                          True, input="api_userkey"),
+            button=Button(
+                "Generate API Key",
+                "generateAPIKey",
+                True,
+                input="api_userkey"
+            ),
             input_attributes=InputAttributes("readonly")
         )
     ),
-    ConfigList("plugins", "Plugins"),
+    ConfigList(
+        "libraries",
+        "libraries",
+        ConfigList(
+            "games",
+            "Games",
+            many_section=ConfigList(
+                "",
+                "",
+                ConfigObjEnabled(),
+                ConfigObjString(
+                    "location",
+                    "Library/Games/",
+                    "Games Library Location",
+                    "Where is the library stored?"
+                )
+            ),
+            many_section_limit_list=[
+                "SNES", "NES"
+            ]
+        ),
+        ConfigList(
+            "movies",
+            "Movies",
+            many_section=ConfigList(
+                "",
+                "",
+                ConfigObjEnabled(),
+                ConfigObjString(
+                    "location",
+                    "Library/Movies/",
+                    "Movies Location",
+                    "Where is the library stored?"
+                )
+            )
+        ),
+        ConfigList(
+            "tvshows",
+            "TV Shows",
+            many_section=ConfigList(
+                "",
+                "",
+                ConfigObjEnabled(),
+                ConfigObjString(
+                    "location",
+                    "Library/TVShows/",
+                    "TV Show Location",
+                    "Where is the library stored?"
+                )
+            )
+        )
+    ),
+    ConfigList(
+        "plugins",
+        "Plugins"
+    ),
     ConfigList(
         "webui",
         "Web Interface",
@@ -130,8 +194,7 @@ CONFIG = ConfigList(
         ),
         ConfigObjOptionsSelect(
             "theme",
-            [ConfigObjOption(x, x)
-             for x in next(os.walk(THEMEFOLDERLOCATION))[1]],
+            [ConfigObjOption(x, x) for x in next(os.walk(THEMEFOLDERLOCATION))[1]],
             "default",
             "Theme",
             "The Theme for the system"
