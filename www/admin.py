@@ -104,3 +104,27 @@ class Admin(HTMLTEMPLATE):
             ),
             javascript="static/js/users.js"
         )
+
+    @cherrypy.expose
+    def shutdown(self) -> str:
+        '''shutdown the system page'''
+        AUTHENTICATION.check_auth()
+        if not AUTHENTICATION.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        return self._template(
+            HTMLSystem.part(
+                "pages/shutdown"
+            )
+        )
+
+    @cherrypy.expose
+    def reboot(self) -> str:
+        '''reboot the system page'''
+        AUTHENTICATION.check_auth()
+        if not AUTHENTICATION.is_admin():
+            raise cherrypy.HTTPError(status=401)
+        return self._template(
+            HTMLSystem.part(
+                "pages/reboot"
+            )
+        )

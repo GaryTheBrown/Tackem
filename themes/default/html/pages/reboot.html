@@ -1,0 +1,25 @@
+<h1>RESTARTING NOW...</h1>
+<h2 hidden>refreshing in 10 seconds...</h2>
+<script>
+(function () {
+	$(() => {
+		$.ajax({
+			type: 'GET',
+			url: '/api/admin/reboot/',
+			success: function(json)
+			{
+				if (json.success) {
+					$("h1").append("Done");
+					$("h2").removeAttr('hidden');
+					window.setTimeout(function() {
+						window.location.href = '%%BASEURL%%';
+						return false;
+					}, 10000);
+				} else {
+					$("h1").append("Failed");
+				}
+			}
+		})
+	})
+})();
+</script>
