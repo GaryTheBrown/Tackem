@@ -4,6 +4,7 @@ import threading
 import json
 from abc import ABCMeta, abstractmethod
 from libs.sql.column import Column
+from libs.sql.table import Table
 from libs.sql.sql_message import SQLMessage
 
 
@@ -58,21 +59,27 @@ class SqlBaseClass(metaclass=ABCMeta):
             )
         )
 
-    def table_check(self, system_name: str, table_name: str, data: list, version: int) -> Any:
+    def table_check(self, system_name: str, table: Table, name_parts: Optional[list] = None) -> Any:
         '''Function to do a table check'''
+        if name_parts:
+            return self.__call(
+                SQLMessage(
+                    system_name,
+                    special_command="tablecheck",
+                    table_name=table.name(*name_parts),
+                    data=table.data,
+                    version=table.version
+                )
+            )
         return self.__call(
             SQLMessage(
                 system_name,
                 special_command="tablecheck",
-                table_name=table_name,
-                data=data,
-                version=version
+                table_name=table.name(),
+                data=table.data,
+                version=table.version
             )
         )
-
-    def table_checks(self, system_name: str, data: list) -> Any:
-        '''Function to do a table check from a dict'''
-        return self.table_check(system_name, data["name"], data["data"], data["version"])
 
     def table_has_row(self, system_name: str, table_name: str, dict_of_queries: dict) -> int:
         '''Check if the Table has row by looking for all the queries'''
