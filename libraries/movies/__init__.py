@@ -1,17 +1,53 @@
-'''Movies controller init'''
-from libs.plugin_base import PluginBaseClass, load_plugin_settings
-from .movies import MoviesLibrary
-from . import www
+'''Library Movies Controller'''
+from glob import glob
+import threading
+from libs.sql.column import Column
+from libs.sql import Database
+from libs.config.list import ConfigList
+from libraries.library_base import LibraryBase
+from libraries.db.movies import LIBRARY_MOVIE_DB_INFO
 
-class Plugin(PluginBaseClass):
-    '''Main Class to create an instance of the plugin'''
+class MoviesLibrary(LibraryBase):
+    '''Library Movies Controller'''
 
-    def startup(self):
-        '''Startup Script'''
-        self._system = MoviesLibrary(self._name, self._tackem_system)
-        self._running = True
-        return True, ""
+    def __init__(self, name: str, config: ConfigList):
+        super().__init__(name, "movies", config)
 
-    def shutdown(self):
-        '''stop the plugin'''
-        self._running = False
+        self._event_lock = threading.Event()
+        self._event_list = []
+        self._event_list_lock = threading.Lock()
+
+        self.__thread = threading.Thread(target=self.run, args=())
+        self.__thread.setName("Movies Library:" + name)
+        Database.sql().table_checks(
+            self.__thread.getName(),
+            LIBRARY_MOVIE_DB_INFO,
+            [name]
+        )
+
+    def scan_folder(self):
+        '''Scans the folder For New Files'''
+        glob_movie_list = glob(self._config['location'].value + "*")
+        glob_movie_list.sort()
+        for full_path_movie in glob_movie_list:
+            movie = full_path_movie.replace(
+                self._config['location'].value,
+                ""
+            )
+            if Database.sql().table_has_row(
+                    LIBRARY_MOVIE_DB_INFO['name'].format(self._name),
+                    {
+                        "filename": movie
+                    }
+            ):
+                continue
+            print(movie + " Not in DB ADDING")
+
+    def run(self):
+        '''threadded run'''
+        # inital run of information check
+        self.scan_folder()
+
+        while self._thread_run:
+            if not self._thread_run:
+                return

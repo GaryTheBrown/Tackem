@@ -167,6 +167,21 @@ CONFIG = ConfigList(
                     "Where is the library stored?"
                 )
             )
+        ),
+        ConfigList(
+            "music",
+            "Music",
+            many_section=ConfigList(
+                "",
+                "",
+                ConfigObjEnabled(),
+                ConfigObjString(
+                    "location",
+                    "Library/Music/",
+                    "Music Location",
+                    "Where is the library stored?"
+                )
+            )
         )
     ),
     ConfigList(
