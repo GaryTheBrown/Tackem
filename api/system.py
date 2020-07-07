@@ -4,7 +4,6 @@ from system.full import TackemSystemFull
 from system.plugin import TackemSystemPlugin
 from api.base import APIBase
 
-
 @cherrypy.expose
 class APISystem(APIBase):
     '''SYSTEM API'''
@@ -20,7 +19,6 @@ class APISystem(APIBase):
         if not single_instance:
             plugin_instance = vpath.pop(0)
 
-        plugin_system = TackemSystemPlugin(
-            plugin_type, plugin_name, plugin_instance)
+        # plugin_system = TackemSystemPlugin(plugin_type, plugin_name, plugin_instance)
 
         return self

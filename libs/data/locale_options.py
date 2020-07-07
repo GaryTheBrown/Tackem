@@ -1,7 +1,6 @@
 ''' Locale Language options'''
 from libs.config.obj.data.option import ConfigObjOption
 
-
 OPTIONS = [
     ConfigObjOption("af", "Afrikaans"),
     ConfigObjOption("sq", "Albanian"),

@@ -3,7 +3,6 @@ import cherrypy
 from api.base import APIBase
 from config_data import CONFIG
 
-
 @cherrypy.expose
 class APIAdminConfig(APIBase):
     '''CONFIG API'''

@@ -3,7 +3,6 @@ import json
 from abc import ABCMeta, abstractmethod
 from system.plugin import TackemSystemPlugin
 
-
 class PluginBaseClass(metaclass=ABCMeta):
     '''base class of the plugins'''
 
@@ -43,7 +42,6 @@ class PluginBaseClass(metaclass=ABCMeta):
     def plugin_link(self):
         '''Returns the plugin Link'''
         return self._tackem_system.plugin
-
 
 def load_plugin_settings(settings_json_file: str) -> dict:
     '''function to load the plugin settings.json'''

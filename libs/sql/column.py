@@ -1,7 +1,6 @@
 '''Column Defenition Stuff Useful for updating tables'''
-from typing import Union, Any
+from typing import Optional, Any
 import time
-
 
 class Column:
     '''Column'''
@@ -23,28 +22,30 @@ class Column:
     def __init__(
             self,
             name: str,
-            variable_type: Union[bool, str] = False,
+            variable_type: str,
             primary_key: bool = False,
             unique: bool = False,
             not_null: bool = False,
             default: Any = None,
-            default_raw: bool = False
+            default_raw: bool = False,
+            size: Optional[int] = None,
+            decimal: Optional[int] = None,
+            unsigned: bool = False,
+            auto_increment: bool = False,
+            timestamp_update: bool = False
     ):
-
-        if isinstance(name, str):
-            self.__name = name
-            self.__variable_type = variable_type
-            self.__primary_key = bool(primary_key)
-            self.__unique = bool(unique)
-            self.__not_null = bool(not_null)
-            self.__default = default
-            self.__default_raw = bool(default_raw)
-        else:
-            self.__name = name[1]
-            self.__variable_type = name[2]
-            self.__primary_key = bool(name[5])
-            self.__not_null = bool(name[3])
-            self.__default = name[4]
+        self.__name = name
+        self.__variable_type = variable_type
+        self.__primary_key = bool(primary_key)
+        self.__unique = bool(unique)
+        self.__not_null = bool(not_null)
+        self.__default = default
+        self.__default_raw = bool(default_raw)
+        self.__size = size
+        self.__decimal = decimal
+        self.__unsigned = unsigned
+        self.__auto_increment = auto_increment
+        self.__timestamp_update = timestamp_update
 
     def __repr__(self) -> str:
         '''print return'''
@@ -57,20 +58,24 @@ class Column:
 
     def to_string(self) -> str:
         '''turns Column info into a string for commands'''
-        return_string = '"' + self.__name + '"' + " " + self.__variable_type
-        if self.__primary_key:
-            return_string += " PRIMARY KEY"
-        if self.__not_null:
-            return_string += " NOT NULL"
-        if self.__unique:
-            return_string += " UNIQUE"
-        if not self.__default is None:
+        return_string = '"{}" {}'.format(self.__name, self.__variable_type)
+        if self.__size and self.__decimal:
+            return_string += "({}, {})".format(self.__size, self.__decimal)
+        elif self.__size:
+            return_string += "({})".format(self.__size)
+        return_string += " UNSIGNED" if self.__unsigned else ""
+        return_string += " PRIMARY KEY" if self.__primary_key else ""
+        return_string += " NOT NULL" if self.__not_null else ""
+        return_string += " UNIQUE" if self.__unique else ""
+        return_string += " AUTO_INCREMENT" if self.__auto_increment else ""
+        return_string += " ON UPDATE CURRENT_TIMESTAMP" if self.__timestamp_update else ""
+        if self.__default is not None:
             return_string += " DEFAULT "
             if isinstance(self.__default, str):
                 if self.__default_raw:
                     return_string += self.__default
                 else:
-                    return_string += "'" + self.__default + "'"
+                    return_string += "'{}'".format(self.__default)
             elif isinstance(self.__default, int):
                 return_string += str(self.__default)
             elif isinstance(self.__default, bool):

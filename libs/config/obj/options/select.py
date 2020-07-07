@@ -6,7 +6,6 @@ from libs.config.obj.data.option import ConfigObjOption
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
-
 class ConfigObjOptionsSelect(ConfigObjOptionsBase):
     '''Config Item Options Select'''
 
@@ -28,7 +27,7 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
         if not isinstance(default_value, (str, int, list)):
             raise ValueError("default value is not a string, int or list")
         if isinstance(default_value, list):
-            for i, val in enumerate(default_value):
+            for val in default_value:
                 if not isinstance(val, (str, int, float)):
                     raise ValueError(
                         "default value item is not a string, int or float")

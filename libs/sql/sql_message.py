@@ -2,7 +2,6 @@
 from typing import Optional, Union
 import threading
 
-
 class SQLMessage:
     '''Struct to hold the message for easier reading in here'''
 

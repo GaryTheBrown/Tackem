@@ -2,7 +2,6 @@
 from system.plugin_downloader import TackemSystemPluginDownloader
 from api.base import APIBase
 
-
 class APIPluginBase(APIBase):
     '''PLUGIN BASE API'''
 

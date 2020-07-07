@@ -9,7 +9,6 @@ PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
 PLUGINFOLDERLOCATION = "plugins/"
 THEMEFOLDERLOCATION = "themes/"
 
-
 def __parse():
     '''parses the command line arguments'''
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -17,6 +16,5 @@ def __parse():
                         action='version',
                         version="Tackem Version: " + PROGRAMVERSION)
     return parser.parse_args()
-
 
 ARGS = __parse()

@@ -4,7 +4,6 @@ from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
 
-
 class Root(HTMLTEMPLATE):
     '''Root'''
 
@@ -12,7 +11,6 @@ class Root(HTMLTEMPLATE):
     def index(self) -> str:
         '''Index Page'''
         AUTHENTICATION.check_auth()
-
         return self._template(HTMLSystem.open("pages/homepage"))
 
     @cherrypy.expose

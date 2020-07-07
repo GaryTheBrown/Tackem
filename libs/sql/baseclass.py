@@ -1,12 +1,11 @@
 '''SQL Abstract Class System'''
-from typing import Any, Optional
+from typing import Any, Optional, Union
 import threading
 import json
 from abc import ABCMeta, abstractmethod
 from libs.sql.column import Column
 from libs.sql.table import Table
 from libs.sql.sql_message import SQLMessage
-
 
 class SqlBaseClass(metaclass=ABCMeta):
     '''base class of database access'''
@@ -111,7 +110,7 @@ class SqlBaseClass(metaclass=ABCMeta):
             self,
             system_name: str,
             table_name: str,
-            dict_of_values: Optional[dict] = None,
+            dict_of_values: Optional[Union[dict, list]] = None,
             list_of_returns: Optional[list] = None
     ) -> Any:
         '''select data from a table'''
@@ -123,11 +122,16 @@ class SqlBaseClass(metaclass=ABCMeta):
         command = "SELECT " + returns + " FROM " + table_name
         if dict_of_values:
             command += " WHERE "
-            values = []
-            for key in dict_of_values:
-                values.append(
-                    key + " = " + self.__convert_var(dict_of_values[key]))
-            command += " AND ".join(values)
+            if isinstance(dict_of_values, dict):
+                values = []
+                for key in dict_of_values:
+                    values.append(
+                        key + " = " + self.__convert_var(dict_of_values[key]))
+                command += " AND ".join(values)
+            elif isinstance(dict_of_values, list):
+                command += " AND ".join(dict_of_values)
+            elif isinstance(dict_of_values, str):
+                command += dict_of_values
         command += ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
@@ -242,12 +246,9 @@ class SqlBaseClass(metaclass=ABCMeta):
         elif isinstance(var, dict):
             return '"' + json.dumps(var, ensure_ascii=False) + '"'
 
-
 ##########
 ##THREAD##
 ##########
-
-
     def __run(self):
         '''Threadded Run'''
         self._startup()

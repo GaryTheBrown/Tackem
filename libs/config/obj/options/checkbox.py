@@ -5,7 +5,6 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.checkbox import ConfigObjCheckbox
 from libs.config.rules import ConfigRules
 
-
 class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
     '''Config Item Options CheckBox'''
 

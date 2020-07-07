@@ -2,7 +2,6 @@
 from typing import Optional
 from threading import Event
 
-
 class RootEvent:
     '''Event to control the loop function'''
     _events = []

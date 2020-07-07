@@ -1,7 +1,6 @@
 '''System Data'''
 import threading
 
-
 class SystemData():
     '''System Data'''
 

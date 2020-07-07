@@ -10,9 +10,7 @@ import git
 import requests
 import markdown
 from libs.startup_arguments import PLUGINFOLDERLOCATION
-from config_data import CONFIG
 from system.admin import TackemSystemAdmin
-
 
 class TackemSystemPluginDownloader(TackemSystemAdmin):
     '''System for downloading plugins'''
@@ -149,15 +147,6 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
                 return True, 0
         return "PLUGIN NOT IN LIST [BUG]", 1
 
-    # def reload_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
-    #     '''Function to attempt to reload the plugin after a failed install'''
-    #     CONFIG.save()
-    #     return_data = self.load_plugin(plugin_type, plugin_name)
-    #     if return_data[0] is not True:
-    #         return return_data
-    #     CONFIG.load()
-    #     return True, 0
-
     def install_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:  # (pip)
         '''install plugin modiles'''
         plugin_folder = plugin_type + "/" + plugin_name + "/"
@@ -168,17 +157,6 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
                         'install', '-r', requirements_file, '--user']
             subprocess.check_call(pip_call)
             print("installed plugin requirements")
-
-    # def uninstall_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:
-    #     '''uninstall plugin modiles'''
-    #     plugin_folder = plugin_type + "/" + plugin_name + "/"
-    #     requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
-    #     if os.path.exists(requirements_file):
-    #         print("uninstalling plugin requirements..")
-    #         pip_call = [sys.executable, '-m', 'pip',
-    #                     'uninstall', '-y', '-r', requirements_file]
-    #         subprocess.check_call(pip_call)
-    #         print("uninstalled plugin requirements")
 
     def delete_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''deletes the plugin'''
@@ -219,7 +197,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
     def get_current_plugin_branch(self, plugin_type: str, plugin_name: str) -> str:
         '''Gets the current branch'''
         location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
-        return git.Repo(location).active_branch()
+        return git.Repo(location).active_branch
 
     def change_plugin_branch(self, plugin_type: str, plugin_name: str, branch: str) -> bool:
         '''will change the branch for the plugin'''

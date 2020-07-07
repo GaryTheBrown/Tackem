@@ -10,7 +10,6 @@ from api.admin.user_delete import APIAdminUserDelete
 from api.admin.user_update import APIAdminUserUpdate
 from libs.root_event import RootEvent
 
-
 @cherrypy.expose
 class APIAdmin(APIBase):
     '''ROOT API'''

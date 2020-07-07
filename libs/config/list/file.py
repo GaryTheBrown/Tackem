@@ -6,7 +6,6 @@ from libs.config.configobj_extras import EXTRA_FUNCTIONS
 from libs.config.list.base import ConfigListBase
 from libs.config.obj.base import ConfigObjBase
 
-
 class ConfigListFile(ConfigListBase):
     '''Config List Class'''
 
@@ -56,7 +55,6 @@ class ConfigListFile(ConfigListBase):
         if self._objects is None:
             return
 
-
         if config is None:
             config = self.__config
         for key, value in config.items():
@@ -83,7 +81,6 @@ class ConfigListFile(ConfigListBase):
                             break
                 if restart:
                     continue
-
 
     def get_spec_part(self, indent: int) -> str:
         '''function for recursion of list'''

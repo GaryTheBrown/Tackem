@@ -119,7 +119,27 @@ CONFIG = ConfigList(
     ),
     ConfigList(
         "libraries",
-        "libraries",
+        "Libraries",
+        ConfigList(
+            "global",
+            "Global",
+            ConfigObjOptionsSelect(
+                "autofilecheck",
+                [
+                    ConfigObjOption("disabled", "Disabled"),
+                    ConfigObjOption("hourly", "Hourly"),
+                    ConfigObjOption("daily", "Daily"),
+                    ConfigObjOption("weekly", "Weekly"),
+                    ConfigObjOption("monthly", "Monthly"),
+                    ConfigObjOption("quaterly", "Quaterly"),
+                    ConfigObjOption("halfyear", "Half Yearly"),
+                    ConfigObjOption("year", "Yearly"),
+                ],
+                "monthly",
+                "Auto File Check",
+                "How often to automatically check the files for corruption"
+            )
+        ),
         ConfigList(
             "games",
             "Games",

@@ -28,7 +28,6 @@ from config_data import CONFIG
 # TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
 # TODO the same for all plugins
 
-
 class Tackem:
     '''main program entrance'''
 
@@ -86,13 +85,10 @@ class Tackem:
 
     def run(self) -> None:
         '''Looping function'''
-
-        # First check if home folder exists (useable to run first time script)
         if not os.path.exists(PROGRAMCONFIGLOCATION):
             os.mkdir(PROGRAMCONFIGLOCATION)
 
-        # Setup signal to watch for ctrl + c command
-        signal.signal(signal.SIGINT, ctrl_c)
+        signal.signal(signal.SIGINT, ctrl_c) # Setup signal to watch for ctrl + c command
         self.start()
         while True:
             event, data = RootEvent.wait_and_get_event()
@@ -122,8 +118,6 @@ class Tackem:
 
         self.cleanup()
 
-    # Webserver Methods
-
     def __load_webserver(self) -> Union[bool, None]:
         '''loads the webserver system'''
         if self.__webserver is None:
@@ -152,22 +146,16 @@ class Tackem:
             self.__webserver.stop()
         return True
 
-
     def __restart_webserver(self) -> bool:
         '''restart the Webserver'''
-        return self.__stop_webserver() \
-            and self.__delete_webserver() \
-            and self.__load_webserver() \
-            and self.__start_webserver()
+        return self.__stop_webserver() and self.__delete_webserver() \
+            and self.__load_webserver() and self.__start_webserver()
 
-##############################################
 # Catching the ctrl + c event and doing a clean shutdown
 def ctrl_c(_, __):
     '''Function to call once ctrl + c is pressed'''
     print(" caught Shutting Down Cleanly...")
     RootEvent.set_event("shutdown")
-##############################################
-
 
 if __name__ == "__main__":
     Tackem().run()

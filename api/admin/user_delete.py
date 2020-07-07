@@ -3,7 +3,6 @@ import cherrypy
 from api.base import APIBase
 from libs.authenticator import AUTHENTICATION
 
-
 @cherrypy.expose
 class APIAdminUserDelete(APIBase):
     '''User Delete API'''
@@ -11,7 +10,7 @@ class APIAdminUserDelete(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
-        if not "userid" in kwargs:
+        if "userid" not in kwargs:
             return self._return_data(
                 user,
                 "User",

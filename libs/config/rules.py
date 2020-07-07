@@ -1,7 +1,6 @@
 '''Config Rules'''
 from typing import Union
 
-
 class ConfigRules:
     ''' Data for any group rules'''
 

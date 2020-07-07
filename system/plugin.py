@@ -2,7 +2,6 @@
 from typing import Union
 from system.base import TackemSystemBase
 
-
 class TackemSystemPlugin(TackemSystemBase):
     '''Plugin Control Of System Data'''
 

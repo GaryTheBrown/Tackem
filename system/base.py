@@ -1,7 +1,6 @@
 '''Tackem System Data Base Class'''
 from system.data import SystemData
 
-
 class TackemSystemBase:
     '''Tackem System Data Base Class'''
 

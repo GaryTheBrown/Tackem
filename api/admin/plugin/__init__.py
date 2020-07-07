@@ -8,7 +8,6 @@ from api.admin.plugin.update import APIPluginUpdate
 from api.admin.plugin.load import APIPluginLoad
 from api.admin.plugin.unload import APIPluginUnload
 
-
 @cherrypy.expose
 class APIAdminPlugin(APIBase):
     '''PLUGIN API'''

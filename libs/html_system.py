@@ -5,7 +5,6 @@ import json
 import re
 from libs.startup_arguments import THEMEFOLDERLOCATION
 
-
 class HTMLSystem:
     '''HTML Systems'''
 

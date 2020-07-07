@@ -3,7 +3,6 @@ import sqlite3
 from libs.startup_arguments import PROGRAMCONFIGLOCATION
 from libs.sql.baseclass import SqlBaseClass
 
-
 class SqlLite(SqlBaseClass):
     '''sqllite system'''
 
@@ -105,7 +104,7 @@ class SqlLite(SqlBaseClass):
                         temp_value = str(row[links[key][1]])
                     elif isinstance(row[links[key][1]], str):
                         temp_value = "'" + row[links[key][1]] + "'"
-                    elif isinstance(row[links[key][1]], None):
+                    elif row[links[key][1]] is None:
                         temp_value = "NULL"
                     values.append(temp_value)
                 else:
@@ -114,7 +113,7 @@ class SqlLite(SqlBaseClass):
                         temp_value = str(links[key][1])
                     elif isinstance(links[key][1], str):
                         temp_value = "'" + links[key][1] + "'"
-                    elif isinstance(links[key][1], None):
+                    elif links[key][1] is None:
                         temp_value = "NULL"
                     values.append(temp_value)
 

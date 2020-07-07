@@ -1,7 +1,6 @@
 '''Tackem System Full Class'''
 from system.base import TackemSystemBase
 
-
 class TackemSystemFull(TackemSystemBase):
     '''Tackem System Full Class'''
 

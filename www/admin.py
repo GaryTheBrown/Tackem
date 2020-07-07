@@ -7,7 +7,6 @@ from libs.config.html.post_to_config import post_config_settings
 from config_data import CONFIG
 from system.plugin_downloader import TackemSystemPluginDownloader
 
-
 class Admin(HTMLTEMPLATE):
     '''Admin'''
 

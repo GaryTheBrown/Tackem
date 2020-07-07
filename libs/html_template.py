@@ -5,10 +5,8 @@ from libs.authenticator import AUTHENTICATION
 from libs.html_system import HTMLSystem
 from libs.startup_arguments import PROGRAMVERSION
 
-
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
-
     _baseurl = "/"
 
     @classmethod
@@ -17,12 +15,12 @@ class HTMLTEMPLATE():
         cls._baseurl = baseurl
 
     def __init__(
-        self,
-        name: str,
-        key: str,
-        tackem_system,
-        base_stylesheet: Optional[str] = None,
-        base_javascript: Optional[str] = None
+            self,
+            name: str,
+            key: str,
+            tackem_system,
+            base_stylesheet: Optional[str] = None,
+            base_javascript: Optional[str] = None
     ):
         self._tackem_system = tackem_system
         self._name = name
@@ -34,11 +32,11 @@ class HTMLTEMPLATE():
             self._plugin = self._tackem_system.plugin
 
     def _template(
-        self,
-        body: str,
-        navbar: bool = True,
-        javascript: Optional[str] = None,
-        stylesheet: Optional[str] = None
+            self,
+            body: str,
+            navbar: bool = True,
+            javascript: Optional[str] = None,
+            stylesheet: Optional[str] = None
     ) -> str:
         '''Create The Template Layout'''
         navbar_html = ""
@@ -98,8 +96,8 @@ class HTMLTEMPLATE():
         )
 
     def _error_page(
-        self,
-        code: int
+            self,
+            code: int
     ) -> str:
         '''Shows the error Page'''
         # if not any codes bellow or 404
@@ -190,7 +188,6 @@ class HTMLTEMPLATE():
             navbar_right_html += navbar_login_html
         return navbar_right_html
 
-
 def navbar_dropdown(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
     return HTMLSystem.part(
@@ -199,7 +196,6 @@ def navbar_dropdown(title: str, dropdown_id: str, items: str) -> str:
         DROPDOWNID=dropdown_id,
         ITEMS=items
     )
-
 
 def navbar_dropdown_right(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item right aligned (not active)'''
@@ -210,7 +206,6 @@ def navbar_dropdown_right(title: str, dropdown_id: str, items: str) -> str:
         ITEMS=items
     )
 
-
 def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
     return HTMLSystem.part(
@@ -220,7 +215,6 @@ def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
         ITEMS=items
     )
 
-
 def navbar_item(title: str, url: str) -> str:
     '''A Navbar Item (not active)'''
     return HTMLSystem.part(
@@ -228,7 +222,6 @@ def navbar_item(title: str, url: str) -> str:
         TITLE=title.title(),
         URL=url.replace(" ", "/")
     )
-
 
 def navbar_item_active(title: str) -> str:
     '''A Navbar Item (not active)'''

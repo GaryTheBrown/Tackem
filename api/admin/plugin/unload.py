@@ -1,8 +1,6 @@
 '''PLUGIN UNLOAD API'''
-
 import cherrypy
 from api.admin.plugin.base import APIPluginBase
-
 
 @cherrypy.expose
 class APIPluginUnload(APIPluginBase):

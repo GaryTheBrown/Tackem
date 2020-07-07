@@ -10,7 +10,6 @@ from libs.program_checker import check_for_required_programs
 from libs.startup_arguments import PLUGINFOLDERLOCATION
 from config_data import CONFIG
 
-
 class TackemSystemAdmin(TackemSystemFull):
     '''Admin Control Of System Data'''
 
@@ -31,7 +30,6 @@ class TackemSystemAdmin(TackemSystemFull):
         return plugin_name.lower() in self._base_data.plugins.get(plugin_type.lower(), {})
 
     # Plugin Methods
-
     def load_plugins(self) -> None:
         '''imports all plugin'''
         for folder in glob.glob(PLUGINFOLDERLOCATION + "*/*/"):
@@ -107,9 +105,7 @@ class TackemSystemAdmin(TackemSystemFull):
             del self._base_data.plugins[plugin_type]
             CONFIG['plugins'].delete(plugin_type)
 
-
     # Systems Methods
-
     def load_systems(self) -> None:
         '''load systems fors all plugins'''
         for plugin_type in self._base_data.plugins:
@@ -131,7 +127,6 @@ class TackemSystemAdmin(TackemSystemFull):
         self._base_data.systems[system_name] = temp_plugin.Plugin(
             system_name, single_instance)
         return True
-
 
     def unload_systems(self) -> None:
         '''deletes the systems'''
@@ -182,7 +177,6 @@ class TackemSystemAdmin(TackemSystemFull):
         while True:
             if not self._base_data.systems[system_name].running():
                 return
-
 
     def load_plugin_systems(self, plugin_type: str, plugin_name: str) -> bool:
         '''loads a single plugin systems'''

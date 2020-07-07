@@ -3,7 +3,6 @@ import http.client
 import json
 from config_data import CONFIG
 
-
 class Scraper():
     '''Scraper html System Here'''
 
@@ -16,11 +15,9 @@ class Scraper():
         self._image_config = self._configuration()
         self.__working = bool(self._image_config)
 
-
 ###########
 ##GETTERS##
 ###########
-
     @property
     def working(self) -> bool:
         '''returns if the system is working'''
@@ -30,11 +27,9 @@ class Scraper():
         '''returns the base address for the image'''
         return self._image_config['secure_base_url']
 
-
 #############
 ##SHORTCUTS##
 #############
-
     def __base(self, adult: bool = True, language: bool = True) -> str:
         '''creates the base command keys'''
         base = "api_key=" + self.__apikey
@@ -48,11 +43,9 @@ class Scraper():
         '''message returned when the scraper failed'''
         return "Search Failed\nStatus: {}\nReason: {}\n".format(status, reason)
 
-
 ############
 ##COMMANDS##
 ############
-
     def _configuration(self):
         '''config section for startup getting info mainly image urls'''
         command = "/3/configuration?" + self.__base(False, False)
@@ -68,11 +61,9 @@ class Scraper():
             return None
         return data['response']['images']
 
-
 #################
 ##MOVIE SECTION##
 #################
-
     def search_for_movie(self, query: str, page: int = 1, year: int = None) -> dict:
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
@@ -93,11 +84,9 @@ class Scraper():
         command = "/3/movie/" + str(movie_id) + "?" + self.__base(adult=False)
         return self.__get_request(command)
 
-
 ##################
 ##TVSHOW SECTION##
 ##################
-
     def search_for_tvshow(self, query: str, page: int = 1) -> dict:
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
@@ -125,11 +114,9 @@ class Scraper():
         command += "?" + self.__base(adult=False)
         return self.__get_request(command)
 
-
 ############
 ##REQUESTS##
 ############
-
     def __get_request(self, command: str) -> dict:
         '''do a get request'''
         self.__conn.request("GET", command)
@@ -144,6 +131,5 @@ class Scraper():
             return_data['response'] = json.loads(
                 response.read().decode("utf-8"))
         return return_data
-
 
 SCRAPER = Scraper()

@@ -5,7 +5,6 @@ from libs.sql.baseclass import SqlBaseClass
 from libs.sql.mysql import MySql
 from libs.sql.sqllite import SqlLite
 
-
 class Database:
     '''SQL System'''
     __sql = None

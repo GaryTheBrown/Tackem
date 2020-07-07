@@ -1,7 +1,6 @@
 '''Button'''
 from libs.html_system import HTMLSystem
 
-
 class Button():
     '''Button'''
 

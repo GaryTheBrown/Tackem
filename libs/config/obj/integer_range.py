@@ -5,7 +5,6 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
 from libs.config.rules import ConfigRules
 
-
 class ConfigObjIntegerRange(ConfigObjIntegerNumber):
     '''Config Item Integer Range'''
 

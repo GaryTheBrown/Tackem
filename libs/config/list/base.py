@@ -5,7 +5,6 @@ from libs.config.base import ConfigBase
 from libs.config.rules import ConfigRules
 from libs.config.obj.base import ConfigObjBase
 
-
 class ConfigListBase(ConfigBase):
     '''Config List Class'''
 
@@ -165,7 +164,6 @@ class ConfigListBase(ConfigBase):
                 if len(location) > 1:
                     obj.find_and_set(location[1:], value)
                     return
-
             return
 
         for obj in self._objects:
@@ -173,5 +171,4 @@ class ConfigListBase(ConfigBase):
                 if location[0] in obj:
                     obj.find_and_set(location, value)
                     return
-
         return

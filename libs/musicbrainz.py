@@ -3,7 +3,6 @@ import musicbrainzngs
 from libs.startup_arguments import PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRESS
 from config_data import CONFIG
 
-
 class MusicBrainz():
     '''video ripping controller'''
 
@@ -33,6 +32,5 @@ class MusicBrainz():
             return {}
         includes = ["artists", "recordings", "artist-credits"]
         return musicbrainzngs.get_releases_by_discid(disc_id, includes=includes).get('disc', {})
-
 
 MUSICBRAINZ = MusicBrainz()

@@ -12,7 +12,6 @@ def post_config_settings(kwargs: dict):
         key_list = key.split("_")
         add_val_to_config(key, CONFIG, key_list, value)
 
-
 def add_val_to_config(key: str, config: ConfigList, key_list: list, value):
     '''recursive way of adding value into the config'''
     if len(key_list) == 1:

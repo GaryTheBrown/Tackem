@@ -8,7 +8,6 @@ from libs.sql.column import Column
 from libs.sql.table import Table
 from config_data import CONFIG
 
-
 class Authentication:
     '''Authentication system for all html pages listed'''
 
@@ -49,11 +48,11 @@ class Authentication:
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     def login(
-        self,
-        username: str,
-        password: str,
-        timeout: int,
-        returnurl: str
+            self,
+            username: str,
+            password: str,
+            timeout: int,
+            returnurl: str
     ) -> Union[bool, None]:
         '''Login Script'''
         if username == "" or password == "":
@@ -145,11 +144,11 @@ class Authentication:
         return data
 
     def update_user(
-        self,
-        user_id: int,
-        username: Union[str, None] = None,
-        password: Union[str, None] = None,
-        is_admin: bool = None
+            self,
+            user_id: int,
+            username: Union[str, None] = None,
+            password: Union[str, None] = None,
+            is_admin: bool = None
     ) -> None:
         '''update the user info'''
         data = {}
@@ -164,6 +163,5 @@ class Authentication:
     def clear_sessions(self) -> None:
         '''clears the sessions and logs all the users out'''
         self.__temp_sessions = {}
-
 
 AUTHENTICATION = Authentication()

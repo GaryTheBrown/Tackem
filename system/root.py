@@ -1,7 +1,6 @@
 '''Plugin Control Of System Data'''
 from system.base import TackemSystemBase
 
-
 class TackemSystemRoot(TackemSystemBase):
     '''Plugin Control Of System Data'''
 

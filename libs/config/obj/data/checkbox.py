@@ -3,7 +3,6 @@ from typing import Optional
 from libs.html_system import HTMLSystem
 from libs.config.obj.data.input_attributes import InputAttributes
 
-
 class ConfigObjCheckbox:
     '''Config Item Checkbox'''
 

@@ -8,7 +8,27 @@ class Table():
     def __init__(self, name: str, version: int, *data: List[Column]):
         self.__name = name
         self.__version = version
-        self.__data = data
+        self.__data = [
+            Column(
+                "id",
+                "integer",
+                primary_key=True,
+                not_null=True,
+                unsigned=True,
+                auto_increment=True
+            ),
+            Column(
+                "created_at",
+                "timestamp",
+                default="CURRENT_TIMESTAMP",
+                default_raw=True
+            ),
+            Column(
+                "updated_at",
+                "timestamp",
+                timestamp_update=True
+            ),
+        ] + data
 
     def name(self, *values) -> str:
         '''returns the name'''

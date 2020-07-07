@@ -1,7 +1,6 @@
 '''MariaDB System'''
 from libs.sql.baseclass import SqlBaseClass
 
-
 class MySql(SqlBaseClass):
     '''mariabd system'''
 
@@ -10,10 +9,6 @@ class MySql(SqlBaseClass):
 
     def _shutdown(self):
         '''Shutdown the System Here'''
-
-    ###########
-    ##PRIVATE##
-    ###########
 
     def _check_version_table_exists(self) -> bool:
         '''returns if the table_version exists'''
@@ -29,7 +24,3 @@ class MySql(SqlBaseClass):
 
     def _update_table(self, table_name, data, version) -> bool:
         '''Update the table with the informaiton provided'''
-
-    ##########
-    ##PUBLIC##
-    ##########

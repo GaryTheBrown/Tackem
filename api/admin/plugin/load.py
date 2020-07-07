@@ -3,7 +3,6 @@ import os
 import cherrypy
 from api.admin.plugin.base import APIPluginBase
 
-
 @cherrypy.expose
 class APIPluginLoad(APIPluginBase):
     '''PLUGIN LOAD API'''

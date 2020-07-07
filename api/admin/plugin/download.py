@@ -2,7 +2,6 @@
 import cherrypy
 from api.admin.plugin.base import APIPluginBase
 
-
 @cherrypy.expose
 class APIPluginDownload(APIPluginBase):
     '''PLUGIN DOWNLOAD API'''

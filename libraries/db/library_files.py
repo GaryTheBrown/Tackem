@@ -6,9 +6,8 @@ LIBRARY_FILES_DB_INFO = Table(
     "library_files",
     1,
     Column(
-        "id",
-        "integer",
-        primary_key=True,
+        "folder",
+        "text",
         not_null=True
     ),
     Column(
@@ -17,10 +16,36 @@ LIBRARY_FILES_DB_INFO = Table(
         not_null=True
     ),
     Column(
-        "added",
-        "datetime",
-        not_null=True,
-        default="CURRENT_TIMESTAMP",
-        default_raw=True
-    )
+        "type",
+        "varchar",
+        size=16,
+        not_null=True
+    ),
+    Column(
+        "checksum",
+        "binary",
+        size=32
+    ),
+    Column(
+        "last_check",
+        "bigint" # unix timestamp
+    ),
+    Column(
+        "bad_file",
+        "bit",
+        default=0
+    ),
+    Column(
+        "missing_file",
+        "bit",
+        default=0
+    ),
+    Column(
+        "from_system",
+        "text",
+    ),
+    Column(
+        "from_id",
+        "integer"
+    ),
 )

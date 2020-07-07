@@ -8,7 +8,6 @@ from config_data import CONFIG
 from libs.root_event import RootEvent
 from libs.authenticator import AUTHENTICATION
 
-
 @cherrypy.expose
 class API(APIBase):
     '''ROOT API'''

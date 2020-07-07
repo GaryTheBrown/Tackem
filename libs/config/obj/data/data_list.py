@@ -1,7 +1,6 @@
 '''Config Object Data List'''
 from libs.html_system import HTMLSystem
 
-
 class DataList:
     '''Config Object Data List'''
 
@@ -23,7 +22,6 @@ class DataList:
             VARNAME=self.__variable_name,
             OPTIONS="".join([x.html for x in self.__options])
         )
-
 
 class DataListOption:
     '''Config Object Data List Option'''

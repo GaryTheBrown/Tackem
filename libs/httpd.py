@@ -9,7 +9,6 @@ from libs.startup_arguments import THEMEFOLDERLOCATION
 from config_data import CONFIG
 from system.full import TackemSystemFull
 
-
 class Httpd():
     '''HTTPD CLASS'''
 

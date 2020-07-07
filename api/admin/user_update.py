@@ -3,7 +3,6 @@ import cherrypy
 from api.base import APIBase
 from libs.authenticator import AUTHENTICATION
 
-
 @cherrypy.expose
 class APIAdminUserUpdate(APIBase):
     '''User Update API'''
