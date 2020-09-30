@@ -16,7 +16,7 @@ class MoviesLibrary(LibraryBase):
         '''Scans the folder For New Files'''
         for file in self._scan_folder_base(['mkv']):
             #add file info to LIBRARY_MOVIES_DB_INFO.name(self._name)
-            print("DB FILE ADDED " + file)
+            print("DB FILE ADDED {}".format(file))
 
     def run(self):
         '''threadded run'''

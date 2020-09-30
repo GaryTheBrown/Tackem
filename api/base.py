@@ -9,7 +9,6 @@ class APIBase():
     GUEST = 0
     MASTER = 1
     USER = 2
-    PLUGIN = 3
 
     def GET(self, **kwargs) -> None:  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''

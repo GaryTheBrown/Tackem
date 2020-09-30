@@ -62,8 +62,7 @@ class ConfigObjString(ConfigObjBase):
             string += i_a
             if i_a != "":
                 string += ", "
-        string += "default='" + self.default_value + "'"
-        string += ")\n"
+        string += "default='{}')\n".format(str(self.default_value))
 
         return string
 

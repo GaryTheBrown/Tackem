@@ -84,23 +84,23 @@ class Column:
 
     def get_default_value(self) -> str:
         '''returns the default blank to use for when not null on column'''
-        if self.__variable_types[self.__variable_type] == 0:
+        if self.__variable_type == 0:
             return "False"
-        if self.__variable_types[self.__variable_type] == 1:
+        if self.__variable_type == 1:
             return "0"
-        if self.__variable_types[self.__variable_type] == 2:
+        if self.__variable_type == 2:
             return "''"
-        if self.__variable_types[self.__variable_type] == 3:
+        if self.__variable_type == 3:
             return time.strftime('%Y-%m-%d')
-        if self.__variable_types[self.__variable_type] == 4:
+        if self.__variable_type == 4:
             return time.strftime('%H:%M:%S')
-        if self.__variable_types[self.__variable_type] == 5:
+        if self.__variable_type == 5:
             return time.strftime('%Y-%m-%d %H:%M:%S')
-        if self.__variable_types[self.__variable_type] == 6:
+        if self.__variable_type == 6:
             return time.strftime('%Y-%m-%d %H:%M:%S')
-        if self.__variable_types[self.__variable_type] == 7:
+        if self.__variable_type == 7:
             return time.strftime('%Y')
-        if self.__variable_types[self.__variable_type] == 10:
+        if self.__variable_type == 10:
             return "''"
         return ""
 

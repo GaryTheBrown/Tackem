@@ -11,7 +11,7 @@ class SystemData():
 
     @property
     def plugins(self):
-        '''returns the plugin [type][ name]'''
+        '''returns the plugin [type][name]'''
         with self.__plugins_lock:
             return self.__plugins
 

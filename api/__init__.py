@@ -4,6 +4,7 @@ import cherrypy
 from api.base import APIBase
 from api.admin import APIAdmin
 from api.system import APISystem
+from api.library import APILibrary
 from config_data import CONFIG
 from libs.root_event import RootEvent
 from libs.authenticator import AUTHENTICATION
@@ -35,6 +36,8 @@ class API(APIBase):
             return APIAdmin()
         if section == "system":
             return APISystem()
+        if section == "library":
+            return APILibrary()
         return self
 
     def _check_api_key(self, key: str) -> int:
@@ -45,8 +48,6 @@ class API(APIBase):
             return self.MASTER
         if key == CONFIG["api"]["userkey"].value:
             return self.USER
-        # if key == "ccc":
-        #     return self.PLUGIN
         return self.GUEST
 
     def _check_session_id(self) -> int:

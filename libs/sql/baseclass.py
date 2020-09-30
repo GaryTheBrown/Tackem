@@ -84,11 +84,9 @@ class SqlBaseClass(metaclass=ABCMeta):
         '''Check if the Table has row by looking for all the queries'''
         queries = []
         for key in dict_of_queries:
-            queries.append(
-                key + " = " + self.__convert_var(dict_of_queries[key]))
+            queries.append("{} = {}".format(key, self.__convert_var(dict_of_queries[key])))
 
-        command = "SELECT id FROM " + table_name
-        command += " WHERE " + " AND ".join(queries) + ";"
+        command = "SELECT id FROM {} WHERE {};".format(table_name, " AND ".join(queries))
         if return_value:= self.__call(SQLMessage(system_name, command=command, return_data=[])):
             if isinstance(return_value, list) and len(return_value) == 1:
                 if isinstance(return_value[0], dict):
@@ -98,12 +96,15 @@ class SqlBaseClass(metaclass=ABCMeta):
     def insert(self, system_name: str, table_name: str, dict_of_values: dict) -> Any:
         '''insert data into a table'''
         keys = list(dict_of_values.keys())
-        command = "INSERT INTO " + table_name + \
-            " (" + ", ".join(keys) + ") VALUES ("
         values = []
         for key in dict_of_values:
             values.append(self.__convert_var(dict_of_values[key]))
-        command += ", ".join(values) + ");"
+
+        command = "INSERT INTO {} ({}) VALUES ({});".format(
+            table_name,
+            ", ".join(keys),
+            ", ".join(values)
+        )
         return self.__call(SQLMessage(system_name, command=command))
 
     def select(
@@ -119,19 +120,21 @@ class SqlBaseClass(metaclass=ABCMeta):
             returns = ", ".join(list_of_returns)
         elif isinstance(list_of_returns, str):
             returns = list_of_returns
-        command = "SELECT " + returns + " FROM " + table_name
-        if dict_of_values:
-            command += " WHERE "
-            if isinstance(dict_of_values, dict):
-                values = []
-                for key in dict_of_values:
-                    values.append(
-                        key + " = " + self.__convert_var(dict_of_values[key]))
-                command += " AND ".join(values)
-            elif isinstance(dict_of_values, list):
-                command += " AND ".join(dict_of_values)
-            elif isinstance(dict_of_values, str):
-                command += dict_of_values
+
+        where = None
+        if isinstance(dict_of_values, dict):
+            values = []
+            for key in dict_of_values:
+                values.append("{} = {}".format(key, self.__convert_var(dict_of_values[key])))
+            where = " AND ".join(values)
+        elif isinstance(dict_of_values, list):
+            where = " AND ".join(dict_of_values)
+        elif isinstance(dict_of_values, str):
+            where = dict_of_values
+
+        command = "SELECT {} FROM {}".format(returns, table_name)
+        if where:
+            command += " WHERE {}".format(where)
         command += ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
@@ -148,31 +151,29 @@ class SqlBaseClass(metaclass=ABCMeta):
             returns = ", ".join(list_of_returns)
         elif isinstance(list_of_returns, str):
             returns = list_of_returns
-        command = "SELECT " + returns + " FROM " + table_name
+
+        command = "SELECT {} FROM {}".format(returns, table_name)
         if dict_of_values:
-            command += " WHERE "
             values = []
             for key in dict_of_values:
-                values.append(key + " LIKE " +
-                              self.__convert_var(dict_of_values[key]))
-            command += " AND ".join(values)
+                values.append("{} LIKE {}".format(key, self.__convert_var(dict_of_values[key])))
+            command += " WHERE {}".format(" AND ".join(values))
         command += ";"
         return self.__call(SQLMessage(system_name, command=command, return_data=[]))
 
     def count(self, system_name: str, table_name: str) -> Any:
         '''select data from a table'''
-        command = "SELECT COUNT(*) FROM " + table_name + ";"
+        command = "SELECT COUNT(*) FROM {};".format(table_name)
         return self.__call(SQLMessage(system_name, command=command, return_data=[],
                                       return_dict=False))[0][0]
 
     def count_where(self, system_name: str, table_name: str, dict_of_values: dict) -> Any:
         '''select data from a table'''
-        command = "SELECT COUNT(*) FROM " + table_name + " WHERE "
         values = []
         for key in dict_of_values:
             values.append(
                 key + " = " + self.__convert_var(dict_of_values[key]))
-        command += " AND ".join(values) + ";"
+        command = "SELECT COUNT(*) FROM {} WHERE {};".format(table_name, " AND ".join(values))
         return self.__call(SQLMessage(system_name, command=command, return_data=[],
                                       return_dict=False))[0][0]
 
@@ -189,38 +190,33 @@ class SqlBaseClass(metaclass=ABCMeta):
             returns = ", ".join(list_of_returns)
         elif isinstance(list_of_returns, str):
             returns = list_of_returns
-        command = "SELECT " + returns + " FROM " + \
-            table_name + " WHERE id=" + str(row_id) + ";"
-        return_data = self.__call(SQLMessage(
-            system_name, command=command, return_data=[]))
+        command = "SELECT {} FROM {} WHERE id={};".format(returns, table_name, str(row_id))
+        return_data = self.__call(SQLMessage(system_name, command=command, return_data=[]))
         if return_data:
             return return_data[0]
         return False
 
     def update(self, system_name: str, table_name: str, row_id: int, dict_of_values: dict) -> Any:
         '''update a row'''
-        command = "UPDATE " + table_name + " SET "
         values = []
         for key in dict_of_values:
             values.append(
                 key + " = " + self.__convert_var(dict_of_values[key]))
-        command += ", ".join(values) + " WHERE id=" + str(row_id) + ";"
+        command = "UPDATE {} SET {} WHERE id={};".format(table_name, ", ".join(values), str(row_id))
         return self.__call(SQLMessage(system_name, command=command))
 
     def delete_row(self, system_name: str, table_name: str, row_id: int) -> Any:
         '''delete a row by id'''
-        command = "DELETE FROM " + table_name + \
-            " WHERE id=" + str(row_id) + ";"
+        command = "DELETE FROM {} WHERE id={};".format(table_name, str(row_id))
         return self.__call(SQLMessage(system_name, command=command))
 
     def delete_where(self, system_name: str, table_name: str, dict_of_values: dict) -> Any:
         '''delete a row by id'''
-        command = "DELETE FROM " + table_name + " WHERE "
         values = []
         for key in dict_of_values:
             values.append(
-                key + " = " + self.__convert_var(dict_of_values[key]))
-        command += " AND ".join(values) + ";"
+                key + "{} = {}".format(key, self.__convert_var(dict_of_values[key])))
+        command = "DELETE FROM {} WHERE {};".format(table_name, " AND ".join(values))
         return self.__call(SQLMessage(system_name, command=command))
 
     def __call(self, job: SQLMessage) -> Any:
@@ -244,7 +240,7 @@ class SqlBaseClass(metaclass=ABCMeta):
         elif var is None:
             return "NULL"
         elif isinstance(var, dict):
-            return '"' + json.dumps(var, ensure_ascii=False) + '"'
+            return '"{}"'.format(json.dumps(var, ensure_ascii=False))
 
 ##########
 ##THREAD##
@@ -328,7 +324,7 @@ class SqlBaseClass(metaclass=ABCMeta):
 
     def __table_exists(self, table_name: str) -> int:
         '''Check if Table Exists return version number'''
-        command = 'SELECT version FROM table_version WHERE name="' + table_name + '";'
+        command = 'SELECT version FROM table_version WHERE name="{}";'.format(table_name)
         if info:= self._trusted_get(command):
             return info[0]['version']
         return 0
@@ -343,11 +339,13 @@ class SqlBaseClass(metaclass=ABCMeta):
         ''' Adds Table to the DB and then adds it into the table version DB'''
         array_of_variables = list(map(lambda v: v.to_string(), data))
         variables = ",".join(array_of_variables)
-        create_table = "CREATE TABLE IF NOT EXISTS " + \
-            table_name + " (" + variables + ");"
+        create_table = "CREATE TABLE IF NOT EXISTS {} ({})".format(table_name, variables)
         self._trusted_call(create_table)
         if update_table:
-            update_table__call = "INSERT INTO table_version (name, version) VALUES ('"
-            update_table__call += table_name + "', " + str(version) + ");"
-            self._trusted_call(update_table__call)
+            self._trusted_call(
+                "INSERT INTO table_version (name, version) VALUES ('{}', {});".format(
+                    table_name,
+                    str(version)
+                )
+            )
         return True

@@ -38,7 +38,7 @@ class Admin(HTMLTEMPLATE):
         local_plugin_html = ""
 
         for plugin in TackemSystemPluginDownloader().github_plugins:
-            title = plugin['plugin_type'] + " - " + plugin['plugin_name']
+            title = "{} - {}".format(plugin['plugin_type'], plugin['plugin_name'])
             readme = TackemSystemPluginDownloader().get_readme_as_html(
                 plugin['plugin_type'],
                 plugin['plugin_name']
@@ -65,11 +65,11 @@ class Admin(HTMLTEMPLATE):
 
         for plugin in TackemSystemPluginDownloader().local_plugins:
             if not plugin['offical']:
-                title = plugin['plugin_type'] + " - " + plugin['plugin_name']
+                title = "{} - {}".format(plugin['plugin_type'], plugin['plugin_name'])
                 offical = ""
                 if plugin['repo']:
                     offical = "[repo]"
-                local_plugin_html += "<H4>" + title + "</H4>" + offical
+                local_plugin_html += "<H4>{}</H4>{}".format(title, offical)
 
         page = HTMLSystem.part(
             "pages/plugindownloader",

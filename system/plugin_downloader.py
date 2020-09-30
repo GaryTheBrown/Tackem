@@ -84,8 +84,11 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
         for item in json.loads(response.text):
             if 'Tackem-Plugin-' in item['name']:
                 name_split = item['name'].split("-")
-                location = PLUGINFOLDERLOCATION + name_split[-2].lower()
-                location += "/" + name_split[-1].lower()
+                location = "{}{}/{}".format(
+                    PLUGINFOLDERLOCATION,
+                    name_split[-2].lower(),
+                    name_split[-1].lower()
+                )
                 save = {
                     'name': item['name'].lstrip(),
                     'description': item['description'],
@@ -112,11 +115,10 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
             file_to_get: str
     ) -> Union[str, None]:
         '''grabs a single file from github'''
-        folder = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + \
-            plugin_name.lower() + "/"
+        folder = "{}{}/{}".format(PLUGINFOLDERLOCATION, plugin_type.lower(), plugin_name.lower())
         if os.path.isfile(folder + file_to_get):
             return str(open(folder + file_to_get, "r").read())
-        plugin = "Tackem-plugin-" + plugin_type + "-" + plugin_name
+        plugin = "Tackem-plugin-{}-{}".format(plugin_type, plugin_name)
         link = self.__HOST_RAW_URL + plugin + self.__HOST_RAW_URL2 + file_to_get
         return_data = requests.get(link)
         if return_data.status_code == 200:
@@ -133,7 +135,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
     def download_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''function to use list from html page to download the plugins'''
-        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        location = "{}{}/{}".format(PLUGINFOLDERLOCATION, plugin_type.lower(), plugin_name.lower())
         try:
             os.makedirs(location)
         except OSError:
@@ -149,8 +151,8 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
     def install_plugin_modules(self, plugin_type: str, plugin_name: str) -> None:  # (pip)
         '''install plugin modiles'''
-        plugin_folder = plugin_type + "/" + plugin_name + "/"
-        requirements_file = PLUGINFOLDERLOCATION + plugin_folder + "requirements.txt"
+        plugin_folder = "{}/{}/".format(plugin_type, plugin_name)
+        requirements_file = "{}{}requirements.txt".format(PLUGINFOLDERLOCATION, plugin_folder)
         if os.path.exists(requirements_file):
             print("installing plugin requirements..")
             pip_call = [sys.executable, '-m', 'pip',
@@ -160,7 +162,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
     def delete_plugin(self, plugin_type: str, plugin_name: str) -> tuple:
         '''deletes the plugin'''
-        folder = PLUGINFOLDERLOCATION + plugin_type + "/" + plugin_name + "/"
+        folder = "{}/{}/".format(plugin_type, plugin_name)
         try:
             shutil.rmtree(folder)
         except OSError:
@@ -185,23 +187,23 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
     def update_plugin(self, plugin_type: str, plugin_name: str) -> None:
         '''function to use list from html page to download the plugins'''
-        location = PLUGINFOLDERLOCATION + plugin_type + '/' + plugin_name + '/'
+        location = "{}{}/{}/".format(PLUGINFOLDERLOCATION, plugin_type, plugin_name)
         git.Repo(location).remotes.origin.pull()
         return True
 
     def get_plugin_branches(self, plugin_type: str, plugin_name: str) -> list:
         '''Gets a list of branches'''
-        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        location = "{}{}/{}/".format(PLUGINFOLDERLOCATION, plugin_type, plugin_name)
         return [branch.name for branch in git.Repo(location).heads]
 
     def get_current_plugin_branch(self, plugin_type: str, plugin_name: str) -> str:
         '''Gets the current branch'''
-        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        location = "{}{}/{}/".format(PLUGINFOLDERLOCATION, plugin_type, plugin_name)
         return git.Repo(location).active_branch
 
     def change_plugin_branch(self, plugin_type: str, plugin_name: str, branch: str) -> bool:
         '''will change the branch for the plugin'''
-        location = PLUGINFOLDERLOCATION + plugin_type.lower() + "/" + plugin_name.lower()
+        location = "{}{}/{}/".format(PLUGINFOLDERLOCATION, plugin_type, plugin_name)
         repo = git.Repo(location)
         if branch in [branch.name for branch in repo.heads]:
             repo.heads[branch].checkout()

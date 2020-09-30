@@ -15,8 +15,12 @@ class TackemSystemAdmin(TackemSystemFull):
 
     def can_plugin_load(self, plugin_type: str, plugin_name: str) -> tuple:
         '''checks if the plugin can be loaded'''
-        plugin_json_file = PLUGINFOLDERLOCATION + \
-            plugin_type + "/" + plugin_name + "/settings.json"
+        plugin_json_file = "{}{}/{}/settings.json".format(
+            PLUGINFOLDERLOCATION,
+            plugin_type,
+            plugin_name
+        )
+
         plugin_settings = load_plugin_settings(plugin_json_file)
         if platform.system() == 'Linux':
             return check_for_required_programs(
@@ -80,7 +84,7 @@ class TackemSystemAdmin(TackemSystemFull):
         try:
             importlib.reload(plugin)
         except ModuleNotFoundError:
-            message = "Reloading Module " + plugin_type + " " + plugin_name + " Failed"
+            message = "Reloading Module {} {} Failed".format(plugin_type, plugin_name)
             print(message)
             return message, 1
 
@@ -155,7 +159,10 @@ class TackemSystemAdmin(TackemSystemFull):
         started, message = self._base_data.systems[system_name].startup()
         if not started:
             print(
-                self._base_data.systems[system_name].name() + " Failed to start: " + message
+                "{} Failed to start: {}".format(
+                    self._base_data.systems[system_name].name(),
+                    message
+                )
             )
             return False
         return True
@@ -180,7 +187,7 @@ class TackemSystemAdmin(TackemSystemFull):
 
     def load_plugin_systems(self, plugin_type: str, plugin_name: str) -> bool:
         '''loads a single plugin systems'''
-        system_name = plugin_type + " " + plugin_name
+        system_name = "{} {}".format(plugin_type, plugin_name)
         system_config = CONFIG['plugins'][plugin_type][plugin_name]
         if self._base_data.plugins[plugin_type][plugin_name].SETTINGS.get('single_instance', True):
             if system_config['enabled'].value:
@@ -190,7 +197,7 @@ class TackemSystemAdmin(TackemSystemFull):
         all_created = True
         for inst_obj in system_config:
             inst = inst_obj.var_name
-            full_system_name = system_name + " " + inst
+            full_system_name = "{} {}".format(system_name, inst)
             if system_config[inst]['enabled'].value:
                 if not self.load_system(full_system_name, False):
                     all_created = False
@@ -222,12 +229,12 @@ class TackemSystemAdmin(TackemSystemFull):
 
     def get_systems_for_plugin(self, plugin_type: str, plugin_name: str) -> list:
         '''gets a list of systems for a plugin'''
-        system_name = plugin_type + " " + plugin_name
+        system_name = "{} {}".format(plugin_type, plugin_name)
         return [key for key in self._base_data.systems if system_name in key]
 
     def do_systems_for_plugin_exist(self, plugin_type: str, plugin_name: str) -> bool:
         '''returns if one or more systems for this plugin exists'''
-        system_name = plugin_type + " " + plugin_name
+        system_name = "{} {}".format(plugin_type, plugin_name)
         for key in self._base_data.systems:
             if system_name in key:
                 return True
@@ -235,7 +242,7 @@ class TackemSystemAdmin(TackemSystemFull):
 
     def is_systems_for_plugin_running(self, plugin_type: str, plugin_name: str) -> bool:
         '''returns if one or more systems for this plugin are running'''
-        system_name = plugin_type + " " + plugin_name
+        system_name = "{} {}".format(plugin_type, plugin_name)
         for key in self._base_data.systems:
             if system_name in key:
                 if self._base_data.systems[key].running():

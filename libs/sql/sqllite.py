@@ -61,12 +61,10 @@ class SqlLite(SqlBaseClass):
         self._add_table(table_name, data, version, False)
 
         # move Data across to new table
-        command_get_old_table_columns = "PRAGMA table_info(" + \
-            table_name + "_old);"
+        command_get_old_table_columns = "PRAGMA table_info({}_old);".format(table_name)
         returned_data_temp_old = self._trusted_get(
             command_get_old_table_columns, False)
-        command_get_new_table_columns = "PRAGMA table_info(" + \
-            table_name + ");"
+        command_get_new_table_columns = "PRAGMA table_info({});".format(table_name)
         returned_data_temp_new = self._trusted_get(
             command_get_new_table_columns, False)
 
@@ -88,11 +86,7 @@ class SqlLite(SqlBaseClass):
                     links[new_column[1]] = [False, data[i].get_default_value()]
 
         # create insert command here
-        insert = "INSERT INTO " + table_name + \
-            " (" + ", ".join(list(links.keys())) + ") VALUES "
-
-        command_select_all_from_table = "SELECT * FROM " + table_name + "_old;"
-        rows = self._trusted_get(command_select_all_from_table, False)
+        rows = self._trusted_get("SELECT * FROM {}_old;".format(table_name), False)
         for row in rows:
             values = []
             for key in links:
@@ -117,17 +111,23 @@ class SqlLite(SqlBaseClass):
                         temp_value = "NULL"
                     values.append(temp_value)
 
-            row_to_insert = insert + "(" + ", ".join(values) + ");"
-            self._trusted_call(row_to_insert)
+            self._trusted_call(
+                "INSERT INTO {} ({}) Values ({})".format(
+                    table_name,
+                    ", ".join(list(links.keys())),
+                    ", ".join(values)
+                )
+            )
 
         # update table_version
-        update_table_version = 'UPDATE table_version SET version=' + \
-            str(version)
-        update_table_version += ' Where name="' + table_name + '";'
-        self._trusted_call(update_table_version)
+        self._trusted_call(
+            'UPDATE table_version SET version={} WHERE name="{}";'.format(
+                str(version),
+                table_name
+            )
+        )
 
         # delete old table
-        command_delete_table = "DROP TABLE " + table_name + "_old;"
-        self._trusted_call(command_delete_table)
+        self._trusted_call("DROP TABLE {}_old;".format(table_name))
 
         return True
