@@ -1,22 +1,21 @@
-'''Config Object String'''
+'''Config Object List'''
 from typing import Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
-from libs.config.obj.data.button import Button
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
-class ConfigObjString(ConfigObjBase):
-    '''Config Item String'''
+class ConfigObjList(ConfigObjBase):
+    '''Config Item List'''
 
-    __config_type = "string"
+    __config_type = "list"
     __html_type = "text"
 
     def __init__(
             self,
             var_name: str,
-            default_value: str,
+            default_value: list,
             label: str,
             help_text: str,
             hide_on_html: bool = False,
@@ -24,13 +23,10 @@ class ConfigObjString(ConfigObjBase):
             rules: Optional[ConfigRules] = None,
             input_attributes: Optional[InputAttributes] = None,
             data_list: Optional[DataList] = None,
-            button: Optional[Button] = None,
             value_link: Optional[list] = None
     ):
-        if not isinstance(default_value, str):
-            raise ValueError("Default Value is not a String")
-        if button and not isinstance(button, Button):
-            raise ValueError("Button is not a Button Obj")
+        if not isinstance(default_value, list):
+            raise ValueError("Default Value is not a List")
 
         super().__init__(
             var_name,
@@ -44,11 +40,14 @@ class ConfigObjString(ConfigObjBase):
             data_list,
             value_link
         )
-        self.__button = button
 
-    def _set_value(self, value):
+    def _set_value(self, value) -> Optional[list]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
-        return str(value)
+        if isinstance(value, list):
+            return value
+        if isinstance(value, str):
+            return value.split(",")
+        return self.default_value
 
     @property
     def spec(self) -> str:
@@ -56,13 +55,14 @@ class ConfigObjString(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = "{} = {}(".format(self.var_name, self.__config_type)
+        string = self.var_name + " = " + self.__config_type + "("
         if self.input_attributes:
             i_a = self.input_attributes.spec
             string += i_a
             if i_a != "":
                 string += ", "
-        string += "default='{}')\n".format(str(self.default_value))
+
+        string += "default=list({}))\n".format(self._default_list_to_spec)
 
         return string
 
@@ -73,21 +73,21 @@ class ConfigObjString(ConfigObjBase):
         other = ""
         if isinstance(self.input_attributes, InputAttributes):
             other = self.input_attributes.html()
-        button = ""
-        if self.__button and isinstance(self.__button, Button):
-            button = self.__button.html
         return HTMLSystem.part(
             "inputs/input",
             INPUTTYPE=self.__html_type,
             VARIABLENAME=variable_name,
             VALUE=self.value,
             OTHER=other,
-            BUTTON=button
         )
 
-    def to_type(self, value) -> str:
-        '''returns the value in the correct format'''
-        try:
-            return str(value)
-        except ValueError:
-            return ""
+    @property
+    def _default_list_to_spec(self) -> str:
+        '''Created the default value String'''
+        return_list = []
+        for value in self.default_value:
+            if isinstance(value, str):
+                return_list.append("'{}'".format(value))
+            elif isinstance(value, (int, float)):
+                return_list.append(value)
+        return ", ".join(return_list)

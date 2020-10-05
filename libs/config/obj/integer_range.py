@@ -23,6 +23,8 @@ class ConfigObjIntegerRange(ConfigObjIntegerNumber):
             button: Optional[Button] = None,
             value_link: Optional[list] = None
     ):
+        if input_attributes and not isinstance(input_attributes, InputAttributes):
+            raise ValueError("input_attributes not correct type")
         input_attributes.needed("min", "max", "step")
 
         super().__init__(

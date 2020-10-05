@@ -65,7 +65,7 @@ class ConfigObjIntegerNumber(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = self.var_name + " = integer("
+        string = "{} = integer(".format(self.var_name)
         if self.input_attributes:
             i_a = self.input_attributes.spec
             string += i_a

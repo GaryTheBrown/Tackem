@@ -6,7 +6,6 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
-# http://www.voidspace.org.uk/python/validate.html
 
 class ConfigObjBase(ABC, ConfigBase):
     '''Shared Data for all config Objects'''

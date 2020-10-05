@@ -69,10 +69,7 @@ class ConfigObjBoolean(ConfigObjBase):
             string += i_a
             if i_a != "":
                 string += ", "
-        string += "default='" + \
-            ("True" if self.default_value else "False") + "'"
-        string += ")\n"
-
+        string += "default='{}')\n".format(("True" if self.default_value else "False"))
         return string
 
     def item_html(self, variable_name: str) -> str:
