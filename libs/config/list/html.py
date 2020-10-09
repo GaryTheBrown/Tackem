@@ -95,12 +95,12 @@ class ConfigListHtml(ConfigListBase):
                 if not isinstance(sub_obj, ConfigListBase):
                     raise ValueError(
                         "unexpected item was found in plugin names")
-                name = "plugins_{}_{}".format(obj.var_name, sub_obj.var_name)
+                name = f"plugins_{obj.var_name}_{sub_obj.var_name}"
                 tabnavs += HTMLSystem.part(
                     "section/tabbaritem",
                     NAME=name,
                     ACTIVE="active" if first else "",
-                    LABEL="{} - {}".format(obj.label, sub_obj.label)
+                    LABEL=f"{obj.label} - {sub_obj.label}"
                 )
 
                 panels += HTMLSystem.part(
@@ -130,29 +130,29 @@ class ConfigListHtml(ConfigListBase):
             html += obj.panel(variable_name, obj.label.title())
 
         html += self.__modal(variable_name)  # <- FIX MODAL NOT WORKING
-        html += """<div class="my-4 mx-auto col-6" >{}</div>""".format(
-            HTMLSystem.part(
-                "inputs/button",
-                LABEL="Add Instance",
-                DATA=InputAttributes(
-                    data_toggle="modal",
-                    data_target="#{}_modal".format(variable_name)
-                ).html()
-            )
+        html += '<div class="my-4 mx-auto col-6">'
+        html += HTMLSystem.part(
+            "inputs/button",
+            LABEL="Add Instance",
+            DATA=InputAttributes(
+                data_toggle="modal",
+                data_target=f"#{variable_name}_modal"
+            ).html()
         )
+        html += "</div>"
 
         return html
 
     def panel(self, variable_name: str, title: str = "") -> str:
         '''Generates a Single/Multi Instance Setion/Panel'''
-        variable_name += "_{}".format(title.lower())
+        variable_name += f"_{title.lower()}"
         return HTMLSystem.part(
             "section/panel",
             TITLE=title,
             CONTROL=self.__controls(
                 variable_name),# if self.many_section else "",
             VARIABLENAME=variable_name,
-            PANELNAME="{}_panel".format(variable_name),
+            PANELNAME=f"{variable_name}_panel",
             SECTION=self.__section_data(variable_name),
             MODAL=self.__modal(variable_name)
         )
@@ -162,7 +162,7 @@ class ConfigListHtml(ConfigListBase):
         return HTMLSystem.part(
             "section/modal",
             VARIABLENAME=variable_name,
-            TITLE="Add New {}".format(self.label),
+            TITLE=f"Add New {self.label}",
             BODY=self.__modal_body(variable_name),
         )
 
@@ -239,8 +239,7 @@ class ConfigListHtml(ConfigListBase):
 
     def __section(self, variable_name: str) -> str:
         '''creates an Invisible to html section'''
-        var = "{}_{}".format(
-            variable_name, self.var_name) if variable_name != "" else self.var_name
+        var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
         section_html = HTMLSystem.part(
             "section/section",
             SECTIONNAME=var,

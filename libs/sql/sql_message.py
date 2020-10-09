@@ -33,13 +33,8 @@ class SQLMessage:
 
     def __repr__(self) -> str:
         '''print return'''
-        return "SQLMessage({}, {})\n\t{}, {}, {}".format(
-            self._system_name,
-            self._special_command,
-            str(self._command),
-            str(self._table_name),
-            str(self._version)
-        )
+        return f"SQLMessage({self._system_name}, {self._special_command})\n" \
+            + f"\t{str(self._command)}, {str(self._table_name)}, {str(self._version)}"
 
     @property
     def system_name(self) -> str:

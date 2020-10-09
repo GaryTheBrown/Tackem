@@ -53,12 +53,9 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
 
         default = self.default_value
         if isinstance(default, list):
-            default = "[" + ", ".join(["'{}'".format(x)
-                                       for x in self.default_value]) + "]"
+            default = "[" + ', '.join([f"'{x}'" for x in self.default_value]) + "]"
         else:
-            default = "'{}'".format(self.default_value)
-        string = self.var_name + " = string_list("
-        string += ", default=" + default
-        string += ")\n"
+            default = f"'{self.default_value}'"
+        string = f"{self.var_name} = string_list(default={default})\n"
 
         return string

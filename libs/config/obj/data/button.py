@@ -20,9 +20,9 @@ class Button():
     @property
     def html(self) -> str:
         '''returns the buttons html'''
-        data = 'data-action="{}"'.format(self.__action)
+        data = f'data-action="{self.__action}"'
         for key, value in self.__kwargs.items():
-            data += ' data-{}="{}"'.format(key, value)
+            data += f' data-{key}="{value}"'
         return HTMLSystem.part(
             "inputs/buttonappend" if self.__append else "input/button",
             LABEL=self.__label,

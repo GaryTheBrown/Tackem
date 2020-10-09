@@ -24,14 +24,14 @@ def __linux(
         if which(program) is None:
             missing_program_list.append(program)
             all_there = False
-    if not all_there:
-        message = "MISSING THE FOLLOWING PROGRAMS: {}".format(" ".join(missing_program_list))
-        if plugin is not None:
-            if output:
-                print(plugin.upper(), message)
-            return "{} {}".format(plugin.upper(), message), 1
-        else:
-            if output:
-                print(message)
-            return message, 1
-    return True, 0
+    if all_there:
+        return True, 0
+
+    message = f"MISSING THE FOLLOWING PROGRAMS: {' '.join(missing_program_list)}"
+    if plugin is not None:
+        if output:
+            print(plugin.upper(), message)
+        return f"{plugin.upper()} {message} ", 1
+    if output:
+        print(message)
+    return message, 1

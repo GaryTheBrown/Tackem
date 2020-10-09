@@ -21,11 +21,10 @@ class APIAdminDeleteMulti(APIBase):
             return self._return_data(
                 user,
                 "deleteMulti",
-                "Adding Instance of {} - {}".format(plugin_type, plugin_name),
+                f"Adding Instance of {plugin_type} - {plugin_name}",
                 False,
                 instance=instance,
-                error="Missing Data Passed. Requires {}".format(
-                    ", ".join(required)),
+                error=f"Missing Data Passed. Requires {', '.join(required)}",
                 errorNumber=0
             )
 
@@ -34,7 +33,7 @@ class APIAdminDeleteMulti(APIBase):
             return self._return_data(
                 user,
                 "deleteMulti",
-                "Adding Instance of {} - {}".format(plugin_type, plugin_name),
+                f"Adding Instance of {plugin_type} - {plugin_name}",
                 False,
                 instance=instance,
                 error="Instance doesn't exists",
@@ -45,7 +44,7 @@ class APIAdminDeleteMulti(APIBase):
             return self._return_data(
                 user,
                 "deleteMulti",
-                "Adding Instance of {} - {}".format(plugin_type, plugin_name),
+                f"Adding Instance of {plugin_type} - {plugin_name}",
                 False,
                 instance=instance,
                 error="Cloning Data Failed",
@@ -55,7 +54,7 @@ class APIAdminDeleteMulti(APIBase):
         return self._return_data(
             user,
             "config",
-            "Adding Instance of {} - {}".format(plugin_type, plugin_name),
+            f"Adding Instance of {plugin_type} - {plugin_name}",
             True,
             instance=instance
         )

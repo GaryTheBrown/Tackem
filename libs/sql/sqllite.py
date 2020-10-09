@@ -61,10 +61,10 @@ class SqlLite(SqlBaseClass):
         self._add_table(table_name, data, version, False)
 
         # move Data across to new table
-        command_get_old_table_columns = "PRAGMA table_info({}_old);".format(table_name)
+        command_get_old_table_columns = f"PRAGMA table_info({table_name}_old);"
         returned_data_temp_old = self._trusted_get(
             command_get_old_table_columns, False)
-        command_get_new_table_columns = "PRAGMA table_info({});".format(table_name)
+        command_get_new_table_columns = f"PRAGMA table_info({table_name});"
         returned_data_temp_new = self._trusted_get(
             command_get_new_table_columns, False)
 
@@ -86,7 +86,7 @@ class SqlLite(SqlBaseClass):
                     links[new_column[1]] = [False, data[i].get_default_value()]
 
         # create insert command here
-        rows = self._trusted_get("SELECT * FROM {}_old;".format(table_name), False)
+        rows = self._trusted_get(f"SELECT * FROM {table_name}_old;", False)
         for row in rows:
             values = []
             for key in links:
@@ -97,7 +97,7 @@ class SqlLite(SqlBaseClass):
                     if isinstance(row[links[key][1]], int):
                         temp_value = str(row[links[key][1]])
                     elif isinstance(row[links[key][1]], str):
-                        temp_value = "'" + row[links[key][1]] + "'"
+                        temp_value = f"'{row[links[key][1]]}'"
                     elif row[links[key][1]] is None:
                         temp_value = "NULL"
                     values.append(temp_value)
@@ -106,28 +106,23 @@ class SqlLite(SqlBaseClass):
                     if isinstance(links[key][1], int):
                         temp_value = str(links[key][1])
                     elif isinstance(links[key][1], str):
-                        temp_value = "'" + links[key][1] + "'"
+                        temp_value = f"'{links[key][1]}'"
                     elif links[key][1] is None:
                         temp_value = "NULL"
                     values.append(temp_value)
 
             self._trusted_call(
-                "INSERT INTO {} ({}) Values ({})".format(
-                    table_name,
-                    ", ".join(list(links.keys())),
-                    ", ".join(values)
-                )
+                f"INSERT INTO {table_name} ({', '.join(list(links.keys()))}) " \
+                    + f"Values ({', '.join(values)})"
             )
 
         # update table_version
         self._trusted_call(
-            'UPDATE table_version SET version={} WHERE name="{}";'.format(
-                str(version),
-                table_name
-            )
+            f"UPDATE table_version SET version={str(version)} " \
+                + f'WHERE name="{table_name}";'
         )
 
         # delete old table
-        self._trusted_call("DROP TABLE {}_old;".format(table_name))
+        self._trusted_call(f"DROP TABLE {table_name}_old;")
 
         return True

@@ -55,14 +55,14 @@ class ConfigObjList(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = self.var_name + " = " + self.__config_type + "("
+        string = f"{self.var_name} = {self.__config_type}("
         if self.input_attributes:
             i_a = self.input_attributes.spec
             string += i_a
             if i_a != "":
                 string += ", "
 
-        string += "default=list({}))\n".format(self._default_list_to_spec)
+        string += f"default=list({self._default_list_to_spec}))\n"
 
         return string
 
@@ -87,7 +87,7 @@ class ConfigObjList(ConfigObjBase):
         return_list = []
         for value in self.default_value:
             if isinstance(value, str):
-                return_list.append("'{}'".format(value))
+                return_list.append(f"'{value}'")
             elif isinstance(value, (int, float)):
                 return_list.append(value)
         return ", ".join(return_list)

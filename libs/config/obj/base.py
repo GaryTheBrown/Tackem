@@ -126,8 +126,7 @@ class ConfigObjBase(ABC, ConfigBase):
         '''returns the full html code including label and help text'''
         if self.hide_on_html:
             return ""
-        var = "{}_{}".format(
-            variable_name, self.var_name) if variable_name != "" else self.var_name
+        var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
 
         return HTMLSystem.part(
             "section/item",

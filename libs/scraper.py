@@ -34,21 +34,21 @@ class Scraper():
         '''creates the base command keys'''
         base = "api_key=" + self.__apikey
         if adult:
-            base += "&include_adult=".format(str(self.__include_adult).lower())
+            base += f"&include_adult={str(self.__include_adult).lower()}"
         if language:
-            base += "&language=".format(self.__language)
+            base += f"&language={self.__language}"
         return base
 
     def __fail_print(self, status: str, reason: str) -> str:
         '''message returned when the scraper failed'''
-        return "Search Failed\nStatus: {}\nReason: {}\n".format(status, reason)
+        return f"Search Failed\nStatus: {status}\nReason: {reason}\n"
 
 ############
 ##COMMANDS##
 ############
     def _configuration(self):
         '''config section for startup getting info mainly image urls'''
-        command = "/3/configuration?{}".format(self.__base(False, False))
+        command = f"/3/configuration?{self.__base(False, False)}"
         data = self.__get_request(command)
         if data['success'] is False:
             if data["status"] != 401:
@@ -67,26 +67,21 @@ class Scraper():
     def search_for_movie(self, query: str, page: int = 1, year: int = None) -> dict:
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
-        command = "/3/search/movie?{}&page={}&query={}".format(
-            self.__base(),
-            str(page),
-            query_to_go
-        )
+        command = f"/3/search/movie?{self.__base()}&page={str(page)}&query={query_to_go}"
         if year:
-            command += "&year={}".format(str(year))
+            command += f"&year={str(year)}"
         return self.__get_request(command)
 
     def search_by_imdb_id(self, imdb_id) -> dict:
         '''searches by the IMDB ID'''
-        command =
         return self.__get_request(
-            "/3/find/{}?{}&external_source=imdb_id".format(str(imdb_id), self.__base(adult=False))
+            f"/3/find/{str(imdb_id)}?{self.__base(adult=False)}&external_source=imdb_id"
         )
 
     def get_movie_details(self, movie_id) -> dict:
         '''returns the full movie details'''
         return self.__get_request(
-            "/3/movie/{}?{}".format(str(movie_id), self.__base(adult=False))
+            f"/3/movie/{str(movie_id)}?{self.__base(adult=False)}"
         )
 
 ##################
@@ -96,36 +91,26 @@ class Scraper():
         '''searches for a movie getting all options'''
         query_to_go = query.replace(" ", "+")
         return self.__get_request(
-            "/3/search/tv?{}&page={}&query={}".format(
-                self.__base(adult=False),
-                str(page),
-                query_to_go)
+            f"/3/search/tv?{self.__base(adult=False)}&page={str(page)}&query={query_to_go}"
         )
 
     def search_by_tvdb_id(self, imdb_id) -> dict:
         '''searches by the TVDB ID'''
         return self.__get_request(
-            "/3/find/{}?{}&external_source=tvdb_id".format(str(imdb_id), self.__base(adult=False))
+            f"/3/find/{str(imdb_id)}?{self.__base(adult=False)}&external_source=tvdb_id"
         )
 
     def get_tvshow_details(self, tvshow_id) -> dict:
         '''returns the full tv show details'''
         return self.__get_request(
-            "/3/tv/{}?{}&append_to_response=external_ids".format(
-                str(tvshow_id),
-                self.__base(adult=False)
-            )
+            f"/3/tv/{str(tvshow_id)}?{self.__base(adult=False)}&append_to_response=external_ids"
         )
 
     def get_tvshow_episode_details(self, tvshow_id, season, episode) -> dict:
         '''returns the full tv show details'''
         return self.__get_request(
-            "/3/tv/{}/season/{}/episode/{}?{}".format(
-                str(tvshow_id),
-                str(season),
-                str(episode),
-                self.__base(adult=False)
-            )
+            f"/3/tv/{str(tvshow_id)}/season/{str(season)}" \
+                + f"/episode/{str(episode)}?{self.__base(adult=False)}"
         )
 
 ############

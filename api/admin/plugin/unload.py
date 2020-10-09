@@ -20,7 +20,7 @@ class APIPluginUnload(APIPluginBase):
                 plugin_type,
                 plugin_name,
                 actions=self._actions_return(enable=["unload"]),
-                error="{} {} Not Loaded".format(plugin_type, plugin_name),
+                error=f"{plugin_type} {plugin_name} Not Loaded",
                 error_number=0
             )
         if self._system.is_systems_for_plugin_running(plugin_type, plugin_name):

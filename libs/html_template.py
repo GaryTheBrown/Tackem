@@ -80,9 +80,10 @@ class HTMLTEMPLATE():
         title = ""
         if self._key != "":
             if self._name != "":
-                title = " - {}".format(self._name.title())
+                title = f" - {self._name.title()}"
             else:
-                title = " - {}".format(self._key.replace(" ", " - ").title())
+                temp_key = self._key.replace(" ", " - ").title()
+                title = f" - {temp_key}"
 
         return HTMLSystem.part(
             "template",

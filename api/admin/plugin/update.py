@@ -20,7 +20,7 @@ class APIPluginUpdate(APIPluginBase):
                 plugin_type,
                 plugin_name,
                 actions=self._actions_return(enable=["load"]),
-                error="{} {} Failed to Update".format(plugin_type, plugin_name),
+                error=f"{plugin_type} {plugin_name} Failed to Update",
                 error_number=1
             )
 

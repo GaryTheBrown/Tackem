@@ -65,13 +65,13 @@ class ConfigObjIntegerNumber(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = "{} = integer(".format(self.var_name)
+        string = f"{self.var_name} = integer("
         if self.input_attributes:
             i_a = self.input_attributes.spec
             string += i_a
             if i_a != "":
                 string += ", "
-        string += "default='{}')\n".format(str(self.default_value))
+        string += f"default='{str(self.default_value)}')\n"
 
         return string
 

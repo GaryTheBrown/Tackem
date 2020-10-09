@@ -58,11 +58,11 @@ class Column:
 
     def to_string(self) -> str:
         '''turns Column info into a string for commands'''
-        return_string = '"{}" {}'.format(self.__name, self.__variable_type)
+        return_string = f'"{self.__name}" {self.__variable_type}'
         if self.__size and self.__decimal:
-            return_string += "({}, {})".format(self.__size, self.__decimal)
+            return_string += f"({self.__size}, {self.__decimal})"
         elif self.__size:
-            return_string += "({})".format(self.__size)
+            return_string += f"({self.__size})"
         return_string += " UNSIGNED" if self.__unsigned else ""
         return_string += " PRIMARY KEY" if self.__primary_key else ""
         return_string += " NOT NULL" if self.__not_null else ""
@@ -75,7 +75,7 @@ class Column:
                 if self.__default_raw:
                     return_string += self.__default
                 else:
-                    return_string += "'{}'".format(self.__default)
+                    return_string += f"'{self.__default}'"
             elif isinstance(self.__default, int):
                 return_string += str(self.__default)
             elif isinstance(self.__default, bool):

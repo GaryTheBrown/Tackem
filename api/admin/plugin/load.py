@@ -25,7 +25,7 @@ class APIPluginLoad(APIPluginBase):
                 plugin_type,
                 plugin_name,
                 actions=self._actions_return(enable=["load"]),
-                error="{} {} Already Loaded".format(plugin_type, plugin_name),
+                error=f"{plugin_type} {plugin_name} Already Loaded",
                 error_number=0
             )
 
@@ -41,7 +41,7 @@ class APIPluginLoad(APIPluginBase):
                 plugin_type,
                 plugin_name,
                 actions=self._actions_return(enable=["load"]),
-                error="{} {} Failed to Load".format(plugin_type, plugin_name),
+                error=f"{plugin_type} {plugin_name} Failed to Load",
                 error_number=1,
                 message=message
             )
