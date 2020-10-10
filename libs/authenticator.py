@@ -14,7 +14,6 @@ class Authentication:
     __db_info = Table(
         "Authentication_info",
         1,
-        Column("id", "integer", primary_key=True, not_null=True),
         Column("username", "text", not_null=True),
         Column("password", "text", not_null=True),
         Column("is_admin", "bit", not_null=True, default=False)
@@ -58,7 +57,7 @@ class Authentication:
         if username == "" or password == "":
             return False
         data = Database.sql().select(
-            "Auth", self.__db_info.name(), {"username": username})[0]
+            "Auth", self.__db_info.name(), {"username": username}).pop()
         if data['password'] != self.__password_encryption(password):
             return False
         session_id = str(uuid.uuid1()).replace("-", "")
@@ -113,7 +112,7 @@ class Authentication:
         session_id = cherrypy.request.cookie['sessionid'].value
         user_id = self.__temp_sessions[session_id]['id']
         data = Database.sql().select(
-            "Auth", self.__db_info.name(), {"id": user_id})[0]
+            "Auth", self.__db_info.name(), {"id": user_id}).pop()
         if data['password'] != self.__password_encryption(password):
             return False
         Database.sql().update("Auth", self.__db_info.name(), data['id'],

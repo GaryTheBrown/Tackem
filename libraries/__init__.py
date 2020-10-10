@@ -3,8 +3,9 @@ from config_data import CONFIG
 from libs.sql.column import Column
 from libs.sql import Database
 from libraries.db.library_files import LIBRARY_FILES_DB_INFO
-from libraries.checksum import FileChecker
+from libraries.file_checker import FileChecker
 from libraries.movies import MoviesLibrary
+
 
 class Libraries:
     '''Libraries Root'''
@@ -21,6 +22,7 @@ class Libraries:
             return
 
         Database.sql().table_checks("Library Root", LIBRARY_FILES_DB_INFO)
+
         self.__checksum = FileChecker()
 
         config = CONFIG['libraries']

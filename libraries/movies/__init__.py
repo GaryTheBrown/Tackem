@@ -10,13 +10,13 @@ class MoviesLibrary(LibraryBase):
     '''Library Movies Controller'''
 
     def __init__(self, config: ConfigList):
-        super().__init__("movies", config, LIBRARY_MOVIES_DB_INFO)
+        super().__init__(self.TYPE_MOVIES, config, LIBRARY_MOVIES_DB_INFO)
 
     def scan_folder(self):
         '''Scans the folder For New Files'''
-        for file in self._scan_folder_base(['mkv']):
+        for file in self._scan_folder_base():
             #add file info to LIBRARY_MOVIES_DB_INFO.name(self._name)
-            print("DB FILE ADDED {}".format(file))
+            print(f"DB FILE ADDED {file}")
 
     def run(self):
         '''threadded run'''

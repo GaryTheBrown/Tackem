@@ -1,5 +1,6 @@
 '''The Config Options for the system'''
 import os
+from data.locale_options import OPTIONS as locale_options
 from libs.config.list import ConfigList
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.password import ConfigObjPassword
@@ -10,9 +11,9 @@ from libs.config.obj.enabled import ConfigObjEnabled
 from libs.config.obj.boolean import ConfigObjBoolean
 from libs.config.obj.options.radio import ConfigObjOptionsRadio
 from libs.config.obj.data.radio import ConfigObjRadio
+from libs.config.obj.string_list import ConfigObjStringList
 from libs.config.obj.options.select import ConfigObjOptionsSelect
 from libs.config.obj.data.option import ConfigObjOption
-from libs.data.locale_options import OPTIONS as locale_options
 from libs.startup_arguments import THEMEFOLDERLOCATION
 
 CONFIG = ConfigList(
@@ -123,21 +124,57 @@ CONFIG = ConfigList(
         ConfigList(
             "global",
             "Global",
-            ConfigObjOptionsSelect(
+            ConfigList(
                 "autofilecheck",
-                [
-                    ConfigObjOption("disabled", "Disabled"),
-                    ConfigObjOption("hourly", "Hourly"),
-                    ConfigObjOption("daily", "Daily"),
-                    ConfigObjOption("weekly", "Weekly"),
-                    ConfigObjOption("monthly", "Monthly"),
-                    ConfigObjOption("quaterly", "Quaterly"),
-                    ConfigObjOption("halfyear", "Half Yearly"),
-                    ConfigObjOption("year", "Yearly"),
-                ],
-                "monthly",
                 "Auto File Check",
-                "How often to automatically check the files for corruption"
+                ConfigObjOptionsSelect(
+                    "regularity",
+                    [
+                        ConfigObjOption("disabled", "Disabled"),
+                        ConfigObjOption("hourly", "Hourly"),
+                        ConfigObjOption("daily", "Daily"),
+                        ConfigObjOption("weekly", "Weekly"),
+                        ConfigObjOption("monthly", "Monthly"),
+                        ConfigObjOption("quaterly", "Quaterly"),
+                        ConfigObjOption("halfyear", "Half Yearly"),
+                        ConfigObjOption("year", "Yearly"),
+                    ],
+                    "monthly",
+                    "Auto File Check ",
+                    "How often to automatically check the files for corruption"
+                ),
+                ConfigObjBoolean(
+                    "log",
+                    True,
+                    "Log",
+                    "should I log all runs of the filechecker?"
+                )
+            ),
+            ConfigList(
+                "extensions",
+                "Extensions",
+                ConfigObjStringList(
+                    "video",
+                    [
+                        "mkv",
+                        "avi",
+                        "mp4",
+                        "m2ts"
+                    ],
+                    "Video File Extensions",
+                    "what extensions are linked to video files"
+                ),
+                ConfigObjStringList(
+                    "audio",
+                    [
+                        "mp3",
+                        "ogg",
+                        "flac"
+                    ],
+                    "Audio File Extensions",
+                    "what extensions are linked to audio files"
+                )
+                #Game Extensions will go into a folder that stores info on each system supported
             )
         ),
         ConfigList(
@@ -154,6 +191,7 @@ CONFIG = ConfigList(
                     "Where is the library stored?"
                 )
             ),
+            #This should be generated from the folder that stores info on each system supported.
             many_section_limit_list=[
                 "SNES", "NES"
             ]

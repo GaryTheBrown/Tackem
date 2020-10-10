@@ -58,7 +58,7 @@ class Column:
 
     def to_string(self) -> str:
         '''turns Column info into a string for commands'''
-        return_string = f'"{self.__name}" {self.__variable_type}'
+        return_string = f'"{self.__name}" {self.__variable_type.upper()}'
         if self.__size and self.__decimal:
             return_string += f"({self.__size}, {self.__decimal})"
         elif self.__size:
@@ -67,7 +67,7 @@ class Column:
         return_string += " PRIMARY KEY" if self.__primary_key else ""
         return_string += " NOT NULL" if self.__not_null else ""
         return_string += " UNIQUE" if self.__unique else ""
-        return_string += " AUTO_INCREMENT" if self.__auto_increment else ""
+        return_string += " AUTOINCREMENT" if self.__auto_increment else ""
         return_string += " ON UPDATE CURRENT_TIMESTAMP" if self.__timestamp_update else ""
         if self.__default is not None:
             return_string += " DEFAULT "

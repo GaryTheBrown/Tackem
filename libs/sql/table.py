@@ -13,8 +13,6 @@ class Table():
                 "id",
                 "integer",
                 primary_key=True,
-                not_null=True,
-                unsigned=True,
                 auto_increment=True
             ),
             Column(
@@ -28,7 +26,8 @@ class Table():
                 "timestamp",
                 timestamp_update=True
             ),
-        ] + data
+        ]
+        self.__data.extend(data)
 
     def name(self, *values) -> str:
         '''returns the name'''

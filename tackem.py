@@ -14,6 +14,7 @@ from libs.authenticator import AUTHENTICATION
 from libs.sql import Database
 from config_data import CONFIG
 
+# TODO rewrite the SQL system to flow like the one at work.
 # TODO intergrate Libraries into main program
 # is it going to be a single or multi instance?
 

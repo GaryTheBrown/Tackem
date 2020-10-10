@@ -1,48 +1,103 @@
 '''Base Library Controller'''
-from typing import List
 import threading
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
+from watchdog.events import PatternMatchingEventHandler
+from watchdog.observers import Observer
 from libs.sql import Database
 from libs.sql.table import Table
 from libs.config.list import ConfigList
 from libraries.db.library_files import LIBRARY_FILES_DB_INFO
+from config_data import CONFIG
 
 class LibraryBase(metaclass=ABCMeta):
     '''Base Library Class'''
 
-    def __init__(self, library_type: str, config: ConfigList, table: Table):
+    TYPE_MOVIES = 1
+    TYPE_TVSHOWS = 2
+    TYPE_MUSIC = 3
+    TYPE_GAMES = 4
+
+    @classmethod
+    def type_to_string(cls, library_type: int) -> str:
+        '''change type int to string'''
+        if library_type == cls.TYPE_MOVIES:
+            return "Movies"
+        if library_type == cls.TYPE_TVSHOWS:
+            return "TVShows"
+        if library_type == cls.TYPE_MUSIC:
+            return "Music"
+        if library_type == cls.TYPE_GAMES:
+            return "Games"
+        return "UNKNOWN"
+
+    def __init__(self, library_type: int, config: ConfigList, table: Table):
         self._name = config.var_name
         self._library_type = library_type
         self._config = config
+        self._file_types = "video"
+        if self._library_type == self.TYPE_MUSIC:
+            self._file_types = "audio"
+        elif self._library_type == self.TYPE_GAMES:
+            self._file_types = "game"
 
         self._thread_run = False
         self._thread = threading.Thread(target=self.run, args=())
-        self._thread.setName("{} Library: {}".format(library_type.capitalize(), self._name))
+        self._thread.setName(f"{LibraryBase.type_to_string(library_type)} Library: {self._name}")
+
+        self.__folder_watcher = None
+        self.__folder_observer = None
 
         Database.sql().table_checks(self._thread.getName(), table)
+        self.folder_watcher_setup()
+
+    def folder_watcher_setup(self):
+        '''Sections for setting up the folder watcher watchdog'''
+        patterns = "*"
+        ignore_patterns = ""
+        ignore_directories = False
+        case_sensitive = True
+        self.__folder_watcher = PatternMatchingEventHandler(
+            patterns,
+            ignore_patterns,
+            ignore_directories,
+            case_sensitive)
+
+        self.__folder_watcher.on_created = self._folder_on_created
+        self.__folder_watcher.on_deleted = self._folder_on_deleted
+        self.__folder_watcher.on_modified = self._folder_on_modified
+        self.__folder_watcher.on_moved = self._folder_on_moved
+
+        path = self._config['location'].value
+        go_recursively = True
+        self.__folder_observer = Observer()
+        self.__folder_observer.schedule(self.__folder_watcher, path, recursive=go_recursively)
+
 
     def start(self):
-        '''start the Library'''
+        '''Start the library'''
         if self._thread_run is False:
             self._thread_run = True
             self._thread.start()
+            self.__folder_observer.start()
 
     def stop(self):
-        '''stops the Library'''
+        '''Stops the library'''
         if self._thread_run is True:
             self._thread_run = False
+            self.__folder_observer.stop()
+            self.__folder_observer.join()
 
     @abstractmethod
     def run(self):
-        '''threadded run'''
+        '''abstract Run Method'''
 
-    def _scan_folder_base(self, extensions: List[str]):
-        '''Scans the folder For New Files'''
+    def _scan_folder_base(self):
+        '''Scans the folder for new files'''
 
         for path in Path(self._config['location'].value).rglob('*'):
             extension = path.parts[-1].split(".")[-1]
-            if extension not in extensions:
+            if extension not in CONFIG['libraries']['global']['extensions'][self._file_types].value:
                 continue
 
             if Database.sql().table_has_row(
@@ -77,3 +132,19 @@ class LibraryBase(metaclass=ABCMeta):
                     "filename": path.name
                 }
             )[0]
+
+    def _folder_on_created(self, event):
+        '''New file added to folder'''
+        print(f"{event.src_path} has been created!")
+
+    def _folder_on_deleted(self, event):
+        '''File was deleted from the folder'''
+        print(f"deleted {event.src_path}!")
+
+    def _folder_on_modified(self, event):
+        '''File has been Modified in the folder'''
+        print(f"{event.src_path} has been modified")
+
+    def _folder_on_moved(self, event):
+        '''File has been Moved in the folder'''
+        print(f"moved {event.src_path} to {event.dest_path}")
