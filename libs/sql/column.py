@@ -49,7 +49,7 @@ class Column:
 
     def __repr__(self) -> str:
         '''print return'''
-        return "Column(" + self.to_string() + ")"
+        return f"Column({self.to_string()})"
 
     @property
     def name(self):
