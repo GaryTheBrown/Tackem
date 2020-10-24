@@ -6,3 +6,4 @@ Markdown
 musicbrainzngs
 guessit
 watchdog
+mysql-connector-python

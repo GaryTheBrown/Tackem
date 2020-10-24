@@ -4,8 +4,10 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
-from libs.sql import Database
-from libs.sql.table import Table
+from libs.database import Database
+from libs.database.messages import SQLInsert, SQLSelect, SQLTable
+from libs.database.table import Table
+from libs.database.where import Where
 from libs.config.list import ConfigList
 from libraries.db.library_files import LIBRARY_FILES_DB_INFO
 from config_data import CONFIG
@@ -48,7 +50,7 @@ class LibraryBase(metaclass=ABCMeta):
         self.__folder_watcher = None
         self.__folder_observer = None
 
-        Database.sql().table_checks(self._thread.getName(), table)
+        Database.call(SQLTable(table))
         self.folder_watcher_setup()
 
     def folder_watcher_setup(self):
@@ -100,38 +102,38 @@ class LibraryBase(metaclass=ABCMeta):
             if extension not in CONFIG['libraries']['global']['extensions'][self._file_types].value:
                 continue
 
-            if Database.sql().table_has_row(
-                    self._thread.name,
-                    LIBRARY_FILES_DB_INFO.name(),
-                    {
-                        "folder": path.joinpath().replace(path.name, ""),
-                        "filename": path.name
-                    }
-            ):
+            msg1 = SQLSelect(
+                LIBRARY_FILES_DB_INFO.name(),
+                Where("folder", path.joinpath().replace(path.name, "")),
+                Where("filename", path.name)
+            )
+            Database.call(msg1)
+
+            if isinstance(msg1.return_data, dict):
                 continue
 
-            Database.sql().insert(
-                self._thread.name,
+            msg2 = SQLInsert(
                 LIBRARY_FILES_DB_INFO.name(),
-                {
-                    "folder": path.joinpath().replace(path.name, ""),
-                    "filename": path.name,
-                    "type": self._library_type.lower(),
-                    "checksum": None,
-                    "last_check": 0,
-                    "from_system": None,
-                    "from_id": None
-                }
+                folder=path.joinpath().replace(path.name, ""),
+                filename=path.name,
+                type=self._library_type.lower(),
+                checksum=None,
+                last_check=0,
+                from_system=None,
+                from_id=None
             )
 
-            yield Database.sql().select(
-                self._thread.name,
+            Database.call(msg2)
+
+            msg3 = SQLSelect(
                 LIBRARY_FILES_DB_INFO.name(),
-                {
-                    "folder": path.joinpath().replace(path.name, ""),
-                    "filename": path.name
-                }
-            )[0]
+                Where("folder", path.joinpath().replace(path.name, "")),
+                Where("filename", path.name)
+            )
+
+            Database.call(msg3)
+
+            yield msg3.return_data
 
     def _folder_on_created(self, event):
         '''New file added to folder'''

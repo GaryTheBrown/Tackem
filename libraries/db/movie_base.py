@@ -1,6 +1,6 @@
 '''Library Movies Table'''
-from libs.sql.table import Table
-from libs.sql.column import Column
+from libs.database.table import Table
+from libs.database.column import Column
 
 LIBRARY_MOVIES_DB_INFO = Table(
     "library_movies",

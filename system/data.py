@@ -1,7 +1,7 @@
 '''System Data'''
 import threading
 
-class SystemData():
+class SystemData:
     '''System Data'''
 
     __plugins = {}  # [type][ name]

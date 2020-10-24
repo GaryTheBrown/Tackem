@@ -3,7 +3,7 @@ import http.client
 import json
 from config_data import CONFIG
 
-class Scraper():
+class Scraper:
     '''Scraper html System Here'''
 
     def __init__(self):

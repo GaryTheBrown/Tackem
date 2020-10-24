@@ -11,10 +11,9 @@ from libs.httpd import Httpd
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
-from libs.sql import Database
+from libs.database import Database
 from config_data import CONFIG
 
-# TODO rewrite the SQL system to flow like the one at work.
 # TODO intergrate Libraries into main program
 # is it going to be a single or multi instance?
 

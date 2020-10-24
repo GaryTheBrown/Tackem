@@ -6,7 +6,9 @@ import hashlib
 import threading
 import datetime
 from pathlib import Path
-from libs.sql import Database
+from libs.database import Database
+from libs.database.messages import SQLSelect, SQLUpdate
+from libs.database.where import Where
 from libraries.db.library_files import LIBRARY_FILES_DB_INFO
 from config_data import CONFIG
 
@@ -80,16 +82,14 @@ class FileChecker:
             now = now + datetime.timedelta(years=-1)
 
         timestamp = int(now.timestamp())
-
-        data = Database.sql().select(
-            self.__thread_name,
+        msg = SQLSelect(
             LIBRARY_FILES_DB_INFO.name(),
-            [
-                f"last_check > {timestamp}"
-            ]
+            Where("last_check", timestamp, ">")
         )
 
-        self.extend(data)
+        Database.call(msg)
+
+        self.extend(msg.return_data)
 
     def run(self):
         '''Threadded Script For running'''
@@ -123,16 +123,17 @@ class FileChecker:
                     print(f"FILE HAS GONE BAD {full_path}")
                     update_data['bad_file'] = 1
 
-                Database.sql().update(
-                    self.__thread_name,
+                msg = SQLUpdate(
                     LIBRARY_FILES_DB_INFO.name(),
-                    item['id'],
-                    update_data
+                    Where("id", item['id']),
+                    checksum=checksum
                 )
+
             else:
-                Database.sql().update(
-                    self.__thread_name,
+                msg = SQLUpdate(
                     LIBRARY_FILES_DB_INFO.name(),
-                    item['id'],
-                    {'missing_file': 1}
+                    Where("id", item['id']),
+                    missing_file=1
                 )
+
+            Database.call(msg)

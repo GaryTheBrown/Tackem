@@ -53,7 +53,7 @@ CONFIG = ConfigList(
             "mysql",
             "MYSQL",
             ConfigObjString(
-                "address",
+                "host",
                 "localhost",
                 "Database Address",
                 "The Database Address Name or IP"
@@ -80,7 +80,7 @@ CONFIG = ConfigList(
                 "The password for access to the database"
             ),
             ConfigObjString(
-                "name",
+                "database",
                 "tackem",
                 "Database Name",
                 "The name of the database"

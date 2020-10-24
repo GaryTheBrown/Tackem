@@ -1,7 +1,7 @@
 '''Button'''
 from libs.html_system import HTMLSystem
 
-class Button():
+class Button:
     '''Button'''
 
     def __init__(self, label: str, action: str, append: bool, **kwargs):

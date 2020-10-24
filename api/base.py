@@ -3,7 +3,7 @@ from typing import Optional
 import json
 import cherrypy
 
-class APIBase():
+class APIBase:
     '''Base Template For the API'''
 
     GUEST = 0

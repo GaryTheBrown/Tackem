@@ -1,7 +1,7 @@
 '''Library Movies Controller'''
 from glob import glob
-from libs.sql.column import Column
-from libs.sql import Database
+from libs.database.column import Column
+from libs.database import Database
 from libs.config.list import ConfigList
 from libraries.library_base import LibraryBase
 from libraries.db.movie_base import LIBRARY_MOVIES_DB_INFO
