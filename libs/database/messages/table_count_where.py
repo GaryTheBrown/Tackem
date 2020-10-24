@@ -4,21 +4,18 @@ from libs.database.messages.sql_message import SQLMessage
 from libs.database.where import Where
 from libs.exceptions import SQLMessageError
 
-class SQLDelete(SQLMessage):
-    '''Delete Message'''
+class SQLTableCountWhere(SQLMessage):
+    '''Table Count Rows Message'''
 
     def __init__(self, table: str, *wheres: List[Where]):
         if not isinstance(table, str):
             raise SQLMessageError
-
-        if len(wheres) == 0:
-            return
 
         where_list = [where.query for where in wheres]
         variables = {}
         for where in wheres:
             variables[where.key] = where.value
         super().__init__(
-            f"DELETE FROM {table} WHERE {' AND '.join(where_list)}",
+            f"SELECT COUNT(*) FROM {table} WHERE {' AND '.join(where_list)}",
             tuple(variables)
         )

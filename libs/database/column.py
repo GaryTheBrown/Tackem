@@ -68,7 +68,6 @@ class Column:
             decimal: Optional[int] = None,
             unsigned: bool = False,
             auto_increment: bool = False,
-            timestamp_update: bool = False
     ):
         self.__name = name
         self.__type = variable_type
@@ -81,7 +80,6 @@ class Column:
         self.__decimal = decimal
         self.__unsigned = bool(unsigned)
         self.__auto_increment = bool(auto_increment)
-        self.__timestamp_update = bool(timestamp_update)
 
     @property
     def name(self):
@@ -138,11 +136,6 @@ class Column:
         '''returns the auto_increment'''
         return self.__auto_increment
 
-    @property
-    def timestamp_update(self):
-        '''returns the timestamp_update'''
-        return self.__timestamp_update
-
     def check_value(self, value: Any):
         '''checks the value is correct depending on the type set will throw errors if wrong'''
         if (self.__types[self.__type] == 0 and isinstance(value, bool)) \
@@ -185,7 +178,6 @@ class Column:
         return_string += " NOT NULL" if self.__not_null else ""
         return_string += " UNIQUE" if self.__unique else ""
         return_string += " AUTOINCREMENT" if self.__auto_increment else ""
-        return_string += " ON UPDATE CURRENT_TIMESTAMP" if self.__timestamp_update else ""
         if self.__default is not None:
             return_string += " DEFAULT "
             if isinstance(self.__default, str):

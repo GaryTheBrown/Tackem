@@ -15,27 +15,27 @@ def dict_factory(cursor, row):
 class SQLite(BackendBase):
     '''SQLite system'''
 
-    def __startup(self):
+    def _startup(self):
         '''Setup SQLlite Here'''
-        super().__conn = sqlite3.connect(PROGRAMCONFIGLOCATION + '/Tackem.db')
-        super().__conn.row_factory = dict_factory
+        BackendBase._conn = sqlite3.connect(PROGRAMCONFIGLOCATION + '/Tackem.db')
+        BackendBase._conn.row_factory = dict_factory
         if not self.__check_version_table_exists():
             self.__add_table(TABLE_VERSION_DB_INFO, False)
 
-    def __shutdown(self):
+    def _shutdown(self):
         '''Shutdown the System Here'''
         # save any changes to the file
-        super().__conn.commit()
+        BackendBase._conn.commit()
         # close the connection
-        super().__conn.close()
+        BackendBase._conn.close()
 
-    def __get_cursor(self):
+    def _get_cursor(self):
         '''returns a sql cursor'''
-        return super().__conn.cursor()
+        return BackendBase._conn.cursor()
 
-    def __table_check(self, table: Table) -> bool:
+    def _table_check(self, table: Table) -> bool:
         '''checks if the table exists adds it if it doesn't and update it if needed'''
-        table_version = self.__table_exists(table.name)
+        table_version = self.__table_exists(table.name())
         if table_version == table.version:
             return True
         if table_version == 0:
@@ -46,19 +46,19 @@ class SQLite(BackendBase):
 
     def __get(self, call: str) -> list:
         '''Grab a list of the tables'''
-        cursor = super().__conn.execute(call)
+        cursor = BackendBase._conn.execute(call)
         return cursor.fetchall()
 
     def __check_version_table_exists(self) -> bool:
         '''checks if the table_version exists'''
-        cursor = super().__conn.execute(
+        cursor = BackendBase._conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table' AND name='table_version';"
         )
-        return bool(cursor.rowcount())
+        return bool(cursor.rowcount > 0)
 
     def __table_exists(self, table_name: str) -> int:
         '''Check if Table Exists return version number'''
-        cursor = super().__conn.execute(
+        cursor = BackendBase._conn.execute(
             "SELECT version FROM table_version WHERE name=?;",
             (table_name,)
         )
@@ -69,56 +69,48 @@ class SQLite(BackendBase):
 
     def __add_table(self, table: Table, update_version_table: bool = True) -> bool:
         ''' Adds Table to the DB and then adds it into the table version DB'''
-        cursor = super().__conn.execute(
-            f"CREATE TABLE IF NOT EXISTS ? ({', '.join(['?' for _ in range(len(table.data))])});",
-            (
-                table.name,
-                *table.columns,
-            )
+        query = f"CREATE TABLE IF NOT EXISTS {table.name()}({', '.join(table.columns)});"
+        BackendBase._conn.execute(
+            query
         )
-        cursor.commit()
+        BackendBase._conn.commit()
         if update_version_table:
-            super().__conn.execute(
+            BackendBase._conn.execute(
                 "INSERT INTO table_version (name, version) VALUES (?, ?);",
-                (table.name, table.version)
+                (table.name(), table.version)
             )
-            super().__conn.commit()
+            BackendBase._conn.commit()
         return True
+
 
     def __update_table(self, table: Table) -> bool:
         '''Update the table with the informaiton provided'''
 
         # first move the current table to a new name
-        super().__conn.execute(
-            "ALTER TABLE ? RENAME TO ?;",
-            (table.name, f"{table.name}_old")
-        )
-        super().__conn.commit()
+        BackendBase._conn.execute(f"ALTER TABLE {table.name()} RENAME TO {table.name()}_old;")
+        BackendBase._conn.commit()
 
         # make the new version of the table
         self.__add_table(table, False)
 
-        cursor = super().__conn.execute(
-            "SELECT * FROM ?;",
-            (f"{table.name}_old", )
-        )
+        cursor = BackendBase._conn.execute(f"SELECT * FROM {table.name()}_old;")
         old_dict = cursor.fetchall()
 
         if old_dict:
             keys = old_dict.keys()
             items = [(* single_dict.items(), ) for single_dict in old_dict]
             qmarks = ["'?'"] * len(keys)
-            super().__conn.executemany(
-                f"INSERT INTO {table.name} ({', '.join(keys)}) Values ({', '.join(qmarks)})",
+            BackendBase._conn.executemany(
+                f"INSERT INTO {table.name()} ({', '.join(keys)}) Values ({', '.join(qmarks)})",
                 (
                     items,
                 )
             )
 
-        super().__conn.commit()
+        BackendBase._conn.commit()
 
         # delete old table
-        super().__conn.execute("DROP TABLE ?;", (f"{table.name}_old", ))
-        super().__conn.commit()
+        BackendBase._conn.execute(f"DROP TABLE {table.name()}_old;")
+        BackendBase._conn.commit()
 
         return True

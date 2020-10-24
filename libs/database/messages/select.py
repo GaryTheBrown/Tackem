@@ -16,10 +16,9 @@ class SQLSelect(SQLMessage):
 
         if len(wheres) == 0:
             super().__init__(
-                "SELECT ? FROM ?",
+                f"SELECT ? FROM {table}",
                 (
                     ", ".join(returns),
-                    table,
                 )
             )
             return
@@ -27,11 +26,10 @@ class SQLSelect(SQLMessage):
         where_list = [where.query for where in wheres]
         variables = {
             "returns": ", ".join(returns),
-            "table": table
         }
         for where in wheres:
             variables[where.key] = where.value
         super().__init__(
-            f"SELECT :returns FROM :table WHERE {' AND '.join(where_list)}",
-            variables
+            f"SELECT :returns FROM {table} WHERE {' AND '.join(where_list)}",
+            tuple(variables)
         )

@@ -5,7 +5,7 @@ import hashlib
 import cherrypy
 from libs.database import Database
 from libs.database.messages import SQLDelete, SQLInsert, SQLSelect, SQLTable, SQLTableCount
-from libs.database.messages import SQLUpdate
+from libs.database.messages import SQLTableCountWhere, SQLUpdate
 from libs.database.column import Column
 from libs.database.table import Table
 from libs.database.where import Where
@@ -30,14 +30,10 @@ class Authentication:
 
     def start(self) -> None:
         '''Run starting commands need sql to run'''
-        Database.call(SQLTable(self.__db_info.name()))
-
+        Database.call(SQLTable(self.__db_info))
         msg1 = SQLTableCount(self.__db_info.name())
-
         Database.call(msg1)
-
-        msg2 = SQLTableCount(self.__db_info.name(), Where("is_admin", True))
-
+        msg2 = SQLTableCountWhere(self.__db_info.name(), Where("is_admin", True))
         Database.call(msg2)
         if msg1.return_data['COUNT(*)'] == 0:
             self.__add_admin_account()
@@ -147,7 +143,7 @@ class Authentication:
             "password": self.__password_encryption(password),
             "is_admin": is_admin
         }
-        msg1 = SQLTableCount(self.__db_info.name(), Where("username", username))
+        msg1 = SQLTableCountWhere(self.__db_info.name(), Where("username", username))
         Database.call(msg1)
         if msg1.return_data['COUNT(*)'] == 0:
             msg2 = SQLInsert(self.__db_info.name(), **user)

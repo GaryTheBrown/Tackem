@@ -8,7 +8,7 @@ class Table:
     def __init__(self, name: str, version: int, *data: List[Column], soft_delete: bool = False):
         self.__name = name
         self.__version = version
-        self.__data = data
+        self.__data = list(data)
         self.__soft_delete = soft_delete
 
 
@@ -29,7 +29,6 @@ class Table:
                 "updated_at",
                 "timestamp",
                 default=0,
-                timestamp_update=True
             ),
         ]
         if self.__soft_delete:

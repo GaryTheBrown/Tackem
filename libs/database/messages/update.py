@@ -1,4 +1,5 @@
 '''SQL MESSAGE SYSTEM DATA'''
+import time
 from typing import List
 from libs.database.messages.sql_message import SQLMessage
 from libs.database.where import Where
@@ -14,11 +15,11 @@ class SQLUpdate(SQLMessage):
         where_list = [where.query for where in wheres]
         set_values = [f"{key} = :{key}" for key in key_values]
         variables = {
-            "table": table,
+            "update_at": int(time.time())
         }
         variables.update(key_values)
 
         super().__init__(
-            f"UPDATE :table SET {', '.join(set_values)} WHERE {' AND '.join(where_list)}",
-            variables
+            f"UPDATE {table} SET {', '.join(set_values)} WHERE {' AND '.join(where_list)}",
+            tuple(variables)
         )

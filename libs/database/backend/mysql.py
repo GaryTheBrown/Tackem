@@ -20,7 +20,7 @@ class MySQL(BackendBase):
         }
 
         try:
-            super().__conn = mysql.connector.connect(**config)
+            super()._conn = mysql.connector.connect(**config)
         except mysql.connector.Error as err:
             if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")
@@ -34,11 +34,11 @@ class MySQL(BackendBase):
 
     def __shutdown(self):
         '''Shutdown the System Here'''
-        super().__conn.close()
+        super()._conn.close()
 
     def __get_cursor(self):
         '''returns a sql cursor'''
-        return super().__conn.cursor(dictionary=True)
+        return super()._conn.cursor(dictionary=True)
 
 
     def __table_check(self, table: Table) -> bool:

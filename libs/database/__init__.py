@@ -1,7 +1,7 @@
 '''SQL System'''
 from typing import Any, Union
 from config_data import CONFIG
-from libs.database.sql_message import SQLMessage
+from libs.database.messages.sql_message import SQLMessage
 from libs.database.table import Table
 from libs.database.backend.sqlite import SQLite
 from libs.database.backend.mysql import MySQL

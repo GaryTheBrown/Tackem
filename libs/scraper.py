@@ -10,7 +10,7 @@ class Scraper:
         self.__apikey = CONFIG['scraper']['apikey'].value
         self.__language = CONFIG['scraper']['language'].value
         self.__include_adult = CONFIG['scraper']['includeadult'].value
-        self.__conn = http.client.HTTPSConnection(
+        self._conn = http.client.HTTPSConnection(
             CONFIG['scraper']['url'].value)
         self._image_config = self._configuration()
         self.__working = bool(self._image_config)
@@ -118,8 +118,8 @@ class Scraper:
 ############
     def __get_request(self, command: str) -> dict:
         '''do a get request'''
-        self.__conn.request("GET", command)
-        response = self.__conn.getresponse()
+        self._conn.request("GET", command)
+        response = self._conn.getresponse()
         return_data = {
             "status": int(response.status),
             "reason": response.reason
