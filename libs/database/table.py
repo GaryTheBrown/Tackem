@@ -5,7 +5,7 @@ from libs.database.column import Column
 class Table:
     '''Database Table'''
 
-    def __init__(self, name: str, version: int, *data: List[Column], soft_delete: bool = False):
+    def __init__(self, name: str, version: int, *data: Column, soft_delete: bool = False):
         self.__name = name
         self.__version = version
         self.__data = list(data)
@@ -40,7 +40,7 @@ class Table:
                 )
             )
 
-    def name(self, *values) -> str:
+    def name(self, *values: Any) -> str:
         '''returns the name'''
         if "{}" in self.__name and values is None:
             ValueError("Tried to get DB Name but missing values")

@@ -1,11 +1,11 @@
 '''Plugin Control Of System Data'''
-from typing import Union
+from typing import Optional
 from system.base import TackemSystemBase
 
 class TackemSystemPlugin(TackemSystemBase):
     '''Plugin Control Of System Data'''
 
-    def __init__(self, plugin_type: str, plugin_name: str, instance: Union[str, None] = None):
+    def __init__(self, plugin_type: str, plugin_name: str, instance: Optional[str] = None):
         self.__plugin_type = plugin_type
         self.__plugin_name = plugin_name
         self.__plugin_full_name = f"{plugin_type} {plugin_name}"

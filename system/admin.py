@@ -30,7 +30,7 @@ class TackemSystemAdmin(TackemSystemFull):
         return plugin_name.lower() in self._base_data.plugins.get(plugin_type.lower(), {})
 
     # Plugin Methods
-    def load_plugins(self) -> None:
+    def load_plugins(self) :
         '''imports all plugin'''
         for folder in glob.glob(PLUGINFOLDERLOCATION + "*/*/"):
             if not "__pycache__" in folder:
@@ -68,7 +68,7 @@ class TackemSystemAdmin(TackemSystemFull):
             CONFIG['plugins'][plugin_type].append(plugin.CONFIG)
         return True, 0
 
-    def reload_plugins(self) -> None:
+    def reload_plugins(self) :
         '''reimports all plugins'''
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
@@ -88,7 +88,7 @@ class TackemSystemAdmin(TackemSystemFull):
         CONFIG['plugins'][plugin_type].append(plugin.CONFIG)
         return True, 0
 
-    def unload_plugins(self) -> None:
+    def unload_plugins(self) :
         '''deletes the plugins'''
         list_of_plugins = []
         for plugin_type in self._base_data.plugins:
@@ -97,7 +97,7 @@ class TackemSystemAdmin(TackemSystemFull):
         for plugin_type, plugin_name in list_of_plugins:
             self.unload_plugin(plugin_type, plugin_name)
 
-    def unload_plugin(self, plugin_type: str, plugin_name: str) -> None:
+    def unload_plugin(self, plugin_type: str, plugin_name: str) :
         '''deletes a plugin'''
         del self._base_data.plugins[plugin_type][plugin_name]
         CONFIG['plugins'][plugin_type].delete(plugin_name)
@@ -106,7 +106,7 @@ class TackemSystemAdmin(TackemSystemFull):
             CONFIG['plugins'].delete(plugin_type)
 
     # Systems Methods
-    def load_systems(self) -> None:
+    def load_systems(self) :
         '''load systems fors all plugins'''
         for plugin_type in self._base_data.plugins:
             for plugin_name in self._base_data.plugins[plugin_type]:
@@ -128,7 +128,7 @@ class TackemSystemAdmin(TackemSystemFull):
             system_name, single_instance)
         return True
 
-    def unload_systems(self) -> None:
+    def unload_systems(self) :
         '''deletes the systems'''
         for name in list(name for name in self._base_data.systems):
             self.unload_system(name)
@@ -158,7 +158,7 @@ class TackemSystemAdmin(TackemSystemFull):
             return False
         return True
 
-    def stop_systems(self) -> None:
+    def stop_systems(self) :
         '''stops all of the systems'''
         for name in self._base_data.systems:
             self._base_data.systems[name].shutdown()
@@ -169,7 +169,7 @@ class TackemSystemAdmin(TackemSystemFull):
                 if self._base_data.systems[name].running():
                     running = True
 
-    def stop_system(self, system_name: str) -> None:
+    def stop_system(self, system_name: str) :
         '''stops a system'''
         self._base_data.systems[system_name].shutdown()
         while True:
@@ -194,19 +194,19 @@ class TackemSystemAdmin(TackemSystemFull):
                     all_created = False
         return all_created
 
-    def unload_plugin_systems(self, plugin_type: str, plugin_name: str) -> None:
+    def unload_plugin_systems(self, plugin_type: str, plugin_name: str) :
         '''deletes a plugin systems'''
         system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
         for system_name in system_names:
             self.unload_system(system_name)
 
-    def start_plugin_systems(self, plugin_type: str, plugin_name: str) -> None:
+    def start_plugin_systems(self, plugin_type: str, plugin_name: str) :
         '''start systems for a plugin'''
         system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
         for system_name in system_names:
             self.start_system(system_name)
 
-    def stop_plugin_systems(self, plugin_type: str, plugin_name: str) -> None:
+    def stop_plugin_systems(self, plugin_type: str, plugin_name: str) :
         '''stop systems for a plugin'''
         system_names = self.get_systems_for_plugin(plugin_type, plugin_name)
         for system_name in system_names:

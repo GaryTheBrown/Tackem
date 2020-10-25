@@ -1,6 +1,6 @@
 '''Config Object Options Checkbox'''
 import re
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
@@ -39,7 +39,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
         '''returns the values'''
         return self.__values
 
-    def _set_value(self, value):
+    def _set_value(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if self.input_attributes and self.input_attributes.multiple:
             return self.__set_value_multi(value)
@@ -61,7 +61,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
             return str(value)
         return self.default_value
 
-    def __set_value_multi(self, value):
+    def __set_value_multi(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(self.default_value, str):
             return self.__set_value_multi_str(value)
@@ -77,7 +77,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_str(self, value):
+    def __set_value_multi_str(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, (str, int, float)):
             return str(value)
@@ -87,7 +87,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_int(self, value):
+    def __set_value_multi_int(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, str):
             try:
@@ -109,7 +109,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_float(self, value):
+    def __set_value_multi_float(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, str):
             try:
@@ -131,7 +131,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_list(self, value):
+    def __set_value_multi_list(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, str):
             self.__set_value_multi_list_str(value)
@@ -146,7 +146,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
             self.__set_value_multi_list_list(value)
         return self.default_value
 
-    def __set_value_multi_list_str(self, value):
+    def __set_value_multi_list_str(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if ";" in value or "," in value or "\n" in value:
             return self.__set_value_multi_list_list(
@@ -170,7 +170,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_list_int(self, value):
+    def __set_value_multi_list_int(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(self.default_value[0], str):
             return str(value)
@@ -186,7 +186,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_list_float(self, value):
+    def __set_value_multi_list_float(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(self.default_value[0], str):
             return str(value)
@@ -202,7 +202,7 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return self.default_value
 
-    def __set_value_multi_list_list(self, value):
+    def __set_value_multi_list_list(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(self.default_value[0], str):
             return [str(x) for x in value]

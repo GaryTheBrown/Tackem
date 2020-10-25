@@ -1,10 +1,11 @@
 '''Config File Setup'''
+from typing import Any
 from config_data import CONFIG
 from libs.config.list import ConfigList
 from libs.config.obj.enabled import ConfigObjEnabled
 from libs.root_event import RootEvent
 
-def post_config_settings(kwargs: dict):
+def post_config_settings(kwargs: Any):
     '''Fills in the config dict with the settings based on its name'''
 
     for key, value in kwargs.items():
@@ -12,7 +13,7 @@ def post_config_settings(kwargs: dict):
         key_list = key.split("_")
         add_val_to_config(key, CONFIG, key_list, value)
 
-def add_val_to_config(key: str, config: ConfigList, key_list: list, value):
+def add_val_to_config(key: str, config: ConfigList, key_list: list, value: Any):
     '''recursive way of adding value into the config'''
     if len(key_list) == 1:
         if key_list[0] in config.keys():

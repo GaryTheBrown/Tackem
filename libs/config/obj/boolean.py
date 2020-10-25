@@ -1,5 +1,5 @@
 '''Config Object Boolean'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
@@ -88,7 +88,7 @@ class ConfigObjBoolean(ConfigObjBase):
             OTHER=other
         )
 
-    def to_type(self, value) -> bool:
+    def to_type(self, value: Any) -> bool:
         '''returns the value in the correct format'''
         try:
             return bool(value)

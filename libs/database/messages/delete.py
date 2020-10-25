@@ -7,7 +7,7 @@ from libs.exceptions import SQLMessageError
 class SQLDelete(SQLMessage):
     '''Delete Message'''
 
-    def __init__(self, table: str, *wheres: List[Where]):
+    def __init__(self, table: str, *wheres: Where):
         if not isinstance(table, str):
             raise SQLMessageError
 
@@ -15,10 +15,4 @@ class SQLDelete(SQLMessage):
             return
 
         where_list = [where.query for where in wheres]
-        variables = {}
-        for where in wheres:
-            variables[where.key] = where.value
-        super().__init__(
-            f"DELETE FROM {table} WHERE {' AND '.join(where_list)}",
-            tuple(variables)
-        )
+        super().__init__(f"DELETE FROM {table} WHERE {' AND '.join(where_list)}")

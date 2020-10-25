@@ -1,5 +1,5 @@
 '''Shared Data for all config Objects'''
-from typing import Optional
+from typing import Any, Optional
 from abc import ABC, abstractmethod
 from libs.config.base import ConfigBase
 from libs.config.obj.data.input_attributes import InputAttributes
@@ -49,7 +49,7 @@ class ConfigObjBase(ABC, ConfigBase):
     def __init__(
             self,
             var_name: str,
-            default_value,
+            default_value: Any,
             label: str,
             help_text: str,
             hide_on_html: bool = False,
@@ -86,12 +86,12 @@ class ConfigObjBase(ABC, ConfigBase):
         return self.__value
 
     @value.setter
-    def value(self, value):
+    def value(self, value: Any):
         '''sets the value'''
         self.__value = self._set_value(value)
 
     @abstractmethod
-    def _set_value(self, value):
+    def _set_value(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
 
     @property
@@ -118,7 +118,7 @@ class ConfigObjBase(ABC, ConfigBase):
     def item_html(self, variable_name: str) -> str:
         '''Returns the html for the config option'''
 
-    def to_type(self, value):
+    def to_type(self, value: Any):
         '''returns the value in the correct format'''
         return value
 

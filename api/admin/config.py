@@ -52,7 +52,7 @@ class APIAdminConfig(APIBase):
             after=body['value']
         )
 
-    def __check_for_blocked_locations(self, location: str) -> None:
+    def __check_for_blocked_locations(self, location: str) :
         '''checks for banned locations'''
         if "masterkey" in location or "userkey" in location or location[0] == "plugins" \
                 or location[0] == "systems":

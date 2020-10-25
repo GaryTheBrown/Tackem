@@ -1,5 +1,6 @@
 '''Script For the Admin System'''
 import cherrypy
+from typing import Any
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
@@ -11,7 +12,7 @@ class Admin(HTMLTEMPLATE):
     '''Admin'''
 
     @cherrypy.expose
-    def config(self, **kwargs) -> str:
+    def config(self, **kwargs: Any) -> str:
         '''Config System'''
         AUTHENTICATION.check_auth()
         if not AUTHENTICATION.is_admin():

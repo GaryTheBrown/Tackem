@@ -1,5 +1,5 @@
 '''Config Object Float Number'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
@@ -43,7 +43,7 @@ class ConfigObjFloatNumber(ConfigObjBase):
 
         self.__button = button
 
-    def _set_value(self, value) -> Optional[float]:
+    def _set_value(self, value: Any) -> Optional[float]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, float):
             return value
@@ -94,7 +94,7 @@ class ConfigObjFloatNumber(ConfigObjBase):
             BUTTON=button
         )
 
-    def to_type(self, value) -> float:
+    def to_type(self, value: Any) -> float:
         '''returns the value in the correct format'''
         try:
             return float(value)

@@ -1,5 +1,5 @@
 '''Config Object List'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
@@ -41,7 +41,7 @@ class ConfigObjList(ConfigObjBase):
             value_link
         )
 
-    def _set_value(self, value) -> Optional[list]:
+    def _set_value(self, value: Any) -> Optional[list]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, list):
             return value

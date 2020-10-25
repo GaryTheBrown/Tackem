@@ -26,7 +26,7 @@ class MusicBrainz():
 
     # https://python-musicbrainzngs.readthedocs.io/en/v0.6/
 
-    def get_data_for_discid(self, disc_id):
+    def get_data_for_discid(self, disc_id: int):
         '''get data by disc id'''
         if not self.__logged_in:
             return {}

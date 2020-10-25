@@ -1,5 +1,5 @@
 '''SQL MESSAGE SYSTEM DATA'''
-from typing import Optional, Union
+from typing import Union
 import threading
 from libs.database.table import Table
 
@@ -8,28 +8,22 @@ class SQLMessage:
 
     def __init__(
             self,
-            query: Union[str, Table],
-            query_vars: Optional[tuple] = None
+            query: Union[str, Table]
     ):
         self.__lock = threading.Lock()
         self.__event_lock = threading.Event()
         # INPUTS
         self.__thread_ident = threading.get_ident()
         self.__query = query
-        self.__query_vars = query_vars
         self.__return_data = []
+
+        print(query)
 
     @property
     def query(self) -> str:
         '''Return query'''
         with self.__lock:
             return self.__query
-
-    @property
-    def query_vars(self) -> tuple:
-        '''Return query_vars'''
-        with self.__lock:
-            return self.__query_vars
 
     @property
     def return_data(self) -> list:

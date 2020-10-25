@@ -15,8 +15,8 @@ class Database:
         '''basic function to load up the DB'''
         if CONFIG['database']['mode'].value.lower() == 'sqlite3':
             cls.__sql_system = SQLite()
-        elif CONFIG['database']['mode'].lower() == 'mysql':
-            cls.__sql_system = MySQL()
+        # elif CONFIG['database']['mode'].lower() == 'mysql':
+        #     cls.__sql_system = MySQL()
         else:
             print(CONFIG['database']['mode'].value)
 

@@ -1,4 +1,5 @@
 '''Base Library Controller'''
+from typing import Generator
 import threading
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
@@ -94,7 +95,7 @@ class LibraryBase(metaclass=ABCMeta):
     def run(self):
         '''abstract Run Method'''
 
-    def _scan_folder_base(self):
+    def _scan_folder_base(self) -> Generator:
         '''Scans the folder for new files'''
 
         for path in Path(self._config['location'].value).rglob('*'):

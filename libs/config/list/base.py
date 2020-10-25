@@ -17,7 +17,7 @@ class ConfigListBase(ConfigBase):
             rules: Optional[ConfigRules] = None,
             is_section: bool = False,
             many_section=None,
-            many_section_limit_list=None
+            many_section_limit_list: Optional[list] = None
     ):
         super().__init__(var_name, label, help_text, False, False, rules)
         if is_section and not isinstance(is_section, bool):
@@ -65,7 +65,7 @@ class ConfigListBase(ConfigBase):
         '''returns all keys for the objects'''
         return [x.var_name for x in self._objects]
 
-    def get(self, key, default=None) -> Any:
+    def get(self, key, default: Any = None) -> Any:
         '''returns the data if found otherwise returns the default value'''
         for obj in self._objects:
             if obj.key == key.lower():
@@ -151,7 +151,7 @@ class ConfigListBase(ConfigBase):
                     return obj.find_and_get(location)
         return None
 
-    def find_and_set(self, location: list, value):
+    def find_and_set(self, location: list, value: Any):
         '''Find and set a config Item'''
         for obj in self._objects:
             if location[0] != obj.var_name:

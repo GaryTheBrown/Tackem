@@ -43,7 +43,7 @@ class ConfigObjOption:
             return ""
         return '"' + self.value + '"'
 
-    def __attributes(self, selected) -> str:
+    def __attributes(self, selected: bool) -> str:
         '''returns the attributes as a string for the config html'''
         string = ""
         if self.__input_attributes:
@@ -54,7 +54,7 @@ class ConfigObjOption:
             string += ' label="' + self.__short_label + '"'
         return string
 
-    def html(self, selected, variable_name: str) -> str:
+    def html(self, selected: bool, variable_name: str) -> str:
         '''Returns the option html for the config'''
         if self.__hide_on_html:
             return ""

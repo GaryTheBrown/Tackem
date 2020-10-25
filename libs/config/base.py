@@ -1,5 +1,5 @@
 '''Config Base Data Class'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.rules import ConfigRules
 
 class ConfigBase:
@@ -45,7 +45,7 @@ class ConfigBase:
         return self.__var_name
 
     @var_name.setter
-    def var_name(self, var):
+    def var_name(self, var: Any):
         '''sets the var name'''
         self.__var_name = var
 
@@ -60,7 +60,7 @@ class ConfigBase:
         return self.__label
 
     @label.setter
-    def label(self, var):
+    def label(self, var: Any):
         '''sets the label'''
         self.__label = var
 

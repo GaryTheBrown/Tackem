@@ -1,10 +1,11 @@
 '''Button'''
+from typing import Any
 from libs.html_system import HTMLSystem
 
 class Button:
     '''Button'''
 
-    def __init__(self, label: str, action: str, append: bool, **kwargs):
+    def __init__(self, label: str, action: str, append: bool, **kwargs: Any):
         if not isinstance(label, str):
             raise ValueError("label is not a String")
         if not isinstance(action, str):

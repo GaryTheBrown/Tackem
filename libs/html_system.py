@@ -57,7 +57,7 @@ class HTMLSystem:
         return str(open(cls.__html_location(file, extension), "r").read())
 
     @classmethod
-    def part(cls, file: str, **kwargs) -> str:
+    def part(cls, file: str, **kwargs: Any) -> str:
         '''All in one html template sorter'''
         html = cls.open(file)
 

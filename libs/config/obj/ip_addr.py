@@ -1,5 +1,5 @@
 '''Config Object String'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
@@ -52,7 +52,7 @@ class ConfigObjIpAddr(ConfigObjString):
         )
         self.__button = button
 
-    def _set_value(self, value):
+    def _set_value(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if not isinstance(value, str):
             return self.default_value

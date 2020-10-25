@@ -34,7 +34,7 @@ class Tackem:
     def __init__(self):
         self.__webserver = None
 
-    def start(self) -> None:
+    def start(self) :
         '''Start of the program'''
         print("LOADING PLUGINS...")
         TackemSystemAdmin().load_plugins()
@@ -58,7 +58,7 @@ class Tackem:
         self.__start_webserver()
         print("TACKEM HAS STARTED")
 
-    def stop(self) -> None:
+    def stop(self) :
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
         self.__stop_webserver()
@@ -69,21 +69,21 @@ class Tackem:
         print("STOPPING DATABASE...")
         Database.stop_sql()
 
-    def cleanup(self) -> None:
+    def cleanup(self) :
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
         TackemSystemAdmin().unload_systems()
         TackemSystemAdmin().unload_plugins()
 
-    def shutdown(self) -> None:
+    def shutdown(self) :
         '''Shutdown commands'''
         self.stop()
         print("SAVING CONFIG FILE...")
         CONFIG.save()
         print("SHUTDOWN COMPLETED")
 
-    def run(self) -> None:
+    def run(self) :
         '''Looping function'''
         if not os.path.exists(PROGRAMCONFIGLOCATION):
             os.mkdir(PROGRAMCONFIGLOCATION)

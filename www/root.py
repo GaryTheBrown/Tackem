@@ -1,4 +1,5 @@
 '''Script For the Root Of The System'''
+from typing import Any
 import cherrypy
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
@@ -19,7 +20,7 @@ class Root(HTMLTEMPLATE):
         return self._template(HTMLSystem.open("pages/about"))
 
     @cherrypy.expose
-    def login(self, **kwargs) -> str:
+    def login(self, **kwargs: Any) -> str:
         '''Login Page'''
         return_url = kwargs.get('return_url', "%%BASEURL%%")
         username = kwargs.get('username', "")
@@ -31,7 +32,7 @@ class Root(HTMLTEMPLATE):
         return self._template(HTMLSystem.part("pages/login", RETURNURL=return_url), navbar=False)
 
     @cherrypy.expose
-    def password(self, **kwargs) -> str:
+    def password(self, **kwargs: Any) -> str:
         '''Login Page'''
         AUTHENTICATION.check_auth()
         password = kwargs.get('password', None)
@@ -45,6 +46,6 @@ class Root(HTMLTEMPLATE):
         return self._template(HTMLSystem.part("pages/password"), navbar=False)
 
     @cherrypy.expose
-    def logout(self) -> None:
+    def logout(self) :
         '''Logout Page'''
         AUTHENTICATION.logout()

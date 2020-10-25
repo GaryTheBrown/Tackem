@@ -7,7 +7,7 @@ from libs.exceptions import SQLMessageError
 class SQLSelect(SQLMessage):
     '''Select Message'''
 
-    def __init__(self, table: str, *wheres: List[Where], returns: Optional[List[str]] = None):
+    def __init__(self, table: str, *wheres: Where, returns: Optional[List[str]] = None):
         if not isinstance(table, str):
             raise SQLMessageError
 
@@ -15,21 +15,10 @@ class SQLSelect(SQLMessage):
             returns = ["*"]
 
         if len(wheres) == 0:
-            super().__init__(
-                f"SELECT ? FROM {table}",
-                (
-                    ", ".join(returns),
-                )
-            )
+            super().__init__(f"SELECT {', '.join(returns)} FROM {table}")
             return
 
         where_list = [where.query for where in wheres]
-        variables = {
-            "returns": ", ".join(returns),
-        }
-        for where in wheres:
-            variables[where.key] = where.value
         super().__init__(
-            f"SELECT :returns FROM {table} WHERE {' AND '.join(where_list)}",
-            tuple(variables)
+            f"SELECT {', '.join(returns)} FROM {table} WHERE {' AND '.join(where_list)}"
         )

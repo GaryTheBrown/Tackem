@@ -10,7 +10,7 @@ class HTMLTEMPLATE():
     _baseurl = "/"
 
     @classmethod
-    def set_baseurl(cls, baseurl):
+    def set_baseurl(cls, baseurl: str):
         '''sets the base url for use rather than accessing through the config each time'''
         cls._baseurl = baseurl
 

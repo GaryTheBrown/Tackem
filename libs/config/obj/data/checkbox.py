@@ -47,7 +47,7 @@ class ConfigObjCheckbox:
             return ""
         return '"' + self.value + '"'
 
-    def __attributes(self, checked) -> str:
+    def __attributes(self, checked: bool) -> str:
         '''returns the attributes as a string for the config html'''
         string = ""
         if self.__input_attributes:
@@ -58,7 +58,7 @@ class ConfigObjCheckbox:
             string += ' label="' + self.__short_label + '"'
         return string
 
-    def html(self, checked, variable_name: str) -> str:
+    def html(self, checked: bool, variable_name: str) -> str:
         '''Returns the option html for the config'''
         if self.__hide_on_html:
             return ""

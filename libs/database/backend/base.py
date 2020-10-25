@@ -89,10 +89,7 @@ class BackendBase(metaclass=ABCMeta):
     def __do_job(self, job: SQLMessage):
         '''do the magic work for each job'''
         cursor = self._get_cursor()
-        if isinstance(job.query_vars, tuple):
-            cursor.execute(job.query, job.query_vars)
-        else:
-            cursor.execute(job.query)
+        cursor.execute(job.query)
         BackendBase._conn.commit()
         data = cursor.fetchall()
         if len(data) == 1:

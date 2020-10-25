@@ -27,4 +27,4 @@ class Where:
     @property
     def query(self):
         '''returns the query String'''
-        return f"{self.__key}{self.__expression}:{self.__key}"
+        return f"{self.__key}{self.__expression}'{self.__value}'"

@@ -1,5 +1,5 @@
 '''Config Object Integer Number'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
@@ -43,7 +43,7 @@ class ConfigObjIntegerNumber(ConfigObjBase):
 
         self.__button = button
 
-    def _set_value(self, value) -> Optional[int]:
+    def _set_value(self, value: Any) -> Optional[int]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if isinstance(value, int):
             return value
@@ -94,7 +94,7 @@ class ConfigObjIntegerNumber(ConfigObjBase):
             BUTTON=button
         )
 
-    def to_type(self, value) -> int:
+    def to_type(self, value: Any) -> int:
         '''returns the value in the correct format'''
         try:
             return int(value)

@@ -10,19 +10,19 @@ class APIBase:
     MASTER = 1
     USER = 2
 
-    def GET(self, **kwargs) -> None:  # pylint: disable=invalid-name,no-self-use
+    def GET(self, **kwargs) :  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
         raise cherrypy.HTTPError(status=404)
 
-    def POST(self, **kwargs) -> None:  # pylint: disable=invalid-name,no-self-use
+    def POST(self, **kwargs) :  # pylint: disable=invalid-name,no-self-use
         '''POST Function'''
         raise cherrypy.HTTPError(status=404)
 
-    def PUT(self, **kwargs) -> None:  # pylint: disable=invalid-name,no-self-use
+    def PUT(self, **kwargs) :  # pylint: disable=invalid-name,no-self-use
         '''PUT Function'''
         raise cherrypy.HTTPError(status=404)
 
-    def DELETE(self, **kwargs) -> None:  # pylint: disable=invalid-name,no-self-use
+    def DELETE(self, **kwargs) :  # pylint: disable=invalid-name,no-self-use
         '''DELETE Function'''
         raise cherrypy.HTTPError(status=404)
 
@@ -32,7 +32,7 @@ class APIBase:
         rawbody = cherrypy.request.body.read(int(content_length))
         return json.loads(rawbody)
 
-    def _check_user(self, user: int, is_admin: bool = False) -> None:
+    def _check_user(self, user: int, is_admin: bool = False) :
         '''checks that the user is allowed'''
         if user == self.GUEST or (is_admin and user == self.USER):
             raise cherrypy.HTTPError(status=401)  # Unauthorized

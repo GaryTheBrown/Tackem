@@ -47,7 +47,7 @@ class InputAttributes:
                 else:
                     self.__dict[key] = str(value)
 
-    def needed(self, *args):
+    def needed(self, *args: str):
         '''checks if the items are set otherwise raises an exception'''
         missing_list = []
         for arg in args:
@@ -71,7 +71,7 @@ class InputAttributes:
         if missing_list:
             raise ValueError("MISSING ARGUMENTS: " + ", ".join(missing_list))
 
-    def block(self, *args):
+    def block(self, *args: str):
         '''checks if any of the items are set and raises an exception if so'''
         block_list = []
         for arg in args:
@@ -130,15 +130,15 @@ class InputAttributes:
 
         return string
 
-    def get(self, key, default=None) -> Any:
+    def get(self, key: str, default: Any = None) -> Any:
         '''returns a value in the dictonary'''
         return self.__dict.get(key, default)
 
-    def __getitem__(self, key) -> Any:
+    def __getitem__(self, key: str) -> Any:
         '''[] getter'''
         return self.__dict.get(key, None)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any):
         '''[] setter'''
         self.__dict[key] = value
 

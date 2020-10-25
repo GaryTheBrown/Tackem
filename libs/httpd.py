@@ -64,11 +64,11 @@ class Httpd():
 
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
 
-    def start(self) -> None:
+    def start(self) :
         '''Start the server'''
         cherrypy.engine.start()
 
-    def stop(self) -> None:
+    def stop(self) :
         '''Stop the server'''
         cherrypy.engine.exit()
         cherrypy.server.httpserver = None

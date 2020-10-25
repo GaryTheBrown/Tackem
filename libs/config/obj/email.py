@@ -1,6 +1,6 @@
 '''Config Obj String'''
 import re
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.button import Button
@@ -40,7 +40,7 @@ class ConfigObjEmail(ConfigObjString):
             value_link
         )
 
-    def _set_value(self, value) -> Optional[str]:
+    def _set_value(self, value: Any) -> Optional[str]:
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         if not isinstance(value, str):
             return self.default_value

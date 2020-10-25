@@ -157,7 +157,7 @@ class ConfigListHtml(ConfigListBase):
             MODAL=self.__modal(variable_name)
         )
 
-    def __modal(self, variable_name) -> str:
+    def __modal(self, variable_name: str) -> str:
         '''grnerates the modal if needed'''
         return HTMLSystem.part(
             "section/modal",
@@ -214,7 +214,7 @@ class ConfigListHtml(ConfigListBase):
             INPUT=input_html
         )
 
-    def __section_data(self, variable_name) -> str:
+    def __section_data(self, variable_name: str) -> str:
         '''pulls all objects out for inclusion in the section'''
         html = ""
         for obj in self._objects:

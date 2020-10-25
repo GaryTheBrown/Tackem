@@ -1,5 +1,5 @@
 '''Config Object String'''
-from typing import Optional
+from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
@@ -46,7 +46,7 @@ class ConfigObjString(ConfigObjBase):
         )
         self.__button = button
 
-    def _set_value(self, value):
+    def _set_value(self, value: Any):
         '''hidden abstract method for setting the value with checking of type in sub classes'''
         return str(value)
 
@@ -85,7 +85,7 @@ class ConfigObjString(ConfigObjBase):
             BUTTON=button
         )
 
-    def to_type(self, value) -> str:
+    def to_type(self, value: Any) -> str:
         '''returns the value in the correct format'''
         try:
             return str(value)

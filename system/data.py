@@ -16,7 +16,7 @@ class SystemData:
             return self.__plugins
 
     @plugins.setter
-    def plugins(self, plugins):
+    def plugins(self, plugins: dict):
         '''sets the plugins'''
         with self.__plugins_lock:
             self.__plugins = plugins
@@ -28,7 +28,7 @@ class SystemData:
             return self.__systems
 
     @systems.setter
-    def systems(self, systems):
+    def systems(self, systems: dict):
         '''sets the systems'''
         with self.__systems_lock:
             self.__systems = systems
