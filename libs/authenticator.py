@@ -28,7 +28,7 @@ class Authentication:
         self.__login_url = CONFIG['webui']['baseurl'].value + \
             "login?return_url="
 
-    def start(self) :
+    def start(self):
         '''Run starting commands need sql to run'''
         Database.call(SQLTable(self.__db_info))
         msg1 = SQLTableCount(self.__db_info.name())
@@ -40,7 +40,7 @@ class Authentication:
         elif msg2.return_data['COUNT(*)'] == 0:
             self.__add_admin_account()
 
-    def __add_admin_account(self) :
+    def __add_admin_account(self):
         '''adds an admin account'''
         msg = SQLInsert(
             self.__db_info.name(),
@@ -81,7 +81,7 @@ class Authentication:
         raise cherrypy.HTTPRedirect(
             cherrypy.url().replace("/login", returnurl))
 
-    def logout(self) :
+    def logout(self):
         '''Logout Script'''
         session_id = cherrypy.request.cookie['sessionid'].value
         del self.__temp_sessions[session_id]
@@ -89,7 +89,7 @@ class Authentication:
         cherrypy.response.cookie['sessionid']['max-age'] = 0
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("logout", "login"))
 
-    def check_auth(self) :
+    def check_auth(self):
         '''Check authentication'''
         if 'sessionid' in cherrypy.request.cookie.keys():
             if cherrypy.request.cookie['sessionid'].value in self.__temp_sessions:
@@ -135,7 +135,7 @@ class Authentication:
         )
         return True
 
-    def add_user(self, username: str, password: str, is_admin: bool) :
+    def add_user(self, username: str, password: str, is_admin: bool):
         '''Add user to system'''
         user = {
             "username": username,
@@ -148,7 +148,7 @@ class Authentication:
             msg2 = SQLInsert(self.__db_info.name(), **user)
             Database.call(msg2)
 
-    def delete_user(self, user_id: int) :
+    def delete_user(self, user_id: int):
         '''Delete user from system'''
         Database.call(SQLDelete(self.__db_info.name(), Where("id", user_id)))
 
@@ -167,7 +167,7 @@ class Authentication:
             username: Union[str, None] = None,
             password: Union[str, None] = None,
             is_admin: bool = None
-    ) :
+    ):
         '''update the user info'''
         data = {}
         if isinstance(username, str) and username != "":
@@ -185,7 +185,7 @@ class Authentication:
             )
         )
 
-    def clear_sessions(self) :
+    def clear_sessions(self):
         '''clears the sessions and logs all the users out'''
         self.__temp_sessions = {}
 
