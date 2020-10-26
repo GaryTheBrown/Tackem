@@ -17,8 +17,6 @@ class SQLMessage:
         self.__query = query
         self.__return_data = []
 
-        print(query)
-
     @property
     def query(self) -> str:
         '''Return query'''
