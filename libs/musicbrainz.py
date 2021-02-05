@@ -1,7 +1,7 @@
 '''Audio Ripping Feature'''
 import musicbrainzngs
 from libs.startup_arguments import PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRESS
-from config_data import CONFIG
+from data.config import CONFIG
 
 class MusicBrainz():
     '''video ripping controller'''

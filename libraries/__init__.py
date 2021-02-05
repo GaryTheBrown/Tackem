@@ -1,5 +1,5 @@
 '''Libraries Root'''
-from config_data import CONFIG
+from data.config import CONFIG
 from libs.database.column import Column
 from libs.database import Database
 from libs.database.sql_message import SQLMessage

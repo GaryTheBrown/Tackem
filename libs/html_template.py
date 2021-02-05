@@ -1,6 +1,6 @@
 '''HTML TEMPLATE'''
 from typing import Optional
-from config_data import CONFIG
+from data.config import CONFIG
 from libs.authenticator import AUTHENTICATION
 from libs.html_system import HTMLSystem
 from libs.startup_arguments import PROGRAMVERSION

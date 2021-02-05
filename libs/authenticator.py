@@ -9,7 +9,7 @@ from libs.database.messages import SQLTableCountWhere, SQLUpdate
 from libs.database.column import Column
 from libs.database.table import Table
 from libs.database.where import Where
-from config_data import CONFIG
+from data.config import CONFIG
 
 class Authentication:
     '''Authentication system for all html pages listed'''
@@ -122,7 +122,6 @@ class Authentication:
         user_id = self.__temp_sessions[session_id]['id']
         msg1 = SQLSelect(self.__db_info.name(), Where("id", user_id))
         Database.call(msg1)
-        print(msg1.return_data)
         if msg1.return_data['password'] != self.__password_encryption(password):
             return False
 

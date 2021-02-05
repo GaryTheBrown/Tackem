@@ -5,7 +5,7 @@ from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
 from libs.config.html.post_to_config import post_config_settings
-from config_data import CONFIG
+from data.config import CONFIG
 from system.plugin_downloader import TackemSystemPluginDownloader
 
 class Admin(HTMLTEMPLATE):

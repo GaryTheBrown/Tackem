@@ -1,7 +1,7 @@
 '''Scraper System'''
 import http.client
 import json
-from config_data import CONFIG
+from data.config import CONFIG
 
 class Scraper:
     '''Scraper html System Here'''

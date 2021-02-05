@@ -5,7 +5,7 @@ from api.base import APIBase
 from api.admin import APIAdmin
 from api.system import APISystem
 from api.library import APILibrary
-from config_data import CONFIG
+from data.config import CONFIG
 from libs.root_event import RootEvent
 from libs.authenticator import AUTHENTICATION
 

@@ -1,6 +1,6 @@
 '''Config File Setup'''
 from typing import Any
-from config_data import CONFIG
+from data.config import CONFIG
 from libs.config.list import ConfigList
 from libs.config.obj.enabled import ConfigObjEnabled
 from libs.root_event import RootEvent

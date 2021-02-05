@@ -1,7 +1,7 @@
 '''Add Multi API'''
 import cherrypy
 from api.base import APIBase
-from config_data import CONFIG
+from data.config import CONFIG
 
 @cherrypy.expose
 class APIAdminAddMulti(APIBase):

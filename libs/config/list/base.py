@@ -17,9 +17,11 @@ class ConfigListBase(ConfigBase):
             rules: Optional[ConfigRules] = None,
             is_section: bool = False,
             many_section=None,
-            many_section_limit_list: Optional[list] = None
+            many_section_limit_list: Optional[list] = None,
+            hide_on_html: bool = False,
+            not_in_config: bool = False
     ):
-        super().__init__(var_name, label, help_text, False, False, rules)
+        super().__init__(var_name, label, help_text, hide_on_html, not_in_config, rules)
         if is_section and not isinstance(is_section, bool):
             raise ValueError("Is Section is not a bool")
         self.__is_section = is_section
@@ -31,7 +33,7 @@ class ConfigListBase(ConfigBase):
             elif all(not isinstance(x, (ConfigListBase, ConfigObjBase)) for x in objects):
                 raise ValueError("objects is not all Config Lists or Objs")
         if objects:
-            self._objects = objects
+            self._objects = list(objects)
         else:
             self._objects = []
 
@@ -74,8 +76,10 @@ class ConfigListBase(ConfigBase):
 
     def append(self, obj):
         '''appends the object to the list'''
+        if obj is None:
+            return
         if not isinstance(obj, ConfigListBase) and not isinstance(obj, ConfigObjBase):
-            raise ValueError("object is not a config Object")
+            raise ValueError("object is not a config object")
         self._objects.append(obj)
 
     def delete(self, key: str) -> bool:

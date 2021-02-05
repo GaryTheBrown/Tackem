@@ -1,6 +1,7 @@
 {
 	"name": "Tackem Dev Env",
 	"dockerFile": "dockerfile",
+	"context": "..",
 
 	// Specifies a list of ports that should be published from the container.
 	"appPort": [8081],

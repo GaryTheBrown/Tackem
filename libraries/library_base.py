@@ -11,7 +11,7 @@ from libs.database.table import Table
 from libs.database.where import Where
 from libs.config.list import ConfigList
 from libraries.db.library_files import LIBRARY_FILES_DB_INFO
-from config_data import CONFIG
+from data.config import CONFIG
 
 class LibraryBase(metaclass=ABCMeta):
     '''Base Library Class'''

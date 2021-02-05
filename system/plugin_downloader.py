@@ -54,7 +54,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
             return True
         return False
 
-    def get_local_plugins(self) :
+    def get_local_plugins(self):
         '''gets a list of local plugins'''
         self.__LOCAL_PLUGINS.clear()
         for folder in glob("plugins/*/*/"):
@@ -74,7 +74,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
                 self.__LOCAL_PLUGINS.append(local_plugin)
 
-    def get_github_plugins(self) :
+    def get_github_plugins(self):
         '''grabs the list of plugins on github and checks if local'''
         self.__GITHUB_PLUGINS.clear()
         response = requests.get(self.__HOST_API_URL)
@@ -143,7 +143,7 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
                 return True, 0
         return "PLUGIN NOT IN LIST [BUG]", 1
 
-    def install_plugin_modules(self, plugin_type: str, plugin_name: str) :  # (pip)
+    def install_plugin_modules(self, plugin_type: str, plugin_name: str):  # (pip)
         '''install plugin modiles'''
         plugin_folder = f"{plugin_type}/{plugin_name}/"
         requirements_file = f"{PLUGINFOLDERLOCATION}{plugin_folder}requirements.txt"
@@ -172,14 +172,14 @@ class TackemSystemPluginDownloader(TackemSystemAdmin):
 
         return True, 0
 
-    def update_plugins(self) :
+    def update_plugins(self):
         '''function to use list from html page to download the plugins'''
         for plugin in self.__GITHUB_PLUGINS:
             if plugin['downloaded']:
                 self.update_plugin(
                     plugin['plugin_type'], plugin['plugin_name'])
 
-    def update_plugin(self, plugin_type: str, plugin_name: str) :
+    def update_plugin(self, plugin_type: str, plugin_name: str):
         '''function to use list from html page to download the plugins'''
         location = f"{PLUGINFOLDERLOCATION}{plugin_type}/{plugin_name}/"
         git.Repo(location).remotes.origin.pull()

@@ -7,3 +7,4 @@ musicbrainzngs
 guessit
 watchdog
 mysql-connector-python
+discid

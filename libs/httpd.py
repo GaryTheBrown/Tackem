@@ -6,7 +6,7 @@ from www.admin import Admin
 from api import API
 from libs.error_pages import setup_error_pages
 from libs.startup_arguments import THEMEFOLDERLOCATION
-from config_data import CONFIG
+from data.config import CONFIG
 from system.full import TackemSystemFull
 
 class Httpd():
@@ -64,11 +64,11 @@ class Httpd():
 
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
 
-    def start(self) :
+    def start(self):
         '''Start the server'''
         cherrypy.engine.start()
 
-    def stop(self) :
+    def stop(self):
         '''Stop the server'''
         cherrypy.engine.exit()
         cherrypy.server.httpserver = None

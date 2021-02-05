@@ -12,10 +12,20 @@ from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import AUTHENTICATION
 from libs.database import Database
-from config_data import CONFIG
+from data.config import CONFIG
 
 # TODO intergrate Libraries into main program
 # is it going to be a single or multi instance?
+
+# TODO Pull Ripper plugin back into the System with checks for programs to load system then checks
+# on if drives exist and give the option of ripping locally or just giving ISO
+# TODO Allow ripper to just accept ISOs instead if no drives in the machine.
+# then we can create some api call to say there is a new ISO to work with,
+# would need to check the process of getting info from the bluray for it's codes we are using.
+# a seperate system for ripping drives should be created as another app.
+# https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
+
+# TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
 
 # TODO need a way of having plugins require Other Plugins
 # the plugin will auto download all required plugins
@@ -34,7 +44,7 @@ class Tackem:
     def __init__(self):
         self.__webserver = None
 
-    def start(self) :
+    def start(self):
         '''Start of the program'''
         print("LOADING PLUGINS...")
         TackemSystemAdmin().load_plugins()
@@ -48,6 +58,8 @@ class Tackem:
         AUTHENTICATION.start()
         print("STARTING LIBRARIES...")
         print("TODO")
+        #if (Ripper):
+        #   print("STARTING RIPPER...")
         print("LOADING SYSTEMS...")
         TackemSystemAdmin().load_systems()
         print("STARTING SYSTEMS...")
@@ -58,32 +70,34 @@ class Tackem:
         self.__start_webserver()
         print("TACKEM HAS STARTED")
 
-    def stop(self) :
+    def stop(self):
         '''Stop commands'''
         print("STOPPING WEB SERVICES...")
         self.__stop_webserver()
         print("STOPPING SYSTEMS...")
         TackemSystemAdmin().stop_systems()
+        #if (Ripper):
+        #   print("STARTING RIPPER...")
         print("STOPPING LIBRARIES...")
         print("TODO")
         print("STOPPING DATABASE...")
         Database.stop_sql()
 
-    def cleanup(self) :
+    def cleanup(self):
         '''Cleanup commands'''
         print("CLEANING UP...")
         self.__delete_webserver()
         TackemSystemAdmin().unload_systems()
         TackemSystemAdmin().unload_plugins()
 
-    def shutdown(self) :
+    def shutdown(self):
         '''Shutdown commands'''
         self.stop()
         print("SAVING CONFIG FILE...")
         CONFIG.save()
         print("SHUTDOWN COMPLETED")
 
-    def run(self) :
+    def run(self):
         '''Looping function'''
         if not os.path.exists(PROGRAMCONFIGLOCATION):
             os.mkdir(PROGRAMCONFIGLOCATION)

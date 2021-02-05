@@ -46,6 +46,6 @@ class Root(HTMLTEMPLATE):
         return self._template(HTMLSystem.part("pages/password"), navbar=False)
 
     @cherrypy.expose
-    def logout(self) :
+    def logout(self):
         '''Logout Page'''
         AUTHENTICATION.logout()

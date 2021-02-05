@@ -1,5 +1,4 @@
 '''SQL MESSAGE SYSTEM DATA'''
-from typing import List
 from libs.database.messages.sql_message import SQLMessage
 from libs.database.where import Where
 from libs.exceptions import SQLMessageError
