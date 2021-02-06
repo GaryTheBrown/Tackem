@@ -3,7 +3,7 @@
     $(() => {
         new Config();
         createEvents();
-    })
+    });
 
     function createEvents()
     {
@@ -25,7 +25,7 @@
                     checkbox_this.prop('checked',true);
                     checkbox_this.attr('value','0');
                 }
-            })
+            });
             return true;
         });
     }
@@ -37,14 +37,14 @@
             let obj = this;
 
             $("[data-show]").each(function(index, element){
-                $(element).on('click', Config["show"]);
+                $(element).on('click', Config.show);
                 if (obj.doICallTheClick(element)){
                     $(element).click();
                 }
             }.bind(obj));
 
             $("[data-hide]").each(function(index, element){
-                $(element).on('click', Config["hide"]);
+                $(element).on('click', Config.hide);
                 if (obj.doICallTheClick(element)){
                     $(element).click();
                 }
@@ -53,15 +53,18 @@
             $("[data-action]").each(function(index, element){
                 $(element).on('click', Config[$(element).data("action")]);
             });
+
+            // TODO NEED TO ADD IN DETECTION OF PANELS WITH ENABLED DISBALED BUTTONS AND HIDE THE SECTION
         }
 
         doICallTheClick(element)
         {
-            return $(element).is(':selected') || $(element).is(':checked')
+            return $(element).is(':selected') || $(element).is(':checked');
         }
 
         static show()
         {
+            console.log("CALLED SHOW");
             $(this).data("show").split(",").forEach(function(entry) {
                 if (entry.endsWith("section") || entry.endsWith("panel")) {
                     $("#" + entry).show();
@@ -73,13 +76,13 @@
         }
         static hide()
         {
+            console.log("CALLED HIDE");
             $(this).data("hide").split(",").forEach(function(entry) {
                 console.log("Hide:" + entry);
                 if (entry.endsWith("section") || entry.endsWith("panel")) {
                     $("#" + entry).hide();
                 } else {
                     $("#" + entry).closest(".item").hide();
-                    console.log("Hide:" + entry);
                 }
             });
         }
@@ -96,15 +99,15 @@
         static addMulti()
         {
             let $elem = $(this);
-            let target = $(this).data("target")
+            let target = $(this).data("target");
             let $modalRoot = $(`#${target}_modal`);
             let $input = $modalRoot.find("input[type=text],select");
             let data = target.split("_");
             let plugin_name = data[2];
             let plugin_type = data[1];
-            let instance = $input.val().toLowerCase();;
+            let instance = $input.val().toLowerCase();
 
-            $input.prop("disabled", true)
+            $input.prop("disabled", true);
             $elem.prop("disabled", true);
             $modalRoot.find("small").html("");
 
@@ -131,7 +134,7 @@
                         $input.prop("disabled", false);
                     }
                 }
-            })
+            });
         }
 
         static deleteMulti()
@@ -160,7 +163,7 @@
                         $(`#plugins_${plugin_type}_${plugin_name}_${instance}_panel`).remove();
                     }
                 }
-            })
+            });
         }
     }
 })();

@@ -1,4 +1,5 @@
 '''Config List Class'''
+from libs.config.obj.enabled import ConfigObjEnabled
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.html_system import HTMLSystem
 from libs.config.list.base import ConfigListBase
@@ -215,10 +216,12 @@ class ConfigListHtml(ConfigListBase):
             INPUT=input_html
         )
 
-    def __section_data(self, variable_name: str) -> str:
+    def __section_data(self, variable_name: str, skip_enabled=False) -> str:
         '''pulls all objects out for inclusion in the section'''
         html = ""
         for obj in self._objects:
+            if skip_enabled and isinstance(obj, ConfigObjEnabled):
+                continue
             html += obj.html(variable_name)
         return html
 
@@ -253,13 +256,18 @@ class ConfigListHtml(ConfigListBase):
     def __block(self, variable_name: str) -> str:
         '''creates an Invisible to html section'''
         variable_name += f"_{self.var_name}"
+        #TODO check for enabled and move it into the CONTROL section
+        control = ""
+        if "enabled" in self.keys():
+            control += self["enabled"].item_html(f"{variable_name}_enabled")
+
         return HTMLSystem.part(
             "section/panel",
             TITLE=self.label,
-            CONTROL="",
+            CONTROL=control,
             VARIABLENAME=variable_name,
             PANELNAME=f"{variable_name}_panel",
-            SECTION=self.__section_data(variable_name),
+            SECTION=self.__section_data(variable_name, skip_enabled=True),
         )
 
     def __first_block(self, variable_name: str) -> str:

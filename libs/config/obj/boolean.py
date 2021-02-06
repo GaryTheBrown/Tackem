@@ -6,6 +6,10 @@ from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
+DEFAULT_STYLE = {
+    "data_onstyle":"primary",
+    "data_offstyle":"info"
+}
 class ConfigObjBoolean(ConfigObjBase):
     '''Config Item Boolean'''
 
@@ -24,6 +28,10 @@ class ConfigObjBoolean(ConfigObjBase):
     ):
         if not isinstance(default_value, bool):
             raise ValueError("default value is not a boolean")
+        if input_attributes is None:
+            input_attributes = InputAttributes(**DEFAULT_STYLE)
+        else:
+            input_attributes.add_if_missing(**DEFAULT_STYLE)
 
         super().__init__(
             var_name,

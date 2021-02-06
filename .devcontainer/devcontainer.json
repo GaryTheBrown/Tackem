@@ -54,6 +54,7 @@
 		"oderwat.indent-rainbow",
 		"ryanluker.vscode-coverage-gutters",
 		"VisualStudioExptTeam.vscodeintellicode",
-		"xabikos.JavaScriptSnippets"
+		"xabikos.JavaScriptSnippets",
+		"gruntfuggly.todo-tree"
 	]
 }

@@ -9,11 +9,7 @@ class InputAttributes:
         "placeholder", "step", "alt"
     ]
 
-    def __init__(
-            self,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         self.__autofocus = False
         self.__readonly = False
         self.__disabled = False
@@ -22,30 +18,7 @@ class InputAttributes:
         self.__selected = False
         self.__hidden = False
         self.__dict = {}
-
-        for arg in args:
-            if arg == "autofocus":
-                self.__autofocus = True
-            elif arg == "readonly":
-                self.__readonly = True
-            elif arg == "disabled":
-                self.__disabled = True
-            elif arg == "multiple":
-                self.__multiple = True
-            elif arg == "required":
-                self.__required = True
-            elif arg == "selected":
-                self.__selected = True
-            elif arg == "hidden":
-                self.__hidden = True
-
-        # kwargs for key:value ones with data- accepted
-        for key, value in kwargs.items():
-            if key[0:5] == "data_" or key in self.__kwargs:
-                if isinstance(value, list):
-                    self.__dict[key] = ",".join(value)
-                else:
-                    self.__dict[key] = str(value)
+        self.add_if_missing(*args, **kwargs)
 
     def needed(self, *args: str):
         '''checks if the items are set otherwise raises an exception'''
@@ -183,3 +156,30 @@ class InputAttributes:
     def hidden(self) -> bool:
         '''returns if hidden'''
         return self.__hidden
+
+    def add_if_missing(self, *args, **kwargs):
+        ''' checks for the attributes then sets missing ones'''
+        for arg in args:
+            if arg == "autofocus":
+                self.__autofocus = True
+            elif arg == "readonly":
+                self.__readonly = True
+            elif arg == "disabled":
+                self.__disabled = True
+            elif arg == "multiple":
+                self.__multiple = True
+            elif arg == "required":
+                self.__required = True
+            elif arg == "selected":
+                self.__selected = True
+            elif arg == "hidden":
+                self.__hidden = True
+
+        for key, value in kwargs.items():
+            if key in self.__dict:
+                continue
+            if key[0:5] == "data_" or key in self.__kwargs:
+                if isinstance(value, list):
+                    self.__dict[key] = ",".join(value)
+                else:
+                    self.__dict[key] = str(value)
