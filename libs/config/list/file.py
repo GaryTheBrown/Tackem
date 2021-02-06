@@ -15,7 +15,7 @@ class ConfigListFile(ConfigListBase):
         """Create a config file using a configspec and validate it against a Validator object"""
         temp_spec = self.get_spec_part(0)
         # to check spec output uncomment bellow
-        print(temp_spec)
+        # print(temp_spec)
         spec = temp_spec.split("\n")
         self.__config = ConfigObj(
             PROGRAMCONFIGLOCATION + "config.ini", configspec=spec)

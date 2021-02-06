@@ -6,15 +6,17 @@ from libs.config.list.base import ConfigListBase
 class ConfigListHtml(ConfigListBase):
     '''Config List Class'''
 
-    def html(self, variable_name: str = "") -> str:
+    def html(self, variable_name: str = "", first_block = False) -> str:
         '''Returns the html for the config option'''
         if variable_name == "" and self.var_name == "root":
             return self.__root_html()
         if self.var_name == "plugins":
             return self.plugins_html()
-        if self.is_section:
+        if self.is_section: # or "_" not in variable_name:
             return self.__section(variable_name)
-        return self.__section(variable_name)
+        if first_block:
+            return self.__first_block(variable_name)
+        return self.__block(variable_name)
 
     def __root_html(self) -> str:
         '''Returns the html for the config option'''
@@ -62,14 +64,14 @@ class ConfigListHtml(ConfigListBase):
         first = True
         for obj in self._objects:
             if not isinstance(obj, ConfigListBase):
-                single_html += obj.html()
+                single_html += obj.html(first_block=True)
                 continue
 
             panels_html += HTMLSystem.part(
                 "section/tabpane" if obj.var_name == "plugins" else "section/tabpanewithmargin",
                 NAME=obj.var_name,
                 ACTIVE="active" if first else "",
-                HTML=obj.html(obj.var_name),
+                HTML=obj.html(obj.var_name, True),
             )
             first = False
         return single_html + panels_html
@@ -149,8 +151,7 @@ class ConfigListHtml(ConfigListBase):
         return HTMLSystem.part(
             "section/panel",
             TITLE=title,
-            CONTROL=self.__controls(
-                variable_name),# if self.many_section else "",
+            CONTROL=self.__controls(variable_name) if self.many_section else "",
             VARIABLENAME=variable_name,
             PANELNAME=f"{variable_name}_panel",
             SECTION=self.__section_data(variable_name),
@@ -223,6 +224,7 @@ class ConfigListHtml(ConfigListBase):
 
     def __controls(self, variable_name: str) -> str:
         '''creates the control buttons'''
+
         variables = variable_name.split("_")
         input_attributes = InputAttributes(
             data_action="deleteMulti",
@@ -239,6 +241,7 @@ class ConfigListHtml(ConfigListBase):
 
     def __section(self, variable_name: str) -> str:
         '''creates an Invisible to html section'''
+
         var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
         section_html = HTMLSystem.part(
             "section/section",
@@ -246,3 +249,21 @@ class ConfigListHtml(ConfigListBase):
             SECTION=self.__section_data(variable_name)
         )
         return section_html
+
+    def __block(self, variable_name: str) -> str:
+        '''creates an Invisible to html section'''
+        variable_name += f"_{self.var_name}"
+        return HTMLSystem.part(
+            "section/panel",
+            TITLE=self.label,
+            CONTROL="",
+            VARIABLENAME=variable_name,
+            PANELNAME=f"{variable_name}_panel",
+            SECTION=self.__section_data(variable_name),
+        )
+
+    def __first_block(self, variable_name: str) -> str:
+        '''creates an Invisible to html section'''
+        if self.var_name != variable_name:
+            variable_name += f"_{self.var_name}"
+        return self.__section_data(variable_name)

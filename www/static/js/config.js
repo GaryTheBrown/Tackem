@@ -63,14 +63,24 @@
         static show()
         {
             $(this).data("show").split(",").forEach(function(entry) {
-                $("#" + entry).show();
+                if (entry.endsWith("section") || entry.endsWith("panel")) {
+                    $("#" + entry).show();
+                } else {
+                    $("#" + entry).closest(".item").show();
+                }
             });
 
         }
         static hide()
         {
             $(this).data("hide").split(",").forEach(function(entry) {
-                $("#" + entry).hide();
+                console.log("Hide:" + entry);
+                if (entry.endsWith("section") || entry.endsWith("panel")) {
+                    $("#" + entry).hide();
+                } else {
+                    $("#" + entry).closest(".item").hide();
+                    console.log("Hide:" + entry);
+                }
             });
         }
 

@@ -13,21 +13,22 @@
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
 	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
-		"python.pythonPath": "/usr/local/bin/python3.8",
+		"python.pythonPath": "/usr/local/bin/python3.9",
 		"python.linting.pylintEnabled": true,
 		"python.linting.pylintPath": "pylint",
 		"python.linting.enabled": true,
 		"python.linting.pylintUseMinimalCheckers": false,
 		"python.formatting.provider": "autopep8",
-		"editor.formatOnSave": false,
-		"emeraldwalk.runonsave": {
-			"autoClearConsole": true,
-			"commands": [
-				{
-					"match": "\\\\.py$",
-					"cmd": "set -e; cd ${workspaceRoot}; cp tools/empty-cov.xml cov.xml; coverage run --source=${fileDirname} -m unittest discover -p \"test*.py\" -f -s ${fileDirname}/; coverage xml -o cov.xml; coverage report -m;"
-				}
-			]
+		"jshint.options":{
+			"esversion":6
+		},
+		"eslint.options": {
+			"env":{
+				"es6":true
+			},
+			"parserOptions": {
+				"ecmaVersion": 6 // or 7,8,9
+			}
 		}
 	},
 
@@ -35,7 +36,24 @@
 	//"postCreateCommand": "",
 
 	"extensions": [
+		"gua.rainbow-brackets",
+		"christian-kohler.npm-intellisense",
+		"DavidAnson.vscode-markdownlint",
+		"dbaeumer.jshint",
+		"dbaeumer.vscode-eslint",
+		"eamodio.gitlens",
+		"firefox-devtools.vscode-firefox-debug",
+		"GitHub.vscode-pull-request-github",
+		"Gydunhn.javascript-essentials",
+		"HookyQR.beautify",
+		"mechatroner.rainbow-csv",
 		"ms-python.python",
-		"ryanluker.vscode-coverage-gutters"
+		"ms-python.vscode-pylance",
+		"ms-toolsai.jupyter",
+		"mutantdino.resourcemonitor",
+		"oderwat.indent-rainbow",
+		"ryanluker.vscode-coverage-gutters",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"xabikos.JavaScriptSnippets"
 	]
 }
