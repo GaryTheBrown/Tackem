@@ -18,7 +18,6 @@
             this_master.find('input[type="checkbox"]').each( function () {
                 let checkbox_this = $(this);
 
-
                 if( checkbox_this.is(":checked") == true ) {
                     checkbox_this.attr('value','1');
                 } else {
@@ -36,25 +35,30 @@
         {
             let obj = this;
 
-            $("[data-show]").each(function(index, element){
+            $("[data-click-show]").each(function(index, element) {
                 $(element).on('click', Config.show);
-                if (obj.doICallTheClick(element)){
+                if (obj.doICallTheClick(element)) {
                     $(element).click();
                 }
             }.bind(obj));
 
-            $("[data-hide]").each(function(index, element){
+            $("[data-click-hide]").each(function(index, element) {
                 $(element).on('click', Config.hide);
-                if (obj.doICallTheClick(element)){
+                if (obj.doICallTheClick(element)) {
                     $(element).click();
                 }
             }.bind(obj));
 
-            $("[data-action]").each(function(index, element){
+            $("[data-toggle-panel]").each(function(index, element) {
+                $(element).on('change', Config.togglePanel);
+                if (!obj.doICallTheClick(element)) {
+                    $(element).click();
+                }
+            }.bind(obj));
+
+            $("[data-click-action]").each(function(index, element) {
                 $(element).on('click', Config[$(element).data("action")]);
             });
-
-            // TODO NEED TO ADD IN DETECTION OF PANELS WITH ENABLED DISBALED BUTTONS AND HIDE THE SECTION
         }
 
         doICallTheClick(element)
@@ -64,8 +68,7 @@
 
         static show()
         {
-            console.log("CALLED SHOW");
-            $(this).data("show").split(",").forEach(function(entry) {
+            $(this).data("click-show").split(",").forEach(function(entry) {
                 if (entry.endsWith("section") || entry.endsWith("panel")) {
                     $("#" + entry).show();
                 } else {
@@ -76,15 +79,18 @@
         }
         static hide()
         {
-            console.log("CALLED HIDE");
-            $(this).data("hide").split(",").forEach(function(entry) {
-                console.log("Hide:" + entry);
+            $(this).data("click-hide").split(",").forEach(function(entry) {
                 if (entry.endsWith("section") || entry.endsWith("panel")) {
                     $("#" + entry).hide();
                 } else {
                     $("#" + entry).closest(".item").hide();
                 }
             });
+        }
+
+        static togglePanel()
+        {
+            $(this).closest("section").find(".section").toggle();
         }
 
         static generateAPIKey()

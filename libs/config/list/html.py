@@ -205,7 +205,7 @@ class ConfigListHtml(ConfigListBase):
             "inputs/button",
             LABEL="Add Instance",
             DATA=InputAttributes(
-                data_action="addMulti",
+                data_click_action="addMulti",
                 data_target=variable_name
             ).html()
         )
@@ -230,7 +230,7 @@ class ConfigListHtml(ConfigListBase):
 
         variables = variable_name.split("_")
         input_attributes = InputAttributes(
-            data_action="deleteMulti",
+            data_click_action="deleteMulti",
             data_plugin_type=variables[1],
             data_plugin_name=variables[2],
             data_plugin_instance=self.var_name
@@ -256,9 +256,9 @@ class ConfigListHtml(ConfigListBase):
     def __block(self, variable_name: str) -> str:
         '''creates an Invisible to html section'''
         variable_name += f"_{self.var_name}"
-        #TODO check for enabled and move it into the CONTROL section
         control = ""
         if "enabled" in self.keys():
+            self["enabled"].add_panel_toggle()
             control += self["enabled"].item_html(f"{variable_name}_enabled")
 
         return HTMLSystem.part(

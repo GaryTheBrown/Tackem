@@ -19,7 +19,7 @@ def database_config() -> ConfigList:
                     "sqlite3",
                     "SQLite3",
                     input_attributes=InputAttributes(
-                        data_hide="database_mysql_section"
+                        data_click_hide="database_mysql_section"
                     )
                 ),
                 ConfigObjRadio(
@@ -27,7 +27,7 @@ def database_config() -> ConfigList:
                     "MYSQL",
                     input_attributes=InputAttributes(
                         disabled=True,
-                        data_show="database_mysql_section"
+                        data_click_show="database_mysql_section"
                     )
                 )
             ],

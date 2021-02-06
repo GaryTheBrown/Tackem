@@ -17,6 +17,10 @@ class ConfigObjEnabled(ConfigObjBoolean):
                 data_off="Disabled",
                 data_onstyle="success",
                 data_offstyle="secondary",
-                data_width="124"
+                data_width="124",
             )
         )
+
+    def add_panel_toggle(self):
+        '''Adds the toggle command'''
+        self.input_attributes.add_if_missing(data_toggle_panel="true")

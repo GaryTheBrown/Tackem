@@ -24,7 +24,9 @@ from data.config import CONFIG
 # would need to check the process of getting info from the bluray for it's codes we are using.
 # a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
-
+# TODO allow the converter to be called from elsewhere in the system but keep its config in the
+# Ripper section as this will mainly be for ripping but the user may want to convert a unsupported
+#
 # TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
 
 # TODO need a way of having plugins require Other Plugins

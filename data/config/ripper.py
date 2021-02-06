@@ -56,22 +56,22 @@ def ripper_config() -> ConfigList:
                     "Drive",
                     input_attributes=InputAttributes(
                         "disabled" if not Hardware.disc_drives() else "enabled",
-                        data_hide=[
+                        data_click_hide=[
                             "ripper_videoripping_locations_iso",
                             "ripper_audioripping_locations_iso"
                         ],
-                        data_show="ripper_drives_panel"
+                        data_click_show="ripper_drives_panel"
                     )
                 ),
                 ConfigObjRadio(
                     "iso",
                     "ISO",
                     input_attributes=InputAttributes(
-                        data_show=[
+                        data_click_show=[
                             "ripper_videoripping_locations_iso",
                             "ripper_audioripping_locations_iso"
                         ],
-                        data_hide="ripper_drives_panel"
+                        data_click_hide="ripper_drives_panel"
                     )
                 ),
                 ConfigObjRadio(
@@ -79,7 +79,7 @@ def ripper_config() -> ConfigList:
                     "Both",
                     input_attributes=InputAttributes(
                         "disabled" if not Hardware.disc_drives() else "enabled",
-                        data_show=[
+                        data_click_show=[
                             "ripper_videoripping_locations_iso",
                             "ripper_audioripping_locations_iso",
                             "ripper_drives_panel"
@@ -140,19 +140,19 @@ def ripper_config() -> ConfigList:
                 "Folder Location",
                 ConfigObjString(
                     "iso",
-                    "iso/",
+                    "videoiso/",
                     "ISO Location",
                     "Where do you want to watch for video ISOs?"
                 ),
                 ConfigObjString(
                     "ripping",
-                    "ripping/",
+                    "videoripping/",
                     "Ripping Location",
                     "Where do you want to store video discs while ripping them?"
                 ),
                 ConfigObjString(
                     "ripped",
-                    "ripped/",
+                    "videoripped/",
                     "Ripped Location",
                     "Where do you want to move the video discs to when completed"
                 )
@@ -180,25 +180,24 @@ def ripper_config() -> ConfigList:
                 "Folder Location",
                 ConfigObjString(
                     "iso",
-                    "iso/",
+                    "audioiso/",
                     "ISO Location",
                     "Where do you want to watch for audio ISOs?"
                 ),
                 ConfigObjString(
                     "ripping",
-                    "ripping/",
+                    "audioripping/",
                     "Ripping Location",
                     "Where do you want to store audio cds while ripping them?"
                 ),
                 ConfigObjString(
                     "ripped",
-                    "ripped/",
+                    "audioripped/",
                     "Ripped Location",
                     "Where do you want to move the audio cds to when completed"
                 )
             )
         ),
-        #TODO split this out and allow options for what it watches including ripper and downloader
         ConfigList(
             "converter",
             "Converter",
@@ -314,7 +313,7 @@ def ripper_config() -> ConfigList:
                         "keep",
                         "Keep Original",
                         input_attributes=InputAttributes(
-                            data_hide=[
+                            data_click_hide=[
                                 "ripper_converter_videopreset",
                                 "ripper_converter_x26custom_section"
                             ]
@@ -324,7 +323,7 @@ def ripper_config() -> ConfigList:
                         "x264default",
                         "X264 Default",
                         input_attributes=InputAttributes(
-                            data_hide=[
+                            data_click_hide=[
                                 "ripper_converter_videopreset",
                                 "ripper_converter_x26custom_section"
                             ]
@@ -334,7 +333,7 @@ def ripper_config() -> ConfigList:
                         "x265default",
                         "X265 Default",
                         input_attributes=InputAttributes(
-                            data_hide=[
+                            data_click_hide=[
                                 "ripper_converter_videopreset",
                                 "ripper_converter_x26custom_section"
                             ]
@@ -344,24 +343,24 @@ def ripper_config() -> ConfigList:
                         "x264custom",
                         "X264 Custom",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_x26custom_section",
-                            data_hide="ripper_converter_videopreset"
+                            data_click_show="ripper_converter_x26custom_section",
+                            data_click_hide="ripper_converter_videopreset"
                         )
                     ),
                     ConfigObjRadio(
                         "x265custom",
                         "X265 Custom",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_x26custom_section",
-                            data_hide="ripper_converter_videopreset"
+                            data_click_show="ripper_converter_x26custom_section",
+                            data_click_hide="ripper_converter_videopreset"
                         )
                     ),
                     ConfigObjRadio(
                         "preset",
                         "Preset (choose from a list)",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_videopreset",
-                            data_hide="ripper_converter_x26custom_section"
+                            data_click_show="ripper_converter_videopreset",
+                            data_click_hide="ripper_converter_x26custom_section"
                         )
                     )
                 ],
@@ -458,28 +457,28 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "all",
                         "All",
                         input_attributes=InputAttributes(
-                            data_hide="ripper_converter_audiolanglist_section"
+                            data_click_hide="ripper_converter_audiolanglist_section"
                         )
                     ),
                     ConfigObjRadio(
                         "original",
                         "Original Language Only",
                         input_attributes=InputAttributes(
-                            data_hide="ripper_converter_audiolanglist_section"
+                            data_click_hide="ripper_converter_audiolanglist_section"
                         )
                     ),
                     ConfigObjRadio(
                         "selectedandoriginal",
                         "Original Language + Selected Languages",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_audiolanglist_section"
+                            data_click_show="ripper_converter_audiolanglist_section"
                         )
                     ),
                     ConfigObjRadio(
                         "selected",
                         "Selected Languages",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_audiolanglist_section"
+                            data_click_show="ripper_converter_audiolanglist_section"
                         )
                     )
                 ],
@@ -506,7 +505,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "all",
                         "All",
                         input_attributes=InputAttributes(
-                            data_hide="ripper_converter_audioformatlist_section"
+                            data_click_hide="ripper_converter_audioformatlist_section"
                         )
                     ),
                     ConfigObjRadio(
@@ -514,14 +513,14 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "Highest Quality",
                         input_attributes=InputAttributes(
                             disabled=True,
-                            data_hide="ripper_converter_audioformatlist_section"
+                            data_click_hide="ripper_converter_audioformatlist_section"
                         )
                     ),
                     ConfigObjRadio(
                         "selected",
                         "Selected Formats",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_audioformatlist_section"
+                            data_click_show="ripper_converter_audioformatlist_section"
                         )
                     ),
                     ConfigObjRadio(
@@ -529,7 +528,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "Convert to Selected Formats",
                         input_attributes=InputAttributes(
                             disabled=True,
-                            data_show="ripper_converter_audioformatlist_section"
+                            data_click_show="ripper_converter_audioformatlist_section"
                         )
                     )
                 ],
@@ -570,21 +569,21 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "all",
                         "All",
                         input_attributes=InputAttributes(
-                            data_hide="ripper_converter_subtitleslist_section"
+                            data_click_hide="ripper_converter_subtitleslist_section"
                         )
                     ),
                     ConfigObjRadio(
                         "none",
                         "None",
                         input_attributes=InputAttributes(
-                            data_hide="ripper_converter_subtitleslist_section"
+                            data_click_hide="ripper_converter_subtitleslist_section"
                         )
                     ),
                     ConfigObjRadio(
                         "selected",
                         "Selected Subtitles",
                         input_attributes=InputAttributes(
-                            data_show="ripper_converter_subtitleslist_section"
+                            data_click_show="ripper_converter_subtitleslist_section"
                         )
                     )
                 ],
