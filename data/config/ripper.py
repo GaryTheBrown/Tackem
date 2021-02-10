@@ -46,7 +46,7 @@ def ripper_config() -> ConfigList:
         return None
 
     drives = True
-    if Hardware.disc_drives():
+    if not Hardware.disc_drives():
         drives = False
     return ConfigList(
         "ripper",

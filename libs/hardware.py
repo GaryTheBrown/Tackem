@@ -1,5 +1,6 @@
 '''Class to get all Hardware info needed'''
 import platform
+import re
 from subprocess import DEVNULL, PIPE, Popen
 
 class Hardware:
@@ -36,17 +37,9 @@ class Hardware:
         drives = {}
         for hwinfo_item in device_list:
             temp = {}
-            temp['label'] = hwinfo_item["device_files"].split(",")[0]
-            temp['link'] = hwinfo_item["device_files"].split(",")[0]
-            temp['model'] = hwinfo_item["model"].replace('"', "")
-            temp['features'] = hwinfo_item["features"].replace(
-                " ", "").split(",")
-            udevadm_process = Popen(["udevadm", "info", "--query=all", "--name=" + temp['link']],
-                                    stdout=PIPE, stderr=DEVNULL)
-            grep_process = Popen(["grep", "ID_SERIAL="],
-                                 stdin=udevadm_process.stdout, stdout=PIPE)
-            message = grep_process.communicate()[0]
-            uid = message.decode(
-                'utf-8').rstrip().split("=")[1].replace("-0:0", "").replace("_", "-")
+            uid = hwinfo_item['unique_id']
+            temp['label'] = hwinfo_item["device_file"].split(" ")[0]
+            temp['link'] = hwinfo_item["device_file"].split(" ")[0]
+            temp['model'] = ",".join(re.findall(r'"(.*?)"', hwinfo_item["model"]))
             drives[uid] = temp
         return drives

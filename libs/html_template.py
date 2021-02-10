@@ -18,11 +18,9 @@ class HTMLTEMPLATE():
             self,
             name: str,
             key: str,
-            tackem_system,
             base_stylesheet: Optional[str] = None,
             base_javascript: Optional[str] = None
     ):
-        self._tackem_system = tackem_system
         self._name = name
         self._key = key
         self._base_stylesheet = base_stylesheet
@@ -113,24 +111,24 @@ class HTMLTEMPLATE():
         if not Authentication.check_logged_in():
             return nav_items_html
         nav_list = {}
-        for key in self._tackem_system.system_keys():
-            key_list = key.split(" ")
-            if not key_list[0] in nav_list:
-                if len(key_list) == 1:
-                    nav_list[key_list[0]] = key
-                    continue
+        # for key in self._tackem_system.system_keys():
+        #     key_list = key.split(" ")
+        #     if not key_list[0] in nav_list:
+        #         if len(key_list) == 1:
+        #             nav_list[key_list[0]] = key
+        #             continue
 
-                nav_list[key_list[0]] = {}
+        #         nav_list[key_list[0]] = {}
 
-            if not key_list[1] in nav_list[key_list[0]]:
-                if len(key_list) == 2:
-                    nav_list[key_list[0]][key_list[1]] = key
-                    continue
+        #     if not key_list[1] in nav_list[key_list[0]]:
+        #         if len(key_list) == 2:
+        #             nav_list[key_list[0]][key_list[1]] = key
+        #             continue
 
-                nav_list[key_list[0]][key_list[1]] = {}
+        #         nav_list[key_list[0]][key_list[1]] = {}
 
-            if not key_list[2] in nav_list[key_list[0]][key_list[1]]:
-                nav_list[key_list[0]][key_list[1]][key_list[2]] = key
+        #     if not key_list[2] in nav_list[key_list[0]][key_list[1]]:
+        #         nav_list[key_list[0]][key_list[1]][key_list[2]] = key
 
         for key in sorted(nav_list):
             if isinstance(nav_list[key], str):
@@ -162,8 +160,8 @@ class HTMLTEMPLATE():
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = navbar_item("About", "about")
         navbar_item_html = navbar_item("CONFIG", "admin/config")
-        navbar_plugin_download_html = navbar_item(
-            "Plugin Download", "admin/plugin_downloader")
+        # navbar_plugin_download_html = navbar_item(
+        #     "Plugin Download", "admin/plugin_downloader")
         navbar_users_html = navbar_item("Users", "admin/users")
         navbar_login_html = navbar_item("Login", "login")
         navbar_logout_html = navbar_item("Logout", "logout")
@@ -175,7 +173,7 @@ class HTMLTEMPLATE():
         if Authentication.check_logged_in():
             if Authentication.is_admin():
                 admin_html = navbar_item_html
-                admin_html += navbar_plugin_download_html
+                # admin_html += navbar_plugin_download_html
                 admin_html += navbar_users_html
                 admin_html += navbar_reboot_html
                 admin_html += navbar_shutdown_html

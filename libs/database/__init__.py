@@ -11,8 +11,8 @@ class Database:
     __sql_system = None
 
     @classmethod
-    def setup_db(cls):
-        '''basic function to load up the DB'''
+    def start(cls):
+        '''starts the SQL System'''
         if CONFIG['database']['mode'].value.lower() == 'sqlite3':
             cls.__sql_system = SQLite()
         # elif CONFIG['database']['mode'].lower() == 'mysql':
@@ -20,13 +20,10 @@ class Database:
         else:
             print(CONFIG['database']['mode'].value)
 
-    @classmethod
-    def start_sql(cls):
-        '''starts the SQL System'''
         cls.__sql_system.start_thread()
 
     @classmethod
-    def stop_sql(cls):
+    def stop(cls):
         '''stops the SQL System'''
         if cls.__sql_system is not None:
             cls.__sql_system.stop_thread()

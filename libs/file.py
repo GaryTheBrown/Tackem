@@ -1,8 +1,6 @@
 '''File and Folder functions'''
 import pathlib
 from data import PROGRAMCONFIGLOCATION
-from data.config import CONFIG
-
 class File:
     '''Class full of file functions'''
     @classmethod

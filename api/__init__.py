@@ -4,7 +4,6 @@ import json
 import cherrypy
 from api.base import APIBase
 from api.admin import APIAdmin
-from api.system import APISystem
 from api.library import APILibrary
 from data.config import CONFIG
 from libs.root_event import RootEvent
@@ -35,8 +34,6 @@ class API(APIBase):
 
         if section == "admin":
             return APIAdmin()
-        if section == "system":
-            return APISystem()
         if section == "library":
             return APILibrary()
         if section == "scraper":

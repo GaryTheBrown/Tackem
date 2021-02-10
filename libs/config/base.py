@@ -27,8 +27,8 @@ class ConfigBase:
             raise ValueError("not in config is not a bool")
         if rules and not isinstance(rules, ConfigRules):
             raise ValueError("rules is not a config rules object")
-        if value_link and not isinstance(value_link, list):
-            raise ValueError("value link is not a list")
+        if value_link and not isinstance(value_link, (list, dict)):
+            raise ValueError("value link is not a list or dict")
 
         self.__objects = []
         self.__var_name = var_name

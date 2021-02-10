@@ -5,7 +5,7 @@ from data import PROGRAMCONFIGLOCATION
 from libs.config.configobj_extras import EXTRA_FUNCTIONS
 from libs.config.list.base import ConfigListBase
 from libs.config.obj.base import ConfigObjBase
-
+from libs.file import File
 class ConfigListFile(ConfigListBase):
     '''CONFIG List Class'''
 
@@ -13,6 +13,8 @@ class ConfigListFile(ConfigListBase):
 
     def load(self):
         """Create a config file using a configspec and validate it against a Validator object"""
+        File.mkdir(PROGRAMCONFIGLOCATION)
+
         temp_spec = self.get_spec_part(0)
         # to check spec output uncomment bellow
         # print(temp_spec)

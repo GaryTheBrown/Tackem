@@ -1,7 +1,5 @@
 '''SYSTEM API'''
 import cherrypy
-from system.full import TackemSystemFull
-from system.plugin import TackemSystemPlugin
 from api.base import APIBase
 
 @cherrypy.expose

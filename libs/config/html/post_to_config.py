@@ -11,7 +11,8 @@ def post_config_settings(kwargs: Any):
     for key, value in kwargs.items():
         key = key.replace("[]", "")
         key_list = key.split("_")
-        add_val_to_config(key, CONFIG, key_list, value)
+        print(f"{','.join(key_list)}:{value}")
+        # add_val_to_config(key, CONFIG, key_list, value)
 
 def add_val_to_config(key: str, config: ConfigList, key_list: list, value: Any):
     '''recursive way of adding value into the config'''

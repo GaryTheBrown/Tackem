@@ -1,4 +1,5 @@
 '''Ripper init'''
+from libs.classproperty import classproperty
 from data.config import CONFIG
 
 # TODO Pull Ripper plugin back into the System with checks for programs to load system then checks
@@ -14,40 +15,61 @@ from data.config import CONFIG
 class Ripper:
     '''Main Class to create an instance of the plugin'''
 
-    def __init__(self):
-        '''setup systems'''
-        if CONFIG['ripper']['enabled'].value is False:
-            return
+    __running = False
 
-        self._drives = []
-        self._video_labeler = None
-        self._converter = None
-        self._renamer = None
-        self._running = False
+    @classproperty
+    def running(cls):
+        '''returns if ripper running'''
+        return cls.__running
 
-        if CONFIG['ripper']['drives']['enabled'].value:
+    @classproperty
+    def enabled(cls):
+        '''returns if ripper is enabled'''
+        return CONFIG['ripper']['enabled'].value
 
+    @classmethod
+    def start(cls):
+        '''Starts the ripper'''
+        if not cls.running and cls.enabled:
 
-
-
-
-
-            self.__setup_drives()
-        elif CONFIG['ripper']['iso']['enabled'].value:
-            self.__setup_iso()
-
-    def __setup_drives(self):
-        '''Setup the Drives'''
-
-    def __setup_iso(self):
-        '''Setup the iso'''
+            cls.__running = True
 
 
+    @classmethod
+    def stop(cls):
+        '''Stops the ripper'''
+        if cls.__running:
+
+            cls.__running = False
+
+    # def __init__(self):
+    #     '''setup systems'''
+    #     if CONFIG['ripper']['enabled'].value is False:
+    #         return
+
+    #     self._drives = []
+    #     self._video_labeler = None
+    #     self._converter = None
+    #     self._renamer = None
+    #     self._running = False
+
+    #     if CONFIG['ripper']['drives']['enabled'].value:
+    #         self.__setup_drives()
+    #     elif CONFIG['ripper']['iso']['enabled'].value:
+    #         self.__setup_iso()
+
+    # def __setup_drives(self):
+    #     '''Setup the Drives'''
+
+    # def __setup_iso(self):
+    #     '''Setup the iso'''
 
 
 
-        Database.call(SQLTable(db_tables.VIDEO_INFO_DB_INFO))
-        Database.call(SQLTable(db_tables.VIDEO_CONVERT_DB_INFO))
 
-        for location in ROOT_Config['ripper']['locations']:
-            folder = ROOT_Config['ripper']['locations'][location].value
+
+    #     Database.call(SQLTable(db_tables.VIDEO_INFO_DB_INFO))
+    #     Database.call(SQLTable(db_tables.VIDEO_CONVERT_DB_INFO))
+
+    #     for location in ROOT_Config['ripper']['locations']:
+    #         folder = ROOT_Config['ripper']['locations'][location].value
