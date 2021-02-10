@@ -279,7 +279,7 @@ class ConfigListHtml(ConfigListBase):
             self["enabled"].add_panel_toggle()
             return HTMLSystem.part(
                 "section/firstblockpanel",
-                ENABLED=self["enabled"].html(f"{variable_name}_enabled"),
+                ENABLED=self["enabled"].html(variable_name),
                 VARIABLENAME=variable_name,
                 PANELNAME=f"{variable_name}_panel",
                 SECTION=self.__section_data(variable_name, skip_enabled=True),
