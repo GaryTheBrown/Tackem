@@ -7,7 +7,7 @@ from system.full import TackemSystemFull
 from libs.config.list import ConfigList
 from libs.plugin_base import load_plugin_settings
 from libs.program_checker import check_for_required_programs
-from libs.startup_arguments import PLUGINFOLDERLOCATION
+from data import PLUGINFOLDERLOCATION
 from data.config import CONFIG
 
 class TackemSystemAdmin(TackemSystemFull):

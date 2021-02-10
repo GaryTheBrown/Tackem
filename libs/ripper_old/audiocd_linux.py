@@ -1,7 +1,7 @@
 '''Audio Ripping Feature'''
 import os
 import pexpect
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from data.config import CONFIG
 from .audiocd import AudioCD
 

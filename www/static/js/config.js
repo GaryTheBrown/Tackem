@@ -37,22 +37,25 @@
 
             $("[data-click-show]").each(function(index, element) {
                 $(element).on('click', Config.show);
-                if (obj.doICallTheClick(element)) {
+                if (obj.doICallIt(element)) {
                     $(element).click();
                 }
             }.bind(obj));
 
             $("[data-click-hide]").each(function(index, element) {
                 $(element).on('click', Config.hide);
-                if (obj.doICallTheClick(element)) {
+                if (obj.doICallIt(element)) {
                     $(element).click();
                 }
             }.bind(obj));
 
             $("[data-toggle-panel]").each(function(index, element) {
                 $(element).on('change', Config.togglePanel);
-                if (!obj.doICallTheClick(element)) {
+                if (!obj.doICallIt(element)) {
                     $(element).click();
+                }
+                if ($(element).is(':disabled')){
+                    $(element).closest("section").find(".section").hide();
                 }
             }.bind(obj));
 
@@ -61,7 +64,7 @@
             });
         }
 
-        doICallTheClick(element)
+        doICallIt(element)
         {
             return $(element).is(':selected') || $(element).is(':checked');
         }

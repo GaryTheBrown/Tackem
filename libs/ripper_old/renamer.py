@@ -2,7 +2,7 @@
 import threading
 import json
 import os
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from libs.database import Database
 from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where

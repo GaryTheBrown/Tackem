@@ -1,7 +1,7 @@
 '''Converter pages'''
 import json
 import cherrypy
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 from libs.html_template import HTMLTEMPLATE
 from libs import html_parts as ghtml_parts
 from . import html_parts
@@ -22,7 +22,7 @@ class Converter(HTMLTEMPLATE):
     @cherrypy.expose
     def single(self, index=None):
         '''get single converter item'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:
@@ -37,13 +37,13 @@ class Converter(HTMLTEMPLATE):
     @cherrypy.expose
     def getids(self):
         '''index of Drives'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         return json.dumps(self._tackem_system.system().get_converter().get_data_ids())
 
     @cherrypy.expose
     def getconverting(self, index=None):
         '''get single converter item'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:
@@ -55,7 +55,7 @@ class Converter(HTMLTEMPLATE):
     @cherrypy.expose
     def progress(self, index=None):
         '''get progress bar item'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:

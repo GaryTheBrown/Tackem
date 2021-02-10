@@ -1,4 +1,5 @@
 '''ROOT API'''
+from api.scraper import APIScraper
 import json
 import cherrypy
 from api.base import APIBase
@@ -7,7 +8,7 @@ from api.system import APISystem
 from api.library import APILibrary
 from data.config import CONFIG
 from libs.root_event import RootEvent
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 
 @cherrypy.expose
 class API(APIBase):
@@ -38,6 +39,8 @@ class API(APIBase):
             return APISystem()
         if section == "library":
             return APILibrary()
+        if section == "scraper":
+            return APIScraper()
         return self
 
     def _check_api_key(self, key: str) -> int:
@@ -52,8 +55,8 @@ class API(APIBase):
 
     def _check_session_id(self) -> int:
         '''checks the session Id is in the list'''
-        if not AUTHENTICATION.check_logged_in():
+        if not Authentication.check_logged_in():
             return self.GUEST
-        if AUTHENTICATION.is_admin():
+        if Authentication.is_admin():
             return self.MASTER
         return self.USER

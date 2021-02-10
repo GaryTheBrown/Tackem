@@ -192,7 +192,7 @@ def _ffprobe_info_panel(data):
 
 
 def video_item(variable_name, label, help_text, input_html, not_in_config=False):
-    ''' The whole section for each Config Object'''
+    ''' The whole section for each CONFIG Object'''
     html = get_page("video_labeler/edit/tracktype/item")
     html = html.replace("%%VARNAME%%", variable_name)
     if not isinstance(label, str):

@@ -3,7 +3,7 @@ import cherrypy
 from typing import Any
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 from libs.config.html.post_to_config import post_config_settings
 from data.config import CONFIG
 from system.plugin_downloader import TackemSystemPluginDownloader
@@ -13,23 +13,23 @@ class Admin(HTMLTEMPLATE):
 
     @cherrypy.expose
     def config(self, **kwargs: Any) -> str:
-        '''Config System'''
-        AUTHENTICATION.check_auth()
-        if not AUTHENTICATION.is_admin():
+        '''CONFIG System'''
+        Authentication.check_auth()
+        if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
         if kwargs:
             post_config_settings(kwargs)
             try:
                 CONFIG.save()
             except OSError:
-                print("ERROR WRITING CONFIG FILE")
+                print("ERROR WRITING Config FILE")
         return self._template(CONFIG.html(), javascript="static/js/config.js")
 
     @cherrypy.expose
     def plugin_downloader(self) -> str:
         '''THe system for the plugin Downloader'''
-        AUTHENTICATION.check_auth()
-        if not AUTHENTICATION.is_admin():
+        Authentication.check_auth()
+        if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
 
         TackemSystemPluginDownloader().get_github_plugins()
@@ -83,10 +83,10 @@ class Admin(HTMLTEMPLATE):
     @cherrypy.expose
     def users(self) -> str:
         '''Grab the users info'''
-        AUTHENTICATION.check_auth()
-        if not AUTHENTICATION.is_admin():
+        Authentication.check_auth()
+        if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
-        data = AUTHENTICATION.get_users()
+        data = Authentication.get_users()
         users_html = ""
         for item in data:
             admin = "checked" if item['is_admin'] else ""
@@ -108,8 +108,8 @@ class Admin(HTMLTEMPLATE):
     @cherrypy.expose
     def shutdown(self) -> str:
         '''shutdown the system page'''
-        AUTHENTICATION.check_auth()
-        if not AUTHENTICATION.is_admin():
+        Authentication.check_auth()
+        if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
         return self._template(
             HTMLSystem.part(
@@ -120,8 +120,8 @@ class Admin(HTMLTEMPLATE):
     @cherrypy.expose
     def reboot(self) -> str:
         '''reboot the system page'''
-        AUTHENTICATION.check_auth()
-        if not AUTHENTICATION.is_admin():
+        Authentication.check_auth()
+        if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
         return self._template(
             HTMLSystem.part(

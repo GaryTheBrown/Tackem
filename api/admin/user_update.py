@@ -1,7 +1,7 @@
 '''User Update API'''
 import cherrypy
 from api.base import APIBase
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 
 @cherrypy.expose
 class APIAdminUserUpdate(APIBase):
@@ -47,7 +47,7 @@ class APIAdminUserUpdate(APIBase):
                 error="Missing is admin Setting",
                 errorNumber=3
             )
-        AUTHENTICATION.update_user(
+        Authentication.update_user(
             kwargs['userid'],
             kwargs['username'],
             kwargs['password'],

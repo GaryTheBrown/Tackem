@@ -1,6 +1,6 @@
 '''SQLLite System'''
 import sqlite3
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table
 from libs.database.backend.db.table_version import TABLE_VERSION_DB_INFO

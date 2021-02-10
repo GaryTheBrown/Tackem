@@ -2,7 +2,7 @@
 from abc import ABCMeta, abstractmethod
 import threading
 import json
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from libs.database import Database
 from libs.database.messages import SQLTableCountWhere
 from data.config import CONFIG

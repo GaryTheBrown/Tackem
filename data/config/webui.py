@@ -6,7 +6,7 @@ from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
 from libs.config.obj.options.select import ConfigObjOptionsSelect
-from libs.startup_arguments import THEMEFOLDERLOCATION
+from data import THEMEFOLDERLOCATION
 
 def webui_config() -> ConfigList:
     '''WebUI Config'''

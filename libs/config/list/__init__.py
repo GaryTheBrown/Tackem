@@ -1,4 +1,4 @@
-'''Config List Class'''
+'''CONFIG List Class'''
 from libs.config.list.file import ConfigListFile
 from libs.config.list.html import ConfigListHtml
 

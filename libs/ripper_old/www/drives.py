@@ -1,6 +1,6 @@
 '''drives pages'''
 import cherrypy
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 from libs.html_template import HTMLTEMPLATE
 
 
@@ -19,7 +19,7 @@ class Drives(HTMLTEMPLATE):
     @cherrypy.expose
     def single(self, index=None):
         '''get single Drive'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:

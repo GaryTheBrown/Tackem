@@ -26,7 +26,7 @@ def database_config() -> ConfigList:
                     "mysql",
                     "MYSQL",
                     input_attributes=InputAttributes(
-                        disabled=True,
+                        "disabled",
                         data_click_show="database_mysql_section"
                     )
                 )

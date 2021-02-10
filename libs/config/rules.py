@@ -1,4 +1,4 @@
-'''Config Rules'''
+'''CONFIG Rules'''
 from typing import Union
 
 class ConfigRules:

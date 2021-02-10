@@ -9,7 +9,7 @@ from typing import Union
 import git
 import requests
 import markdown
-from libs.startup_arguments import PLUGINFOLDERLOCATION
+from data import PLUGINFOLDERLOCATION
 from system.admin import TackemSystemAdmin
 
 class TackemSystemPluginDownloader(TackemSystemAdmin):

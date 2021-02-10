@@ -1,4 +1,4 @@
-'''Config List Class'''
+'''CONFIG List Class'''
 import copy
 from typing import Any, Optional
 from libs.config.base import ConfigBase
@@ -6,7 +6,7 @@ from libs.config.rules import ConfigRules
 from libs.config.obj.base import ConfigObjBase
 
 class ConfigListBase(ConfigBase):
-    '''Config List Class'''
+    '''CONFIG List Class'''
 
     def __init__(
             self,

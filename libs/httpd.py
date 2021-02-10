@@ -5,7 +5,7 @@ from www.root import Root
 from www.admin import Admin
 from api import API
 from libs.error_pages import setup_error_pages
-from libs.startup_arguments import THEMEFOLDERLOCATION
+from data import THEMEFOLDERLOCATION
 from data.config import CONFIG
 from system.full import TackemSystemFull
 

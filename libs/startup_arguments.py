@@ -1,14 +1,8 @@
 '''Startup Arguments Setup'''
 import argparse
-import os.path
-HOMEFOLDER = os.path.expanduser("~")
-PROGRAMNAME = "Tackem"
-PROGRAMVERSION = "ALPHA"
-PROGRAMGITADDRESS = "http://github.com/garythebrown/tackem/"
-PROGRAMCONFIGLOCATION = HOMEFOLDER + "/.Tackem/"
-PLUGINFOLDERLOCATION = "plugins/"
-THEMEFOLDERLOCATION = "themes/"
+from data import PROGRAMVERSION
 
+#TODO reimplement this into the program as not used at all
 def __parse():
     '''parses the command line arguments'''
     parser = argparse.ArgumentParser(description='Process some integers.')

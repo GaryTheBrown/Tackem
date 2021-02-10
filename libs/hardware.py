@@ -13,7 +13,7 @@ class Hardware:
             return cls.DRIVES
         if platform.system() == 'Linux':
             cls.DRIVES = cls.__disc_drive_linux()
-            return
+            return {}
 
     @classmethod
     def __disc_drive_linux(cls) -> dict:

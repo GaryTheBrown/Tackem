@@ -1,104 +1,53 @@
-'''Ripper Linux init'''
-import platform
-import pathlib
-from libs.startup_arguments import PROGRAMCONFIGLOCATION, PLUGINFOLDERLOCATION
-from libs.plugin_base import PluginBaseClass, load_plugin_settings
+'''Ripper init'''
+from data.config import CONFIG
 
-from libs.database import Database
-from libs.database.messages import SQLTable
-from libs.hardware import Hardware
-from data.config import CONFIG as ROOT_CONFIG
-from . import www
-from .data import db_tables
-from .data.events import RipperEvents
-from .drive_linux import DriveLinux
-from .video_labeler import VideoLabeler
-from .converter import Converter
-from .renamer import Renamer
+# TODO Pull Ripper plugin back into the System with checks for programs to load system then checks
+# on if drives exist and give the option of ripping locally or just giving ISO
+# TODO Allow ripper to just accept ISOs instead if no drives in the machine.
+# then we can create some api call to say there is a new ISO to work with,
+# would need to check the process of getting info from the bluray for it's codes we are using.
+# a seperate system for ripping drives should be created as another app.
+# https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
 
-# SETTINGS = load_plugin_settings(
-#     PLUGINFOLDERLOCATION + "ripping/ripper/settings.json")
-# DRIVES = {}
-
-# if platform.system() == 'Linux':
-    # if check_for_required_programs(SETTINGS['linux_programs'], output=False):
-        # DRIVES = get_hwinfo_linux()
-
-
-# def check_enabled():
-#     '''plugin check for if plugin should be enabled'''
-#     if platform.system() == 'Linux':
-#         if not check_for_required_programs(SETTINGS['linux_programs'], "Ripper"):
-#             return False
-#     return bool(DRIVES)
-
-
+#new way needs user to set the amount of makemkv instances allowed and if drives lock one each
+#one thread does the watching and starts up the relevent tasks in another thread.
 class Ripper:
     '''Main Class to create an instance of the plugin'''
 
     def __init__(self):
-        self._drives = Hardware.disc_drives()
-        self._video_labeler = VideoLabeler()
-        self._converter = Converter()
-        self._renamer = Renamer()
+        '''setup systems'''
+        if CONFIG['ripper']['enabled'].value is False:
+            return
+
+        self._drives = []
+        self._video_labeler = None
+        self._converter = None
+        self._renamer = None
         self._running = False
+
+        if CONFIG['ripper']['drives']['enabled'].value:
+
+
+
+
+
+
+            self.__setup_drives()
+        elif CONFIG['ripper']['iso']['enabled'].value:
+            self.__setup_iso()
+
+    def __setup_drives(self):
+        '''Setup the Drives'''
+
+    def __setup_iso(self):
+        '''Setup the iso'''
+
+
+
+
 
         Database.call(SQLTable(db_tables.VIDEO_INFO_DB_INFO))
         Database.call(SQLTable(db_tables.VIDEO_CONVERT_DB_INFO))
 
-        for location in ROOT_CONFIG['ripper']['locations']:
-            folder = ROOT_CONFIG['ripper']['locations'][location].value
-            if folder[0] != "/":
-                folder = PROGRAMCONFIGLOCATION
-                folder += ROOT_CONFIG['ripper']['locations'][location]
-            pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
-
-    def startup(self):
-        '''Ripper Startup Script'''
-        if platform.system() == 'Linux':
-            for dri in Hardware.disc_drives():
-                if dri in ROOT_CONFIG['ripper']['drives']:
-                    if ROOT_CONFIG['ripper']['drives'][dri]["enabled"].value:
-                        self._drives.append(DriveLinux(dri, Hardware.disc_drives()[dri]))
-
-        # Check if Devices Exist and if not it will stop the plugin from loading
-        if not self._drives:
-            return False, "No Optical Devices Found or enabled"
-
-        # Start the threads
-        for drive in self._drives:
-            drive.start_thread()
-
-        if ROOT_CONFIG['ripper']['converter']['enabled'].value:
-            self._converter.start_thread()
-
-        print("START RENAMER THREAD")
-        self._renamer.start_thread()
-
-        self._running = True
-        return True, ""
-
-    def shutdown(self):
-        '''stop the plugin'''
-        for drive in self._drives:
-            drive.unlock_tray()
-            drive.stop_thread()
-        if self._converter is not None:
-            RipperEvents().converter.set()
-            self._converter.stop_thread()
-        if self._renamer is not None:
-            RipperEvents().renamer.set()
-            self._renamer.stop_thread()
-        self._running = False
-
-    def get_drives(self):
-        '''gets the drives'''
-        return self._drives
-
-    def get_video_labeler(self):
-        '''returns the video_labeler system'''
-        return self._video_labeler
-
-    def get_converter(self):
-        '''returns the converter system'''
-        return self._converter
+        for location in ROOT_Config['ripper']['locations']:
+            folder = ROOT_Config['ripper']['locations'][location].value

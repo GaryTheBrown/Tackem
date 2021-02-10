@@ -1,7 +1,7 @@
 '''User Delete API'''
 import cherrypy
 from api.base import APIBase
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 
 @cherrypy.expose
 class APIAdminUserDelete(APIBase):
@@ -19,7 +19,7 @@ class APIAdminUserDelete(APIBase):
                 error="Missing User Id",
                 errorNumber=0
             )
-        AUTHENTICATION.delete_user(kwargs['userid'])
+        Authentication.delete_user(kwargs['userid'])
         return self._return_data(
             user,
             "User",

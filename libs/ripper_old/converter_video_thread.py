@@ -6,7 +6,7 @@ import pexpect
 from libs.database import Database
 from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from libs.scraper import Scraper
 from data.languages import Languages
 from data.config import CONFIG

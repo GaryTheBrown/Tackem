@@ -26,7 +26,7 @@ class APIAdminConfig(APIBase):
         return self._return_data(
             user,
             "config",
-            "Get Config Option",
+            "Get CONFIG Option",
             True,
             location=location,
             setting=value
@@ -45,7 +45,7 @@ class APIAdminConfig(APIBase):
         return self._return_data(
             user,
             "config",
-            "set Config Option",
+            "set CONFIG Option",
             True,
             location=location,
             before=value,

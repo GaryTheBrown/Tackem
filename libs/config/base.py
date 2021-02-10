@@ -1,9 +1,9 @@
-'''Config Base Data Class'''
+'''CONFIG Base Data Class'''
 from typing import Any, Optional
 from libs.config.rules import ConfigRules
 
 class ConfigBase:
-    '''Config Base Class'''
+    '''CONFIG Base Class'''
 
     def __init__(
             self,

@@ -274,4 +274,15 @@ class ConfigListHtml(ConfigListBase):
         '''creates an Invisible to html section'''
         if self.var_name != variable_name:
             variable_name += f"_{self.var_name}"
-        return self.__section_data(variable_name)
+
+        if "enabled" in self.keys():
+            self["enabled"].add_panel_toggle()
+            return HTMLSystem.part(
+                "section/firstblockpanel",
+                ENABLED=self["enabled"].html(f"{variable_name}_enabled"),
+                VARIABLENAME=variable_name,
+                PANELNAME=f"{variable_name}_panel",
+                SECTION=self.__section_data(variable_name, skip_enabled=True),
+            )
+        else:
+            return self.__section_data(variable_name)

@@ -12,6 +12,22 @@
 	// Use 'settings' to set *default* container specific settings.json values on container create.
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
 	"settings": {
+		"[python]": {
+			"editor.rulers": [
+				{ "column": 100, "color": "#000000" }
+			]
+		},
+		"[javascript]": {
+			"editor.rulers": [
+				{ "column": 80, "color": "#000000" }
+			]
+		},
+		"[html]": {
+			"editor.rulers": [
+				{ "column": 120, "color": "#000000" }
+			],
+		"editor.defaultFormatter": "vscode.html-language-features"
+		},
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"python.pythonPath": "/usr/local/bin/python3.9",
 		"python.linting.pylintEnabled": true,
@@ -19,15 +35,15 @@
 		"python.linting.enabled": true,
 		"python.linting.pylintUseMinimalCheckers": false,
 		"python.formatting.provider": "autopep8",
-		"jshint.options":{
-			"esversion":6
+		"jshint.options": {
+			"esversion": 6
 		},
 		"eslint.options": {
-			"env":{
-				"es6":true
+			"env": {
+				"es6": true
 			},
 			"parserOptions": {
-				"ecmaVersion": 6 // or 7,8,9
+				"ecmaVersion": 6
 			}
 		}
 	},

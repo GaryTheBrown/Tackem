@@ -1,4 +1,4 @@
-'''Config File Setup'''
+'''CONFIG File Setup'''
 from typing import Any
 from data.config import CONFIG
 from libs.config.list import ConfigList

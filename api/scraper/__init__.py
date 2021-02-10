@@ -9,7 +9,7 @@ from .search_movie import APIScraperSearchMovie
 from .search_tvshow import APIScraperSearchTvshow
 
 @cherrypy.expose
-class APIAdmin(APIBase):
+class APIScraper(APIBase):
     '''ROOT API'''
 
     def _cp_dispatch(self, vpath):

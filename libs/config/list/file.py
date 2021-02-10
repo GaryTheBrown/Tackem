@@ -1,13 +1,13 @@
-'''Config List Class'''
+'''CONFIG List Class'''
 from configobj import ConfigObj
 from validate import Validator
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from libs.config.configobj_extras import EXTRA_FUNCTIONS
 from libs.config.list.base import ConfigListBase
 from libs.config.obj.base import ConfigObjBase
 
 class ConfigListFile(ConfigListBase):
-    '''Config List Class'''
+    '''CONFIG List Class'''
 
     __config = None
 
@@ -31,7 +31,7 @@ class ConfigListFile(ConfigListBase):
         try:
             self.__config.write()
         except OSError:
-            print("ERROR WRITING CONFIG FILE")
+            print("ERROR WRITING Config FILE")
 
     def update_configobj(self, config=None):
         '''Updates the config Object for saving'''

@@ -3,7 +3,7 @@ from typing import Any
 import cherrypy
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
-from libs.authenticator import AUTHENTICATION
+from libs.authenticator import Authentication
 
 class Root(HTMLTEMPLATE):
     '''Root'''
@@ -11,7 +11,7 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def index(self) -> str:
         '''Index Page'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         return self._template(HTMLSystem.open("pages/homepage"))
 
     @cherrypy.expose
@@ -27,20 +27,20 @@ class Root(HTMLTEMPLATE):
         password = kwargs.get('password', "")
         timeout = kwargs.get('timeout', "")
         if username != "" and password != "":
-            AUTHENTICATION.login(username, password, timeout, return_url)
+            Authentication.login(username, password, timeout, return_url)
 
         return self._template(HTMLSystem.part("pages/login", RETURNURL=return_url), navbar=False)
 
     @cherrypy.expose
     def password(self, **kwargs: Any) -> str:
         '''Login Page'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         password = kwargs.get('password', None)
         new_password = kwargs.get('new_password', None)
         new_password_check = kwargs.get('new_password_check', None)
         if password is not None and new_password is not None and new_password_check is not None:
             if new_password == new_password_check:
-                if AUTHENTICATION.change_password(password, new_password):
+                if Authentication.change_password(password, new_password):
                     raise cherrypy.HTTPRedirect(
                         cherrypy.url().replace("/password", "/"))
         return self._template(HTMLSystem.part("pages/password"), navbar=False)
@@ -48,4 +48,4 @@ class Root(HTMLTEMPLATE):
     @cherrypy.expose
     def logout(self):
         '''Logout Page'''
-        AUTHENTICATION.logout()
+        Authentication.logout()

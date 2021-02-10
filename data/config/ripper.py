@@ -45,55 +45,17 @@ def ripper_config() -> ConfigList:
     if not check_for_required_programs(RIPPERREQUIREDLINUX, "Ripper"):
         return None
 
+    drives = True
+    if Hardware.disc_drives():
+        drives = False
     return ConfigList(
         "ripper",
         "Ripper",
-        ConfigObjOptionsRadio(
-            "mode",
-            [
-                ConfigObjRadio(
-                    "drive",
-                    "Drive",
-                    input_attributes=InputAttributes(
-                        "disabled" if not Hardware.disc_drives() else "enabled",
-                        data_click_hide=[
-                            "ripper_videoripping_locations_iso",
-                            "ripper_audioripping_locations_iso"
-                        ],
-                        data_click_show="ripper_drives_panel"
-                    )
-                ),
-                ConfigObjRadio(
-                    "iso",
-                    "ISO",
-                    input_attributes=InputAttributes(
-                        data_click_show=[
-                            "ripper_videoripping_locations_iso",
-                            "ripper_audioripping_locations_iso"
-                        ],
-                        data_click_hide="ripper_drives_panel"
-                    )
-                ),
-                ConfigObjRadio(
-                    "both",
-                    "Both",
-                    input_attributes=InputAttributes(
-                        "disabled" if not Hardware.disc_drives() else "enabled",
-                        data_click_show=[
-                            "ripper_videoripping_locations_iso",
-                            "ripper_audioripping_locations_iso",
-                            "ripper_drives_panel"
-                        ]
-                    )
-                )
-            ],
-            "drive" if Hardware.disc_drives() else "iso",
-            "Ripping Mode",
-            "Rip from Drives or from ISO files"
-        ),
+        ConfigObjEnabled(),
         ConfigList(
             "drives",
             "Drives",
+            ConfigObjEnabled(disabled=drives),
             many_section=ConfigList(
                 "",
                 "",
@@ -108,11 +70,11 @@ def ripper_config() -> ConfigList:
                     "link",
                     "",
                     "Drive Link",
-                    "Adderss of the drive",
+                    "Address of the drive",
                     not_in_config=True,
                     input_attributes=InputAttributes(
-                        read_only=True,
-                        disabled=True
+                        "readonly",
+                        "disabled"
                     ),
                     value_link=Hardware.disc_drives()
                 ),
@@ -120,16 +82,31 @@ def ripper_config() -> ConfigList:
                     "model",
                     "",
                     "Drive Model",
-                    "Adderss of the drive",
+                    "Model of the drive",
                     not_in_config=True,
                     input_attributes=InputAttributes(
-                        read_only=True,
-                        disabled=True,
+                        "read_only",
+                        "disabled"
                     ),
                     value_link=Hardware.disc_drives()
                 )
             ),
             rules=ConfigRules(for_each=Hardware.disc_drives())
+        ),
+        ConfigList(
+            "iso",
+            "ISO",
+            ConfigObjEnabled(),
+            ConfigObjIntegerNumber(
+                "threadcount",
+                1,
+                "How Many Instances",
+                "How Many Instances of MakeMKV do you want to allow at once?",
+                input_attributes=InputAttributes(
+                    min=1,
+                    max=5
+                )
+            ),
         ),
         ConfigList(
             "videoripping",
@@ -512,7 +489,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "highest",
                         "Highest Quality",
                         input_attributes=InputAttributes(
-                            disabled=True,
+                            "disabled",
                             data_click_hide="ripper_converter_audioformatlist_section"
                         )
                     ),
@@ -527,7 +504,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         "convert",
                         "Convert to Selected Formats",
                         input_attributes=InputAttributes(
-                            disabled=True,
+                            "disabled",
                             data_click_show="ripper_converter_audioformatlist_section"
                         )
                     )

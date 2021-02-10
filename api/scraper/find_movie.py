@@ -24,7 +24,7 @@ class APIScraperFindMovie(APIBase):
                 f"Adding Instance of {plugin_type} - {plugin_name}",
                 False,
                 instance=instance,
-                error=f"Missing Data Passed. Requires {", ".join(required)}",
+                error=f'Missing Data Passed. Requires {", ".join(required)}',
                 errorNumber=0
             )
 

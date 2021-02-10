@@ -4,8 +4,8 @@ import json
 from glob import glob
 import cherrypy
 from data.config import CONFIG
-from libs.authenticator import AUTHENTICATION
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from libs.authenticator import Authentication
+from data import PROGRAMCONFIGLOCATION
 from libs.html_template import HTMLTEMPLATE
 from libs import html_parts as ghtml_parts
 from . import html_parts
@@ -30,7 +30,7 @@ class VideoLabeler(HTMLTEMPLATE):
     @cherrypy.expose
     def single(self, index=None):
         '''get single labeler item'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:
@@ -47,14 +47,14 @@ class VideoLabeler(HTMLTEMPLATE):
     @cherrypy.expose
     def getids(self):
         '''index of discs to label'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         db_label = "WWW" + cherrypy.request.remote.ip
         return json.dumps(self._tackem_system.system().get_video_labeler().get_ids(db_label))
 
     @cherrypy.expose
     def edit(self, index=None):
         '''edit the data page'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:
@@ -111,7 +111,7 @@ class VideoLabeler(HTMLTEMPLATE):
     @cherrypy.expose
     def editdisctype(self, index=None, disc_type_code=None):
         '''gets the disc type html'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if index is None:
             self._return()
         try:
@@ -208,7 +208,7 @@ class VideoLabeler(HTMLTEMPLATE):
     @cherrypy.expose
     def edittracktype(self, disc_index=None, track_index=None, track_type_code=None):
         '''gets the disc type html'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         if disc_index is None or track_index is None:
             self._return()
         try:
@@ -263,7 +263,7 @@ class VideoLabeler(HTMLTEMPLATE):
     @cherrypy.expose
     def editsave(self, **kwargs):
         '''saves the disc type'''
-        AUTHENTICATION.check_auth()
+        Authentication.check_auth()
         for key in kwargs:
             if kwargs[key] == "True":
                 kwargs[key] = True

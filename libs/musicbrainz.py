@@ -1,6 +1,6 @@
 '''Audio Ripping Feature'''
 import musicbrainzngs
-from libs.startup_arguments import PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRESS
+from data import PROGRAMNAME, PROGRAMVERSION, PROGRAMGITADDRESS
 from data.config import CONFIG
 
 class MusicBrainz():

@@ -1,7 +1,7 @@
 '''WEBUI FOR PLUGIN'''
 import os
 import cherrypy
-from libs.startup_arguments import PROGRAMCONFIGLOCATION
+from data import PROGRAMCONFIGLOCATION
 from system.plugin import TackemSystemPlugin
 from data.config import CONFIG
 from .root import Root
