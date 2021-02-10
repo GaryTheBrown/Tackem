@@ -1,10 +1,10 @@
 '''Script For the Admin System'''
 import cherrypy
 from typing import Any
+from libs.config.list import ConfigList
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import Authentication
-from libs.config.html.post_to_config import post_config_settings
 from data.config import CONFIG
 
 class Admin(HTMLTEMPLATE):
@@ -17,7 +17,10 @@ class Admin(HTMLTEMPLATE):
         if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
         if kwargs:
-            post_config_settings(kwargs)
+            for key, value in kwargs.items():
+                key = key.replace("[]", "")
+                key_list = key.split("_")
+                self.__add_val_to_config(key, CONFIG, key_list, value)
             try:
                 CONFIG.save()
             except OSError:
@@ -72,3 +75,26 @@ class Admin(HTMLTEMPLATE):
                 "pages/reboot"
             )
         )
+
+    def __add_val_to_config(self, key: str, config: ConfigList, key_list: list, value: Any):
+        '''recursive way of adding value into the config'''
+        if len(key_list) == 1:
+            if key_list[0] in config.keys():
+                config[key_list[0]].value = value
+                return
+
+            for obj in config:
+                if isinstance(obj, ConfigList) and obj.is_section:
+                    if key_list[0] in obj.keys():
+                        obj[key_list[0]].value = value
+                        return
+        else:
+            if config.many_section:
+                config.clone_many_section(key_list[0])
+
+            if key_list[0] in config.keys():
+                return self.__add_val_to_config(key, config[key_list[0]], key_list[1:], value)
+
+            for obj in config:
+                if obj.is_section:
+                    return self.__add_val_to_config(key, obj, key_list, value)
