@@ -69,5 +69,6 @@ class Webserver:
     def stop(cls):
         '''stops the Webserver'''
         if cls.__running:
+            cherrypy.config.update({ 'server.shutdown_timeout': 1 })
             cherrypy.engine.exit()
             cherrypy.server.httpserver = None

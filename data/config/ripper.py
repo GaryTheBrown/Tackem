@@ -61,9 +61,9 @@ def ripper_config() -> ConfigList:
                 "",
                 ConfigObjEnabled(),
                 ConfigObjString(
-                    "name",
+                    "label",
                     "",
-                    "Name",
+                    "Label",
                     "What do you want to call this drive?"
                 ),
                 ConfigObjString(

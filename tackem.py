@@ -77,7 +77,7 @@ class Tackem:
                 continue
             if event == "shutdown":
                 cls.shutdown()
-                break
+                exit()
             if event == "reboot":
                 cls.shutdown()
                 cls.start()

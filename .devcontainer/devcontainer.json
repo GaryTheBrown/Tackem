@@ -12,6 +12,7 @@
 		"/home/gary/.ssh:/home/gary/.ssh:ro"
 	],
 	//mount points
+	//IF YOU ARE HAVING ISSUES OPENING THIS DEVCONTAINER WITH NO DISC DRIVE COMMENT OUT THESE MOUNTS
 	"mounts": [
 		"source=/dev/sr0,target=/dev/sr0,type=bind"
 	],

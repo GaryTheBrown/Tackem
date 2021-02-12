@@ -14,7 +14,6 @@ class ConfigListFile(ConfigListBase):
     def load(self):
         """Create a config file using a configspec and validate it against a Validator object"""
         File.mkdir(PROGRAMCONFIGLOCATION)
-
         temp_spec = self.get_spec_part(0)
         # to check spec output uncomment bellow
         # print(temp_spec)
@@ -44,6 +43,8 @@ class ConfigListFile(ConfigListBase):
             config = self.__config
 
         for item in self._objects:
+            if item.not_in_config:
+                continue
             if isinstance(item, ConfigListBase):
                 if item.is_section:
                     item.update_configobj(config)
@@ -54,7 +55,7 @@ class ConfigListFile(ConfigListBase):
             else:
                 config[item.var_name] = item.value
 
-    def load_configobj(self, config=None):
+    def load_configobj(self, config=None, only_blank=False):
         '''Loads the congfig object into the master config file'''
         if self._objects is None:
             return
@@ -65,38 +66,49 @@ class ConfigListFile(ConfigListBase):
             restart = False
             if isinstance(value, dict): # if item is a deeper layer
                 if key in self.keys():
-                    item = self.get(key, None)
+                    item = self.get(key)
                     item.load_configobj(value)
                     continue
                 if self.many_section:
                     self.clone_many_section(key)
-                    if item := self.get(key, None):
+                    if item := self.get(key):
                         item.load_configobj(value)
                         continue
             else:
-                if item := self.get(key, None):
-                    item.value = value
+                if item := self.get(key):
+                    if only_blank:
+                        if item.value == "":
+                            item.value = value
+                    else:
+                        item.value = value
                     continue
                 for obj in self._objects:
                     if isinstance(obj, ConfigListBase) and obj.is_section:
-                        if item := obj.get(key, None):
+                        if item := obj.get(key):
                             item.value = value
                             restart = True
                             break
                 if restart:
                     continue
 
+        if self.many_section:
+            if rules := self.rules:
+                if each_list := rules.for_each:
+                    for key, item in each_list.items():
+                        if existing_item := self.get(key):
+                            existing_item.load_configobj(item, True)
+                        else:
+                            self.clone_many_section(key)
+                            new_item = self.get(key)
+                            new_item.load_configobj(item)
+            #TODO make this check for a rule and then do the rule magic here.
+
+
+
+
     def get_spec_part(self, indent: int) -> str:
         '''function for recursion of list'''
         return_string = ""
-
-        if self.many_section:
-            return_string += self.__tab(indent) + \
-                self.__open_bracket(indent + 1)
-            return_string += "__many__" + \
-                self.__close_bracket(indent + 1) + "\n"
-            return return_string + self.many_section.get_spec_part(indent + 1)
-
         for item in self._objects:
             if item.not_in_config:
                 continue
@@ -111,6 +123,13 @@ class ConfigListFile(ConfigListBase):
                     return_string += item.get_spec_part(indent + 1)
             elif isinstance(item, ConfigObjBase):
                 return_string += self.__tab(indent) + item.spec
+
+        if self.many_section:
+            return_string += self.__tab(indent) + \
+                self.__open_bracket(indent + 1)
+            return_string += "__many__" + \
+                self.__close_bracket(indent + 1) + "\n"
+            return_string += self.many_section.get_spec_part(indent + 1)
 
         return return_string
 

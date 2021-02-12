@@ -11,9 +11,7 @@ class ConfigListHtml(ConfigListBase):
         '''Returns the html for the config option'''
         if variable_name == "" and self.var_name == "root":
             return self.__root_html()
-        if self.var_name == "plugins":
-            return self.plugins_html()
-        if self.is_section: # or "_" not in variable_name:
+        if self.is_section:
             return self.__section(variable_name)
         if first_block:
             return self.__first_block(variable_name)
@@ -76,75 +74,6 @@ class ConfigListHtml(ConfigListBase):
             )
             first = False
         return single_html + panels_html
-
-    def plugins_html(self, variable_name: str = "") -> str:
-        '''Recursive way to do plugin sections'''
-        if variable_name == "" and self.var_name == "plugins":
-            return self.__plugins_root_html()
-        if self.many_section:
-            return self.__plugin_multi_html(variable_name)
-        return self.__section(variable_name)
-
-    def __plugins_root_html(self) -> str:
-        '''generates the whole plugin section code'''
-        tabnavs = ""
-        panels = ""
-        first = True
-        for obj in self._objects:
-            if not isinstance(obj, ConfigListBase):
-                raise ValueError(
-                    "an unexpected item was found in plugin types")
-            for sub_obj in self[obj.var_name]:
-                if not isinstance(sub_obj, ConfigListBase):
-                    raise ValueError(
-                        "unexpected item was found in plugin names")
-                name = f"plugins_{obj.var_name}_{sub_obj.var_name}"
-                tabnavs += HTMLSystem.part(
-                    "section/tabbaritem",
-                    NAME=name,
-                    ACTIVE="active" if first else "",
-                    LABEL=f"{obj.label} - {sub_obj.label}"
-                )
-
-                panels += HTMLSystem.part(
-                    "section/tabpane" if sub_obj.many_section else "section/tabpanewithmargin",
-                    NAME=name,
-                    ACTIVE="active" if first else "",
-                    HTML=sub_obj.plugins_html(name),
-                )
-
-            first = False
-
-        return HTMLSystem.part(
-            "section/tabsection",
-            NAV=HTMLSystem.part(
-                "section/tabbar",
-                TABBARITEMS=tabnavs
-            ),
-            HTML=panels
-        )
-
-    def __plugin_multi_html(self, variable_name: str) -> str:
-        '''deals with the multi instance plugins panel'''
-        html = ""
-        for obj in self._objects:
-            if not isinstance(obj, ConfigListBase):
-                raise ValueError("Object found where config lists should be")
-            html += obj.panel(variable_name, obj.label.title())
-
-        html += self.__modal(variable_name)  # <- FIX MODAL NOT WORKING
-        html += '<div class="my-4 mx-auto col-6">'
-        html += HTMLSystem.part(
-            "inputs/button",
-            LABEL="Add Instance",
-            DATA=InputAttributes(
-                data_toggle="modal",
-                data_target=f"#{variable_name}_modal"
-            ).html()
-        )
-        html += "</div>"
-
-        return html
 
     def panel(self, variable_name: str, title: str = "") -> str:
         '''Generates a Single/Multi Instance Setion/Panel'''
@@ -223,6 +152,9 @@ class ConfigListHtml(ConfigListBase):
             if skip_enabled and isinstance(obj, ConfigObjEnabled):
                 continue
             html += obj.html(variable_name)
+
+        #TODO MANY SECTION MISSING FROM HERE
+
         return html
 
     def __controls(self, variable_name: str) -> str:
@@ -261,9 +193,13 @@ class ConfigListHtml(ConfigListBase):
             self["enabled"].add_panel_toggle()
             control += self["enabled"].item_html(f"{variable_name}_enabled")
 
+        label = self.label
+        if new_label := self.get("label"):
+            if new_label.value != "":
+                label = new_label.value
         return HTMLSystem.part(
             "section/panel",
-            TITLE=self.label,
+            TITLE=label,
             CONTROL=control,
             VARIABLENAME=variable_name,
             PANELNAME=f"{variable_name}_panel",
