@@ -6,6 +6,7 @@ from libs.config.configobj_extras import EXTRA_FUNCTIONS
 from libs.config.list.base import ConfigListBase
 from libs.config.obj.base import ConfigObjBase
 from libs.file import File
+
 class ConfigListFile(ConfigListBase):
     '''CONFIG List Class'''
 
@@ -55,7 +56,7 @@ class ConfigListFile(ConfigListBase):
             else:
                 config[item.var_name] = item.value
 
-    def load_configobj(self, config=None, only_blank=False):
+    def load_configobj(self, config=None, many_type=None):
         '''Loads the congfig object into the master config file'''
         if self._objects is None:
             return
@@ -76,11 +77,12 @@ class ConfigListFile(ConfigListBase):
                         continue
             else:
                 if item := self.get(key):
-                    if only_blank:
-                        if item.value == "":
-                            item.value = value
-                    else:
+                    if many_type is None:
                         item.value = value
+                    else:
+                        if many_type == "foreach":
+                            if item.value == "":
+                                item.value = value
                     continue
                 for obj in self._objects:
                     if isinstance(obj, ConfigListBase) and obj.is_section:
@@ -96,12 +98,12 @@ class ConfigListFile(ConfigListBase):
                 if each_list := rules.for_each:
                     for key, item in each_list.items():
                         if existing_item := self.get(key):
-                            existing_item.load_configobj(item, True)
+                            existing_item.load_configobj(item, "foreach")
                         else:
                             self.clone_many_section(key)
                             new_item = self.get(key)
                             new_item.load_configobj(item)
-            #TODO make this check for a rule and then do the rule magic here.
+            #TODO  make this check for a rule and then do the rule magic here.
 
 
 

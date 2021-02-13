@@ -37,9 +37,9 @@ class Hardware:
         drives = {}
         for hwinfo_item in device_list:
             temp = {}
-            uid = hwinfo_item['unique_id']
+            temp['uuid'] = hwinfo_item['unique_id']
             temp['label'] = hwinfo_item["device_file"].split(" ")[0]
             temp['link'] = hwinfo_item["device_file"].split(" ")[0]
             temp['model'] = ",".join(re.findall(r'"(.*?)"', hwinfo_item["model"]))
-            drives[uid] = temp
+            drives[temp['uuid']] = temp
         return drives

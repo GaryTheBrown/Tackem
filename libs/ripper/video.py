@@ -7,17 +7,17 @@ from libs.database import Database
 from libs.database.messages import SQLTableCountWhere
 from data.config import CONFIG
 from .ripper_subsystem import RipperSubSystem
-from .converter import create_video_converter_row
-from .disc_api import apiaccess_video_disc_id
-from .data.db_tables import VIDEO_INFO_DB_INFO as INFO_DB
-from .data.disc_type import make_disc_type
-from .data.events import RipperEvents
+# from .converter import create_video_converter_row
+# from .disc_api import apiaccess_video_disc_id
+from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
+# from .data.disc_type import make_disc_type
+# from .data.events import RipperEvents
 
 
 class Video(RipperSubSystem, metaclass=ABCMeta):
     '''video ripping controller'''
 
-    def __init__(self, device, thread_name, disc_type, set_drive_status, thread_run):
+    def __init__(self, device: str, thread_name: str, disc_type, set_drive_status, thread_run):
         super().__init__(device, thread_name, set_drive_status, thread_run)
         self._disc_info_lock = threading.Lock()
         self._disc_info_uuid = None
@@ -26,7 +26,6 @@ class Video(RipperSubSystem, metaclass=ABCMeta):
         self._disc_rip_info = None
         self._disc_type = disc_type
         self._db_id = None
-        self._set_drive_status = set_drive_status
 
 ##########
 ##CHECKS##

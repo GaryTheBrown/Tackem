@@ -58,7 +58,7 @@ class VideoLinux(Video):
 #################
 ##MAKEMKV CALLS##
 #################
-    def _makemkv_backup_from_disc(self, temp_dir, index=-1):
+    def _makemkv_backup_from_disc(self, temp_dir: str, index: int = -1, device: bool = True):
         '''Do the mkv Backup from disc'''
         try:
             os.mkdir(temp_dir)
@@ -78,7 +78,7 @@ class VideoLinux(Video):
             "--progress=-stdout",
             "--noscan",
             "mkv",
-            "dev:" + self._device,
+            f"dev:{self._device}" if device else f"iso:",
             str(index),
             temp_dir
         ]

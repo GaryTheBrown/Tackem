@@ -2,7 +2,6 @@
 import mysql.connector
 from data.config import CONFIG
 from libs.database.backend.base import BackendBase
-from libs.database.backend.db.table_version import TABLE_VERSION_DB_INFO
 from libs.database.table import Table
 
 class MySQL(BackendBase):

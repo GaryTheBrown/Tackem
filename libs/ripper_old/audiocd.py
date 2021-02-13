@@ -7,7 +7,7 @@ from libs.database.messages import SQLInsert, SQLSelect, SQLUpdate
 from libs.database.where import Where
 from libs.musicbrainz import MUSICBRAINZ
 from .ripper_subsystem import RipperSubSystem
-from .data.db_tables import AUDIO_INFO_DB_INFO as INFO_DB
+from data.database.ripper import AUDIO_INFO_DB_INFO as INFO_DB
 
 # from .data.events import RipperEvents
 

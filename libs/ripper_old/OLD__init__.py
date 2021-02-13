@@ -37,7 +37,7 @@ class Ripper:
     '''Main Class to create an instance of the plugin'''
 
     def __init__(self):
-
+        pass
 
 
     def startup(self):

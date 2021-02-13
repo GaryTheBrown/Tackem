@@ -10,9 +10,9 @@ from data import PROGRAMCONFIGLOCATION
 from libs.scraper import Scraper
 from data.languages import Languages
 from data.config import CONFIG
-from .data.db_tables import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
+from data.database.ripper import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
 from .ffprobe import FFprobe
-from .presets import get_video_preset_command
+from presets import get_video_preset_command
 
 
 class ConverterVideoThread():
@@ -157,11 +157,11 @@ class ConverterVideoThread():
                     tags.append('title="' + extra_title + '"')
                 elif track_type == "trailer":
                     trailer_title = self._disc_info.name() + " (" + str(self._disc_info.year())
-                    extra_title += ") - " + self._track_info.info()
+                    trailer_title += ") - " + self._track_info.info()
                     tags.append('title="' + trailer_title + '"')
                 elif track_type == "other":
                     other_title = self._disc_info.name()
-                    extra_title += ") - " + self._track_info.other_type()
+                    other_title += ") - " + self._track_info.other_type()
                     tags.append('title="' + other_title + '"')
             elif disc_type == "TV Show":
                 tags.append('show="' + self._disc_info.name() + '"')

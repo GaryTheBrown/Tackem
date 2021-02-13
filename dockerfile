@@ -10,6 +10,7 @@ WORKDIR /app
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
  && useradd -m ${USER} --uid=${UID} \
+ && usermod -a -G cdrom ${USER} \
  && mkdir -p /home/${USER}/.MakeMKV \
  && chown ${uid}:${gid} -R /home/$USER \
  && apt-get update \

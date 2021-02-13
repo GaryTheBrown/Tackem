@@ -75,8 +75,18 @@ def ripper_config() -> ConfigList:
                     input_attributes=InputAttributes(
                         "readonly",
                         "disabled"
-                    ),
-                    value_link=Hardware.disc_drives()
+                    )
+                ),
+                ConfigObjString(
+                    "uuid",
+                    "",
+                    "Unique ID",
+                    "A Unique code for the drive",
+                    not_in_config=True,
+                    input_attributes=InputAttributes(
+                        "read_only",
+                        "disabled"
+                    )
                 ),
                 ConfigObjString(
                     "model",
@@ -87,8 +97,7 @@ def ripper_config() -> ConfigList:
                     input_attributes=InputAttributes(
                         "read_only",
                         "disabled"
-                    ),
-                    value_link=Hardware.disc_drives()
+                    )
                 )
             ),
             rules=ConfigRules(for_each=Hardware.disc_drives())
@@ -109,31 +118,48 @@ def ripper_config() -> ConfigList:
             ),
         ),
         ConfigList(
+            "locations",
+            "Folder Location",
+            ConfigObjString(
+                "videoiso",
+                "videoiso/",
+                "ISO Location",
+                "Where do you want to watch for video ISOs?"
+            ),
+            ConfigObjString(
+                "videoripping",
+                "videoripping/",
+                "Ripping Location",
+                "Where do you want to store video discs while ripping them?"
+            ),
+            ConfigObjString(
+                "videoripped",
+                "videoripped/",
+                "Ripped Location",
+                "Where do you want to move the video discs to when completed"
+            ),
+            ConfigObjString(
+                "audioiso",
+                "audioiso/",
+                "ISO Location",
+                "Where do you want to watch for audio ISOs?"
+            ),
+            ConfigObjString(
+                "audioripping",
+                "audioripping/",
+                "Ripping Location",
+                "Where do you want to store audio cds while ripping them?"
+            ),
+            ConfigObjString(
+                "audioripped",
+                "audioripped/",
+                "Ripped Location",
+                "Where do you want to move the audio cds to when completed"
+            )
+        ),
+        ConfigList(
             "videoripping",
             "Video Ripping",
-            ConfigObjEnabled(),
-            ConfigList(
-                "locations",
-                "Folder Location",
-                ConfigObjString(
-                    "iso",
-                    "videoiso/",
-                    "ISO Location",
-                    "Where do you want to watch for video ISOs?"
-                ),
-                ConfigObjString(
-                    "ripping",
-                    "videoripping/",
-                    "Ripping Location",
-                    "Where do you want to store video discs while ripping them?"
-                ),
-                ConfigObjString(
-                    "ripped",
-                    "videoripped/",
-                    "Ripped Location",
-                    "Where do you want to move the video discs to when completed"
-                )
-            ),
             ConfigObjOptionsCheckBox(
                 "torip",
                 [
@@ -151,29 +177,6 @@ def ripper_config() -> ConfigList:
         ConfigList(
             "audioripping",
             "Audo CD Ripping",
-            ConfigObjEnabled(),
-            ConfigList(
-                "locations",
-                "Folder Location",
-                ConfigObjString(
-                    "iso",
-                    "audioiso/",
-                    "ISO Location",
-                    "Where do you want to watch for audio ISOs?"
-                ),
-                ConfigObjString(
-                    "ripping",
-                    "audioripping/",
-                    "Ripping Location",
-                    "Where do you want to store audio cds while ripping them?"
-                ),
-                ConfigObjString(
-                    "ripped",
-                    "audioripped/",
-                    "Ripped Location",
-                    "Where do you want to move the audio cds to when completed"
-                )
-            )
         ),
         ConfigList(
             "converter",

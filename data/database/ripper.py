@@ -1,4 +1,4 @@
-'''Database Tables'''
+'''Ripper Tables'''
 from libs.database.table import Table
 from libs.database.column import Column
 
@@ -10,7 +10,6 @@ AUDIO_CONVERT_DB_INFO = Table(
     Column("track_info", "json"),
     Column("converted", "bit", not_null=True, default=False)
 )
-
 
 AUDIO_INFO_DB_INFO = Table(
     "ripping_ripper_audio_info",

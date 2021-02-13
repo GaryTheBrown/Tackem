@@ -3,7 +3,7 @@ import sqlite3
 from data import PROGRAMCONFIGLOCATION
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table
-from libs.database.backend.db.table_version import TABLE_VERSION_DB_INFO
+from data.database.table_version import TABLE_VERSION_DB_INFO
 #https://docs.python.org/3/library/sqlite3.html
 def dict_factory(cursor, row):
     '''makes the return data from the database a dict'''

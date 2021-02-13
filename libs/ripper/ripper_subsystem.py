@@ -1,10 +1,16 @@
 '''shared info between video ripper and audio cd ripper'''
-
+from typing import Callable
 
 class RipperSubSystem():
     '''Subsystem controller'''
 
-    def __init__(self, device, thread_name, set_drive_status, thread_run):
+    def __init__(
+        self,
+        device: str,
+        thread_name: str,
+        set_drive_status: Callable[[str], None],
+        thread_run: bool
+    ):
         self._device = device
         self._thread_name = thread_name
         self._thread_run = thread_run
@@ -20,7 +26,7 @@ class RipperSubSystem():
 ###########
 ##GETTERS##
 ###########
-    def get_ripping_data(self):
+    def get_ripping_data(self) -> dict:
         '''returns the data as dict for html'''
         return_dict = {
             'track': self._ripping_track,

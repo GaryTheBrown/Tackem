@@ -4,7 +4,7 @@ import os
 import time
 from subprocess import DEVNULL, PIPE, Popen
 from .drive import Drive
-from .audiocd_linux import AudioCDLinux
+# from .audiocd_linux import AudioCDLinux
 from .video_linux import VideoLinux
 
 
@@ -39,7 +39,7 @@ class DriveLinux(Drive):
                 self._set_disc_type("none")
                 self._set_drive_status("ERROR")
 
-    def _check_disc_type(self, sleep_time=1.0):
+    def _check_disc_type(self, sleep_time: float = 1.0) -> bool:
         '''Will return the size of the disc'''
         with self._drive_lock:
             if not self._thread_run:
@@ -129,8 +129,8 @@ class DriveLinux(Drive):
 ##########
     def _audio_rip(self):
         '''script to rip an audio cd'''
-        self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
-                                    self._set_drive_status, self._thread_run)
+        # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
+                                    # self._set_drive_status, self._thread_run)
 
     def _video_rip(self):
         '''script to rip video disc'''
