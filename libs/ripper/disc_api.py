@@ -2,7 +2,7 @@
 # from .data import disc_type, video_track_type as track_type
 
 
-def apiaccess_video_disc_id(uuid, label):
+def apiaccess_video_disc_id(uuid: str, label: str):
     '''will access the api and check if the disc exists
     TEMP FUNCTION BELLOW TO EXPAND WHEN READY TO.'''
     return 1

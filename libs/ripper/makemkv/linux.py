@@ -1,59 +1,15 @@
 '''Special Linux Drive Functions'''
+import json
 import os
+import pexpect
 import shlex
 from subprocess import DEVNULL, PIPE, Popen
-import pexpect
+from libs.file import File
 from .video import Video
 
 
 class VideoLinux(Video):
     '''Video Control ripper program self contained'''
-##########
-##CHECKS##
-##########
-
-    def _check_disc_information(self):
-        '''Will return if disc is in drive (setting the UUID and label) or it will return False'''
-        process = Popen(["blkid", self._device], stdout=PIPE, stderr=DEVNULL)
-        returned_message = process.communicate()[0]
-        if not returned_message:
-            return False
-        message = shlex.split(returned_message.decode(
-            'utf-8').rstrip().split(": ")[1])
-        uuid = message[0].split("=")[1]
-        label = message[1].split("=")[1]
-        if not self._thread_run:
-            return
-
-        # sudo isoinfo -d -i /dev/sr0 | grep -i -E 'block size|volume size'
-        # RETURNS :
-        # Logical block size is: 2048
-        # Volume size is: 4149440
-        # dd if=/dev/sr0 of=test.iso bs=2048 count=4149440
-
-        # run for a second through mplayer so it will stop any dd I/O errors
-        if self._disc_type == "dvd":
-            mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
-                                     "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
-                                    stderr=DEVNULL)
-            mplayer_process.wait()
-        if not self._thread_run:
-            return
-        # using DD to read the disc pass it to sha256 to make a unique code for searching by
-        dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
-                           stdout=PIPE, stderr=DEVNULL)
-        sha256sum_process = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE,
-                                  stderr=DEVNULL)
-        sha256 = sha256sum_process.communicate()[0].decode(
-            'utf-8').replace("-", "").rstrip()
-        if dd_process.returncode > 0:
-            return False
-        if not self._thread_run:
-            return
-        self._disc_info_uuid = uuid
-        self._disc_info_label = label
-        self._disc_info_sha256 = sha256
-        return True
 
 #################
 ##MAKEMKV CALLS##
@@ -61,12 +17,10 @@ class VideoLinux(Video):
     def _makemkv_backup_from_disc(self, temp_dir: str, index: int = -1, device: bool = True):
         '''Do the mkv Backup from disc'''
         try:
-            os.mkdir(temp_dir)
+            File.mkdir(temp_dir)
         except OSError:
             pass
-        with open(temp_dir + "/info.txt", "w") as text_file:
-            string = "UUID: " + self._disc_info_uuid + "\nLabel: " + self._disc_info_label
-            text_file.write(string)
+
         if index == -1:
             index = "all"
 

@@ -1,11 +1,13 @@
 '''Special Linux Drive Functions'''
 import fcntl
+from libs.file import File
 import os
+from shlex import shlex
 import time
 from subprocess import DEVNULL, PIPE, Popen
-from .drive import Drive
+from . import Drive
 # from .audiocd_linux import AudioCDLinux
-from .video_linux import VideoLinux
+# from .video_linux import VideoLinux
 
 
 class DriveLinux(Drive):
@@ -77,8 +79,37 @@ class DriveLinux(Drive):
                 self._set_disc_type("audiocd")
             return True
 
+    def _check_disc_information(self):
+        '''Gets unique ID info for the disc'''
+        process = Popen(["blkid", self._device], stdout=PIPE, stderr=DEVNULL)
+        returned_message = process.communicate()[0]
+        if not returned_message:
+            return False
+        message = shlex.split(returned_message.decode('utf-8').rstrip().split(": ")[1])
+        self._set_disc_uuid(message[0].split("=")[1])
+        self._set_disc_label(message[1].split("=")[1])
+        if not self._thread_run:
+            return False
+
+        # run for a second through mplayer so it will stop any dd I/O errors
+        if self._disc_type == "dvd":
+            mplayer_process = Popen(["mplayer", "dvd://1", "-dvd-device", self._device, "-endpos",
+                                     "1", "-vo", "null", "-ao", "null"], stdout=DEVNULL,
+                                    stderr=DEVNULL)
+            mplayer_process.wait()
+        if not self._thread_run:
+            return False
+
+        # using DD to read the disc pass it to sha256 to make a unique code for searching by
+        dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
+                           stdout=PIPE, stderr=DEVNULL)
+        sha256sum = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE, stderr=DEVNULL)
+        self._set_disc_sha256(sha256sum.communicate()[0].decode('utf-8').replace("-", "").rstrip())
+
+        return dd_process.returncode == 0 and self._thread_run
+
     # def _check_audio_disc_information(self):
-    #     '''Will return if drive is open or it will return a string of the error'''
+    #     '''Gets unique info for audio disc'''
     #     if self.get_tray_status() != "loaded":
     #         return False
     #     with self._drive_lock:
@@ -134,5 +165,5 @@ class DriveLinux(Drive):
 
     def _video_rip(self):
         '''script to rip video disc'''
-        self._ripper = VideoLinux(self.get_device(), self._thread.getName(),
-                                  self._disc_type, self._set_drive_status, self._thread_run)
+        # self._ripper = VideoLinux(self.get_device(), self._thread.getName(),
+        #                           self._disc_type, self._set_drive_status, self._thread_run)

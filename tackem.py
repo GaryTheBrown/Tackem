@@ -6,7 +6,7 @@ import os.path
 import platform
 import signal
 
-from libs.root_event import RootEventMaster as RootEvent
+from libs.events import RootEventMaster as RootEvent
 
 from data.config import CONFIG
 from libs.authenticator import Authentication
@@ -51,8 +51,8 @@ class Tackem:
         print("STOPPING WEB SERVICES...")
         Webserver.stop()
         if Ripper.running:
-           print("STOPPING RIPPER...")
-           Ripper.stop()
+            print("STOPPING RIPPER...")
+            Ripper.stop()
         print("STOPPING LIBRARIES... TODO")
         print("STOPPING DATABASE...")
         Database.stop()

@@ -8,12 +8,16 @@ from libs.database import Database
 from libs.database.messages.table import SQLTable
 from libs.file import File
 from libs.hardware import Hardware
-from libs.ripper.drive_linux import DriveLinux
+from libs.ripper.drive.linux import DriveLinux
 
-# TODO Pull Ripper plugin back into the System with checks for programs to load system then checks
-# on if drives exist and give the option of ripping locally or just giving ISO
-# TODO Allow ripper to just accept ISOs instead if no drives in the machine.
-# then we can create some api call to say there is a new ISO to work with,
+# TODO FIX error with permissions in docker.
+# TODO get the ripper html stuff moved into the www folder in a single file removing the html part
+# functions for the new way. POSSABLY NEED TO CHANGE HOW THIS SHOWS SO POSSABLY NEEDS TO BE
+# REWRITTEN BUT USE IT FOR REFERENCE AND TAKE THE LAYOUT ACROSS
+# TODO add the option of ripping locally or just giving ISO, use the same evnet stuff thats in
+# library to watch a folder for new files then start a iso ripper (using limits semphores)
+
+# TODO get the converter back in.
 # would need to check the process of getting info from the bluray for it's codes we are using.
 # a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
@@ -34,12 +38,12 @@ class Ripper:
 
     @classproperty
     def running(cls):
-        '''returns if ripper running'''
+        '''Returns if ripper running'''
         return cls.__running
 
     @classproperty
     def enabled(cls):
-        '''returns if ripper is enabled'''
+        '''Returns if ripper is enabled'''
         return CONFIG['ripper']['enabled'].value
 
     @classmethod
@@ -61,7 +65,7 @@ class Ripper:
         if CONFIG['ripper']['drives']['enabled'].value:
             cls.__start_drives()
 
-        # cls.__running = True
+        cls.__running = True
 
     @classmethod
     def __start_drives(cls):
@@ -76,13 +80,6 @@ class Ripper:
         for drive in cls.__drives:
             drive.start_thread()
 
-
-
-
-
-
-
-
     @classmethod
     def stop(cls):
         '''Stops the ripper'''
@@ -91,3 +88,8 @@ class Ripper:
             for drive in cls.__drives:
                 drive.stop_thread()
             cls.__running = False
+
+    @classproperty
+    def get_drives(cls) -> list:
+        '''Returns the Enabled drives'''
+        return cls.__drives

@@ -4,15 +4,14 @@ from libs.database import Database
 from libs.database.messages import SQLSelect, SQLTableCountWhere, SQLUpdate
 from libs.database.where import Where
 from data.config import CONFIG
-from .converter import create_video_converter_row
-from .data.events import RipperEvents
+from libs.ripper.converter import create_video_converter_row
+from libs.ripper.events import RipperEvents
 from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
-from .data.disc_type import DiscType
+from libs.ripper.data.disc_type import DiscType
 
 
 class VideoLabeler():
     '''Master Section for the Drive controller'''
-
 
 ##############
 ##HTML STUFF##
@@ -82,13 +81,12 @@ class VideoLabeler():
         else:
             return
         dict_for_db = {"rip_data": rip_data}
-        config = CONFIG['plugins']['ripping']['ripper']
         if finished:
-            if config['converter']['enabled'].value:
+            if CONFIG['ripper']['converter']['enabled'].value:
                 create_video_converter_row(
                     db_id,
                     data,
-                    config['videoripping']['torip'].value
+                    CONFIG['ripper']['videoripping']['torip'].value
                 )
                 dict_for_db["ready_to_convert"] = True
             else:
@@ -101,7 +99,7 @@ class VideoLabeler():
             )
         )
         if finished:
-            if config['converter']['enabled'].value:
+            if CONFIG['ripper']['converter']['enabled'].value:
                 RipperEvents().converter.set()
             else:
                 RipperEvents().renamer.set()

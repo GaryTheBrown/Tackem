@@ -6,12 +6,12 @@ import pexpect
 from libs.database import Database
 from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
-from data import PROGRAMCONFIGLOCATION
+from libs.file import File
 from libs.scraper import Scraper
 from data.languages import Languages
 from data.config import CONFIG
 from data.database.ripper import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
-from .ffprobe import FFprobe
+from libs.ripper.ffprobe import FFprobe
 from presets import get_video_preset_command
 
 
@@ -35,14 +35,11 @@ class ConverterVideoThread():
         )
         Database.call(msg)
         self._sql_row_id = msg.return_data['id']
-        loc = CONFIG['plugins']['ripping']['ripper']['locations']['videoripping'].value
-        if loc[0] != "/":
-            loc = PROGRAMCONFIGLOCATION
-            loc += CONFIG['plugins']['ripping']['ripper']['locations']['videoripping'].value
+        loc = File.location(CONFIG['ripper']['locations']['videoripping'].value)
         self._infile = loc + self._filename
         self._outfile = self._infile.replace(".mkv", "") + ".NEW.mkv"
         self._disc_language = Languages().convert_2_to_3t(self._disc_info.language())
-        self._conf = CONFIG['plugins']['ripping']['ripper']['converter']
+        self._conf = CONFIG['ripper']['converter']
         self._probe_info = FFprobe(
             self._conf['ffprobelocation'].value, self._infile)
         self._command = []
@@ -525,8 +522,7 @@ class ConverterVideoThread():
                 self._running = False
                 return True
             if i == 1:
-                return_string = thread.match.group(
-                    0).replace("frame=", "").lstrip()
+                return_string = thread.match.group(0).replace("frame=", "").lstrip()
                 self._frame_process = int(return_string)
                 self._percent = round(
                     float(self._frame_process / self._frame_count * 100), 2)

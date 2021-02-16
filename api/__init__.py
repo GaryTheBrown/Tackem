@@ -6,7 +6,7 @@ from api.base import APIBase
 from api.admin import APIAdmin
 from api.library import APILibrary
 from data.config import CONFIG
-from libs.root_event import RootEvent
+from libs.events import RootEvent
 from libs.authenticator import Authentication
 
 @cherrypy.expose

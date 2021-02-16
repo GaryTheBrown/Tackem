@@ -3,7 +3,7 @@ from typing import Generator
 import threading
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
-from watchdog.events import PatternMatchingEventHandler
+from watchdog.events import PatternMatchingEventHandler, FileSystemEvent
 from watchdog.observers import Observer
 from libs.database import Database
 from libs.database.messages import SQLInsert, SQLSelect, SQLTable
@@ -136,18 +136,18 @@ class LibraryBase(metaclass=ABCMeta):
 
             yield msg3.return_data
 
-    def _folder_on_created(self, event):
+    def _folder_on_created(self, event: FileSystemEvent):
         '''New file added to folder'''
         print(f"{event.src_path} has been created!")
 
-    def _folder_on_deleted(self, event):
+    def _folder_on_deleted(self, event: FileSystemEvent):
         '''File was deleted from the folder'''
         print(f"deleted {event.src_path}!")
 
-    def _folder_on_modified(self, event):
+    def _folder_on_modified(self, event: FileSystemEvent):
         '''File has been Modified in the folder'''
         print(f"{event.src_path} has been modified")
 
-    def _folder_on_moved(self, event):
+    def _folder_on_moved(self, event: FileSystemEvent):
         '''File has been Moved in the folder'''
         print(f"moved {event.src_path} to {event.dest_path}")

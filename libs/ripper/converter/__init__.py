@@ -7,11 +7,10 @@ from libs.database.where import Where
 from data.config import CONFIG
 from data.database.ripper import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
-from .data.disc_type import make_disc_type
-from .data.video_track_type import make_track_type
-from .converter_video_thread import ConverterVideoThread
-from .data.events import RipperEvents
-
+from libs.ripper.data.disc_type import make_disc_type
+from libs.ripper.data.video_track_type import make_track_type
+from libs.ripper.converter.video_thread import ConverterVideoThread
+from libs.ripper.events import RipperEvents
 
 class Converter():
     '''Master Section for the Converter controller'''
@@ -23,7 +22,7 @@ class Converter():
         self._thread_run = False
         self._thread_count = 0
         self._tasks_sema = threading.Semaphore(
-            CONFIG['plugins']['ripping']['ripper']['converter']['threadcount'].value
+            CONFIG['ripper']['converter']['threadcount'].value
         )
         self._tasks = []
         self._list_of_running_ids = []

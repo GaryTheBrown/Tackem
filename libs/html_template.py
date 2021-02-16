@@ -1,9 +1,10 @@
 '''HTML TEMPLATE'''
 from typing import Optional
+from data import PROGRAMVERSION
 from data.config import CONFIG
 from libs.authenticator import Authentication
 from libs.html_system import HTMLSystem
-from data import PROGRAMVERSION
+from libs.ripper import Ripper
 
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
@@ -25,9 +26,6 @@ class HTMLTEMPLATE():
         self._key = key
         self._base_stylesheet = base_stylesheet
         self._base_javascript = base_javascript
-
-        if key != "":
-            self._plugin = self._tackem_system.plugin
 
     def _template(
             self,
@@ -89,15 +87,12 @@ class HTMLTEMPLATE():
             STYLESHEETEXTRA=stylesheet_extra_html,
             NAVBAR=navbar_html,
             BODY=body,
-            BASEURL=CONFIG['webui']['baseurl'].value,
+            BASEURL=self._baseurl,
             PROGRAMVERSION=PROGRAMVERSION,
             TITLE=title
         )
 
-    def _error_page(
-            self,
-            code: int
-    ) -> str:
+    def _error_page(self, code: int) -> str:
         '''Shows the error Page'''
         # if not any codes bellow or 404
         page = '<h1 class="text-center">404 Not Found</h1>'
@@ -110,58 +105,17 @@ class HTMLTEMPLATE():
         nav_items_html = ""
         if not Authentication.check_logged_in():
             return nav_items_html
-        nav_list = {}
-        # for key in self._tackem_system.system_keys():
-        #     key_list = key.split(" ")
-        #     if not key_list[0] in nav_list:
-        #         if len(key_list) == 1:
-        #             nav_list[key_list[0]] = key
-        #             continue
 
-        #         nav_list[key_list[0]] = {}
+        ripper_html = navbar_item("Ripper", "ripper")
 
-        #     if not key_list[1] in nav_list[key_list[0]]:
-        #         if len(key_list) == 2:
-        #             nav_list[key_list[0]][key_list[1]] = key
-        #             continue
-
-        #         nav_list[key_list[0]][key_list[1]] = {}
-
-        #     if not key_list[2] in nav_list[key_list[0]][key_list[1]]:
-        #         nav_list[key_list[0]][key_list[1]][key_list[2]] = key
-
-        for key in sorted(nav_list):
-            if isinstance(nav_list[key], str):
-                if nav_list[key] is self._key:
-                    nav_items_html += navbar_item_active(key)
-                else:
-                    nav_items_html += navbar_item(key, nav_list[key])
-            else:
-                layer2 = ""
-                for key2 in sorted(nav_list[key]):
-                    if isinstance(nav_list[key][key2], str):
-                        if nav_list[key][key2] is self._key:
-                            layer2 += navbar_item_active(key2)
-                        else:
-                            layer2 += navbar_item(key2, nav_list[key][key2])
-                    else:
-                        layer3 = ""
-                        for key3 in sorted(nav_list[key][key2]):
-                            if nav_list[key][key2][key3] is self._key:
-                                layer3 += navbar_item_active(key3)
-                            else:
-                                layer3 += navbar_item(key3,
-                                                      nav_list[key][key2][key3])
-                        layer2 += navbar_drop_right(key2, key + key2, layer3)
-                nav_items_html += navbar_dropdown(key, key, layer2)
+        if Ripper.running:
+            nav_items_html += ripper_html
         return nav_items_html
 
     def _navbar_right_items(self) -> str:
         '''Navigation Bar Left Items For The System'''
         navbar_about_html = navbar_item("About", "about")
         navbar_item_html = navbar_item("CONFIG", "admin/config")
-        # navbar_plugin_download_html = navbar_item(
-        #     "Plugin Download", "admin/plugin_downloader")
         navbar_users_html = navbar_item("Users", "admin/users")
         navbar_login_html = navbar_item("Login", "login")
         navbar_logout_html = navbar_item("Logout", "logout")
@@ -173,7 +127,6 @@ class HTMLTEMPLATE():
         if Authentication.check_logged_in():
             if Authentication.is_admin():
                 admin_html = navbar_item_html
-                # admin_html += navbar_plugin_download_html
                 admin_html += navbar_users_html
                 admin_html += navbar_reboot_html
                 admin_html += navbar_shutdown_html

@@ -1,4 +1,9 @@
 '''Webserver'''
+from cherrypy.process.wspbus import bus
+from www.ripper import RipperRoot
+from www.ripper.drive import RipperDrive
+from libs.ripper import Ripper
+from libs.file import File
 import os
 import cherrypy
 from www.root import Root
@@ -56,19 +61,38 @@ class Webserver:
             }
         }
 
+        ripper_cfg = CONFIG['ripper']
+        conf_ripper = {
+            '/tempvideo': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': File.location(ripper_cfg['locations']['videoripping'].value)
+            },
+            '/tempaudio': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': File.location(ripper_cfg['locations']['audioripping'].value)
+            }
+        }
+
         baseurl = CONFIG['webui']['baseurl'].value
 
         cherrypy.tree.mount(Root("", ""), baseurl, conf_root)
         cherrypy.tree.mount(Admin("Admin", ""), baseurl + "admin/", conf_root)
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
 
+        if Ripper.running:
+            ripper = RipperRoot("Ripper", "")
+            ripper.drives = RipperDrive("Ripper Drives", "")
+            # ripper.videolabeler = VideoLabeler("Ripper Video Labeler", "")
+            # ripper.converter = Converter("Ripper Video Converter", "")
+            cherrypy.tree.mount(ripper, baseurl + "ripper/", conf_ripper)
+
         HTMLSystem.set_theme(CONFIG['webui']['theme'].value)
         cherrypy.engine.start()
+        cls.__running = True
 
     @classmethod
     def stop(cls):
         '''stops the Webserver'''
         if cls.__running:
-            cherrypy.config.update({ 'server.shutdown_timeout': 1 })
             cherrypy.engine.exit()
             cherrypy.server.httpserver = None

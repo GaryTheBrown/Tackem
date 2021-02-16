@@ -8,8 +8,9 @@
 	],
 	// update Dockerfile with your home folder
 	"runArgs": [
+		"--privileged",
 		"-v",
-		"/home/gary/.ssh:/home/Tackem/.ssh:ro"
+		"/home/gary/.ssh:/home/Tackem/.ssh:ro",
 	],
 	//mount points
 	//IF YOU ARE HAVING ISSUES OPENING THIS DEVCONTAINER WITH NO DISC DRIVE COMMENT OUT THESE MOUNTS

@@ -28,7 +28,7 @@ class RipperSubSystem():
 ###########
     def get_ripping_data(self) -> dict:
         '''returns the data as dict for html'''
-        return_dict = {
+        return {
             'track': self._ripping_track,
             'file': self._ripping_file,
             'total': self._ripping_total,
@@ -36,4 +36,3 @@ class RipperSubSystem():
             'file_percent': self._ripping_file_p,
             'total_percent': self._ripping_total_p
         }
-        return return_dict

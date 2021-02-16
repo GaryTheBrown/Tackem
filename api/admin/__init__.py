@@ -7,7 +7,7 @@ from api.admin.delete_multi import APIAdminDeleteMulti
 from api.admin.user_add import APIAdminUserAdd
 from api.admin.user_delete import APIAdminUserDelete
 from api.admin.user_update import APIAdminUserUpdate
-from libs.root_event import RootEvent
+from libs.events import RootEvent
 
 @cherrypy.expose
 class APIAdmin(APIBase):

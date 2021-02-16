@@ -7,10 +7,10 @@ from libs.database import Database
 from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
 from data.config import CONFIG
-from .ffprobe import FFprobe
-from .data.events import RipperEvents
-from .data.db_tables import VIDEO_INFO_DB_INFO as INFO_DB
-from .data.disc_type import make_disc_type
+from libs.ripper.ffprobe import FFprobe
+from libs.ripper.events import RipperEvents
+from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
+from libs.ripper.data.disc_type import make_disc_type
 
 
 class Renamer():
