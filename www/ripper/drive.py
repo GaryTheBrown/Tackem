@@ -25,7 +25,7 @@ class RipperDrive(HTMLTEMPLATE):
             index_int = int(index)
         except ValueError:
             self._return()
-        drives = Ripper.get_drives
+        drives = Ripper.drives
         if index_int > len(drives):
             self._return()
         drive = drives[index_int]

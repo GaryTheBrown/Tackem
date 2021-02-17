@@ -37,6 +37,6 @@ class RipperRoot(HTMLTEMPLATE):
     def drives_data(self, vertical=False):
         '''returns the group of drives html'''
         html = ""
-        for drive_index, drive_obj in enumerate(Ripper.get_drives):
+        for drive_index, drive_obj in enumerate(Ripper.drives):
             html += self.drive_data(drive_obj, drive_index , vertical)
         return html

@@ -10,10 +10,19 @@ from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive.linux import DriveLinux
 
-# TODO FIX error with permissions in docker.
+#TODO Working on the makemkv system so it can take input from drive or iso systems
+#TODO Make the ISO section work/ finish off it's systems
+# need to make a page for uploads and the API for the ripper to recieve the UUID, SHA256, LABEL and
+# filename then give a key for upload back.
+
+#TODO WWW all the systems back to life
+#TODO Add in the video Labeler and renamer as well, then look at adding the Audio stuff
+
+
 # TODO get the ripper html stuff moved into the www folder in a single file removing the html part
 # functions for the new way. POSSABLY NEED TO CHANGE HOW THIS SHOWS SO POSSABLY NEEDS TO BE
 # REWRITTEN BUT USE IT FOR REFERENCE AND TAKE THE LAYOUT ACROSS
+
 # TODO add the option of ripping locally or just giving ISO, use the same evnet stuff thats in
 # library to watch a folder for new files then start a iso ripper (using limits semphores)
 
@@ -90,6 +99,6 @@ class Ripper:
             cls.__running = False
 
     @classproperty
-    def get_drives(cls) -> list:
+    def drives(cls) -> list:
         '''Returns the Enabled drives'''
         return cls.__drives

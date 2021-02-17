@@ -11,77 +11,21 @@ class ISORipper(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
 
     def __init__(self, iso_file: str, type: str, uuid: str, label: str, sha256: str):
-        self._config = config
-        self._device = config['link'].value
-
         self._thread = threading.Thread(target=self.run, args=())
-        self._thread.setName("Ripper ISO:" + self._device)
+        self._thread.setName("Ripper ISO:" + iso_file)
 
-        self._thread_run = True
-        self._disc_type = "none"
-        self._disc_type_lock = threading.Lock()
-        self._disc_uuid = None
-        self._disc_uuid_lock = threading.Lock()
-        self._disc_label = None
-        self._disc_label_lock = threading.Lock()
-        self._disc_sha256 = None
-        self._disc_sha256_lock = threading.Lock()
+        self.__iso_file = iso_file
+        self.__type = type
+        self.__uuid = uuid
+        self.__label = label
+        self.__sha256 = sha256
 
         self._ripper = None # whatever the ripper is makemkv and cd ripper
 
-###########
-##SETTERS##
-###########
-    def _set_disc_type(self, disc_type: str):
-        '''Threadded Safe Set disc type'''
-        with self._disc_type_lock:
-            self._disc_type = disc_type
-
-    def _set_disc_uuid(self, disc_uuid: str):
-        '''Threadded Safe Set disc uuid'''
-        with self._disc_uuid_lock:
-            self._disc_uuid = disc_uuid
-
-    def _set_disc_label(self, disc_label: str):
-        '''Threadded Safe Set disc label'''
-        with self._disc_label_lock:
-            self._disc_label = disc_label
-
-    def _set_disc_sha256(self, disc_sha256: str):
-        '''Threadded Safe Set disc sha256'''
-        with self._disc_sha256_lock:
-            self._disc_sha256 = disc_sha256
-
-###########
-##GETTERS##
-###########
-    def get_thread_run(self) -> bool:
+    @property
+    def thread_run(self) -> bool:
         '''return if thread is running'''
         return self._thread.is_alive()
-
-    def get_disc_type(self) -> str:
-        '''returns the disc type if a disc is in the drive'''
-        with self._disc_type_lock:
-            disc_type = self._disc_type
-        return disc_type
-
-    def get_disc_uuid(self) -> str:
-        '''returns the disc uuid if a disc is in the drive'''
-        with self._disc_uuid_lock:
-            disc_uuid = self._disc_uuid
-        return disc_uuid
-
-    def get_disc_label(self) -> str:
-        '''returns the disc label if a disc is in the drive'''
-        with self._disc_label_lock:
-            disc_label = self._disc_label
-        return disc_label
-
-    def get_disc_sha256(self) -> str:
-        '''returns the disc sha256 if a disc is in the drive'''
-        with self._disc_sha256_lock:
-            disc_sha256 = self._disc_sha256
-        return disc_sha256
 
 ##########
 ##Thread##
@@ -122,7 +66,7 @@ class ISORipper(metaclass=ABCMeta):
         '''returns the data as json or dict for html'''
         return_dict = {}
         image_folder = CONFIG["webui"]["baseurl"].value + "static/img/"
-        disc_type = self.get_disc_type()
+        disc_type = self.__type
         if disc_type == "audiocd":
             return_dict["traystatus"] = image_folder + "audiocd.png"
         elif disc_type == "dvd":

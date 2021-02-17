@@ -37,7 +37,8 @@ class BackendBase(metaclass=ABCMeta):
             self._event_lock.set()
             self.__thread.join()
 
-    def get_thread_run(self) -> bool:
+    @property
+    def thread_run(self) -> bool:
         '''return if thread is running'''
         return self.__thread.is_alive()
 

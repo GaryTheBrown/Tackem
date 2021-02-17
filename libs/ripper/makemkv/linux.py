@@ -1,14 +1,11 @@
 '''Special Linux Drive Functions'''
-import json
 import os
 import pexpect
-import shlex
-from subprocess import DEVNULL, PIPE, Popen
 from libs.file import File
-from .video import Video
+from . import MakeMKV
 
 
-class VideoLinux(Video):
+class MakeMKVLinux(MakeMKV):
     '''Video Control ripper program self contained'''
 
 #################

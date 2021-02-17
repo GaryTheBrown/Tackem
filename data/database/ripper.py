@@ -14,6 +14,7 @@ AUDIO_CONVERT_DB_INFO = Table(
 AUDIO_INFO_DB_INFO = Table(
     "ripping_ripper_audio_info",
     1,
+    Column("iso_file", "text"),
     Column("musicbrainz_disc_id", "varchar(28)", not_null=True),
     Column("track_count", "tinyint", not_null=True),
     Column("release_id", "varchar(36)", not_null=True),
@@ -38,6 +39,7 @@ VIDEO_CONVERT_DB_INFO = Table(
 VIDEO_INFO_DB_INFO = Table(
     "ripping_ripper_video_info",
     1,
+    Column("iso_file", "text"),
     Column("uuid", "varchar(16)", not_null=True),
     Column("label", "text", not_null=True),
     Column("sha256", "varchar(64)", not_null=True),

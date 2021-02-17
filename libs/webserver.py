@@ -1,4 +1,5 @@
 '''Webserver'''
+from www.upload import Upload
 from cherrypy.process.wspbus import bus
 from www.ripper import RipperRoot
 from www.ripper.drive import RipperDrive
@@ -12,10 +13,12 @@ from api import API
 from libs.error_pages import setup_error_pages
 from data import THEMEFOLDERLOCATION
 from data.config import CONFIG
-from typing import Optional
 from data.config import CONFIG
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
+from libs.database import Database
+from libs.database.messages import SQLTable
+from data.database.upload import UPLOAD_DB_INFO
 class Webserver:
     '''Webserver'''
     __running = False
@@ -26,6 +29,8 @@ class Webserver:
         if cls.__running:
             return
 
+        Database.call(SQLTable(UPLOAD_DB_INFO))
+
         HTMLTEMPLATE.set_baseurl(CONFIG['webui']['baseurl'].value)
 
         cherrypy.config.update({
@@ -33,6 +38,8 @@ class Webserver:
             'server.socket_port': CONFIG['webui']['port'].value,
             'server.threadPool': 10,
             'server.environment': "production",
+            'server.max_request_body_size' : 0,
+            'server.socket_timeout' : 60,
             'log.screen': False,
             'log.access_file': '',
             'log.error_file': '',
@@ -73,11 +80,18 @@ class Webserver:
             }
         }
 
+        conf_upload = {
+            "/":{
+                'response.timeout': 3600
+            }
+        }
+
         baseurl = CONFIG['webui']['baseurl'].value
 
         cherrypy.tree.mount(Root("", ""), baseurl, conf_root)
         cherrypy.tree.mount(Admin("Admin", ""), baseurl + "admin/", conf_root)
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
+        cherrypy.tree.mount(Upload("Upload", ""), baseurl + "upload/", conf_upload)
 
         if Ripper.running:
             ripper = RipperRoot("Ripper", "")

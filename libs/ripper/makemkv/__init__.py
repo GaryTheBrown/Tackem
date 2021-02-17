@@ -1,4 +1,4 @@
-'''video ripping controller'''
+'''MakeMKV ripping controller'''
 from abc import ABCMeta, abstractmethod
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.update import SQLUpdate
@@ -9,7 +9,7 @@ from libs.file import File
 import json
 from libs.database import Database
 from data.config import CONFIG
-from .ripper_subsystem import RipperSubSystem
+from libs.ripper.ripper_subsystem import RipperSubSystem
 from libs.ripper.converter import create_video_converter_row
 from libs.ripper.disc_api import apiaccess_video_disc_id
 from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
@@ -17,25 +17,17 @@ from libs.ripper.data.disc_type import make_disc_type
 from libs.ripper.events import RipperEvents
 
 
-class Video(RipperSubSystem, metaclass=ABCMeta):
-    '''video ripping controller'''
+class MakeMKV(RipperSubSystem, metaclass=ABCMeta):
+    '''MakeMKV ripping controller'''
 
     def __init__(
         self,
         device: str,
         thread_name: str,
-        disc_type: str,
         set_drive_status: Callable,
         thread_run: bool,
-        uuid: str,
-        label: str,
-        sha256: str,
     ):
         super().__init__(device, thread_name, set_drive_status, thread_run)
-        self.__uuid = uuid
-        self.__label = label
-        self.__sha256 = sha256
-        self._disc_type = disc_type
         self._disc_rip_info = None
         self._db_data = None
         self._db_id = None
@@ -43,16 +35,22 @@ class Video(RipperSubSystem, metaclass=ABCMeta):
 #######################
 ##DATABASE & API CALL##
 #######################
-    def _check_db_and_api_for_disc_info(self):
+    def _check_db_and_api_for_disc_info(
+        self,
+        uuid: str,
+        label: str,
+        sha256: str,
+        disc_type: str,
+    ):
         '''checks the DB and API for the Disc info'''
 
 
         msg = SQLSelect(
             INFO_DB.name(),
-            Where("uuid", self.__uuid),
-            Where("label", self.__label),
-            Where("sha256", self.__sha256),
-            Where("disc_type", self.__disc_type),
+            Where("uuid", uuid),
+            Where("label", label),
+            Where("sha256", sha256),
+            Where("disc_type", disc_type),
         )
         Database.call(msg)
 
@@ -133,7 +131,7 @@ class Video(RipperSubSystem, metaclass=ABCMeta):
         return True
 
     @abstractmethod
-    def _makemkv_backup_from_disc(self, temp_dir, index=-1):
+    def _makemkv_backup_from_disc(self, temp_dir, index=-1, device: bool = True):
         '''Do the mkv Backup from disc'''
 
 #######################

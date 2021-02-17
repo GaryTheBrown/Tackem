@@ -35,5 +35,11 @@ def webui_config() -> ConfigList:
             "default",
             "Theme",
             "The Theme for the system"
-        )
+        ),
+        ConfigObjString(
+            "uploadlocation",
+            "upload/",
+            "Temp Upload Location",
+            "Location for temp storage of uploaded files"
+        ),
     )
