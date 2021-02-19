@@ -29,7 +29,7 @@ class MakeMKVLinux(MakeMKV):
             "--progress=-stdout",
             "--noscan",
             "mkv",
-            f"dev:{self._device}" if device else f"iso:",
+            f"dev:{self._device}" if device else f"iso:{self._device}",
             str(index),
             temp_dir
         ]

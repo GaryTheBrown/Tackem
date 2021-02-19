@@ -1,6 +1,6 @@
 '''Library Files Table'''
-from libs.database.table import Table
 from libs.database.column import Column
+from libs.database.table import Table
 
 LIBRARY_FILES_DB_INFO = Table(
     "library_files",
@@ -48,4 +48,19 @@ LIBRARY_FILES_DB_INFO = Table(
         "from_id",
         "integer"
     ),
+)
+
+LIBRARY_MOVIES_DB_INFO = Table(
+    "library_movies",
+    1,
+    Column(
+        "fileid",
+        "integer"
+    ),
+    Column(
+        "imdb",
+        "varchar(9)",
+        default="NULL",
+        default_raw=True
+    )
 )

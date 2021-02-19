@@ -1,8 +1,8 @@
 '''Config List Class'''
+from libs.config.list.base import ConfigListBase
 from libs.config.obj.enabled import ConfigObjEnabled
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.html_system import HTMLSystem
-from libs.config.list.base import ConfigListBase
 
 class ConfigListHtml(ConfigListBase):
     '''Config List Class'''

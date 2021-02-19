@@ -2,15 +2,15 @@
 Creates checksum hash for a file in Binary from SHA256
 If storing in the DB you need a BINARY(32)
 '''
+import datetime
 import hashlib
 import threading
-import datetime
 from pathlib import Path
+from data.config import CONFIG
 from libs.database import Database
 from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
 from libraries.db.library_files import LIBRARY_FILES_DB_INFO
-from data.config import CONFIG
 
 class FileChecker:
     '''system to check the files are not damaged'''

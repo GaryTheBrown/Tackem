@@ -1,7 +1,7 @@
 '''Config Object Checkbox'''
 from typing import Optional
-from libs.html_system import HTMLSystem
 from libs.config.obj.data.input_attributes import InputAttributes
+from libs.html_system import HTMLSystem
 
 class ConfigObjCheckbox:
     '''Config Item Checkbox'''

@@ -1,7 +1,7 @@
 '''Config Object Radios'''
 from typing import Optional
-from libs.html_system import HTMLSystem
 from libs.config.obj.data.input_attributes import InputAttributes
+from libs.html_system import HTMLSystem
 
 class ConfigObjRadio:
     '''Config Item Radios'''

@@ -1,12 +1,10 @@
 '''ROOT API'''
 from api.scraper import APIScraper
-import json
 import cherrypy
 from api.base import APIBase
 from api.admin import APIAdmin
 from api.library import APILibrary
 from data.config import CONFIG
-from libs.events import RootEvent
 from libs.authenticator import Authentication
 
 @cherrypy.expose

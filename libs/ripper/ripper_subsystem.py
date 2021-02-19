@@ -4,17 +4,10 @@ from typing import Callable
 class RipperSubSystem():
     '''Subsystem controller'''
 
-    def __init__(
-        self,
-        device: str,
-        thread_name: str,
-        set_drive_status: Callable[[str], None],
-        thread_run: bool
-    ):
+    def __init__(self, device: str, thread_name: str, thread_run: bool):
         self._device = device
         self._thread_name = thread_name
         self._thread_run = thread_run
-        self._set_drive_status = set_drive_status
 
         self._ripping_track = None
         self._ripping_file = 0

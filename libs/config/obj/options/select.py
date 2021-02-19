@@ -1,8 +1,8 @@
 '''Config Object Options Select'''
 from typing import Optional, List, Union
-from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
+from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 

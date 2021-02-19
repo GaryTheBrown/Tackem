@@ -1,6 +1,6 @@
 '''Ripper Tables'''
-from libs.database.table import Table
 from libs.database.column import Column
+from libs.database.table import Table
 
 AUDIO_CONVERT_DB_INFO = Table(
     "ripping_ripper_audio_convert_info",
