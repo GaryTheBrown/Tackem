@@ -7,7 +7,7 @@ from libs.database.messages import SQLInsert, SQLSelect, SQLUpdate
 from libs.database.where import Where
 from libs.musicbrainz import MUSICBRAINZ
 from .ripper_subsystem import RipperSubSystem
-from data.database.ripper import AUDIO_INFO_DB_INFO as INFO_DB
+from data.database.ripper import AUDIO_INFO_DB as INFO_DB
 
 # from .data.events import RipperEvents
 
@@ -21,8 +21,8 @@ from data.database.ripper import AUDIO_INFO_DB_INFO as INFO_DB
 class AudioCD(RipperSubSystem, metaclass=ABCMeta):
     '''Audio ripping controller'''
 
-    def __init__(self, device, thread_name, set_drive_status, thread_run):
-        super().__init__(device, thread_name, set_drive_status, thread_run)
+    def __init__(self, device: str):
+        super().__init__(device)
         self._disc_id = None
         self._track_count = 0
         self._release_id = None

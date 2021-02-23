@@ -2,7 +2,7 @@
 from libs.database.column import Column
 from libs.database.table import Table
 
-LIBRARY_FILES_DB_INFO = Table(
+LIBRARY_FILES_DB = Table(
     "library_files",
     1,
     Column(
@@ -50,7 +50,7 @@ LIBRARY_FILES_DB_INFO = Table(
     ),
 )
 
-LIBRARY_MOVIES_DB_INFO = Table(
+LIBRARY_MOVIES_DB = Table(
     "library_movies",
     1,
     Column(

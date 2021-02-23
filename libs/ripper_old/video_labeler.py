@@ -6,7 +6,7 @@ from libs.database.where import Where
 from data.config import CONFIG
 from libs.ripper.converter import create_video_converter_row
 from libs.ripper.events import RipperEvents
-from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
+from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import DiscType
 
 

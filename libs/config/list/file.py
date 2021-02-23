@@ -1,4 +1,5 @@
 '''CONFIG List Class'''
+from typing import Optional
 from configobj import ConfigObj
 from validate import Validator
 from data import PROGRAMCONFIGLOCATION
@@ -10,7 +11,7 @@ from libs.file import File
 class ConfigListFile(ConfigListBase):
     '''CONFIG List Class'''
 
-    __config = None
+    __config: ConfigObj = None
 
     def load(self):
         """Create a config file using a configspec and validate it against a Validator object"""
@@ -35,7 +36,7 @@ class ConfigListFile(ConfigListBase):
         except OSError:
             print("ERROR WRITING Config FILE")
 
-    def update_configobj(self, config=None):
+    def update_configobj(self, config: ConfigObj = None):
         '''Updates the config Object for saving'''
         if self._objects is None:
             return
@@ -56,7 +57,7 @@ class ConfigListFile(ConfigListBase):
             else:
                 config[item.var_name] = item.value
 
-    def load_configobj(self, config=None, many_type=None):
+    def load_configobj(self, config: ConfigObj = None, many_type: Optional[str] = None):
         '''Loads the congfig object into the master config file'''
         if self._objects is None:
             return

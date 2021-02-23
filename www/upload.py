@@ -1,8 +1,10 @@
 '''Script For the Root Of The System'''
+from libs.database.messages.delete import SQLDelete
+import os
 from libs.database.where import Where
-from data.database.upload import UPLOAD_DB_INFO
+from data.database.system import UPLOAD_DB
 from libs.database import Database
-from libs.database.messages.select import SQLSelect
+from libs.database.messages import SQLSelect
 from data.config import CONFIG
 import cherrypy
 import shutil
@@ -19,7 +21,7 @@ class Upload(HTMLTEMPLATE):
             raise cherrypy.HTTPError(status=403)
 
         msg = SQLSelect(
-            UPLOAD_DB_INFO.name(),
+            UPLOAD_DB.name(),
             Where("key", key)
         )
         Database.call(msg)
@@ -29,13 +31,11 @@ class Upload(HTMLTEMPLATE):
 
         filename = msg.return_data['filename']
 
-        upload_folder = File.location(f"{CONFIG['webui']['uploadlocation'].value}{filename}")
-        with open(upload_folder, 'wb') as file:
+        upload_name = File.location(f"{CONFIG['webui']['uploadlocation'].value}{filename}")
+        with open(upload_name, 'wb') as file:
             shutil.copyfileobj(cherrypy.request.body, file)
 
-        #TODO Do some magic here to check the Key in the upload Access DB and then put the file
-        # where it needs to go from there
-
-        # from msg.return_data['system'] and msg.return_data['link_id'] send the file to the correct
-        # location so far only "audioISO" and "videoISO"
-        return 'OK'
+        if os.path.getsize(upload_name) == msg.return_data['filesize']:
+            Database.call(SQLDelete(UPLOAD_DB.name(), Where("id", self._db_data['id'])))
+            return 'OK'
+        return "FAILED"

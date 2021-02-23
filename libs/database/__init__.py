@@ -1,4 +1,5 @@
 '''SQL System'''
+from libs.database.backend.base import BackendBase
 from typing import Any, Union
 from data.config import CONFIG
 from libs.database.messages.sql_message import SQLMessage
@@ -8,7 +9,7 @@ from libs.database.backend.mysql import MySQL
 
 class Database:
     '''SQL System'''
-    __sql_system = None
+    __sql_system: BackendBase = None
 
     @classmethod
     def start(cls):

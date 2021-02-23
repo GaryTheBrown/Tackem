@@ -1,8 +1,8 @@
 '''Libraries Root'''
 from data.config import CONFIG
+from data.database.library import LIBRARY_FILES_DB
 from libs.database import Database
-from libs.database.sql_message import SQLMessage
-from libraries.db.library_files import LIBRARY_FILES_DB_INFO
+from libs.database.table import SQLTable
 from libraries.file_checker import FileChecker
 from libraries.movies import MoviesLibrary
 
@@ -21,7 +21,7 @@ class Libraries:
         if self.__loaded:
             return
 
-        Database.call(SQLMessage(LIBRARY_FILES_DB_INFO))
+        Database.call(SQLTable(LIBRARY_FILES_DB))
 
         self.__checksum = FileChecker()
 

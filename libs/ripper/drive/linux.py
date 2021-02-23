@@ -1,14 +1,11 @@
 '''Special Linux Drive Functions'''
 import fcntl
-from libs.file import File
+from libs.ripper.makemkv.linux import MakeMKVLinux
 import os
 from shlex import shlex
 import time
 from subprocess import DEVNULL, PIPE, Popen
 from . import Drive
-# from .audiocd_linux import AudioCDLinux
-# from .video_linux import VideoLinux
-
 
 class DriveLinux(Drive):
     '''Drive Control ripper program self contained'''
@@ -23,31 +20,31 @@ class DriveLinux(Drive):
             return_value = fcntl.ioctl(file_device, 0x5326)
             os.close(file_device)
             if return_value == 1:  # no disk in tray
-                self._set_tray_status("empty")
-                self._set_disc_type("none")
-                self._set_drive_status("idle")
+                self.tray_status = "empty"
+                self.disc_type = "none"
+                self.drive_status = "idle"
             elif return_value == 2:  # tray open
-                self._set_tray_status("open")
-                self._set_disc_type("none")
-                self._set_drive_status("idle")
+                self.tray_status = "open"
+                self.disc_type = "none"
+                self.drive_status = "idle"
             elif return_value == 3:  # reading tray
-                self._set_tray_status("reading")
-                self._set_disc_type("none")
-                self._set_drive_status("loading disc")
+                self.tray_status = "reading"
+                self.disc_type = "none"
+                self.drive_status = "loading disc"
             elif return_value == 4:  # disk in tray
-                self._set_tray_status("loaded")
+                self.tray_status = "loaded"
             else:
-                self._set_tray_status("unknown")
-                self._set_disc_type("none")
-                self._set_drive_status("ERROR")
+                self.tray_status = "unknown"
+                self.disc_type = "none"
+                self.drive_status = "ERROR"
 
     def _check_disc_type(self, sleep_time: float = 1.0) -> bool:
         '''Will return the size of the disc'''
         with self._drive_lock:
             if not self._thread_run:
                 return False
-            if self.get_tray_status() != "loaded":
-                self._set_disc_type("None")
+            if self.tray_status != "loaded":
+                self.disc_type = "None"
                 return False
             message = ""
             while message == "":
@@ -55,8 +52,7 @@ class DriveLinux(Drive):
                                  stdout=PIPE, stderr=DEVNULL)
                 process2 = Popen(["grep", "ID_FS_TYPE="],
                                  stdin=process1.stdout, stdout=PIPE)
-                message = process2.communicate()[0].decode(
-                    'utf-8').replace("\n", "")
+                message = process2.communicate()[0].decode('utf-8').replace("\n", "")
                 if not self._thread_run:
                     self.unlock_tray()
                     return False
@@ -65,18 +61,17 @@ class DriveLinux(Drive):
             if file_format == "udf":
                 process3 = Popen(["udevadm", "info", "--query=all", "--name=" + self._device],
                                  stdout=PIPE, stderr=DEVNULL)
-                process4 = Popen(["grep", "ID_FS_VERSION="],
-                                 stdin=process3.stdout, stdout=PIPE)
+                process4 = Popen(["grep", "ID_FS_VERSION="], stdin=process3.stdout, stdout=PIPE)
                 message = process4.communicate()[0]
                 udf_version_str = message.decode(
                     'utf-8').rstrip().split("=")[1]
                 udf_version_float = float(udf_version_str)
                 if udf_version_float == 1.02:
-                    self._set_disc_type("dvd")
+                    self.disc_type = "dvd"
                 elif udf_version_float >= 2.50:
-                    self._set_disc_type("bluray")
+                    self.disc_type = "bluray"
             else:
-                self._set_disc_type("audiocd")
+                self.disc_type = "audiocd"
             return True
 
     def _check_disc_information(self):
@@ -86,8 +81,8 @@ class DriveLinux(Drive):
         if not returned_message:
             return False
         message = shlex.split(returned_message.decode('utf-8').rstrip().split(": ")[1])
-        self._set_disc_uuid(message[0].split("=")[1])
-        self._set_disc_label(message[1].split("=")[1])
+        self.disc_uuid = message[0].split("=")[1]
+        self.disc_label = message[1].split("=")[1]
         if not self._thread_run:
             return False
 
@@ -104,13 +99,13 @@ class DriveLinux(Drive):
         dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
                            stdout=PIPE, stderr=DEVNULL)
         sha256sum = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE, stderr=DEVNULL)
-        self._set_disc_sha256(sha256sum.communicate()[0].decode('utf-8').replace("-", "").rstrip())
+        self.disc_sha256 = sha256sum.communicate()[0].decode('utf-8').replace("-", "").rstrip()
 
         return dd_process.returncode == 0 and self._thread_run
 
     # def _check_audio_disc_information(self):
     #     '''Gets unique info for audio disc'''
-    #     if self.get_tray_status() != "loaded":
+    #     if self.tray_status != "loaded":
     #         return False
     #     with self._drive_lock:
     #         process = Popen(["cdrdao", "discid", "--device", self._device],
@@ -123,7 +118,7 @@ class DriveLinux(Drive):
     #     for line in returned_message:
     #         disc_rip_info[line.split(":")[0]] = line.split(":")[1]
 
-    #     self._set_disc_rip_info(disc_rip_info)
+    #     self.disc_rip_info = disc_rip_info
     #     return True
 
 ################
@@ -160,10 +155,8 @@ class DriveLinux(Drive):
 ##########
     def _audio_rip(self):
         '''script to rip an audio cd'''
-        # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
-                                    # self._set_drive_status, self._thread_run)
+        # self._ripper = AudioCDLinux(self.__db_id)
 
     def _video_rip(self):
         '''script to rip video disc'''
-        # self._ripper = VideoLinux(self.get_device(), self._thread.getName(),
-        #                           self._disc_type, self._set_drive_status, self._thread_run)
+        self._ripper = MakeMKVLinux(self.__db_id)

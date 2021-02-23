@@ -1,6 +1,7 @@
 '''Base for the backend'''
 from abc import ABCMeta, abstractmethod
 import threading
+from typing import List
 from libs.database.table import Table
 from libs.database.messages.sql_message import SQLMessage
 from libs.exceptions import TableCheckFailure
@@ -9,7 +10,7 @@ class BackendBase(metaclass=ABCMeta):
     '''Base for the backend'''
     _running = threading.Event()
     _event_lock = threading.Event()
-    _event_list = []
+    _event_list: List[SQLMessage] = []
     _event_list_lock = threading.Lock()
 
     __thread_run = True

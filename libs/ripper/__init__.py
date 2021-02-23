@@ -1,11 +1,11 @@
 '''Ripper init'''
-from data.database.ripper import AUDIO_CONVERT_DB_INFO, AUDIO_INFO_DB_INFO
-from data.database.ripper import VIDEO_CONVERT_DB_INFO, VIDEO_INFO_DB_INFO
+from data.database.ripper import AUDIO_CONVERT_DB, AUDIO_INFO_DB
+from data.database.ripper import VIDEO_CONVERT_DB, VIDEO_INFO_DB
 import platform
 from data.config import CONFIG
 from libs.classproperty import classproperty
 from libs.database import Database
-from libs.database.messages.table import SQLTable
+from libs.database.messages import SQLTable
 from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive.linux import DriveLinux
@@ -66,10 +66,10 @@ class Ripper:
             File.mkdir(location.value)
 
         # Check/Create Database Tables
-        Database.call(SQLTable(AUDIO_INFO_DB_INFO))
-        Database.call(SQLTable(AUDIO_CONVERT_DB_INFO))
-        Database.call(SQLTable(VIDEO_INFO_DB_INFO))
-        Database.call(SQLTable(VIDEO_CONVERT_DB_INFO))
+        Database.call(SQLTable(AUDIO_INFO_DB))
+        Database.call(SQLTable(AUDIO_CONVERT_DB))
+        Database.call(SQLTable(VIDEO_INFO_DB))
+        Database.call(SQLTable(VIDEO_CONVERT_DB))
 
         if CONFIG['ripper']['drives']['enabled'].value:
             cls.__start_drives()

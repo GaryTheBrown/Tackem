@@ -7,7 +7,7 @@ from libs.html_system import HTMLSystem
 class ConfigListHtml(ConfigListBase):
     '''Config List Class'''
 
-    def html(self, variable_name: str = "", first_block = False) -> str:
+    def html(self, variable_name: str = "", first_block: bool = False) -> str:
         '''Returns the html for the config option'''
         if variable_name == "" and self.var_name == "root":
             return self.__root_html()
@@ -145,7 +145,7 @@ class ConfigListHtml(ConfigListBase):
             INPUT=input_html
         )
 
-    def __section_data(self, variable_name: str, skip_enabled=False) -> str:
+    def __section_data(self, variable_name: str, skip_enabled: bool = False) -> str:
         '''pulls all objects out for inclusion in the section'''
         html = ""
         for obj in self._objects:

@@ -10,7 +10,7 @@ from data.config import CONFIG
 from libs.database import Database
 from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
-from libraries.db.library_files import LIBRARY_FILES_DB_INFO
+from data.database.library import LIBRARY_FILES_DB
 
 class FileChecker:
     '''system to check the files are not damaged'''
@@ -83,7 +83,7 @@ class FileChecker:
 
         timestamp = int(now.timestamp())
         msg = SQLSelect(
-            LIBRARY_FILES_DB_INFO.name(),
+            LIBRARY_FILES_DB.name(),
             Where("last_check", timestamp, ">")
         )
 
@@ -124,14 +124,14 @@ class FileChecker:
                     update_data['bad_file'] = 1
 
                 msg = SQLUpdate(
-                    LIBRARY_FILES_DB_INFO.name(),
+                    LIBRARY_FILES_DB.name(),
                     Where("id", item['id']),
                     checksum=checksum
                 )
 
             else:
                 msg = SQLUpdate(
-                    LIBRARY_FILES_DB_INFO.name(),
+                    LIBRARY_FILES_DB.name(),
                     Where("id", item['id']),
                     missing_file=1
                 )

@@ -4,7 +4,7 @@ import json
 from data.languages import Languages
 from libs import html_parts as ghtml_parts
 from ..www import html_parts
-
+#TODO Typing
 class StreamType(metaclass=ABCMeta):
     '''Master Type'''
     _types = ["video", "audio", "subtitle"]

@@ -3,7 +3,7 @@ import sqlite3
 from data import PROGRAMCONFIGLOCATION
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table
-from data.database.table_version import TABLE_VERSION_DB_INFO
+from data.database.system import TABLE_VERSION_DB
 #https://docs.python.org/3/library/sqlite3.html
 def dict_factory(cursor, row):
     '''makes the return data from the database a dict'''
@@ -20,7 +20,7 @@ class SQLite(BackendBase):
         BackendBase._conn = sqlite3.connect(PROGRAMCONFIGLOCATION + '/Tackem.db')
         BackendBase._conn.row_factory = dict_factory
         if not self.__check_version_table_exists():
-            self.__add_table(TABLE_VERSION_DB_INFO, False)
+            self.__add_table(TABLE_VERSION_DB, False)
 
     def _shutdown(self):
         '''Shutdown the System Here'''

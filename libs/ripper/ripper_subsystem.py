@@ -4,10 +4,8 @@ from typing import Callable
 class RipperSubSystem():
     '''Subsystem controller'''
 
-    def __init__(self, device: str, thread_name: str, thread_run: bool):
+    def __init__(self, device: str):
         self._device = device
-        self._thread_name = thread_name
-        self._thread_run = thread_run
 
         self._ripping_track = None
         self._ripping_file = 0

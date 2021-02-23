@@ -12,7 +12,7 @@ TYPES = {"dontrip": "ban",
          "extra": "plus",
          "other": "plus"
          }
-
+#TODO Typing
 
 class VideoTrackType(metaclass=ABCMeta):
     '''Master Type'''

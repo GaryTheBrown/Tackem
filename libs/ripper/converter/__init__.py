@@ -5,8 +5,8 @@ from libs.database import Database
 from libs.database.messages import SQLDelete, SQLInsert, SQLSelect, SQLUpdate
 from libs.database.where import Where
 from data.config import CONFIG
-from data.database.ripper import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
-from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
+from data.database.ripper import VIDEO_CONVERT_DB as VIDEO_CONVERT_DB
+from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import make_disc_type
 from libs.ripper.data.video_track_type import make_track_type
 from libs.ripper.converter.video_thread import ConverterVideoThread

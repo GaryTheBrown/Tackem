@@ -18,7 +18,7 @@ from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.database import Database
 from libs.database.messages import SQLTable
-from data.database.upload import UPLOAD_DB_INFO
+from data.database.upload import UPLOAD_DB
 class Webserver:
     '''Webserver'''
     __running = False
@@ -29,7 +29,7 @@ class Webserver:
         if cls.__running:
             return
 
-        Database.call(SQLTable(UPLOAD_DB_INFO))
+        Database.call(SQLTable(UPLOAD_DB))
 
         HTMLTEMPLATE.set_baseurl(CONFIG['webui']['baseurl'].value)
 

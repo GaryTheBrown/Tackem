@@ -9,7 +9,7 @@ from libs.database.where import Where
 from data.config import CONFIG
 from libs.ripper.ffprobe import FFprobe
 from libs.ripper.events import RipperEvents
-from data.database.ripper import VIDEO_INFO_DB_INFO as INFO_DB
+from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import make_disc_type
 
 

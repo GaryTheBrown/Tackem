@@ -1,9 +1,5 @@
 '''Special Linux Drive Functions'''
-from libs.ripper.ISO.iso import ISORipper
-
-# from .audiocd_linux import AudioCDLinux
-# from .video_linux import VideoLinux
-
+from libs.ripper.makemkv.linux import MakeMKVLinux
 
 class ISORipperLinux(ISORipper):
     '''Drive Control ripper program self contained'''
@@ -18,5 +14,4 @@ class ISORipperLinux(ISORipper):
 
     def _video_rip(self):
         '''script to rip video disc'''
-        # self._ripper = VideoLinux(self.get_device(), self._thread.getName(),
-        #                           self._disc_type, self._set_drive_status, self._thread_run)
+        self._ripper = MakeMKVLinux(self.__db_id)

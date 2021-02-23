@@ -10,7 +10,7 @@ from libs.file import File
 from libs.scraper import Scraper
 from data.languages import Languages
 from data.config import CONFIG
-from data.database.ripper import VIDEO_CONVERT_DB_INFO as VIDEO_CONVERT_DB
+from data.database.ripper import VIDEO_CONVERT_DB as VIDEO_CONVERT_DB
 from libs.ripper.ffprobe import FFprobe
 from presets import get_video_preset_command
 

@@ -10,7 +10,7 @@ from libs.database.messages import SQLInsert, SQLSelect, SQLTable
 from libs.database.table import Table
 from libs.database.where import Where
 from libs.config.list import ConfigList
-from libraries.db.library_files import LIBRARY_FILES_DB_INFO
+from data.database.library import LIBRARY_FILES_DB
 from data.config import CONFIG
 
 class LibraryBase(metaclass=ABCMeta):
@@ -104,7 +104,7 @@ class LibraryBase(metaclass=ABCMeta):
                 continue
 
             msg1 = SQLSelect(
-                LIBRARY_FILES_DB_INFO.name(),
+                LIBRARY_FILES_DB.name(),
                 Where("folder", path.joinpath().replace(path.name, "")),
                 Where("filename", path.name)
             )
@@ -114,7 +114,7 @@ class LibraryBase(metaclass=ABCMeta):
                 continue
 
             msg2 = SQLInsert(
-                LIBRARY_FILES_DB_INFO.name(),
+                LIBRARY_FILES_DB.name(),
                 folder=path.joinpath().replace(path.name, ""),
                 filename=path.name,
                 type=self._library_type.lower(),
@@ -127,7 +127,7 @@ class LibraryBase(metaclass=ABCMeta):
             Database.call(msg2)
 
             msg3 = SQLSelect(
-                LIBRARY_FILES_DB_INFO.name(),
+                LIBRARY_FILES_DB.name(),
                 Where("folder", path.joinpath().replace(path.name, "")),
                 Where("filename", path.name)
             )

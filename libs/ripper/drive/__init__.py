@@ -1,5 +1,9 @@
 '''Master Section for the Drive controller'''
 from abc import ABCMeta, abstractmethod
+from libs.database import Database
+from data.database.ripper import VIDEO_INFO_DB
+from libs.database.where import Where
+from libs.database.messages import SQLUpdate, SQLSelect, SQLInsert
 from libs.html_system import HTMLSystem
 from data.config import CONFIG
 from libs.config.list import ConfigList
@@ -33,6 +37,7 @@ class Drive(metaclass=ABCMeta):
         self._disc_label_lock = threading.Lock()
         self._disc_sha256 = None
         self._disc_sha256_lock = threading.Lock()
+        self.__db_id = None
 
         self._ripper = None # whatever the ripper is makemkv and cd ripper
 
@@ -159,6 +164,51 @@ class Drive(metaclass=ABCMeta):
     def _check_disc_information(self):
         '''Will return if disc is in drive (setting the UUID and label) or it will return False'''
 
+############
+##DATABASE##
+############
+    def _add_video_disc_to_database(self):
+        '''sets up the DB stuff for disc'''
+        msg = SQLSelect(
+            VIDEO_INFO_DB.name(),
+            Where("uuid", self._disc_uuid),
+            Where("label", self._disc_label),
+            Where("sha256", self._disc_sha256),
+            Where("disc_type", self._disc_disc_type),
+        )
+        Database.call(msg)
+
+        if isinstance(msg.return_data, dict):
+            Database.call(
+                SQLUpdate(
+                    VIDEO_INFO_DB.name(),
+                    Where(
+                        "id",
+                        msg.return_data['id']
+                    ),
+                    iso_file="",
+                    ripped=False,
+                    ready_to_convert=False,
+                    ready_to_rename=False,
+                    ready_for_library=False,
+                    completed=False
+                )
+            )
+        else:
+            Database.call(
+                SQLInsert(
+                    VIDEO_INFO_DB.name(),
+                    uuid=self._disc_uuid,
+                    label=self._disc_label,
+                    sha256=self._disc_sha256,
+                    disc_type=self._disc_disc_type,
+                )
+            )
+
+        Database.call(msg)
+
+        self.__db_id = msg.return_data['id']
+
 ################
 ##TRAYCONTROLS##
 ################
@@ -182,7 +232,6 @@ class Drive(metaclass=ABCMeta):
 ##########
 ##Thread##
 ##########
-
     def start_thread(self):
         '''start the thread'''
         if not self._thread.is_alive():
@@ -202,7 +251,7 @@ class Drive(metaclass=ABCMeta):
     def _wait_for_disc(self, sleep_time=1.0, timeout=10):
         '''waits for the disc info to be found'''
         count = 0
-        while self.get_tray_status() != "loaded":
+        while self.tray_status != "loaded":
             if count >= timeout:
                 return False
             if not self._thread_run:
@@ -234,6 +283,7 @@ class Drive(metaclass=ABCMeta):
                         self._audio_rip()
                     elif self.disc_type == "bluray" or self.disc_type == "dvd":
                         self._check_disc_information()
+                        self._add_video_disc_to_database()
                         self._drive_status = "ripping video disc"
                         self._video_rip()
                     self._ripper.run()

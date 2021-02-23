@@ -10,7 +10,7 @@ TYPES = {"Movie": "film",
          "Documentary": "video",
          "Other": "question"
          }
-
+#TODO Typing
 
 class DiscType(metaclass=ABCMeta):
     '''Master Disc Type'''

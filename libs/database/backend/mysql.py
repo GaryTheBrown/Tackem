@@ -29,7 +29,7 @@ class MySQL(BackendBase):
                 print(err)
 
         # if not self.__check_version_table_exists():
-        #     self.__add_table(TABLE_VERSION_DB_INFO, False)
+        #     self.__add_table(TABLE_VERSION_DB, False)
 
     def __shutdown(self):
         '''Shutdown the System Here'''

@@ -2,7 +2,7 @@
 from libs.database.column import Column
 from libs.database.table import Table
 
-AUDIO_CONVERT_DB_INFO = Table(
+AUDIO_CONVERT_DB = Table(
     "ripping_ripper_audio_convert_info",
     1,
     Column("info_id", "integer", not_null=True),
@@ -11,10 +11,10 @@ AUDIO_CONVERT_DB_INFO = Table(
     Column("converted", "bit", not_null=True, default=False)
 )
 
-AUDIO_INFO_DB_INFO = Table(
+AUDIO_INFO_DB = Table(
     "ripping_ripper_audio_info",
     1,
-    Column("iso_file", "text"),
+    Column("iso_file", "text", default=""),
     Column("musicbrainz_disc_id", "varchar(28)", not_null=True),
     Column("track_count", "tinyint", not_null=True),
     Column("release_id", "varchar(36)", not_null=True),
@@ -26,7 +26,7 @@ AUDIO_INFO_DB_INFO = Table(
     Column("completed", "bit", not_null=True, default=False),
 )
 
-VIDEO_CONVERT_DB_INFO = Table(
+VIDEO_CONVERT_DB = Table(
     "ripping_ripper_video_convert_info",
     1,
     Column("info_id", "integer", not_null=True),
@@ -36,10 +36,10 @@ VIDEO_CONVERT_DB_INFO = Table(
     Column("converted", "bit", not_null=True, default=False)
 )
 
-VIDEO_INFO_DB_INFO = Table(
+VIDEO_INFO_DB = Table(
     "ripping_ripper_video_info",
     1,
-    Column("iso_file", "text"),
+    Column("iso_file", "text", default=""),
     Column("uuid", "varchar(16)", not_null=True),
     Column("label", "text", not_null=True),
     Column("sha256", "varchar(64)", not_null=True),

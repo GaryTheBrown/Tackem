@@ -4,13 +4,9 @@ import pexpect
 from libs.file import File
 from . import MakeMKV
 
-
 class MakeMKVLinux(MakeMKV):
     '''Video Control ripper program self contained'''
 
-#################
-##MAKEMKV CALLS##
-#################
     def _makemkv_backup_from_disc(self, temp_dir: str, index: int = -1, device: bool = True):
         '''Do the mkv Backup from disc'''
         try:

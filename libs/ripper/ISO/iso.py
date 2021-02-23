@@ -1,24 +1,23 @@
 '''Master Section for the Drive controller'''
 from abc import ABCMeta, abstractmethod
+from libs.file import File
+from libs.database.where import Where
+import os
 from libs.html_system import HTMLSystem
 from data.config import CONFIG
-from libs.config.list import ConfigList
-import threading
+from threading import BoundedSemaphore, Thread
 import time
 import json
 
 class ISORipper(metaclass=ABCMeta):
     '''Master Section for the Drive controller'''
 
-    def __init__(self, iso_file: str, type: str, uuid: str, label: str, sha256: str):
-        self._thread = threading.Thread(target=self.run, args=())
-        self._thread.setName("Ripper ISO:" + iso_file)
+    def __init__(self, db_data: dict, pool_sema: BoundedSemaphore):
+        self._thread = Thread(target=self.run, args=())
+        self._thread.setName(f"Ripper ISO: {db_data['iso_file']}")
 
-        self.__iso_file = iso_file
-        self.__type = type
-        self.__uuid = uuid
-        self.__label = label
-        self.__sha256 = sha256
+        self._pool_sema = pool_sema
+        self._db_data = db_data
 
         self._ripper = None # whatever the ripper is makemkv and cd ripper
 
@@ -26,6 +25,15 @@ class ISORipper(metaclass=ABCMeta):
     def thread_run(self) -> bool:
         '''return if thread is running'''
         return self._thread.is_alive()
+
+    def wait_for_file_copy_complete(self, audio: bool = False) -> bool:
+        '''watches the file size until it stops'''
+        path = CONFIG['ripper']["locations"]["audioiso" if audio else "videoiso"].value
+        filename = File.location(f"{path}{self._db_data['iso_file']}")
+        historicalSize = -1
+        while (historicalSize != os.path.getsize(filename)):
+            historicalSize = os.path.getsize(filename)
+            time.sleep(1)
 
 ##########
 ##Thread##
@@ -49,7 +57,13 @@ class ISORipper(metaclass=ABCMeta):
 ##########
     def run(self):
         ''' Loops through the standard ripper function'''
-
+        with self._pool_sema:
+            if "uuid" in self._db_data:
+                self.wait_for_file_copy_complete()
+                self._video_rip()
+            else:
+                self.wait_for_file_copy_complete(True)
+                self._audio_rip()
 
     @abstractmethod
     def _audio_rip(self):
