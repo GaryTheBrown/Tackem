@@ -98,6 +98,9 @@ class Ripper:
             # Stop the drives
             for drive in cls.__drives:
                 drive.stop_thread()
+
+            if CONFIG['ripper']['iso']['enabled'].value:
+                ISO.stop()
             cls.__running = False
 
     @classproperty
