@@ -1,9 +1,7 @@
 '''video track type information'''
 from abc import ABCMeta, abstractmethod
 import json
-from libs import html_parts as ghtml_parts
 from . import stream_type
-from ..www import html_parts
 
 TYPES = {"dontrip": "ban",
          "movie": "film",
@@ -62,33 +60,33 @@ class VideoTrackType(metaclass=ABCMeta):
         html += ", 'change');\">(change)</div>"
         return html
 
-    def _make_stream_sections(self, ffprobe):
-        '''creates the stream sections'''
-        html = ""
-        for stream_index, stream_type_code in enumerate(ffprobe.get_streams_and_types()):
-            stream_data = ffprobe.get_stream(stream_index)
-            if self._streams:
-                html += self._streams[stream_index].get_edit_panel(stream_data)
-            else:
-                temp_stream = stream_type.make_blank_stream_type(
-                    stream_index, stream_type_code)
-                html += temp_stream.get_edit_panel(stream_data)
-        return html_parts.video_panel("Streams", "", html)
+    # def _make_stream_sections(self, ffprobe):
+    #     '''creates the stream sections'''
+    #     html = ""
+    #     for stream_index, stream_type_code in enumerate(ffprobe.get_streams_and_types()):
+    #         stream_data = ffprobe.get_stream(stream_index)
+    #         if self._streams:
+    #             html += self._streams[stream_index].get_edit_panel(stream_data)
+    #         else:
+    #             temp_stream = stream_type.make_blank_stream_type(
+    #                 stream_index, stream_type_code)
+    #             html += temp_stream.get_edit_panel(stream_data)
+    #     return html_parts.video_panel("Streams", "", html)
 
     @abstractmethod
     def get_edit_panel(self, ffprobe=None):
         '''returns the edit panel'''
 
-    def _get_edit_panel_bottom(self):
-        '''returns the edit panel'''
-        html = ""
-        html += ghtml_parts.item("track_%%TRACKINDEX%%_hdr", "HDR",
-                                 "Is the Track HDR?",
-                                 ghtml_parts.checkbox_single("",
-                                                             "track_%%TRACKINDEX%%_hdr",
-                                                             self._hdr),
-                                 True)
-        return html
+    # def _get_edit_panel_bottom(self):
+    #     '''returns the edit panel'''
+    #     html = ""
+    #     html += ghtml_parts.item("track_%%TRACKINDEX%%_hdr", "HDR",
+    #                              "Is the Track HDR?",
+    #                              ghtml_parts.checkbox_single("",
+    #                                                          "track_%%TRACKINDEX%%_hdr",
+    #                                                          self._hdr),
+    #                              True)
+    #     return html
 
 
 class DONTRIPTrackType(VideoTrackType):
@@ -109,19 +107,19 @@ class DONTRIPTrackType(VideoTrackType):
         super_dict["reason"] = self._reason
         return super().make_dict(super_dict, include_streams)
 
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
-        section_html = self._title_html("Don't Rip")
-        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-        section_html += ghtml_parts.hidden(
-            "track_%%TRACKINDEX%%_video_type", "dontrip", True)
-        section_html += ghtml_parts.item("track_%%TRACKINDEX%%_reason", "Reason",
-                                         "Enter the reason not to rip here",
-                                         ghtml_parts.input_box("text",
-                                                               "track_%%TRACKINDEX%%_reason",
-                                                               self._reason),
-                                         True)
-        return section_html
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
+    #     section_html = self._title_html("Don't Rip")
+    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+    #     section_html += ghtml_parts.hidden(
+    #         "track_%%TRACKINDEX%%_video_type", "dontrip", True)
+    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_reason", "Reason",
+    #                                      "Enter the reason not to rip here",
+    #                                      ghtml_parts.input_box("text",
+    #                                                            "track_%%TRACKINDEX%%_reason",
+    #                                                            self._reason),
+    #                                      True)
+    #     return section_html
 
 
 class MovieTrackType(VideoTrackType):
@@ -147,16 +145,16 @@ class MovieTrackType(VideoTrackType):
             super_dict = {}
         return super().make_dict(super_dict, include_streams)
 
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
-        section_html = self._title_html("Movie")
-        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-        section_html += ghtml_parts.hidden(
-            "track_%%TRACKINDEX%%_video_type", "movie", True)
-        section_html += super()._get_edit_panel_bottom()
-        if ffprobe:
-            section_html += self._make_stream_sections(ffprobe)
-        return section_html
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
+    #     section_html = self._title_html("Movie")
+    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+    #     section_html += ghtml_parts.hidden(
+    #         "track_%%TRACKINDEX%%_video_type", "movie", True)
+    #     section_html += super()._get_edit_panel_bottom()
+    #     if ffprobe:
+    #         section_html += self._make_stream_sections(ffprobe)
+    #     return section_html
 
 
 class TVShowTrackType(VideoTrackType):
@@ -183,28 +181,28 @@ class TVShowTrackType(VideoTrackType):
         super_dict["episode"] = self._episode
         return super().make_dict(super_dict, include_streams)
 
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
-        section_html = self._title_html("TV Show Episode")
-        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-        section_html += ghtml_parts.hidden(
-            "track_%%TRACKINDEX%%_video_type", "tvshow", True)
-        section_html += ghtml_parts.item("track_%%TRACKINDEX%%_season", "Season Number",
-                                         "Enter the Season Number here",
-                                         ghtml_parts.input_box("number",
-                                                               "track_%%TRACKINDEX%%_season",
-                                                               self._season, minimum=0),
-                                         True)
-        section_html += ghtml_parts.item("track_%%TRACKINDEX%%_episode", "Episode Number",
-                                         "Enter the Episode Number here",
-                                         ghtml_parts.input_box("number",
-                                                               "track_%%TRACKINDEX%%_episode",
-                                                               self._episode, minimum=0),
-                                         True)
-        section_html += super()._get_edit_panel_bottom()
-        if ffprobe:
-            section_html += self._make_stream_sections(ffprobe)
-        return section_html
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
+    #     section_html = self._title_html("TV Show Episode")
+    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+    #     section_html += ghtml_parts.hidden(
+    #         "track_%%TRACKINDEX%%_video_type", "tvshow", True)
+    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_season", "Season Number",
+    #                                      "Enter the Season Number here",
+    #                                      ghtml_parts.input_box("number",
+    #                                                            "track_%%TRACKINDEX%%_season",
+    #                                                            self._season, minimum=0),
+    #                                      True)
+    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_episode", "Episode Number",
+    #                                      "Enter the Episode Number here",
+    #                                      ghtml_parts.input_box("number",
+    #                                                            "track_%%TRACKINDEX%%_episode",
+    #                                                            self._episode, minimum=0),
+    #                                      True)
+    #     section_html += super()._get_edit_panel_bottom()
+    #     if ffprobe:
+    #         section_html += self._make_stream_sections(ffprobe)
+    #     return section_html
 
 
 class ExtraTrackType(VideoTrackType):
@@ -233,22 +231,22 @@ class ExtraTrackType(VideoTrackType):
     #     '''return the tv show special number'''
     #     return self._tvshow_special_number
 
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
-        section_html = self._title_html("Extra")
-        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-        section_html += ghtml_parts.hidden(
-            "track_%%TRACKINDEX%%_video_type", "extra", True)
-        section_html += ghtml_parts.item("track_%%TRACKINDEX%%_name", "Name",
-                                         "Enter the extra name",
-                                         ghtml_parts.input_box("text",
-                                                               "track_%%TRACKINDEX%%_name",
-                                                               self._name),
-                                         True)
-        section_html += super()._get_edit_panel_bottom()
-        if ffprobe:
-            section_html += self._make_stream_sections(ffprobe)
-        return section_html
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
+    #     section_html = self._title_html("Extra")
+    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+    #     section_html += ghtml_parts.hidden(
+    #         "track_%%TRACKINDEX%%_video_type", "extra", True)
+    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_name", "Name",
+    #                                      "Enter the extra name",
+    #                                      ghtml_parts.input_box("text",
+    #                                                            "track_%%TRACKINDEX%%_name",
+    #                                                            self._name),
+    #                                      True)
+    #     section_html += super()._get_edit_panel_bottom()
+    #     if ffprobe:
+    #         section_html += self._make_stream_sections(ffprobe)
+    #     return section_html
 
 
 class TrailerTrackType(VideoTrackType):
@@ -269,22 +267,22 @@ class TrailerTrackType(VideoTrackType):
         super_dict["info"] = self._info
         return super().make_dict(super_dict, include_streams)
 
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
-        section_html = self._title_html("Trailer")
-        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-        section_html += ghtml_parts.hidden(
-            "track_%%TRACKINDEX%%_video_type", "trailer", True)
-        section_html += ghtml_parts.item("track_%%TRACKINDEX%%_info", "Information",
-                                         "Enter trailer information here",
-                                         ghtml_parts.input_box("text",
-                                                               "track_%%TRACKINDEX%%_info",
-                                                               self._info),
-                                         True)
-        section_html += super()._get_edit_panel_bottom()
-        if ffprobe:
-            section_html += self._make_stream_sections(ffprobe)
-        return section_html
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
+    #     section_html = self._title_html("Trailer")
+    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+    #     section_html += ghtml_parts.hidden(
+    #         "track_%%TRACKINDEX%%_video_type", "trailer", True)
+    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_info", "Information",
+    #                                      "Enter trailer information here",
+    #                                      ghtml_parts.input_box("text",
+    #                                                            "track_%%TRACKINDEX%%_info",
+    #                                                            self._info),
+    #                                      True)
+    #     section_html += super()._get_edit_panel_bottom()
+    #     if ffprobe:
+    #         section_html += self._make_stream_sections(ffprobe)
+    #     return section_html
 
 
 class OtherTrackType(VideoTrackType):
@@ -305,22 +303,22 @@ class OtherTrackType(VideoTrackType):
         super_dict["other_type"] = self._other_type
         return super().make_dict(super_dict, include_streams)
 
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
-        section_html = self._title_html("Other")
-        section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-        section_html += ghtml_parts.hidden(
-            "track_%%TRACKINDEX%%_video_type", "other", True)
-        section_html += ghtml_parts.item("track_%%TRACKINDEX%%_othertype", "Other Type",
-                                         "What is it?",
-                                         ghtml_parts.input_box("text",
-                                                               "track_%%TRACKINDEX%%_othertype",
-                                                               self._other_type),
-                                         True)
-        section_html += super()._get_edit_panel_bottom()
-        if ffprobe:
-            section_html += self._make_stream_sections(ffprobe)
-        return section_html
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
+    #     section_html = self._title_html("Other")
+    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
+    #     section_html += ghtml_parts.hidden(
+    #         "track_%%TRACKINDEX%%_video_type", "other", True)
+    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_othertype", "Other Type",
+    #                                      "What is it?",
+    #                                      ghtml_parts.input_box("text",
+    #                                                            "track_%%TRACKINDEX%%_othertype",
+    #                                                            self._other_type),
+    #                                      True)
+    #     section_html += super()._get_edit_panel_bottom()
+    #     if ffprobe:
+    #         section_html += self._make_stream_sections(ffprobe)
+    #     return section_html
 
 
 def make_track_type(track):

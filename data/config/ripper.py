@@ -116,6 +116,13 @@ def ripper_config() -> ConfigList:
                     max=5
                 )
             ),
+            ConfigObjIntegerNumber(
+                "watchtimer",
+                60,
+                "Watch Timer",
+                "How long between checks of the folder for new ISOs",
+                input_attributes=InputAttributes(min=1)
+            ),
         ),
         ConfigList(
             "locations",

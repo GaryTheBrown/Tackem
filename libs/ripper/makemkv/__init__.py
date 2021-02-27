@@ -17,7 +17,7 @@ from libs.ripper.events import RipperEvents
 class MakeMKV(RipperSubSystem, metaclass=ABCMeta):
     '''MakeMKV ripping controller'''
 
-    def call_makemkv_backup(self, id: int) -> bool:
+    def call(self, id: int) -> bool:
         '''run the makemkv backup function MUST HAVE DATA IN THE DB'''
         msg = SQLSelect(DB.name(), Where("id", id))
         Database.call(msg)
@@ -28,10 +28,12 @@ class MakeMKV(RipperSubSystem, metaclass=ABCMeta):
         disc_rip_info = rip_data(msg.return_data)
 
         if msg.return_data['iso_file']:
-            folder = CONFIG['ripper']['locations']['videoiso'].value
-            self._device = f"{folder}{msg.return_data['iso_file']}"
-        temp_location = File.location(CONFIG['ripper']['locations']['videoripping'].value)
-        temp_dir = temp_location + str(self._disc_info_sha256)
+            self._in_file = File.location(
+                msg.return_data['iso_file'],
+                CONFIG['ripper']['locations']['videoiso'].value
+            )
+
+        temp_dir = File.location(str(id), CONFIG['ripper']['locations']['videoripping'].value)
         if isinstance(disc_rip_info, list):
             for idx, track in enumerate(disc_rip_info):
                 if not isinstance(track, bool):

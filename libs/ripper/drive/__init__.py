@@ -280,13 +280,13 @@ class Drive(metaclass=ABCMeta):
                         return
                     if self.disc_type == "audiocd":
                         self.drive_status = "ripping audio cd disc"
-                        self._audio_rip()
+                        self._audio_rip_setup()
                     elif self.disc_type == "bluray" or self.disc_type == "dvd":
                         self._check_disc_information()
                         self._add_video_disc_to_database()
                         self._drive_status = "ripping video disc"
-                        self._video_rip()
-                    self._ripper.run()
+                        self._video_rip_setup()
+                    self._ripper.call(self.__db_id)
                     self._ripper = None
                 if not self._thread_run:
                     self.unlock_tray()
@@ -298,11 +298,11 @@ class Drive(metaclass=ABCMeta):
                 return
 
     @abstractmethod
-    def _audio_rip(self):
+    def _audio_rip_setup(self):
         '''script to rip an audio cd'''
 
     @abstractmethod
-    def _video_rip(self):
+    def _video_rip_setup(self):
         '''script to rip video disc'''
 
 ##############

@@ -18,7 +18,7 @@ from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.database import Database
 from libs.database.messages import SQLTable
-from data.database.upload import UPLOAD_DB
+from data.database.system import UPLOAD_DB
 class Webserver:
     '''Webserver'''
     __running = False
@@ -110,3 +110,4 @@ class Webserver:
         if cls.__running:
             cherrypy.engine.exit()
             cherrypy.server.httpserver = None
+            cls.__running = False

@@ -16,7 +16,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
  && apt-get update \
  && apt-get install -y software-properties-common \
  && add-apt-repository -y ppa:heyarje/makemkv-beta \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y git python3.9 python3-pip makemkv-bin hwinfo eject mplayer ffmpeg default-jre-headless icedax libdiscid0 ccextractor libdvd-pkg \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y git python3.9 python3-pip makemkv-bin hwinfo eject mplayer ffmpeg default-jre-headless icedax libdiscid0 ccextractor libdvd-pkg udftools\
  && dpkg-reconfigure libdvd-pkg --frontend=noninteractive \
  && ln -s python3 python \
  && echo 'app_DefaultSelectionString = "+sel:all"' > /home/${USER}/.MakeMKV/settings.conf \

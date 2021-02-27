@@ -1,5 +1,7 @@
 '''Special Linux Drive Functions'''
+import platform
 import fcntl
+from libs.ripper.disc_info_grabber import gen_sha256_linux
 from libs.ripper.makemkv.linux import MakeMKVLinux
 import os
 from shlex import shlex
@@ -94,14 +96,9 @@ class DriveLinux(Drive):
             mplayer_process.wait()
         if not self._thread_run:
             return False
-
-        # using DD to read the disc pass it to sha256 to make a unique code for searching by
-        dd_process = Popen(["dd", "if=" + self._device, "bs=4M", "count=128", "status=none"],
-                           stdout=PIPE, stderr=DEVNULL)
-        sha256sum = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE, stderr=DEVNULL)
-        self.disc_sha256 = sha256sum.communicate()[0].decode('utf-8').replace("-", "").rstrip()
-
-        return dd_process.returncode == 0 and self._thread_run
+        if platform.system() == 'Linux':
+            self.disc_sha256 = gen_sha256_linux(self.device)
+        return self.disc_sha256 != ""
 
     # def _check_audio_disc_information(self):
     #     '''Gets unique info for audio disc'''
@@ -153,10 +150,10 @@ class DriveLinux(Drive):
 ##########
 ##Script##
 ##########
-    def _audio_rip(self):
+    def _audio_rip_setup(self):
         '''script to rip an audio cd'''
-        # self._ripper = AudioCDLinux(self.__db_id)
+        # self._ripper = AudioCDLinux(self._device)
 
-    def _video_rip(self):
+    def _video_rip_setup(self):
         '''script to rip video disc'''
-        self._ripper = MakeMKVLinux(self.__db_id)
+        self._ripper = MakeMKVLinux(self._device)

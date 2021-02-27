@@ -4,8 +4,8 @@ from typing import Callable
 class RipperSubSystem():
     '''Subsystem controller'''
 
-    def __init__(self, device: str):
-        self._device = device
+    def __init__(self, in_file: str):
+        self._in_file = in_file
 
         self._ripping_track = None
         self._ripping_file = 0

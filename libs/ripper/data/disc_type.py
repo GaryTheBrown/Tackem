@@ -2,7 +2,6 @@
 from abc import ABCMeta, abstractmethod
 import datetime
 import json
-from libs import html_parts
 from data.languages import Languages
 from . import video_track_type as track_type
 TYPES = {"Movie": "film",
@@ -87,26 +86,26 @@ class DiscType(metaclass=ABCMeta):
     def get_edit_panel(self, search=True):
         '''returns the edit panel'''
 
-    def _get_edit_panel_top(self):
-        '''returns the edit panel'''
-        html = html_parts.hidden("disc_type", self._disc_type, True)
-        html += html_parts.item("info", "Temp Disc Info",
-                                "Put some useful info in here for use during renaming",
-                                html_parts.input_box(
-                                    "text", "info", self._info),
-                                True)
-        return html
+    # def _get_edit_panel_top(self):
+    #     '''returns the edit panel'''
+    #     html = html_parts.hidden("disc_type", self._disc_type, True)
+    #     html += html_parts.item("info", "Temp Disc Info",
+    #                             "Put some useful info in here for use during renaming",
+    #                             html_parts.input_box(
+    #                                 "text", "info", self._info),
+    #                             True)
+    #     return html
 
-    def _get_edit_panel_bottom(self, search=True):
-        '''returns the edit panel'''
-        html = ""
-        html += html_parts.item("language", "Original Language",
-                                "Choose the Original Language here",
-                                html_parts.select_box("language", self._language,
-                                                      Languages.config_option_2(),
-                                                      disabled=search),
-                                True)
-        return html
+    # def _get_edit_panel_bottom(self, search=True):
+    #     '''returns the edit panel'''
+    #     html = ""
+    #     html += html_parts.item("language", "Original Language",
+    #                             "Choose the Original Language here",
+    #                             html_parts.select_box("language", self._language,
+    #                                                   Languages.config_option_2(),
+    #                                                   disabled=search),
+    #                             True)
+    #     return html
 
 
 class MovieDiscType(DiscType):
@@ -141,41 +140,41 @@ class MovieDiscType(DiscType):
         super_dict["imdbid"] = self._imdbid
         return super().make_dict(super_dict, no_tracks)
 
-    def get_edit_panel(self, search=True):
-        '''returns the edit panel'''
-        html = html_parts.hidden("moviedbid", self._moviedbid, True)
-        html += super()._get_edit_panel_top()
-        html += html_parts.item("name", "Movie Title",
-                                "Enter the name of the movie here",
-                                html_parts.input_box(
-                                    "text", "name", self._name),
-                                True)
-        max_year = int(datetime.date.today().year)
-        html += html_parts.item("year", "Year",
-                                "Enter the year here",
-                                html_parts.input_box("number", "year", self._year,
-                                                     minimum=1888, maximum=max_year),
-                                True)
-        if search:
-            html += html_parts.item("blank", "",
-                                    "Search The Movie Database by Name (And year if known)",
-                                    html_parts.input_button("Search By Name",
-                                                            "ButtonSearchMovie();"),
-                                    True)
-        html += html_parts.item("imdbid", "IMDB ID",
-                                "Enter the IMDB ID here",
-                                html_parts.input_box(
-                                    "text", "imdbid", self._imdbid),
-                                True)
-        if search:
-            html += html_parts.item("blank", "",
-                                    "Search The Movie Database by IMDB ID",
-                                    html_parts.input_button("Search By IMDB ID",
-                                                            "ButtonFindMovie();"),
-                                    True)
-        html += super()._get_edit_panel_bottom(search)
-        return html_parts.panel("Movie Information", self._change_section_html(), "", "",
-                                html, True)
+    # def get_edit_panel(self, search=True):
+    #     '''returns the edit panel'''
+    #     html = html_parts.hidden("moviedbid", self._moviedbid, True)
+    #     html += super()._get_edit_panel_top()
+    #     html += html_parts.item("name", "Movie Title",
+    #                             "Enter the name of the movie here",
+    #                             html_parts.input_box(
+    #                                 "text", "name", self._name),
+    #                             True)
+    #     max_year = int(datetime.date.today().year)
+    #     html += html_parts.item("year", "Year",
+    #                             "Enter the year here",
+    #                             html_parts.input_box("number", "year", self._year,
+    #                                                  minimum=1888, maximum=max_year),
+    #                             True)
+    #     if search:
+    #         html += html_parts.item("blank", "",
+    #                                 "Search The Movie Database by Name (And year if known)",
+    #                                 html_parts.input_button("Search By Name",
+    #                                                         "ButtonSearchMovie();"),
+    #                                 True)
+    #     html += html_parts.item("imdbid", "IMDB ID",
+    #                             "Enter the IMDB ID here",
+    #                             html_parts.input_box(
+    #                                 "text", "imdbid", self._imdbid),
+    #                             True)
+    #     if search:
+    #         html += html_parts.item("blank", "",
+    #                                 "Search The Movie Database by IMDB ID",
+    #                                 html_parts.input_button("Search By IMDB ID",
+    #                                                         "ButtonFindMovie();"),
+    #                                 True)
+    #     html += super()._get_edit_panel_bottom(search)
+    #     return html_parts.panel("Movie Information", self._change_section_html(), "", "",
+    #                             html, True)
 
 
 class TVShowDiscType(DiscType):
@@ -196,35 +195,35 @@ class TVShowDiscType(DiscType):
         super_dict["tvdbid"] = self._tvdbid
         return super().make_dict(super_dict, no_tracks)
 
-    def get_edit_panel(self, search=True):
-        '''returns the edit panel'''
-        html = html_parts.hidden("moviedbid", self._moviedbid, True)
-        html += super()._get_edit_panel_top()
-        html += html_parts.item("name", "TV Show Name",
-                                "Enter the name of the TV Show here",
-                                html_parts.input_box(
-                                    "text", "name", self._name),
-                                True)
-        if search:
-            html += html_parts.item("blank", "",
-                                    "Search The Movie Database by Name (And year if known)",
-                                    html_parts.input_button("Search By Name",
-                                                            "ButtonSearchTVShow();"),
-                                    True)
-        html += html_parts.item("tvdbid", "TVDB ID",
-                                "Enter the TVDB ID here",
-                                html_parts.input_box(
-                                    "text", "tvdbid", self._tvdbid),
-                                True)
-        if search:
-            html += html_parts.item("blank", "",
-                                    "Search The Movie Database by TVDB ID",
-                                    html_parts.input_button("Search By TVDB ID",
-                                                            "ButtonFindTVShow();"),
-                                    True)
-        html += super()._get_edit_panel_bottom(search)
-        return html_parts.panel("TV Show Information", self._change_section_html(), "", "",
-                                html, True)
+    # def get_edit_panel(self, search=True):
+    #     '''returns the edit panel'''
+    #     html = html_parts.hidden("moviedbid", self._moviedbid, True)
+    #     html += super()._get_edit_panel_top()
+    #     html += html_parts.item("name", "TV Show Name",
+    #                             "Enter the name of the TV Show here",
+    #                             html_parts.input_box(
+    #                                 "text", "name", self._name),
+    #                             True)
+    #     if search:
+    #         html += html_parts.item("blank", "",
+    #                                 "Search The Movie Database by Name (And year if known)",
+    #                                 html_parts.input_button("Search By Name",
+    #                                                         "ButtonSearchTVShow();"),
+    #                                 True)
+    #     html += html_parts.item("tvdbid", "TVDB ID",
+    #                             "Enter the TVDB ID here",
+    #                             html_parts.input_box(
+    #                                 "text", "tvdbid", self._tvdbid),
+    #                             True)
+    #     if search:
+    #         html += html_parts.item("blank", "",
+    #                                 "Search The Movie Database by TVDB ID",
+    #                                 html_parts.input_button("Search By TVDB ID",
+    #                                                         "ButtonFindTVShow();"),
+    #                                 True)
+    #     html += super()._get_edit_panel_bottom(search)
+    #     return html_parts.panel("TV Show Information", self._change_section_html(), "", "",
+    #                             html, True)
 
 
 class DocumentaryDiscType(DiscType):
@@ -239,18 +238,18 @@ class DocumentaryDiscType(DiscType):
             super_dict = {}
         return super().make_dict(super_dict, no_tracks)
 
-    def get_edit_panel(self, search=True):
-        '''returns the edit panel'''
-        html = super()._get_edit_panel_top()
-        html += html_parts.item("name", "Documentary Name",
-                                "Enter the name of the Documentary here",
-                                html_parts.input_box(
-                                    "text", "name", self._name),
-                                True)
-        html += super()._get_edit_panel_bottom(False)
-        html += html_parts.text_item("*Please Choose Other For All Tracks")
-        return html_parts.panel("Documentary Information", self._change_section_html(), "", "",
-                                html, True)
+    # def get_edit_panel(self, search=True):
+    #     '''returns the edit panel'''
+    #     html = super()._get_edit_panel_top()
+    #     html += html_parts.item("name", "Documentary Name",
+    #                             "Enter the name of the Documentary here",
+    #                             html_parts.input_box(
+    #                                 "text", "name", self._name),
+    #                             True)
+    #     html += super()._get_edit_panel_bottom(False)
+    #     html += html_parts.text_item("*Please Choose Other For All Tracks")
+    #     return html_parts.panel("Documentary Information", self._change_section_html(), "", "",
+    #                             html, True)
 
 
 class OtherDiscType(DiscType):
@@ -265,18 +264,18 @@ class OtherDiscType(DiscType):
             super_dict = {}
         return super().make_dict(super_dict, no_tracks)
 
-    def get_edit_panel(self, search=True):
-        '''returns the edit panel'''
-        html = super()._get_edit_panel_top()
-        html += html_parts.item("name", "Disc Name",
-                                "Enter the name of the Disc here",
-                                html_parts.input_box(
-                                    "text", "name", self._name),
-                                True)
-        html += super()._get_edit_panel_bottom(False)
-        html += html_parts.text_item("*Please Choose Other For All Tracks")
-        return html_parts.panel("Disc Information", self._change_section_html(), "", "",
-                                html, True)
+    # def get_edit_panel(self, search=True):
+    #     '''returns the edit panel'''
+    #     html = super()._get_edit_panel_top()
+    #     html += html_parts.item("name", "Disc Name",
+    #                             "Enter the name of the Disc here",
+    #                             html_parts.input_box(
+    #                                 "text", "name", self._name),
+    #                             True)
+    #     html += super()._get_edit_panel_bottom(False)
+    #     html += html_parts.text_item("*Please Choose Other For All Tracks")
+    #     return html_parts.panel("Disc Information", self._change_section_html(), "", "",
+    #                             html, True)
 
 
 def make_disc_type(data):

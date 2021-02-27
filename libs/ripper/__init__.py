@@ -1,4 +1,5 @@
 '''Ripper init'''
+from libs.ripper.ISO import ISO
 from data.database.ripper import AUDIO_CONVERT_DB, AUDIO_INFO_DB
 from data.database.ripper import VIDEO_CONVERT_DB, VIDEO_INFO_DB
 import platform
@@ -10,9 +11,7 @@ from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive.linux import DriveLinux
 
-#TODO Working on the makemkv system so it can take input from drive or iso systems
-#TODO Make the ISO section work/ finish off it's systems
-# need to make a page for uploads and the API for the ripper to recieve the UUID, SHA256, LABEL and
+#TODO need to make a page for uploads and the API for the ripper to recieve the UUID, SHA256, LABEL and
 # filename then give a key for upload back.
 
 #TODO WWW all the systems back to life
@@ -73,6 +72,9 @@ class Ripper:
 
         if CONFIG['ripper']['drives']['enabled'].value:
             cls.__start_drives()
+
+        if CONFIG['ripper']['iso']['enabled'].value:
+            ISO.start()
 
         cls.__running = True
 

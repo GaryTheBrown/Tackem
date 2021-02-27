@@ -1,7 +1,6 @@
 '''Master Section for the Drive controller'''
 from abc import ABCMeta, abstractmethod
 from libs.file import File
-from libs.database.where import Where
 import os
 from libs.html_system import HTMLSystem
 from data.config import CONFIG
@@ -21,6 +20,8 @@ class ISORipper(metaclass=ABCMeta):
 
         self._ripper = None # whatever the ripper is makemkv and cd ripper
 
+        self._thread.start()
+
     @property
     def thread_run(self) -> bool:
         '''return if thread is running'''
@@ -39,13 +40,6 @@ class ISORipper(metaclass=ABCMeta):
 ##Thread##
 ##########
 
-    def start_thread(self):
-        '''start the thread'''
-        if not self._thread.is_alive():
-            self._thread.start()
-            return True
-        return False
-
     def stop_thread(self):
         '''stop the thread'''
         if self._thread.is_alive():
@@ -60,17 +54,19 @@ class ISORipper(metaclass=ABCMeta):
         with self._pool_sema:
             if "uuid" in self._db_data:
                 self.wait_for_file_copy_complete()
-                self._video_rip()
+                self._video_rip_setup()
             else:
                 self.wait_for_file_copy_complete(True)
-                self._audio_rip()
+                self._audio_rip_setup()
+            self._ripper.call(self._db_data['id'])
+            self._ripper = None
 
     @abstractmethod
-    def _audio_rip(self):
+    def _audio_rip_setup(self):
         '''script to rip an audio cd'''
 
     @abstractmethod
-    def _video_rip(self):
+    def _video_rip_setup(self):
         '''script to rip video disc'''
 
 ##############

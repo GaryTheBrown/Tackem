@@ -6,16 +6,13 @@
 	"appPort": [
 		8081
 	],
+	// "postCreateCommand": "chmod 777 /dev/sr0",
 	// update Dockerfile with your home folder
 	"runArgs": [
 		"--privileged",
 		"-v",
 		"/home/gary/.ssh:/home/Tackem/.ssh:ro",
-	],
-	//mount points
-	//IF YOU ARE HAVING ISSUES OPENING THIS DEVCONTAINER WITH NO DISC DRIVE COMMENT OUT THESE MOUNTS
-	"mounts": [
-		"source=/dev/sr0,target=/dev/sr0,type=bind"
+		"--device=/dev/sr0"
 	],
 	// Use 'settings' to set *default* container specific settings.json values on container create.
 	// You can edit these settings after create using File > Preferences > Settings > Remote.
