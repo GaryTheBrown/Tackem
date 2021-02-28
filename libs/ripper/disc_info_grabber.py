@@ -19,7 +19,7 @@ def rip_data(db_data: dict) -> DiscType:
     if isinstance(rip_list, str) and isinstance(json.loads(rip_list), (dict, list)):
         Database.call(
             SQLUpdate(
-                VIDEO_INFO_DB.name(),
+                VIDEO_INFO_DB,
                 Where("id", db_data['id']),
                 rip_data=rip_list
             )

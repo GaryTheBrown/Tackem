@@ -30,7 +30,7 @@ class Authentication:
         '''Run starting commands need sql to run'''
         Database.call(SQLTable(cls.__db_info))
 
-        msg = SQLTableCountWhere(cls.__db_info.name(), Where("is_admin", True))
+        msg = SQLTableCountWhere(cls.__db_info, Where("is_admin", True))
         Database.call(msg)
         if msg.return_data['COUNT(*)'] == 0:
             cls.__add_admin_account()
@@ -39,7 +39,7 @@ class Authentication:
     def __add_admin_account(cls):
         '''adds an admin account'''
         msg = SQLInsert(
-            cls.__db_info.name(),
+            cls.__db_info,
             username="admin",
             password=cls.__password_encryption("admin"),
             is_admin=True
@@ -63,7 +63,7 @@ class Authentication:
         if username == "" or password == "":
             return False
 
-        msg = SQLSelect(cls.__db_info.name(), Where("username", username))
+        msg = SQLSelect(cls.__db_info, Where("username", username))
         Database.call(msg)
         if msg.return_data['password'] != cls.__password_encryption(password):
             return False
@@ -123,14 +123,14 @@ class Authentication:
             return False
         session_id = cherrypy.request.cookie['sessionid'].value
         user_id = cls.__temp_sessions[session_id]['id']
-        msg1 = SQLSelect(cls.__db_info.name(), Where("id", user_id))
+        msg1 = SQLSelect(cls.__db_info, Where("id", user_id))
         Database.call(msg1)
         if msg1.return_data['password'] != cls.__password_encryption(password):
             return False
 
         Database.call(
             SQLUpdate(
-                cls.__db_info.name(),
+                cls.__db_info,
                 Where("id", msg1.return_data['id']),
                 password=cls.__password_encryption(new_password)
             )
@@ -145,22 +145,22 @@ class Authentication:
             "password": cls.__password_encryption(password),
             "is_admin": is_admin
         }
-        msg1 = SQLTableCountWhere(cls.__db_info.name(), Where("username", username))
+        msg1 = SQLTableCountWhere(cls.__db_info, Where("username", username))
         Database.call(msg1)
         if msg1.return_data['COUNT(*)'] == 0:
-            msg2 = SQLInsert(cls.__db_info.name(), **user)
+            msg2 = SQLInsert(cls.__db_info, **user)
             Database.call(msg2)
 
     @classmethod
     def delete_user(cls, user_id: int):
         '''Delete user from system'''
-        Database.call(SQLDelete(cls.__db_info.name(), Where("id", user_id)))
+        Database.call(SQLDelete(cls.__db_info, Where("id", user_id)))
 
     @classmethod
     def get_users(cls):
         '''Grab the users info'''
         return_list = ["id", "username", "is_admin"]
-        msg = SQLSelect(cls.__db_info.name(), returns=return_list)
+        msg = SQLSelect(cls.__db_info, returns=return_list)
         Database.call(msg)
         for item in msg.return_data:
             item['is_admin'] = item['is_admin'] == "True"
@@ -185,7 +185,7 @@ class Authentication:
 
         Database.call(
             SQLUpdate(
-                cls.__db_info.name(),
+                cls.__db_info,
                 Where("id", user_id),
                 **data
             )

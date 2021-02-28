@@ -1,4 +1,5 @@
 '''SQL MESSAGE SYSTEM DATA'''
+from libs.database.table import Table
 from typing import List, Optional
 from libs.database.messages.sql_message import SQLMessage
 from libs.database.where import Where
@@ -7,18 +8,18 @@ from libs.exceptions import SQLMessageError
 class SQLSelect(SQLMessage):
     '''Select Message'''
 
-    def __init__(self, table: str, *wheres: Where, returns: Optional[List[str]] = None):
-        if not isinstance(table, str):
+    def __init__(self, table: Table, *wheres: Where, returns: Optional[List[str]] = None):
+        if not isinstance(table, Table):
             raise SQLMessageError
 
         if returns is None:
             returns = ["*"]
 
         if len(wheres) == 0:
-            super().__init__(f"SELECT {', '.join(returns)} FROM {table}")
+            super().__init__(f"SELECT {', '.join(returns)} FROM {table.name()}")
             return
 
         where_list = [where.query for where in wheres]
         super().__init__(
-            f"SELECT {', '.join(returns)} FROM {table} WHERE {' AND '.join(where_list)}"
+            f"SELECT {', '.join(returns)} FROM {table.name()} WHERE {' AND '.join(where_list)}"
         )

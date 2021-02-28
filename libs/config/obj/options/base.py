@@ -239,9 +239,16 @@ class ConfigObjOptionsBase(ConfigObjBase):
         if self.hide_on_html:
             return ""
         data = ""
-        for value in self.__values:
-            data += value.html(
-                self.value == value.value,
-                variable_name
-            )
+        if isinstance(self.value, (list, dict)):
+            for value in self.__values:
+                data += value.html(
+                    value.value in self.value,
+                    variable_name
+                )
+        else:
+            for value in self.__values:
+                data += value.html(
+                    self.value == value.value,
+                    variable_name
+                )
         return data

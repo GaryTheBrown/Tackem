@@ -19,7 +19,7 @@ class MakeMKV(RipperSubSystem, metaclass=ABCMeta):
 
     def call(self, id: int) -> bool:
         '''run the makemkv backup function MUST HAVE DATA IN THE DB'''
-        msg = SQLSelect(DB.name(), Where("id", id))
+        msg = SQLSelect(DB, Where("id", id))
         Database.call(msg)
 
         if not isinstance(msg.return_data, dict):
@@ -41,7 +41,7 @@ class MakeMKV(RipperSubSystem, metaclass=ABCMeta):
         elif disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir, device=msg.return_data['iso_file'] == "")
 
-        Database.call(SQLUpdate(DB.name(), Where("id", id), ripped=True))
+        Database.call(SQLUpdate(DB, Where("id", id), ripped=True))
 
         if CONFIG['ripper']['converter']['enabled'].value:
             create_video_converter_row(
@@ -49,10 +49,10 @@ class MakeMKV(RipperSubSystem, metaclass=ABCMeta):
                 disc_rip_info,
                 CONFIG['ripper']['videoripping']['torip'].value
             )
-            Database.call(SQLUpdate(DB.name(), Where("id", id), ready_to_convert=True))
+            Database.call(SQLUpdate(DB, Where("id", id), ready_to_convert=True))
             RipperEvents().converter.set()
         else:
-            Database.call(SQLUpdate(DB.name(), Where("id", id), ready_to_rename=True))
+            Database.call(SQLUpdate(DB, Where("id", id), ready_to_rename=True))
             RipperEvents().renamer.set()
 
         return True

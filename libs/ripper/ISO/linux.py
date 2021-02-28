@@ -35,7 +35,7 @@ class ISORipperLinux(ISORipper):
 
         Database.call(
             SQLUpdate(
-                VIDEO_INFO_DB.name(),
+                VIDEO_INFO_DB,
                 Where("id", self._db_data['id']),
                 sha256=sha256,
                 label=data['label'],

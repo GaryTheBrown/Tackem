@@ -5,7 +5,6 @@ from libs.config.obj.data.checkbox import ConfigObjCheckbox
 from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
 
-#TODO Fix this now showing selected options
 class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
     '''Config Item Options CheckBox'''
 

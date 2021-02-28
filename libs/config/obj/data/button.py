@@ -21,7 +21,7 @@ class Button:
     @property
     def html(self) -> str:
         '''returns the buttons html'''
-        data = f'data-action="{self.__action}"'
+        data = f'data-click-action="{self.__action}"'
         for key, value in self.__kwargs.items():
             data += f' data-{key}="{value}"'
         return HTMLSystem.part(

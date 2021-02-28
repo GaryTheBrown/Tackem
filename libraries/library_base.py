@@ -104,7 +104,7 @@ class LibraryBase(metaclass=ABCMeta):
                 continue
 
             msg1 = SQLSelect(
-                LIBRARY_FILES_DB.name(),
+                LIBRARY_FILES_DB,
                 Where("folder", path.joinpath().replace(path.name, "")),
                 Where("filename", path.name)
             )
@@ -114,7 +114,7 @@ class LibraryBase(metaclass=ABCMeta):
                 continue
 
             msg2 = SQLInsert(
-                LIBRARY_FILES_DB.name(),
+                LIBRARY_FILES_DB,
                 folder=path.joinpath().replace(path.name, ""),
                 filename=path.name,
                 type=self._library_type.lower(),
@@ -127,7 +127,7 @@ class LibraryBase(metaclass=ABCMeta):
             Database.call(msg2)
 
             msg3 = SQLSelect(
-                LIBRARY_FILES_DB.name(),
+                LIBRARY_FILES_DB,
                 Where("folder", path.joinpath().replace(path.name, "")),
                 Where("filename", path.name)
             )

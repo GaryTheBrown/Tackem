@@ -114,7 +114,7 @@ class Converter():
     def _get_video_tasks(self):
         '''Grab video tasks and append them to the list'''
         msg = SQLSelect(
-            VIDEO_CONVERT_DB.name(),
+            VIDEO_CONVERT_DB,
             Where("converted", False)
         )
         Database.call(msg)
@@ -142,7 +142,7 @@ class Converter():
     def _clear_video_tasks(self):
         '''clears the video tasks from the database when done'''
         msg1 = SQLSelect(
-            INFO_DB.name(),
+            INFO_DB,
             Where("ready_to_convert", True),
             Where("ready_to_rename", False)
         )
@@ -150,7 +150,7 @@ class Converter():
         discs = [x['id'] for x in msg1.return_data]
 
         msg2 = SQLSelect(
-            VIDEO_CONVERT_DB.name()
+            VIDEO_CONVERT_DB
         )
         Database.call(msg2)
         wake_renamer = False
@@ -159,13 +159,13 @@ class Converter():
             if all([item['converted'] for item in msg2.return_data if item['info_id'] == disc]):
                 Database.call(
                     SQLDelete(
-                        VIDEO_CONVERT_DB.name(),
+                        VIDEO_CONVERT_DB,
                         Where("disc_id", disc)
                     )
                 )
                 Database.call(
                     SQLUpdate(
-                        INFO_DB.name(),
+                        INFO_DB,
                         Where("id", disc),
                         ready_to_rename=True
                     )
@@ -199,7 +199,7 @@ def create_video_converter_row(info_id, disc_rip_info, to_rip):
         if track.video_type() in to_rip:
             Database.call(
                 SQLInsert(
-                    VIDEO_CONVERT_DB.name(),
+                    VIDEO_CONVERT_DB,
                     info_id=info_id,
                     filename=folder_name + str(i).zfill(2) + ".mkv",
                     disc_info=disc_info,

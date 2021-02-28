@@ -1,5 +1,5 @@
 '''RIPPER API'''
-from api.ripper.isos import APIRipperIsos
+from api.ripper.iso import APIRipperIsos
 from api.ripper.drives import APIRipperDrives
 import cherrypy
 from api.base import APIBase
@@ -19,6 +19,6 @@ class APIRipper(APIBase):
 
         if section == "drives":
             return APIRipperDrives()
-        if section == "isos":
+        if section == "iso":
             return APIRipperIsos()
         return self

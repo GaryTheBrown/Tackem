@@ -1,5 +1,5 @@
 '''Ripper init'''
-from libs.ripper.ISO import ISO
+from libs.ripper.ISO import RipperISO
 from data.database.ripper import AUDIO_CONVERT_DB, AUDIO_INFO_DB
 from data.database.ripper import VIDEO_CONVERT_DB, VIDEO_INFO_DB
 import platform
@@ -74,7 +74,7 @@ class Ripper:
             cls.__start_drives()
 
         if CONFIG['ripper']['iso']['enabled'].value:
-            ISO.start()
+            RipperISO.start()
 
         cls.__running = True
 
@@ -100,7 +100,7 @@ class Ripper:
                 drive.stop_thread()
 
             if CONFIG['ripper']['iso']['enabled'].value:
-                ISO.stop()
+                RipperISO.stop()
             cls.__running = False
 
     @classproperty

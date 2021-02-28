@@ -1,6 +1,8 @@
 '''Script For the Root Of The System'''
+from data.database.ripper import AUDIO_INFO_DB, VIDEO_INFO_DB
 from libs.database.messages.delete import SQLDelete
 import os
+from libs.ripper.ISO import RipperISO
 from libs.database.where import Where
 from data.database.system import UPLOAD_DB
 from libs.database import Database
@@ -21,7 +23,7 @@ class Upload(HTMLTEMPLATE):
             raise cherrypy.HTTPError(status=403)
 
         msg = SQLSelect(
-            UPLOAD_DB.name(),
+            UPLOAD_DB,
             Where("key", key)
         )
         Database.call(msg)
@@ -36,6 +38,16 @@ class Upload(HTMLTEMPLATE):
             shutil.copyfileobj(cherrypy.request.body, file)
 
         if os.path.getsize(upload_name) == msg.return_data['filesize']:
-            Database.call(SQLDelete(UPLOAD_DB.name(), Where("id", self._db_data['id'])))
+            Database.call(SQLDelete(UPLOAD_DB, Where("id",  msg.return_data['id'])))
+            self.__call_next_system(filename, msg.return_data['system'])
             return 'OK'
         return "FAILED"
+
+    def __call_next_system(self, filename: str, system: str):
+        '''Sends command to the next system'''
+        if system == "RIPPER_ISO_AUDIO":
+            RipperISO.file_add(filename, AUDIO_INFO_DB)
+            return
+        if system == "RIPPER_ISO_VIDEO":
+            RipperISO.file_add(filename, VIDEO_INFO_DB)
+            return

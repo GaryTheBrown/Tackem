@@ -170,7 +170,7 @@ class Drive(metaclass=ABCMeta):
     def _add_video_disc_to_database(self):
         '''sets up the DB stuff for disc'''
         msg = SQLSelect(
-            VIDEO_INFO_DB.name(),
+            VIDEO_INFO_DB,
             Where("uuid", self._disc_uuid),
             Where("label", self._disc_label),
             Where("sha256", self._disc_sha256),
@@ -181,7 +181,7 @@ class Drive(metaclass=ABCMeta):
         if isinstance(msg.return_data, dict):
             Database.call(
                 SQLUpdate(
-                    VIDEO_INFO_DB.name(),
+                    VIDEO_INFO_DB,
                     Where(
                         "id",
                         msg.return_data['id']
@@ -197,7 +197,7 @@ class Drive(metaclass=ABCMeta):
         else:
             Database.call(
                 SQLInsert(
-                    VIDEO_INFO_DB.name(),
+                    VIDEO_INFO_DB,
                     uuid=self._disc_uuid,
                     label=self._disc_label,
                     sha256=self._disc_sha256,

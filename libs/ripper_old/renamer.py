@@ -62,7 +62,7 @@ class Renamer():
     def _video_renamer(self):
         '''the renamer function for the video files'''
         msg1 = SQLSelect(
-            INFO_DB.name(),
+            INFO_DB,
             Where("ready_to_rename", True)
         )
         Database.call(msg1)
@@ -108,7 +108,7 @@ class Renamer():
                 os.rename(in_file, final_out_file)
             Database.call(
                 SQLUpdate(
-                    INFO_DB.name(),
+                    INFO_DB,
                     Where("id", item['id']),
                     ready_for_library=True
                 )

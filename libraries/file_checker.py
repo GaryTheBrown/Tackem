@@ -83,7 +83,7 @@ class FileChecker:
 
         timestamp = int(now.timestamp())
         msg = SQLSelect(
-            LIBRARY_FILES_DB.name(),
+            LIBRARY_FILES_DB,
             Where("last_check", timestamp, ">")
         )
 
@@ -124,14 +124,14 @@ class FileChecker:
                     update_data['bad_file'] = 1
 
                 msg = SQLUpdate(
-                    LIBRARY_FILES_DB.name(),
+                    LIBRARY_FILES_DB,
                     Where("id", item['id']),
                     checksum=checksum
                 )
 
             else:
                 msg = SQLUpdate(
-                    LIBRARY_FILES_DB.name(),
+                    LIBRARY_FILES_DB,
                     Where("id", item['id']),
                     missing_file=1
                 )

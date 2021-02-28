@@ -93,6 +93,8 @@ class Webserver:
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
         cherrypy.tree.mount(Upload("Upload", ""), baseurl + "upload/", conf_upload)
 
+        File.mkdir(File.location(CONFIG['webui']['uploadlocation'].value))
+
         if Ripper.running:
             ripper = RipperRoot("Ripper", "")
             ripper.drives = RipperDrive("Ripper Drives", "")

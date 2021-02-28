@@ -60,7 +60,8 @@
             }.bind(obj));
 
             $("[data-click-action]").each(function(index, element) {
-                $(element).on('click', Config[$(element).data("action")]);
+                console.log($(element).data("click-action"));
+                $(element).on('click', Config[$(element).data("click-action")]);
             });
         }
 

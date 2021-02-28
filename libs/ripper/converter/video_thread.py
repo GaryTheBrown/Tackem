@@ -30,7 +30,7 @@ class ConverterVideoThread():
         self._thread_run = False
         self._task_done = False
         msg = SQLSelect(
-            VIDEO_CONVERT_DB.name(),
+            VIDEO_CONVERT_DB,
             Where("id", self._id)
         )
         Database.call(msg)
@@ -113,7 +113,7 @@ class ConverterVideoThread():
                 os.remove(self._infile + ".OLD")
             Database.call(
                 SQLUpdate(
-                    VIDEO_CONVERT_DB.name(),
+                    VIDEO_CONVERT_DB,
                     Where("id", self._sql_row_id),
                     converted=True
                 )

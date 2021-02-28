@@ -1,4 +1,5 @@
 '''ROOT API'''
+from api.ripper import APIRipper
 from api.scraper import APIScraper
 import cherrypy
 from api.base import APIBase
@@ -34,6 +35,8 @@ class API(APIBase):
             return APIAdmin()
         if section == "library":
             return APILibrary()
+        if section == "ripper":
+            return APIRipper()
         if section == "scraper":
             return APIScraper()
         return self

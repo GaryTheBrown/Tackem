@@ -21,7 +21,7 @@ class VideoLabeler():
     def get_count(cls):
         '''returns the data as dict for html'''
         msg = SQLTableCountWhere(
-            INFO_DB.name(),
+            INFO_DB,
             Where("ripped", True),
             Where("ready_to_convert", False),
             Where("ready_to_rename", False)
@@ -33,7 +33,7 @@ class VideoLabeler():
     def get_ids(cls):
         '''returns the data as dict for html'''
         msg = SQLSelect(
-            INFO_DB.name(),
+            INFO_DB,
             Where("ripped", True),
             Where("ready_to_convert", False),
             Where("ready_to_rename", False)
@@ -45,7 +45,7 @@ class VideoLabeler():
     def get_data(cls):
         '''returns the data as dict for html'''
         msg = SQLSelect(
-            INFO_DB.name(),
+            INFO_DB,
             Where("ripped", True),
             Where("ready_to_convert", False),
             Where("ready_to_rename", False)
@@ -57,7 +57,7 @@ class VideoLabeler():
     def get_data_by_id(cls, db_id):
         '''returns the data by id as dict for html'''
         msg = SQLSelect(
-            INFO_DB.name(),
+            INFO_DB,
             Where("id", db_id)
         )
         Database.call(msg)
@@ -93,7 +93,7 @@ class VideoLabeler():
                 dict_for_db["ready_to_rename"] = True
         Database.call(
             SQLUpdate(
-                INFO_DB.name(),
+                INFO_DB,
                 Where("id", db_id),
                 **dict_for_db
             )
@@ -109,7 +109,7 @@ class VideoLabeler():
         '''Clears the rip data from the database'''
         Database.call(
             SQLUpdate(
-                INFO_DB.name(),
+                INFO_DB,
                 Where("id", db_id),
                 rip_data=None
             )
@@ -119,7 +119,7 @@ class VideoLabeler():
     def clear_rip_track_data(cls, db_id, track_id):
         '''Clears the rip data from the database'''
         msg1 = SQLSelect(
-            INFO_DB.name(),
+            INFO_DB,
             Where("id", db_id),
         )
         Database.call(msg1)
@@ -130,7 +130,7 @@ class VideoLabeler():
             to_save = json.dumps(rip_data)
             Database.call(
                 SQLUpdate(
-                    INFO_DB.name(),
+                    INFO_DB,
                     Where("id", db_id),
                     rip_data=to_save
                 )

@@ -10,10 +10,11 @@ TABLE_VERSION_DB = Table(
 )
 
 UPLOAD_DB = Table(
-    "upload",
+    "post_upload",
     1,
     Column("key", "text", not_null=True),
     Column("filename", "text", not_null=True),
     Column("filesize", "bigint", not_null=True),
-    Column("system", "text", not_null=True)
+    Column("system", "text", not_null=True),
+    soft_delete=True
 )
