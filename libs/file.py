@@ -1,5 +1,6 @@
 '''File and Folder functions'''
 import pathlib
+import shutil
 from data import PROGRAMCONFIGLOCATION
 class File:
     '''Class full of file functions'''
@@ -17,3 +18,8 @@ class File:
         if folder[0] != "/":
             folder = root + folder
         pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
+
+    @classmethod
+    def move(cls, source: str, destination: str):
+        '''Moves file from one place to another destiniation must contain the filename too'''
+        shutil.move(source, destination)

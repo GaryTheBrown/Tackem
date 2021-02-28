@@ -68,7 +68,7 @@ class Ripper:
     def shutdown(self):
         '''stop the plugin'''
         for drive in self._drives:
-            drive.unlock_tray()
+            drive._unlock_tray()
             drive.stop_thread()
         if self._converter is not None:
             RipperEvents().converter.set()

@@ -1,5 +1,5 @@
 '''Master Section for the Drive controller'''
-from abc import ABCMeta, abstractmethod
+from libs.ripper.subsystems import FileSubsystem
 from libs.file import File
 import os
 from libs.html_system import HTMLSystem
@@ -7,19 +7,26 @@ from data.config import CONFIG
 from threading import BoundedSemaphore, Thread
 import time
 import json
+from libs.database.where import Where
+from data.database.ripper import VIDEO_INFO_DB
+from libs.database.messages.update import SQLUpdate
+from libs.database import Database
+from data.config import CONFIG
+from libs.file import File
+from libs.ripper.makemkv import MakeMKV
 
-class ISORipper(metaclass=ABCMeta):
+class ISORipper(FileSubsystem):
     '''Master Section for the Drive controller'''
 
     def __init__(self, db_data: dict, pool_sema: BoundedSemaphore):
-        self._thread = Thread(target=self.run, args=())
+        self._thread = Thread(target=self.__run, args=())
         self._thread.setName(f"Ripper ISO: {db_data['iso_file']}")
 
         self._pool_sema = pool_sema
         self._db_data = db_data
 
         self._ripper = None # whatever the ripper is makemkv and cd ripper
-
+        self.__active = False
         self._thread.start()
 
     @property
@@ -27,18 +34,10 @@ class ISORipper(metaclass=ABCMeta):
         '''return if thread is running'''
         return self._thread.is_alive()
 
-    def wait_for_file_copy_complete(self, audio: bool = False) -> bool:
-        '''watches the file size until it stops'''
-        path = CONFIG['ripper']["locations"]["audioiso" if audio else "videoiso"].value
-        filename = File.location(f"{path}{self._db_data['iso_file']}")
-        historicalSize = -1
-        while (historicalSize != os.path.getsize(filename)):
-            historicalSize = os.path.getsize(filename)
-            time.sleep(1)
-
-##########
-##Thread##
-##########
+    @property
+    def active(self) -> bool:
+        '''return if thread is Active'''
+        return self.__active
 
     def stop_thread(self):
         '''stop the thread'''
@@ -49,25 +48,48 @@ class ISORipper(metaclass=ABCMeta):
 ##########
 ##Script##
 ##########
-    def run(self):
+    def __run(self):
         ''' Loops through the standard ripper function'''
         with self._pool_sema:
+            self.__active = True
             if "uuid" in self._db_data:
-                self.wait_for_file_copy_complete()
-                self._video_rip_setup()
+                self.__wait_for_file_copy_complete()
+                file = File.location(
+                    self._db_data['iso_file'],
+                    CONFIG['ripper']['locations']['videoiso'].value
+                )
+
+                disc = self._get_udfInfo(file)
+
+                Database.call(
+                    SQLUpdate(
+                        VIDEO_INFO_DB,
+                        Where("id", self._db_data['id']),
+                        label=disc['label'],
+                        uuid=disc['uuid'],
+                        disc_type=disc['type']
+                    )
+                )
+                self._ripper = MakeMKV("")
             else:
-                self.wait_for_file_copy_complete(True)
-                self._audio_rip_setup()
-            self._ripper.call(self._db_data['id'])
+                self.__wait_for_file_copy_complete(True)
+                # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
+                                              # self._set_drive_status, self._thread_run)
+
+            while self._thread_run:
+                time.sleep(1)
+
+            # self._ripper.call(self._db_data['id'])
             self._ripper = None
 
-    @abstractmethod
-    def _audio_rip_setup(self):
-        '''script to rip an audio cd'''
-
-    @abstractmethod
-    def _video_rip_setup(self):
-        '''script to rip video disc'''
+    def __wait_for_file_copy_complete(self, audio: bool = False) -> bool:
+        '''watches the file size until it stops'''
+        path = CONFIG['ripper']["locations"]["audioiso" if audio else "videoiso"].value
+        filename = File.location(f"{path}{self._db_data['iso_file']}")
+        historicalSize = -1
+        while (historicalSize != os.path.getsize(filename)):
+            historicalSize = os.path.getsize(filename)
+            time.sleep(1)
 
 ##############
 ##HTML STUFF##

@@ -16,7 +16,9 @@ class RipperRoot(HTMLTEMPLATE):
         return self._template(
             HTMLSystem.part(
                 "pages/ripper_index",
-                DRIVES=self.drives_data(True)
+                DRIVES=self.drives_data(True),
+                ISOCOUNT=len(Ripper.isos),
+                ISOTHREADLIMIT=CONFIG['ripper']['iso']['threadcount'].value
             )
         )
 
@@ -27,7 +29,7 @@ class RipperRoot(HTMLTEMPLATE):
             "ripping/drives/itemvertical" if vertical else "ripping/drives/item",
             DRIVENUMBER=str(drive_index),
             LOCKED="" if data["traylock"] else "hidden",
-            NAME=drive_obj.get_name(),
+            NAME=drive_obj.name,
             IMAGE=data["traystatus"],
             INFO=data["drivestatus"],
             RIPPINGDATAVISIBLE="" if data['ripping'] else "hidden",

@@ -2,7 +2,7 @@
 
     $(() => {
         new Users();
-    })
+    });
 
     class Users
     {
@@ -31,7 +31,7 @@
                     },
                     success: function(json)
                     {
-                        if (json['success']){
+                        if (json.success){
                             location.reload();
                         } else {
                             if(json.message){
@@ -40,7 +40,7 @@
 
                         }
                     }
-                })
+                });
             }else {
                 $elem.prop('disabled', false);
             }
@@ -68,7 +68,7 @@
                 },
                 success: function(json)
                 {
-                    if (json['success']){
+                    if (json.success){
                         location.reload();
                     } else {
                         if(json.message){
@@ -76,7 +76,7 @@
                         }
                     }
                 }
-            })
+            });
         }
 
         add()
@@ -99,7 +99,7 @@
                 },
                 success: function(json)
                 {
-                    if (json['success']){
+                    if (json.success){
                         location.reload();
                     } else {
                         if(json.message){
@@ -107,7 +107,7 @@
                         }
                     }
                 }
-            })
+            });
         }
     }
 

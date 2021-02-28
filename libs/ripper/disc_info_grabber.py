@@ -1,10 +1,7 @@
 '''function to grab the info needed for makemkv and the converter'''
 import json
-from subprocess import DEVNULL, PIPE, Popen
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database import Database
-from libs.database.messages import SQLInsert
-from libs.database.messages import SQLSelect
 from libs.database.messages import SQLUpdate
 from libs.database.where import Where
 from libs.ripper.data.disc_type import DiscType, make_disc_type
@@ -53,13 +50,3 @@ def apiaccess_video_disc_id(uuid: str, label: str):
 
     #     return disc_type.MovieDiscType("Aqua Teen Hunger Force Colon Movie", "2007",
     #                                    "tt0455326", tracks)
-
-def gen_sha256_linux(in_file: str) -> str:
-    '''Generates the sha256'''
-    # using DD to read the disc pass it to sha256 to make a unique code for searching by
-    dd_process = Popen(["dd", "if=" + in_file, "bs=4M", "count=128", "status=none"],
-                        stdout=PIPE, stderr=DEVNULL)
-    sha256sum = Popen(["sha256sum"], stdin=dd_process.stdout, stdout=PIPE, stderr=DEVNULL)
-    if dd_process.returncode == 0:
-        return sha256sum.communicate()[0].decode('utf-8').replace("-", "").rstrip()
-    return ""
