@@ -115,14 +115,7 @@ def ripper_config() -> ConfigList:
                     min=1,
                     max=5
                 )
-            ),
-            ConfigObjIntegerNumber(
-                "watchtimer",
-                60,
-                "Watch Timer",
-                "How long between checks of the folder for new ISOs",
-                input_attributes=InputAttributes(min=1)
-            ),
+            )
         ),
         ConfigList(
             "locations",
@@ -162,6 +155,16 @@ def ripper_config() -> ConfigList:
                 "audioripped/",
                 "Ripped Location",
                 "Where do you want to move the audio cds to when completed"
+            )
+        ),
+        ConfigList(
+            "makemkv",
+            "MakeMKV",
+            ConfigObjString(
+                "key",
+                "",
+                "Licence Key",
+                "Please enter your licence key for makemkv here (restart needed)"
             )
         ),
         ConfigList(

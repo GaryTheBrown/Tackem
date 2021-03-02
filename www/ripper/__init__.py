@@ -16,29 +16,20 @@ class RipperRoot(HTMLTEMPLATE):
         return self._template(
             HTMLSystem.part(
                 "pages/ripper_index",
-                DRIVES=self.drives_data(True),
+                DRIVES=self.drives_data(),
                 ISOCOUNT=len(Ripper.isos),
                 ISOTHREADLIMIT=CONFIG['ripper']['iso']['threadcount'].value
-            )
+            ),
+            javascript="static/js/ripper.js"
         )
 
-    def drive_data(self, drive_obj, drive_index, vertical=False):
-        '''return html for Drive'''
-        data = drive_obj.html_data(False)
-        return HTMLSystem.part(
-            "ripping/drives/itemvertical" if vertical else "ripping/drives/item",
-            DRIVENUMBER=str(drive_index),
-            LOCKED="" if data["traylock"] else "hidden",
-            NAME=drive_obj.name,
-            IMAGE=data["traystatus"],
-            INFO=data["drivestatus"],
-            RIPPINGDATAVISIBLE="" if data['ripping'] else "hidden",
-            RIPPINGDATA=data["rippingdata"] if data['ripping'] else ""
-        )
-
-    def drives_data(self, vertical=False):
+    def drives_data(self):
         '''returns the group of drives html'''
         html = ""
         for drive_index, drive_obj in enumerate(Ripper.drives):
-            html += self.drive_data(drive_obj, drive_index , vertical)
+            html += HTMLSystem.part(
+                "ripping/drives/item",
+                DRIVENUMBER=str(drive_index),
+                NAME=drive_obj.name
+            )
         return html

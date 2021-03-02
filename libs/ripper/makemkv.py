@@ -1,4 +1,5 @@
 '''MakeMKV ripping controller'''
+import sys
 from libs.ripper.disc_info_grabber import rip_data
 from libs.database.messages import SQLUpdate
 from libs.database.where import Where
@@ -31,7 +32,7 @@ class MakeMKV(RipperSubSystem):
                 CONFIG['ripper']['locations']['videoiso'].value
             )
 
-        temp_dir = File.location(str(id), CONFIG['ripper']['locations']['videoripping'].value)
+        temp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
         if isinstance(disc_rip_info, list):
             for idx, track in enumerate(disc_rip_info):
                 if not isinstance(track, bool):
@@ -78,6 +79,7 @@ class MakeMKV(RipperSubSystem):
             str(index),
             temp_dir
         ]
+
         thread = pexpect.spawn(" ".join(prog_args), encoding='utf-8')
 
         cpl = thread.compile_pattern_list([
@@ -93,8 +95,7 @@ class MakeMKV(RipperSubSystem):
                 self._ripping_track = None
                 break
             elif i == 1:
-                self._ripping_track = int(
-                    thread.match.group(0).split(":")[1].split(",")[1])
+                self._ripping_track = int(thread.match.group(0).split(":")[1].split(",")[1])
                 update_progress = True
             elif i == 2:
                 if update_progress:

@@ -1,8 +1,9 @@
 '''Ripper init'''
+from data import HOMEFOLDER
 from libs.ripper.iso import ISORipper
 from data.database.ripper import AUDIO_CONVERT_DB, AUDIO_INFO_DB
 from data.database.ripper import VIDEO_CONVERT_DB, VIDEO_INFO_DB
-import platform
+from pathlib import Path
 from data.config import CONFIG
 from libs.classproperty import classproperty
 from libs.database import Database
@@ -11,14 +12,12 @@ from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive import Drive
 from libs.database.table import Table
-from libs.database.messages.update import SQLUpdate
-from libs.database.messages.insert import SQLInsert
 from typing import List
-from libs.database.where import Where
 from libs.database import Database
-from libs.database.messages import SQLSelect
 from threading import BoundedSemaphore
 from data.config import CONFIG
+
+#TODO need to fix the labels in the item.html this is really a part of making the item look better
 
 
 #TODO need to make a page for uploads and the API for the ripper to recieve the UUID, SHA256, LABEL and
@@ -96,13 +95,26 @@ class Ripper:
         Database.call(SQLTable(VIDEO_INFO_DB))
         Database.call(SQLTable(VIDEO_CONVERT_DB))
 
+        cls.setup_makemkv()
         if CONFIG['ripper']['drives']['enabled'].value:
             cls.__start_drives()
 
         if CONFIG['ripper']['iso']['enabled'].value:
-            cls.__start_drives()
+            cls.__start_isos()
 
         cls.__running = True
+
+    @classmethod
+    def setup_makemkv(cls):
+        '''sets up the makemkv config (needed due to app key)'''
+        folder = f"{HOMEFOLDER}/.MakeMKV/"
+        File.mkdir(folder)
+        with open(f'{folder}settings.conf', "w") as file:
+            file.write('app_DefaultSelectionString = "+sel:all"\n')
+            file.write('app_DefaultOutputFileName = "{t:N2}"\n')
+            file.write('app_ccextractor = "/usr/bin/ccextractor"\n')
+            file.write('app_key = "' + CONFIG['ripper']['makemkv']['key'].value + '"')
+
 
     @classmethod
     def __start_drives(cls):
@@ -120,6 +132,19 @@ class Ripper:
     def __start_isos(cls):
         '''starts the ripper system and checks the upload folders for isos to add'''
         cls.__iso_pool_sema = BoundedSemaphore(value=CONFIG['ripper']['iso']['threadcount'].value)
+
+        #Check for Audio ISOs
+        iso_path = File.location(CONFIG['ripper']['locations']['audioiso'].value)
+        for path in Path(iso_path).rglob('*.iso'):
+            filename = ("/"+"/".join(path.parts[1:])).replace(iso_path, "")
+            cls.iso_add(filename, AUDIO_INFO_DB)
+
+        #Check For Video ISOs
+        iso_path = File.location(CONFIG['ripper']['locations']['videoiso'].value)
+        for path in Path(iso_path).rglob('*.iso'):
+            filename = ("/"+"/".join(path.parts[1:])).replace(iso_path, "")
+            cls.iso_add(filename, VIDEO_INFO_DB)
+
 
 
     @classmethod
@@ -140,55 +165,19 @@ class Ripper:
             cls.__running = False
 
     @classmethod
-    def iso_add(cls, filename: str, table: Table):
+    def iso_add(cls, filename: str, table: Table) -> bool:
         '''Action for other systems to add iso mainly the upload side'''
+        #TODO need to change the DB calls in here to read the other info and add teh full info here
         if not CONFIG['ripper']['iso']['enabled'].value:
-            return
-
+            return False
         if filename in cls.__loaded_isos:
-            return
-
-        msg = SQLSelect(
-            table,
-            Where("iso_file", filename),
-        )
-        Database.call(msg)
-
-        if isinstance(msg.return_data, dict):
-            Database.call(
-                SQLUpdate(
-                    table,
-                    Where(
-                        "id",
-                        msg.return_data['id']
-                    ),
-                    ripped=False,
-                    ready_to_convert=False,
-                    ready_to_rename=False,
-                    ready_for_library=False,
-                    completed=False
-                )
-            )
-        else:
-            Database.call(
-                SQLInsert(
-                    table,
-                    iso_file=filename
-                )
-            )
-
-        Database.call(msg)
-
-        msg = SQLSelect(
-            table,
-            Where("iso_file", filename),
-        )
-        Database.call(msg)
-
+            return False
         cls.__loaded_isos.append(filename)
         cls.__iso_threads.append(
-            ISORipper(msg.return_data, cls.__iso_pool_sema)
+            ISORipper(cls.__iso_pool_sema, filename, table == VIDEO_INFO_DB)
         )
+
+        return True
 
     @classmethod
     def cleanup_dead_threads(cls):

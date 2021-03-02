@@ -30,4 +30,4 @@ class Drives(HTMLTEMPLATE):
         if index_int > len(drives):
             self._return()
         drive = self._tackem_system.system().get_drives()[index_int]
-        return drive.html_data()
+        return drive.api_data()

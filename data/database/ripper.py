@@ -42,7 +42,6 @@ VIDEO_INFO_DB = Table(
     Column("iso_file", "text", default=""),
     Column("uuid", "varchar(16)", default=""),
     Column("label", "text", default=""),
-    Column("sha256", "varchar(64)", default=""),
     Column("disc_type", "varchar(6)", default=""),
     Column("rip_data", "json"),
     Column("ripped", "bit", not_null=True, default=False),

@@ -1,8 +1,6 @@
 '''Webserver'''
 from www.upload import Upload
-from cherrypy.process.wspbus import bus
 from www.ripper import RipperRoot
-from www.ripper.drive import RipperDrive
 from libs.ripper import Ripper
 from libs.file import File
 import os
@@ -97,7 +95,6 @@ class Webserver:
 
         if Ripper.running:
             ripper = RipperRoot("Ripper", "")
-            ripper.drives = RipperDrive("Ripper Drives", "")
             # ripper.videolabeler = VideoLabeler("Ripper Video Labeler", "")
             # ripper.converter = Converter("Ripper Video Converter", "")
             cherrypy.tree.mount(ripper, baseurl + "ripper/", conf_ripper)

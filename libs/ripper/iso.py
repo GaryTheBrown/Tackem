@@ -18,15 +18,18 @@ from libs.ripper.makemkv import MakeMKV
 class ISORipper(FileSubsystem):
     '''Master Section for the Drive controller'''
 
-    def __init__(self, db_data: dict, pool_sema: BoundedSemaphore):
+    def __init__(self, pool_sema: BoundedSemaphore, filename: str, video: bool = True):
+        super().__init__()
         self._thread = Thread(target=self.__run, args=())
-        self._thread.setName(f"Ripper ISO: {db_data['iso_file']}")
+        self._thread.setName(f"Ripper ISO: {filename}")
 
         self._pool_sema = pool_sema
-        self._db_data = db_data
+        self.__filename = filename
+        self.__video = video
 
         self._ripper = None # whatever the ripper is makemkv and cd ripper
         self.__active = False
+        self.__thread_run = True
         self._thread.start()
 
     @property
@@ -42,7 +45,7 @@ class ISORipper(FileSubsystem):
     def stop_thread(self):
         '''stop the thread'''
         if self._thread.is_alive():
-            self._thread_run = False
+            self.__thread_run = False
             self._thread.join()
 
 ##########
@@ -52,40 +55,32 @@ class ISORipper(FileSubsystem):
         ''' Loops through the standard ripper function'''
         with self._pool_sema:
             self.__active = True
-            if "uuid" in self._db_data:
-                self.__wait_for_file_copy_complete()
-                file = File.location(
-                    self._db_data['iso_file'],
-                    CONFIG['ripper']['locations']['videoiso'].value
+            self.__wait_for_file_copy_complete(self.__video)
+            self._get_udfInfo(
+                File.location(
+                    self.__filename,
+                    CONFIG['ripper']['locations']["videoiso" if self.__video else "audioiso"].value
                 )
+            )
 
-                disc = self._get_udfInfo(file)
-
-                Database.call(
-                    SQLUpdate(
-                        VIDEO_INFO_DB,
-                        Where("id", self._db_data['id']),
-                        label=disc['label'],
-                        uuid=disc['uuid'],
-                        disc_type=disc['type']
-                    )
-                )
-                self._ripper = MakeMKV("")
+            if self.__video:
+                self._add_video_disc_to_database(self.__filename)
+                self._ripper = MakeMKV()
             else:
-                self.__wait_for_file_copy_complete(True)
+                pass
                 # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
                                               # self._set_drive_status, self._thread_run)
 
-            while self._thread_run:
+            while self.__thread_run:
                 time.sleep(1)
 
-            # self._ripper.call(self._db_data['id'])
+            # self._ripper.call(self._db_id)
             self._ripper = None
 
-    def __wait_for_file_copy_complete(self, audio: bool = False) -> bool:
+    def __wait_for_file_copy_complete(self) -> bool:
         '''watches the file size until it stops'''
-        path = CONFIG['ripper']["locations"]["audioiso" if audio else "videoiso"].value
-        filename = File.location(f"{path}{self._db_data['iso_file']}")
+        path = CONFIG['ripper']["locations"]["videoiso" if self.__video else "audioiso"].value
+        filename = File.location(f"{path}{self.__filename}")
         historicalSize = -1
         while (historicalSize != os.path.getsize(filename)):
             historicalSize = os.path.getsize(filename)
@@ -94,7 +89,7 @@ class ISORipper(FileSubsystem):
 ##############
 ##HTML STUFF##
 ##############
-    def html_data(self, return_json=True):
+    def api_data(self, return_json=True):
         '''returns the data as json or dict for html'''
         return_dict = {}
         image_folder = CONFIG["webui"]["baseurl"].value + "static/img/"

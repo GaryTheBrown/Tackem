@@ -106,6 +106,7 @@
             $('#' + $(this).data("input")).val(num);
         }
 
+        //TODO these are for plugins but will be needed for libraries at least
         static addMulti()
         {
             let $elem = $(this);
@@ -123,7 +124,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/admin/addMulti/',
+                url: ROOT + 'api/admin/addMulti/',
                 data: {
                     plugin_type: plugin_type,
                     plugin_name: plugin_name,
@@ -159,7 +160,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/admin/deleteMulti/',
+                url: ROOT + 'api/admin/deleteMulti/',
                 data: {
                     plugin_type: plugin_type,
                     plugin_name: plugin_name,

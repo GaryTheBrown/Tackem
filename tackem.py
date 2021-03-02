@@ -23,7 +23,6 @@ from libs.ripper import Ripper
 
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
 # TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
-# TODO the same for all plugins
 
 class Tackem:
     '''main program entrance'''

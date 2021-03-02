@@ -17,6 +17,8 @@ class BackendBase(metaclass=ABCMeta):
 
     _conn = None
 
+    __debug_output = False
+
     def __init__(self):
         '''INIT'''
         self.__thread = threading.Thread(target=self.run, args=())
@@ -90,15 +92,15 @@ class BackendBase(metaclass=ABCMeta):
 
     def __do_job(self, job: SQLMessage):
         '''do the magic work for each job'''
+        if self.__debug_output:
+            print(job.query)
         cursor = self._get_cursor()
         cursor.execute(job.query)
         BackendBase._conn.commit()
         data = cursor.fetchall()
-        if len(data) == 1:
-            job.return_data = data.pop()
-            job.event_set()
-            return
-        job.return_data = data
+        if self.__debug_output:
+            print(data)
+        job.return_data = data.pop() if len(data) == 1 else data
         job.event_set()
 
     @abstractmethod

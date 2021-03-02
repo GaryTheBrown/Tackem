@@ -25,7 +25,7 @@
             if (confirm("Do you really want to Delete " + username + "?")){
                 $.ajax({
                     type: 'POST',
-                    url: '/api/admin/userDelete/',
+                    url: ROOT + 'api/admin/userDelete/',
                     data: {
                         userid: userid
                     },
@@ -59,7 +59,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/admin/userUpdate/',
+                url: ROOT + 'api/admin/userUpdate/',
                 data: {
                     userid: userid,
                     username: username,
@@ -91,7 +91,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/admin/userAdd/',
+                url: ROOT + 'api/admin/userAdd/',
                 data: {
                     username: username,
                     password: password,

@@ -53,13 +53,6 @@ class APIRipperIsoUploadAudio(APIBase):
                 url=f"{url}/upload/?key={msg.return_data['key']}"
             )
 
-        Database.call(
-            SQLInsert(
-                AUDIO_INFO_DB,
-                iso_file=kwargs['filename']
-            )
-        )
-
         key = ''.join(random.choices(string.ascii_lowercase + string.digits, k=40))
         Database.call(
             SQLInsert(
