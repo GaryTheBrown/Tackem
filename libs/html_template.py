@@ -1,5 +1,5 @@
 '''HTML TEMPLATE'''
-from typing import Optional
+from typing import List, Optional, Union
 from data import PROGRAMVERSION
 from data.config import CONFIG
 from libs.authenticator import Authentication
@@ -31,8 +31,8 @@ class HTMLTEMPLATE():
             self,
             body: str,
             navbar: bool = True,
-            javascript: Optional[str] = None,
-            stylesheet: Optional[str] = None
+            javascript: Optional[Union[List[str], str]] = None,
+            stylesheet: Optional[Union[List[str], str]] = None
     ) -> str:
         '''Create The Template Layout'''
         navbar_html = ""

@@ -33,14 +33,18 @@ class MakeMKV(RipperSubSystem):
             )
 
         temp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
+        device = msg.return_data['iso_file'] == ""
         if isinstance(disc_rip_info, list):
             for idx, track in enumerate(disc_rip_info):
                 if not isinstance(track, bool):
-                    self._makemkv_backup_from_disc(temp_dir, idx, msg.return_data['iso_file'] == "")
+                    self._makemkv_backup_from_disc(temp_dir, idx, device)
         elif disc_rip_info is None:
-            self._makemkv_backup_from_disc(temp_dir, device=msg.return_data['iso_file'] == "")
+            self._makemkv_backup_from_disc(temp_dir, device=device)
 
         Database.call(SQLUpdate(DB, Where("id", id), ripped=True))
+
+        comp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
+        File.move(temp_dir, comp_dir)
 
         if CONFIG['ripper']['converter']['enabled'].value:
             create_video_converter_row(
@@ -53,6 +57,9 @@ class MakeMKV(RipperSubSystem):
         else:
             Database.call(SQLUpdate(DB, Where("id", id), ready_to_rename=True))
             RipperEvents().renamer.set()
+
+        if not device and CONFIG['ripper']['iso']['removeiso'].value:
+            File.rm(File.location(self._in_file))
 
         return True
 
@@ -75,7 +82,7 @@ class MakeMKV(RipperSubSystem):
             "--progress=-stdout",
             "--noscan",
             "mkv",
-            f"dev:{self._in_file}" if device else f"iso:{self._in_file}",
+            f"dev:{self._in_file}" if device else f"iso:{File.location(self._in_file)}",
             str(index),
             temp_dir
         ]

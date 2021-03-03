@@ -23,7 +23,6 @@
                 data: { id: id},
                 dataType: 'json',
                 success: function (result) {
-                    console.log(result);
                     let $element = $(`.drivebox[data-id="${result.id}"]`);
 
                     if ($element.find('.driveimg').attr('src') != result.traystatus) {
@@ -39,8 +38,6 @@
 
                     let $track = $element.find(".progresstrack .progress-bar");
                     let $total = $element.find(".progresstotal .progress-bar");
-                    console.log($track.html());
-                    console.log($total.html());
                     if (result.ripping != true) {
                         $track.css("width", result.trackpercent + "%");
                         $track.attr("aria-valuenow", result.trackvalue);

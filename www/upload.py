@@ -20,7 +20,6 @@ class Upload(HTMLTEMPLATE):
     @cherrypy.expose()
     def index(self, key: str = None):
         '''Handle non-multipart upload'''
-        # Authentication.check_auth()
         if key is None:
             raise cherrypy.HTTPError(status=403)
 
@@ -34,14 +33,13 @@ class Upload(HTMLTEMPLATE):
             raise cherrypy.HTTPError(status=403)
 
         filename = msg.return_data['filename']
-
         upload_name = File.location(f"{CONFIG['webui']['uploadlocation'].value}{filename}")
 
         with open(upload_name, 'wb') as file:
             shutil.copyfileobj(cherrypy.request.body, file)
 
         if os.path.getsize(upload_name) == msg.return_data['filesize']:
-            # Database.call(SQLDelete(UPLOAD_DB, Where("id",  msg.return_data['id'])))
+            Database.call(SQLDelete(UPLOAD_DB, Where("id",  msg.return_data['id'])))
             self.__call_next_system(filename, msg.return_data['system'])
             return 'OK'
         return "FAILED"

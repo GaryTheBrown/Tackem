@@ -33,7 +33,6 @@ class FileSubsystem:
             Where("disc_type", self._disc['type']),
         )
         Database.call(msg)
-
         if isinstance(msg.return_data, dict):
             Database.call(
                 SQLUpdate(
@@ -50,19 +49,26 @@ class FileSubsystem:
                     completed=False
                 )
             )
-        else:
-            Database.call(
-                SQLInsert(
-                    VIDEO_INFO_DB,
-                    iso_file=filename,
-                    uuid=self._disc['uuid'],
-                    label=self._disc['label'],
-                    disc_type=self._disc['type'],
-                )
-            )
+            self._db_id = msg.return_data['id']
+            return
 
+        Database.call(
+            SQLInsert(
+                VIDEO_INFO_DB,
+                iso_file=filename,
+                uuid=self._disc['uuid'],
+                label=self._disc['label'],
+                disc_type=self._disc['type'],
+            )
+        )
+
+        msg = SQLSelect(
+            VIDEO_INFO_DB,
+            Where("uuid", self._disc['uuid']),
+            Where("label", self._disc['label']),
+            Where("disc_type", self._disc['type']),
+        )
         Database.call(msg)
-        print(msg.return_data)
         self._db_id = msg.return_data['id']
 
     def _get_udfInfo(self, in_file: str):

@@ -115,7 +115,14 @@ def ripper_config() -> ConfigList:
                     min=1,
                     max=5
                 )
-            )
+            ),
+            ConfigObjBoolean(
+                "removeiso",
+                True,
+                "Remove ISO",
+                "Do you want to delete the ISO after ripping?",
+                input_attributes=YES_NO_IA
+            ),
         ),
         ConfigList(
             "locations",

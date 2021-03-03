@@ -55,7 +55,7 @@ class ISORipper(FileSubsystem):
         ''' Loops through the standard ripper function'''
         with self._pool_sema:
             self.__active = True
-            self.__wait_for_file_copy_complete(self.__video)
+            self.__wait_for_file_copy_complete()
             self._get_udfInfo(
                 File.location(
                     self.__filename,
@@ -71,10 +71,7 @@ class ISORipper(FileSubsystem):
                 # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
                                               # self._set_drive_status, self._thread_run)
 
-            while self.__thread_run:
-                time.sleep(1)
-
-            # self._ripper.call(self._db_id)
+            self._ripper.call(self._db_id)
             self._ripper = None
 
     def __wait_for_file_copy_complete(self) -> bool:
@@ -84,7 +81,7 @@ class ISORipper(FileSubsystem):
         historicalSize = -1
         while (historicalSize != os.path.getsize(filename)):
             historicalSize = os.path.getsize(filename)
-            time.sleep(1)
+            time.sleep(4)
 
 ##############
 ##HTML STUFF##

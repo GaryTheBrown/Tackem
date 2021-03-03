@@ -41,7 +41,8 @@ footer {
         padding: 0;
     }
 
-    a:focus, a:hover {
+    a:focus,
+    a:hover {
         color: #aaaaaa !important;
     }
 
@@ -55,7 +56,8 @@ footer {
         margin-right: 0;
     }
 
-    .navbar-brand:focus, .navbar-brand:hover {
+    .navbar-brand:focus,
+    .navbar-brand:hover {
         background-color: white;
         color: black !important;
     }
@@ -69,7 +71,8 @@ footer {
         color: white;
     }
 
-    .nav>li>a:focus, .nav>li>a:hover {
+    .nav>li>a:focus,
+    .nav>li>a:hover {
         text-decoration: none;
     }
 
@@ -93,16 +96,20 @@ footer {
         padding-left: 15px;
     }
 
-    .dropdown-item:focus, .dropdown-item:hover {
+    .dropdown-item:focus,
+    .dropdown-item:hover {
         text-decoration: none;
         background-color: #222222;
     }
-    .dropdown-item.active, .dropdown-item:active {
+
+    .dropdown-item.active,
+    .dropdown-item:active {
         background-color: #666666;
     }
 }
 
-.dropdown:hover>.dropdown-menu, .dropright:hover>.dropdown-menu {
+.dropdown:hover>.dropdown-menu,
+.dropright:hover>.dropdown-menu {
     display: block;
 }
 
@@ -123,10 +130,12 @@ footer {
 a {
     text-decoration: none !important;
 }
+
 .row {
-    margin-left:0 !important;
-    margin-right:0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }
+
 .w45 {
     min-width: 45px !important;
     width: 45px !important;
@@ -144,11 +153,11 @@ a.nav-link {
     color: lightgray;
 }
 
-.form-check-input{
+.form-check-input {
     margin-left: 0 !important;
 }
 
-.onclick{
+.onclick {
     cursor: pointer;
 }
 
@@ -158,7 +167,7 @@ a.nav-link {
     right: 10px;
 }
 
-#search_modal{
+#search_modal {
     .modal-dialog {
         width: 98% !important;
         height: 98% !important;
@@ -172,14 +181,22 @@ a.nav-link {
 }
 
 #dim_screen {
-    position   : absolute;
-    top        : 0;
-    left       : 0;
-    width      : 100%;
-    height     : 100%;
-    background : #000;
-    opacity    : 0.6;
-    filter     : alpha(opacity=60);
-    z-index    : 5000;
-    display    : none;
-    }
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+    z-index: 5000;
+    display: none;
+}
+
+.custom-file-upload {
+    background-color: #ffffff;
+    color: #000000;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 1px 15px;
+}
