@@ -60,7 +60,7 @@ footer {
   color: black !important;
 }
 
-.navbar .navbar-brand>img {
+.navbar .navbar-brand > img {
   display: inline-block;
   width: 25%;
 }
@@ -69,8 +69,8 @@ footer {
   color: white;
 }
 
-.navbar .nav>li>a:focus,
-.navbar .nav>li>a:hover {
+.navbar .nav > li > a:focus,
+.navbar .nav > li > a:hover {
   text-decoration: none;
 }
 
@@ -105,8 +105,8 @@ footer {
   background-color: #666666;
 }
 
-.dropdown:hover>.dropdown-menu,
-.dropright:hover>.dropdown-menu {
+.dropdown:hover > .dropdown-menu,
+.dropright:hover > .dropdown-menu {
   display: block;
 }
 
@@ -195,4 +195,45 @@ a.nav-link {
   padding: 1px 15px;
 }
 
-/*# sourceMappingURL=style.css.map */
+#loading-popup {
+  display: none;
+}
+
+#loading-popup .popup-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+#loading-popup .popup-background .popup {
+  width: 200px;
+  height: 200px;
+  position: fixed;
+  top: calc(50% - 100px);
+  left: calc(50% - 100px);
+}
+
+#loading-popup .popup-background .popup .loader {
+  border: 16px solid #f3f3f3;
+  /* Light grey */
+  border-top: 16px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  position: relative;
+  left: calc(50% - 60px);
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -1,5 +1,7 @@
 (function () {
 
+    var listOfTimers = [];
+
     $(() => {
         new Ripper();
     });
@@ -10,24 +12,20 @@
         {
             let obj = this;
             $(".drivebox").each(function(index, element) {
-                let driveTimer = setInterval(obj.updateDrive, 1000, element);
+                listOfTimers.push(setInterval(obj.updateDrive, 1000, element, obj));
             }.bind(obj));
         }
 
-        updateDrive(element)
+        updateDrive(element, obj)
         {
             let id = $(element).data("id");
             $.ajax({
                 type: 'GET',
-                url: `${APIROOT}ripper/drives/data/`,
-                data: { id: id},
+                url: `${APIROOT}ripper/drives/data/${id}`,
                 dataType: 'json',
                 success: function (result) {
                     let $element = $(`.drivebox[data-id="${result.id}"]`);
 
-                    if ($element.find('.driveimg').attr('src') != result.traystatus) {
-                        $element.find('.driveimg').attr('src', result.traystatus);
-                    }
                     if (result.traylock == true) {
                         $element.find('.drivelock').show();
                     } else {
@@ -58,7 +56,18 @@
                         $element.find(".progresstotal .label").html("");
                     }
                 },
+                error: function () {
+                    listOfTimers.forEach(function(timer) {
+                        clearInterval(timer);
+                    });
+                }
             });
+        }
+
+        updateISOS(obj)
+        {
+            //TODO This one need to update .isocount and .isosection adding new
+            //removing old and some way of showing active and waiting. some mark.
         }
     }
 

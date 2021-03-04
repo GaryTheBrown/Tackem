@@ -12,7 +12,8 @@
                 $(this).bind('change', function () {
                     let file = this.files[0];
                     if (confirm(`upload ${file.name}`)) {
-                        //TODO show uploading popup blocking the rest of the window
+                        $("#loading-popup").show();
+                        $("#loading-popup").find("h1").html("UPLOADING");
                         $.ajax({
                             type: 'POST',
                             url: $(this).data("url"),
@@ -25,17 +26,19 @@
                                 fetch(result.url, {method:"POST", body:file})
                                 .then(response => {
                                     if (response.ok) {
-                                        alert("File Uploaded");
                                         return response;
                                     } else {
                                         throw Error(`Server returned ${response.status}: ${response.statusText}`);
                                     }
                                 })
                                 .then(response => {
-                                    //TODO return control back to screen
+                                    $("#loading-popup").hide();
+                                    $("#loading-popup").find("h1").html("LOADING");
+                                    $(this).val('');
                                 })
                                 .catch(err => {
                                     alert(err);
+                                    $(this).val('');
                                 });
                             },
                         });

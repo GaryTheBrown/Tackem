@@ -16,6 +16,9 @@ class APIRipperIsoUploadVideo(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
+        if user == self.GUEST:
+            raise cherrypy.HTTPError(status=403)
+
         if "filename" not in kwargs:
             return self._return_data(
                 user,
@@ -23,7 +26,7 @@ class APIRipperIsoUploadVideo(APIBase):
                 "Upload Video ISO",
                 False,
                 error="Missing Filename",
-                errorNumber=0
+                errorNumber=1
             )
         if "filesize" not in kwargs:
             return self._return_data(
@@ -32,7 +35,7 @@ class APIRipperIsoUploadVideo(APIBase):
                 "Upload Video ISO",
                 False,
                 error="Missing Filesize",
-                errorNumber=0
+                errorNumber=2
             )
 
         msg = SQLSelect(

@@ -86,44 +86,12 @@ class ISORipper(FileSubsystem):
 ##############
 ##HTML STUFF##
 ##############
-    def api_data(self, return_json=True):
+    def api_data(self):
         '''returns the data as json or dict for html'''
-        return_dict = {}
-        image_folder = CONFIG["webui"]["baseurl"].value + "static/img/"
-        disc_type = self.__type
-        if disc_type == "audiocd":
-            return_dict["traystatus"] = image_folder + "audiocd.png"
-        elif disc_type == "dvd":
-            return_dict["traystatus"] = image_folder + "dvd.png"
-        elif disc_type == "bluray":
-            return_dict["traystatus"] = image_folder + "bluray.png"
+        return_dict = {
+            "filename": self.__filename,
+            "ripping": False,
+        }
         if self._ripper:
-            ripping_data = self._ripper.get_ripping_data()
-            if ripping_data['track'] is not None:
-                return_dict["ripping"] = True
-                file_percent = "Track " + str(ripping_data['track']) + " ("
-                file_percent += str(ripping_data['file_percent']) + "%)"
-                total_percent = "Total (" + \
-                    str(ripping_data['total_percent']) + "%)"
-
-                return_dict["rippingdata"] = HTMLSystem.part("ripping/drives/rippingdata",
-                    PROGRESSTRACK=HTMLSystem.part("other/progress",
-                        LABEL=file_percent,
-                        VALUE=ripping_data['file'],
-                        MAX=ripping_data['max'],
-                        PERCENT=ripping_data['file_percent']
-                    ),
-                    PROGRESSTOTAL=HTMLSystem.part("other/progress",
-                        LABEL=total_percent,
-                        VALUE=ripping_data['total'],
-                        MAX=ripping_data['max'],
-                        PERCENT=ripping_data['total_percent']
-                    )
-                )
-            else:
-                return_dict["ripping"] = False
-        else:
-            return_dict["ripping"] = False
-        if return_json:
-            return json.dumps(return_dict)
+            return_dict.update(self._ripper.get_ripping_data())
         return return_dict

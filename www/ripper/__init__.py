@@ -7,7 +7,6 @@ from libs.html_system import HTMLSystem
 from data.config import CONFIG
 from libs.ripper import Ripper
 
-
 class RipperRoot(HTMLTEMPLATE):
     '''ROOT OF PLUGINS WEBUI HERE'''
     @cherrypy.expose
@@ -34,7 +33,7 @@ class RipperRoot(HTMLTEMPLATE):
         html = ""
         for drive_index, drive_obj in enumerate(Ripper.drives):
             html += HTMLSystem.part(
-                "ripping/drives/item",
+                "partial/ripper/drive",
                 DRIVENUMBER=str(drive_index),
                 NAME=drive_obj.name
             )

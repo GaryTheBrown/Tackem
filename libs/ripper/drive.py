@@ -83,7 +83,7 @@ class Drive(FileSubsystem):
                     # self._ripper = AudioCD(self.__device)
                 elif self._disc['type'] == "bluray" or self._disc['type'] == "dvd":
                     self._add_video_disc_to_database()
-                    self.__drive_status = "ripping video disc"
+                    self.__drive_status = f"ripping {self._disc['type']} video disc"
                     self._ripper = MakeMKV(self.__device)
                 self._ripper.call(self._db_id)
                 self._ripper = None
@@ -207,27 +207,11 @@ class Drive(FileSubsystem):
 ##############
     def api_data(self) -> dict:
         '''returns the data as json or dict for html'''
-        return_dict = {}
-        image_folder = CONFIG["webui"]["baseurl"].value + "static/img/"
-        if self.__tray_status == "empty":
-            return_dict["traystatus"] = image_folder + "empty.png"
-        elif self.__tray_status == "open":
-            return_dict["traystatus"] = image_folder + "open.png"
-        elif self.__tray_status == "reading":
-            return_dict["traystatus"] = image_folder + "reading.gif"
-        elif self.__tray_status == "loaded":
-            if self._disc['type'] == "none":
-                return_dict["traystatus"] = image_folder + "reading.gif"
-            elif self._disc['type'] == "audiocd":
-                return_dict["traystatus"] = image_folder + "audiocd.png"
-            elif self._disc['type'] == "dvd":
-                return_dict["traystatus"] = image_folder + "dvd.png"
-            elif self._disc['type'] == "bluray":
-                return_dict["traystatus"] = image_folder + "bluray.png"
-        return_dict["drivestatus"] = self.__drive_status
-        return_dict["traylock"] = self.__tray_locked
-        return_dict["ripping"] = False
-
+        return_dict = {
+            "drivestatus": self.__drive_status,
+            "traylock": self.__tray_locked,
+            "ripping": False,
+        }
         if self._ripper:
             return_dict.update(self._ripper.get_ripping_data())
 

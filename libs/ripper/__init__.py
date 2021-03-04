@@ -17,9 +17,6 @@ from libs.database import Database
 from threading import BoundedSemaphore
 from data.config import CONFIG
 
-#TODO finish up the ripperupload.js to make it look nicer
-#TODO Test the ISO upload system puts the files in the video ripped folder once done.
-#TODO need to fix the labels in the item.html this is really a part of making the item look better
 #TODO add in a system to load ISO threads onto the screen
 #TODO move on to the converter
 #TODO deal with the renamer (this may just be removed and changed to move to library as we can pass

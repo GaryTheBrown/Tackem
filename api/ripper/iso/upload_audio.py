@@ -15,6 +15,9 @@ class APIRipperIsoUploadAudio(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
+        if user == self.GUEST:
+            raise cherrypy.HTTPError(status=403)
+
         if "filename" not in kwargs:
             return self._return_data(
                 user,

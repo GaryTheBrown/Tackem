@@ -10,6 +10,9 @@ class APIScraperGetMovie(APIBase):
     def POST(self, **kwargs) -> str:
         '''POST Function'''
         user = kwargs.get("user", self.GUEST)
+        if user == self.GUEST:
+            raise cherrypy.HTTPError(status=403)
+
         required = []
         if (plugin_type:= kwargs.get("plugin_type", "")) == "":
             required.append("plugin_type")

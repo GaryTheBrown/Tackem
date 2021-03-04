@@ -4,16 +4,16 @@ import cherrypy
 from api.base import APIBase
 
 @cherrypy.expose
-class APIRipperDrivesData(APIBase):
+class APIRipperISOData(APIBase):
     '''Base Template For the API'''
 
-    def GET(self, id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
+    def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         '''GET Function'''
         user = kwargs.get("user", self.GUEST)
         if user == self.GUEST:
             raise cherrypy.HTTPError(status=403)
         try:
-            index = int(id)
+            index = int(kwargs.get("id", None))
         except ValueError:
             raise cherrypy.HTTPError(status=400)
 
@@ -26,6 +26,5 @@ class APIRipperDrivesData(APIBase):
             "Ripper",
             "Upload Video ISO",
             True,
-            id=index,
             **drive_dict
         )

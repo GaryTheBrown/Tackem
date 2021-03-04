@@ -1,4 +1,5 @@
 '''RIPPER ISOS API'''
+from api.ripper.iso.data import APIRipperISOData
 from api.ripper.iso.upload_audio import APIRipperIsoUploadAudio
 from api.ripper.iso.upload_video import APIRipperIsoUploadVideo
 import cherrypy
@@ -21,4 +22,6 @@ class APIRipperIsos(APIBase):
             return APIRipperIsoUploadAudio()
         if section == "uploadvideo":
             return APIRipperIsoUploadVideo()
+        if section == "data":
+            return APIRipperISOData()
         return self
