@@ -9,10 +9,8 @@ from www.root import Root
 from www.admin import Admin
 from api import API
 from libs.error_pages import setup_error_pages
-from data import THEMEFOLDERLOCATION
 from data.config import CONFIG
 from data.config import CONFIG
-from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
 from libs.database import Database
 from libs.database.messages import SQLTable
@@ -46,16 +44,19 @@ class Webserver:
         setup_error_pages(e500=False)
 
         conf_root = {
-            '/static': {
+            '/img': {
                 'tools.staticdir.on': True,
-                'tools.staticdir.dir': os.getcwd() + '/www/static/'
+                'tools.staticdir.dir': os.getcwd() + '/www/static/img/'
+            },
+            '/js': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': os.getcwd() + '/www/static/js/'
+            },
+            '/style.css': {
+                'tools.staticfile.on': True,
+                'tools.staticfile.filename': os.getcwd() + '/www/static/style.css'
             }
         }
-        for theme in next(os.walk(THEMEFOLDERLOCATION))[1]:
-            conf_root['/themes/' + theme] = {
-                'tools.staticdir.on': True,
-                'tools.staticdir.dir': os.getcwd() + '/' + THEMEFOLDERLOCATION + theme + "/static"
-            }
 
         conf_api = {
             '/': {
@@ -99,7 +100,6 @@ class Webserver:
             # ripper.converter = Converter("Ripper Video Converter", "")
             cherrypy.tree.mount(ripper, baseurl + "ripper/", conf_ripper)
 
-        HTMLSystem.set_theme(CONFIG['webui']['theme'].value)
         cherrypy.engine.start()
         cls.__running = True
 

@@ -18,10 +18,10 @@ class APIRipperIsos(APIBase):
 
         section = vpath.pop(0)
 
+        if section == "data":
+            return APIRipperISOData()
         if section == "uploadaudio":
             return APIRipperIsoUploadAudio()
         if section == "uploadvideo":
             return APIRipperIsoUploadVideo()
-        if section == "data":
-            return APIRipperISOData()
         return self

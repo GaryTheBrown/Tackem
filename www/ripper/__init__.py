@@ -20,11 +20,12 @@ class RipperRoot(HTMLTEMPLATE):
                 VIDEOUPLOADPARTIAL=PartialsUpload.video_iso(),
                 AUDIOUPLOADPARTIAL=PartialsUpload.audio_iso(),
                 ISOCOUNT=len(Ripper.isos),
-                ISOTHREADLIMIT=CONFIG['ripper']['iso']['threadcount'].value
+                ISOTHREADLIMIT=CONFIG['ripper']['iso']['threadcount'].value,
+                ISOTEMPLATE=HTMLSystem.open("partial/ripper/iso")
             ),
             javascript=[
-                "static/js/ripper.js",
-                "static/js/partial/ripperupload.js"
+                "js/ripper.js",
+                "js/partial/ripperupload.js"
             ]
         )
 

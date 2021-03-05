@@ -88,8 +88,10 @@ class ISORipper(FileSubsystem):
 ##############
     def api_data(self):
         '''returns the data as json or dict for html'''
+        i = f"ripping {self._disc['type']} video disc" if self._ripping else "Waiting For Free Slot"
         return_dict = {
             "filename": self.__filename,
+            "info": i,
             "ripping": False,
         }
         if self._ripper:

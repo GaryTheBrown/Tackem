@@ -1,9 +1,16 @@
-<div class="drivebox text-dark bg-white text-center border-light rounded col-2 p-1 m-2" data-id="%%DRIVENUMBER%%">
-	<div class="font-weight-bold">%%NAME%%</div>
-	<div class="info"></div>
-	<img src="%%BASEURL%%static/img/empty.png" class="driveimg pt-2">
-	<img class="drivelock" src="%%BASEURL%%static/img/locked.png" style="display:none;">
+<div class="drivebox text-dark bg-white text-center border-light rounded col-3 p-1 m-2" data-id="%%DRIVENUMBER%%">
+	<div class="row">
+		<div class="col-1"></div>
+		<div class="col-10">
+			<h2 class="font-weight-bold">%%NAME%%</h2>
+		</div>
+		<div class="col-1">
+			<img class="drivelock" src="%%BASEURL%%img/locked.png" style="float:right; display:none;">
+		</div>
+	</div>
 
+
+	<div class="info">FETCHING INFO</div>
 	<div class="inline-block progresstrack p-2">
 		<div class="label text-dark"></div>
 		<div class="progress" style="height: 25px;">

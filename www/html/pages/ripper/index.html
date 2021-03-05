@@ -14,7 +14,7 @@
 			<div class="col-8">
 				<h2 class="text-center">
 					<a class="text-white font-weight-bold">
-						ISO's (<span class="isocount">%%ISOCOUNT%%</span>/%%ISOTHREADLIMIT%%)
+						ISO's (<span id="isocount">%%ISOCOUNT%%</span>/%%ISOTHREADLIMIT%%)
 					</a>
 				</h2>
 			</div>
@@ -26,8 +26,10 @@
 			</div>
 		</div>
 	</div>
-	<div class="isosection col-12 border border-light">
-		%%ISOS%%
+	<div id="isosection" class="col-12 border border-light">
+	</div>
+	<div id="isotemplate" hidden>
+		%%ISOTEMPLATE%%
 	</div>
 </div>
 

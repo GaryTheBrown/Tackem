@@ -12,19 +12,12 @@ class APIRipperISOData(APIBase):
         user = kwargs.get("user", self.GUEST)
         if user == self.GUEST:
             raise cherrypy.HTTPError(status=403)
-        try:
-            index = int(kwargs.get("id", None))
-        except ValueError:
-            raise cherrypy.HTTPError(status=400)
 
-        drives = Ripper.drives
-        if index > len(drives):
-            self._return()
-        drive_dict = drives[index].api_data()
         return self._return_data(
             user,
             "Ripper",
             "Upload Video ISO",
             True,
-            **drive_dict
+            count=len(Ripper.isos),
+            isos=[iso.api_data() for iso in Ripper.isos]
         )

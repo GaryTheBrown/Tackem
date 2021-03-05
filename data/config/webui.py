@@ -1,12 +1,9 @@
 '''WebUI Config'''
 import os
-from data import THEMEFOLDERLOCATION
 from libs.config.list import ConfigList
 from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.data.option import ConfigObjOption
-from libs.config.obj.options.select import ConfigObjOptionsSelect
 
 def webui_config() -> ConfigList:
     '''WebUI Config'''
@@ -28,13 +25,6 @@ def webui_config() -> ConfigList:
             "/",
             "Base Url",
             "The Base Url must start and end with '/'"
-        ),
-        ConfigObjOptionsSelect(
-            "theme",
-            [ConfigObjOption(x, x) for x in next(os.walk(THEMEFOLDERLOCATION))[1]],
-            "default",
-            "Theme",
-            "The Theme for the system"
         ),
         ConfigObjString(
             "uploadlocation",

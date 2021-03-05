@@ -31,14 +31,12 @@ class ConfigListHtml(ConfigListBase):
             )
         )
 
-        if HTMLSystem.setting("post_save"):
-            return HTMLSystem.part(
-                "section/form",
-                RETURNURL="admin/config",
-                BUTTONLABEL="Save",
-                PAGE=page,
-            )
-        return page
+        return HTMLSystem.part(
+            "section/form",
+            RETURNURL="admin/config",
+            BUTTONLABEL="Save",
+            PAGE=page,
+        )
 
     def __root_tab_bar_items(self) -> str:
         '''Generates tab bar Item Html'''
