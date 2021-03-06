@@ -17,15 +17,18 @@ from libs.database import Database
 from threading import BoundedSemaphore
 from data.config import CONFIG
 
-#TODO add in a system to load ISO threads onto the screen
 #TODO move on to the converter
+#TODO at this point it should maybe convert all tracks if no info available but allow you
+# to say what is what for it to then follow the config rules in what to copy and then delete
+# any others. if its not input after the converter then wait in a hold till it knows what is
+# what. so a labeler section now works after the convertor and it's just a holding section
+# if in here then saving the track data will send it to the library
+
 #TODO deal with the renamer (this may just be removed and changed to move to library as we can pass
 # the info in for what it is and let the library worry about it's filename)
 
-
 #TODO WWW all the systems back to life
 #TODO Add in the video Labeler and renamer as well, then look at adding the Audio stuff
-
 
 # TODO get the ripper html stuff moved into the www folder in a single file removing the html part
 # functions for the new way. POSSABLY NEED TO CHANGE HOW THIS SHOWS SO POSSABLY NEEDS TO BE
@@ -39,8 +42,6 @@ from data.config import CONFIG
 # a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
 
-#new way needs user to set the amount of makemkv instances allowed and if drives lock one each
-#one thread does the watching and starts up the relevent tasks in another thread.
 class Ripper:
     '''Main Class to create an instance of the plugin'''
 

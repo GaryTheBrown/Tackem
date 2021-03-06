@@ -55,13 +55,17 @@ class ISORipper(FileSubsystem):
         ''' Loops through the standard ripper function'''
         with self._pool_sema:
             self.__active = True
-            self.__wait_for_file_copy_complete()
+            if self.__wait_for_file_copy_complete() is False:
+                return
+
             self._get_udfInfo(
                 File.location(
                     self.__filename,
                     CONFIG['ripper']['locations']["videoiso" if self.__video else "audioiso"].value
                 )
             )
+            if self.__thread_run is False:
+                return
 
             if self.__video:
                 self._add_video_disc_to_database(self.__filename)
@@ -70,8 +74,13 @@ class ISORipper(FileSubsystem):
                 pass
                 # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
                                               # self._set_drive_status, self._thread_run)
+            if self.__thread_run is False:
+                return
 
-            self._ripper.call(self._db_id)
+            while self.__thread_run:
+                time.sleep(1)
+
+            # self._ripper.call(self._db_id)
             self._ripper = None
 
     def __wait_for_file_copy_complete(self) -> bool:
@@ -80,15 +89,18 @@ class ISORipper(FileSubsystem):
         filename = File.location(f"{path}{self.__filename}")
         historicalSize = -1
         while (historicalSize != os.path.getsize(filename)):
+            if self.__thread_run is False:
+                return False
             historicalSize = os.path.getsize(filename)
             time.sleep(4)
+        return True
 
 ##############
 ##HTML STUFF##
 ##############
     def api_data(self):
         '''returns the data as json or dict for html'''
-        i = f"ripping {self._disc['type']} video disc" if self._ripping else "Waiting For Free Slot"
+        i = f"ripping {self._disc['type']} video disc" if self._ripper else "Waiting For Free Slot"
         return_dict = {
             "filename": self.__filename,
             "info": i,

@@ -12,12 +12,16 @@
         {
             let obj = this;
             $('.drivebox').each(function(index, element) {
-                listOfTimers.push(setInterval(obj.updateDrive, 1000, element, obj));
+                listOfTimers.push(setInterval(obj.updateDrive, 1000, element));
             }.bind(obj));
             listOfTimers.push(setInterval(obj.updateISOS, 1000));
+
+            // $('.trackdata').each(function(index, element) {
+            //     $(element).on('click', obj.trackData);
+            // }.bind(obj));
         }
 
-        updateDrive(element, obj)
+        updateDrive(element)
         {
             let id = $(element).data('id');
             $.ajax({
@@ -27,13 +31,23 @@
                 success: function (result) {
                     let $element = $(`.drivebox[data-id='${result.id}']`);
 
-                    if (result.traylock == true) {
+                    if (result.traylock === true) {
                         $element.find('.drivelock').show();
                     } else {
                         $element.find('.drivelock').hide();
                     }
 
                     $element.find('.info').html(result.drivestatus);
+                    if (result.disc === true) {
+                        $element.find('.trackdata').show();
+                        if (result.trackdata === false) {
+                            $element.find('.trackdata span').show();
+                        } else {
+                            $element.find('.trackdata span').hide();
+                        }
+                    } else {
+                        $element.find('.trackdata').hide();
+                    }
 
                     let $track = $element.find('.progresstrack .progress-bar');
                     let $total = $element.find('.progresstotal .progress-bar');
@@ -58,9 +72,10 @@
                     }
                 },
                 error: function () {
-                    listOfTimers.each(function(timer) {
+                    listOfTimers.forEach(function(timer) {
                         clearInterval(timer);
                     });
+                    ShowLoader("CONNECTION LOST");
                 }
             });
         }
@@ -72,25 +87,31 @@
                 url: `${APIROOT}ripper/iso/data`,
                 dataType: 'json',
                 success: function (result) {
-                    console.log(result);
-
                     let existing = [];
                     $('#isosection').find('.isobox').each(function(index, element) {
                         existing.push($(element).data('name'));
                     }.bind(existing));
 
                     $('#isocount').html(result.count);
-                    result.isos.each(function(index, isoInfo) {
-                        if (!existing.includes(isoInfo.filename)) {
-                            let $newISO = $('#isotemplate:first-child').clone();
-                            $newISO.attr('data-name', isoInfo.filename);
-                            $newISO.find('.title').html(isoInfo.filename);
-                            $('#isosection').append($newISO);
+                    result.isos.forEach(function(isoInfo) {
+
+                        let arrayIndex = existing.indexOf(isoInfo.filename);
+                        if (arrayIndex === -1) {
+                            let newISOclone = $('#isotemplate').children().clone(true);
+                            newISOclone.attr('data-name', isoInfo.filename);
+                            newISOclone.find('.title').html(isoInfo.filename);
+                            $('#isosection').append(newISOclone);
+                        } else {
+                            existing.splice(arrayIndex, 1);
                         }
-                        //if name in existing update the existing and remove it from the list
-                        //if not copy the template and append to isosection
                         let $isoElement = $('#isosection').find(`.isobox[data-name="${isoInfo.filename}"]`);
-                        $newISO.find('.info').html(isoInfo.info);
+                        $isoElement.find('.info').html(isoInfo.info);
+
+                        if (isoInfo.trackdata === false) {
+                            $isoElement.find('.trackdata span').show();
+                        } else {
+                            $isoElement.find('.trackdata span').hide();
+                        }
                         let $track = $isoElement.find('.progresstrack .progress-bar');
                         let $total = $isoElement.find('.progresstotal .progress-bar');
                         if (isoInfo.ripping != true) {
@@ -112,20 +133,28 @@
                             $isoElement.find('.progresstrack .label').html('');
                             $isoElement.find('.progresstotal .label').html('');
                         }
-
-                        // $('#isosection').find('.isobox[data-name')
                     }.bind(existing));
 
+                    existing.forEach(function(item) {
+                        $('#isosection').find(`.isobox[data-name="${item}"]`).remove();
+                    });
                 },
                 error: function () {
-                    listOfTimers.each(function(timer) {
+                    listOfTimers.forEach(function(timer) {
                         clearInterval(timer);
                     });
+                    ShowLoader("CONNECTION LOST");
                 }
             });
-            //TODO This one need to update .isocount and .isosection adding new
-            //removing old and some way of showing active and waiting. some mark.
         }
+
+        // trackData() {
+        //     if ($(this).find("span").is(":hidden")) {
+        //         //TODO Add in popup to show the track info
+        //     } else {
+        //         //TODO Add in popup to create the track info
+        //     }
+        // }
     }
 
 })();

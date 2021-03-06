@@ -2,6 +2,7 @@
 from abc import ABCMeta, abstractmethod
 import datetime
 import json
+from typing import Optional, Union
 from data.languages import Languages
 from . import video_track_type as track_type
 TYPES = {"Movie": "film",
@@ -9,7 +10,6 @@ TYPES = {"Movie": "film",
          "Documentary": "video",
          "Other": "question"
          }
-#TODO Typing
 
 class DiscType(metaclass=ABCMeta):
     '''Master Disc Type'''
@@ -24,27 +24,27 @@ class DiscType(metaclass=ABCMeta):
             language) == 2 and isinstance(language, str) else "en"
         self._moviedbid = moviedbid
 
-    def disc_type(self):
+    def disc_type(self) -> str:
         '''returns the type'''
         return self._disc_type
 
-    def name(self):
+    def name(self) -> str:
         '''returns the name'''
         return self._name
 
-    def info(self):
+    def info(self) -> str:
         '''returns the temp info'''
         return self._info
 
-    def tracks(self):
+    def tracks(self) -> list:
         '''returns the tracks'''
         return self._tracks
 
-    def language(self):
+    def language(self) -> str:
         '''returns the discs main language'''
         return self._language
 
-    def moviedbid(self):
+    def moviedbid(self) -> str:
         '''returns the moviedbid'''
         return self._moviedbid
 
@@ -53,13 +53,13 @@ class DiscType(metaclass=ABCMeta):
         if self._tracks is not None:
             self._tracks[track_id] = track
 
-    def set_tracks(self, tracks):
+    def set_tracks(self, tracks) -> Optional[list]:
         '''sets the tracks'''
         if self._tracks is not None and isinstance(tracks, list):
             self._tracks = tracks
 
     @abstractmethod
-    def make_dict(self, super_dict=None, no_tracks=False):
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -78,7 +78,7 @@ class DiscType(metaclass=ABCMeta):
             super_dict["tracks"] = track_list
         return super_dict
 
-    def _change_section_html(self):
+    def _change_section_html(self) -> str:
         '''change section code'''
         return "<div class=\"onclick topright\" onclick=\"disctype('change');\">(change)</div>"
 
@@ -111,7 +111,16 @@ class DiscType(metaclass=ABCMeta):
 class MovieDiscType(DiscType):
     '''Movie Disc Type'''
 
-    def __init__(self, name, info, year, imdbid, tracks, language="eng", moviedbid=""):
+    def __init__(
+        self,
+        name: str,
+        info: str,
+        year: int,
+        imdbid: str,
+        tracks: list,
+        language: str = "eng",
+        moviedbid: str = ""
+    ):
         super().__init__("Movie", name, info, tracks, language, moviedbid)
         current_year = int(datetime.date.today().year)
         if year == 0:
@@ -124,15 +133,15 @@ class MovieDiscType(DiscType):
             self._year = current_year
         self._imdbid = imdbid
 
-    def year(self):
+    def year(self) -> int:
         '''returns movie year'''
         return self._year
 
-    def imdbid(self):
+    def imdbid(self) -> str:
         '''returns movie imdbid'''
         return self._imdbid
 
-    def make_dict(self, super_dict=None, no_tracks=False):
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -180,15 +189,23 @@ class MovieDiscType(DiscType):
 class TVShowDiscType(DiscType):
     '''TV Show Disc Type'''
 
-    def __init__(self, name, info, tvdbid, tracks, language="eng", moviedbid=""):
+    def __init__(
+        self,
+        name: str,
+        info: str,
+        tvdbid: str,
+        tracks: list,
+        language: str = "eng",
+        moviedbid=""
+    ):
         super().__init__("TV Show", name, info, tracks, language, moviedbid)
         self._tvdbid = tvdbid
 
-    def tvdbid(self):
+    def tvdbid(self) -> str:
         '''returns TV Show name'''
         return self._tvdbid
 
-    def make_dict(self, super_dict=None, no_tracks=False):
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -229,10 +246,10 @@ class TVShowDiscType(DiscType):
 class DocumentaryDiscType(DiscType):
     '''TV Show Disc Type'''
 
-    def __init__(self, name, info, tracks, language="eng"):
+    def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
         super().__init__("Documentary", name, info, tracks, language, None)
 
-    def make_dict(self, super_dict=None, no_tracks=False):
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -255,10 +272,10 @@ class DocumentaryDiscType(DiscType):
 class OtherDiscType(DiscType):
     '''TV Show Disc Type'''
 
-    def __init__(self, name, info, tracks, language="eng"):
+    def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
         super().__init__("Other", name, info, tracks, language, None)
 
-    def make_dict(self, super_dict=None, no_tracks=False):
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -278,7 +295,7 @@ class OtherDiscType(DiscType):
     #                             html, True)
 
 
-def make_disc_type(data):
+def make_disc_type(data: Union[str, dict]) -> DiscType:
     '''transforms the data returned from the DB or API to the classes above'''
     if isinstance(data, str):
         data = json.loads(data)
@@ -296,16 +313,16 @@ def make_disc_type(data):
                               data.get('tvdbid', ""), tracks, data.get(
                                   'language', "en"),
                               data.get('moviedbid', ""))
-    if data['disc_type'].replace(" ", "").lower() == "Documentary":
+    if data['disc_type'].replace(" ", "").lower() == "documentary":
         return DocumentaryDiscType(data.get('name', ""), data.get('info', ""),
                                    tracks, data.get('language', "en"))
-    if data['disc_type'].replace(" ", "").lower() == "Other":
+    if data['disc_type'].replace(" ", "").lower() == "other":
         return OtherDiscType(data.get('name', ""), data.get('info', ""),
                              tracks, data.get('language', "en"))
     return None
 
 
-def make_blank_disc_type(disc_type_code):
+def make_blank_disc_type(disc_type_code: str) -> DiscType:
     '''make the blank disc type'''
     if disc_type_code.replace(" ", "").lower() == "movie":
         return MovieDiscType("", "", 0, "", None, "en", "")

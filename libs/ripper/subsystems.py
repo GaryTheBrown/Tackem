@@ -88,15 +88,12 @@ class FileSubsystem:
             'type':"bluray" if list['udfrev'] == "2.50" else "dvd"
         }
 
-    def pass_to_next_system(self):
-        '''Passes the disc's files through to the next system (converter/library)'''
-
 class RipperSubSystem():
     '''Ripper Subsystem controller'''
 
     def __init__(self, in_file: str = ""):
         self._in_file = in_file
-
+        self._track_data = False
         self._ripping_track = False
         self._ripping_file = 0
         self._ripping_total = 0
@@ -109,12 +106,14 @@ class RipperSubSystem():
 ###########
     def get_ripping_data(self) -> dict:
         '''returns the data as dict for html'''
+        ripping_track = "N/A" if self._ripping_track is False else self._ripping_track
         return {
+            'trackdata': self._track_data,
             'ripping': self._ripping_track,
             'max': self._ripping_max,
             'trackpercent': self._ripping_file_p,
             'trackvalue': self._ripping_file,
-            'tracklabel': f"Track {self._ripping_track} ({self._ripping_file_p}%)",
+            'tracklabel': f"Track {ripping_track} ({self._ripping_file_p}%)",
             'totalpercent': self._ripping_total_p,
             'totalvalue': self._ripping_total,
             'totallabel': f"Total ({self._ripping_total_p}%)",

@@ -24,7 +24,7 @@ class APIRipperDrivesData(APIBase):
         return self._return_data(
             user,
             "Ripper",
-            "Upload Video ISO",
+            f"Drive Info {index}",
             True,
             id=index,
             **drive_dict

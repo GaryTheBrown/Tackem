@@ -16,7 +16,7 @@ class APIRipperISOData(APIBase):
         return self._return_data(
             user,
             "Ripper",
-            "Upload Video ISO",
+            "ISO Info",
             True,
             count=len(Ripper.isos),
             isos=[iso.api_data() for iso in Ripper.isos]

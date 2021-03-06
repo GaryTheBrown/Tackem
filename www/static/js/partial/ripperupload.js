@@ -12,8 +12,7 @@
                 $(this).bind('change', function () {
                     let file = this.files[0];
                     if (confirm(`upload ${file.name}`)) {
-                        $("#loading-popup").show();
-                        $("#loading-popup").find("h1").html("UPLOADING");
+                        ShowLoader("UPLOADING");
                         $.ajax({
                             type: 'POST',
                             url: $(this).data("url"),
@@ -32,8 +31,7 @@
                                     }
                                 })
                                 .then(response => {
-                                    $("#loading-popup").hide();
-                                    $("#loading-popup").find("h1").html("LOADING");
+                                    HideLoader();
                                     $(this).val('');
                                 })
                                 .catch(err => {

@@ -35,6 +35,7 @@ class MakeMKV(RipperSubSystem):
         temp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
         device = msg.return_data['iso_file'] == ""
         if isinstance(disc_rip_info, list):
+            self._track_data = True
             for idx, track in enumerate(disc_rip_info):
                 if not isinstance(track, bool):
                     self._makemkv_backup_from_disc(temp_dir, idx, device)
@@ -46,17 +47,19 @@ class MakeMKV(RipperSubSystem):
         comp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
         File.move(temp_dir, comp_dir)
 
-        if CONFIG['ripper']['converter']['enabled'].value:
-            create_video_converter_row(
-                id,
-                disc_rip_info,
-                CONFIG['ripper']['videoripping']['torip'].value
-            )
-            Database.call(SQLUpdate(DB, Where("id", id), ready_to_convert=True))
-            RipperEvents().converter.set()
-        else:
-            Database.call(SQLUpdate(DB, Where("id", id), ready_to_rename=True))
-            RipperEvents().renamer.set()
+        #TODO need to deal with passing to the next system here.
+
+        # if CONFIG['ripper']['converter']['enabled'].value:
+        #     create_video_converter_row(
+        #         id,
+        #         disc_rip_info,
+        #         CONFIG['ripper']['videoripping']['torip'].value
+        #     )
+        #     Database.call(SQLUpdate(DB, Where("id", id), ready_to_convert=True))
+        #     RipperEvents().converter.set()
+        # else:
+        #     Database.call(SQLUpdate(DB, Where("id", id), ready_to_rename=True))
+        #     RipperEvents().renamer.set()
 
         if not device and CONFIG['ripper']['iso']['removeiso'].value:
             File.rm(File.location(self._in_file))

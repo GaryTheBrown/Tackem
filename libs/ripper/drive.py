@@ -138,7 +138,7 @@ class Drive(FileSubsystem):
         if not self.__thread_run:
             return False
         if self.__tray_status != "loaded":
-            self._disc['type'] = "None"
+            self._disc['type'] = "none"
             return False
 
         #wait for disc ready
@@ -211,6 +211,7 @@ class Drive(FileSubsystem):
             "drivestatus": self.__drive_status,
             "traylock": self.__tray_locked,
             "ripping": False,
+            "disc": self._disc['type'] != "none"
         }
         if self._ripper:
             return_dict.update(self._ripper.get_ripping_data())
