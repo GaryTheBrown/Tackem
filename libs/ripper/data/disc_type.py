@@ -82,9 +82,9 @@ class DiscType(metaclass=ABCMeta):
         '''change section code'''
         return "<div class=\"onclick topright\" onclick=\"disctype('change');\">(change)</div>"
 
-    @abstractmethod
-    def get_edit_panel(self, search=True):
-        '''returns the edit panel'''
+    # @abstractmethod
+    # def get_edit_panel(self, search=True):
+    #     '''returns the edit panel'''
 
     # def _get_edit_panel_top(self):
     #     '''returns the edit panel'''

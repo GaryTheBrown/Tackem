@@ -14,6 +14,8 @@ class SQLUpdate(SQLMessage):
             raise SQLMessageError
 
         where_list = [where.query for where in wheres]
+        if table.soft_delete:
+            where_list.append(Where("deleted_at", 0).query)
         set_values = [f"{key} = '{key_values[key]}'" for key in key_values]
         set_values.append(f"updated_at = {int(time.time())}")
 

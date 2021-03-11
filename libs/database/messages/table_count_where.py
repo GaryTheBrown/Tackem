@@ -12,5 +12,7 @@ class SQLTableCountWhere(SQLMessage):
             raise SQLMessageError
 
         where_list = [where.query for where in wheres]
+        if table.soft_delete:
+            where_list.append(Where("deleted_at", 0).query)
 
         super().__init__(f"SELECT COUNT(*) FROM {table.name()} WHERE {' AND '.join(where_list)}")

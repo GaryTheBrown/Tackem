@@ -1,6 +1,7 @@
 '''video track type information'''
 from abc import ABCMeta, abstractmethod
 import json
+from typing import Optional
 from . import stream_type
 
 TYPES = {"dontrip": "ban",
@@ -10,34 +11,33 @@ TYPES = {"dontrip": "ban",
          "extra": "plus",
          "other": "plus"
          }
-#TODO Typing
 
 class VideoTrackType(metaclass=ABCMeta):
     '''Master Type'''
 
-    def __init__(self, video_type, streams, hdr):
+    def __init__(self, video_type: str, streams: Optional[list], hdr: bool):
         if video_type in TYPES:
             self._video_type = video_type
         self._streams = streams if isinstance(streams, list) else []
         self._hdr = hdr
 
-    def hdr(self):
+    def hdr(self) -> bool:
         '''return hdr'''
         return self._hdr
 
-    def video_type(self):
+    def video_type(self) -> str:
         '''returns the type'''
         return self._video_type
 
-    def streams(self):
+    def streams(self) -> list:
         '''returns streams'''
         return self._streams
 
-    def _title_html(self, title):
+    def _title_html(self, title: str) -> str:
         '''title line for sections'''
         return '<h1 class="text-center">' + title + '</h1>'
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -53,7 +53,7 @@ class VideoTrackType(metaclass=ABCMeta):
         super_dict["hdr"] = self._hdr
         return super_dict
 
-    def _change_section_html(self, track):
+    def _change_section_html(self, track: str) -> str:
         '''change section code'''
         html = "<div class=\"onclick topright\" onclick=\"tracktype(" + str(
             track)
@@ -73,9 +73,9 @@ class VideoTrackType(metaclass=ABCMeta):
     #             html += temp_stream.get_edit_panel(stream_data)
     #     return html_parts.video_panel("Streams", "", html)
 
-    @abstractmethod
-    def get_edit_panel(self, ffprobe=None):
-        '''returns the edit panel'''
+    # @abstractmethod
+    # def get_edit_panel(self, ffprobe=None):
+    #     '''returns the edit panel'''
 
     # def _get_edit_panel_bottom(self):
     #     '''returns the edit panel'''
@@ -92,15 +92,15 @@ class VideoTrackType(metaclass=ABCMeta):
 class DONTRIPTrackType(VideoTrackType):
     '''Other Types'''
 
-    def __init__(self, reason):
+    def __init__(self, reason: str):
         super().__init__("dontrip", None, False)
         self._reason = reason
 
-    def reason(self):
+    def reason(self) -> str:
         '''return the reason not to rip this track'''
         return self._reason
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -126,7 +126,7 @@ class MovieTrackType(VideoTrackType):
     '''Movie Type'''
 
     # tvshow_link=None, tvshow_special_number=None,
-    def __init__(self, streams=None, hdr=False):
+    def __init__(self, streams: Optional[list] = None, hdr: bool = False):
         super().__init__("movie", streams, hdr)
     #     self._tvshow_link = tvshow_link
     #     self._tvshow_special_number = tvshow_special_number
@@ -139,7 +139,7 @@ class MovieTrackType(VideoTrackType):
     #     '''return the tv show special number'''
     #     return self._tvshow_special_number
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True):
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -160,20 +160,26 @@ class MovieTrackType(VideoTrackType):
 class TVShowTrackType(VideoTrackType):
     '''TV Show Type'''
 
-    def __init__(self, season, episode, streams=None, hdr=False):
+    def __init__(
+        self,
+        season: int,
+        episode: int,
+        streams: Optional[list] = None,
+        hdr: bool = False
+    ):
         super().__init__("tvshow", streams, hdr)
         self._season = season
         self._episode = episode
 
-    def season(self):
+    def season(self) -> int:
         '''returns tv show season number'''
         return self._season
 
-    def episode(self):
+    def episode(self) -> int:
         '''returns tv show episode number'''
         return self._episode
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -208,15 +214,15 @@ class TVShowTrackType(VideoTrackType):
 class ExtraTrackType(VideoTrackType):
     '''Extra Type'''
 
-    def __init__(self, name, streams=None, hdr=False):
+    def __init__(self, name: str, streams: Optional[list] = None, hdr: bool = False):
         super().__init__("extra", streams, hdr)
         self._name = name
 
-    def name(self):
+    def name(self) -> str:
         '''returns extra name'''
         return self._name
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -252,15 +258,15 @@ class ExtraTrackType(VideoTrackType):
 class TrailerTrackType(VideoTrackType):
     '''trailer Type'''
 
-    def __init__(self, info, streams=None, hdr=False):
+    def __init__(self, info: str, streams: Optional[list] = None, hdr: bool = False):
         super().__init__("trailer", streams, hdr)
         self._info = info
 
-    def info(self):
+    def info(self) -> str:
         '''returns trailers movie info'''
         return self._info
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -288,15 +294,15 @@ class TrailerTrackType(VideoTrackType):
 class OtherTrackType(VideoTrackType):
     '''Other Types'''
 
-    def __init__(self, other_type, streams=None, hdr=False):
+    def __init__(self, other_type: str, streams: Optional[list] = None, hdr: bool = False):
         super().__init__("other", streams, hdr)
         self._other_type = other_type
 
-    def other_type(self):
+    def other_type(self) -> str:
         '''returns other type'''
         return self._other_type
 
-    def make_dict(self, super_dict=None, include_streams=True):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -321,7 +327,7 @@ class OtherTrackType(VideoTrackType):
     #     return section_html
 
 
-def make_track_type(track):
+def make_track_type(track: str) -> Optional[VideoTrackType]:
     '''transforms the track returned from the DB or API to the classes above'''
     if isinstance(track, str):
         track = json.loads(track)
@@ -351,7 +357,7 @@ def make_track_type(track):
     return None
 
 
-def make_blank_track_type(track_type_code):
+def make_blank_track_type(track_type_code: str) -> Optional[VideoTrackType]:
     '''make the blank track type'''
     if track_type_code.lower() == "dontrip":
         return DONTRIPTrackType("")

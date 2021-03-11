@@ -8,7 +8,6 @@ from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
 from data.config import CONFIG
 from libs.ripper.ffprobe import FFprobe
-from libs.ripper.events import RipperEvents
 from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import make_disc_type
 
@@ -56,8 +55,6 @@ class Renamer():
             self._video_renamer()
             if not self._thread_run:
                 return
-            RipperEvents().renamer.wait()
-            RipperEvents().renamer.clear()
 
     def _video_renamer(self):
         '''the renamer function for the video files'''

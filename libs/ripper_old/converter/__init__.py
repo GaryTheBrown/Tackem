@@ -9,10 +9,8 @@ from data.database.ripper import VIDEO_CONVERT_DB as VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import make_disc_type
 from libs.ripper.data.video_track_type import make_track_type
-from libs.ripper.converter.video_thread import ConverterVideoThread
-from libs.ripper.events import RipperEvents
 
-class Converter():
+class ConverterInit():
     '''Master Section for the Converter controller'''
 
     def __init__(self):
@@ -21,11 +19,7 @@ class Converter():
         self._thread.setName(self._thread_name)
         self._thread_run = False
         self._thread_count = 0
-        self._tasks_sema = threading.Semaphore(
-            CONFIG['ripper']['converter']['threadcount'].value
-        )
-        self._tasks = []
-        self._list_of_running_ids = []
+
 
 ###########
 ##GETTERS##
@@ -62,54 +56,7 @@ class Converter():
             if task.get_id() == task_id:
                 return task.converting()
         return None
-##########
-##Thread##
-##########
 
-    def start_thread(self):
-        '''start the thread'''
-        if not self._thread.is_alive():
-            self._thread_run = True
-            self._thread.start()
-            return True
-        return False
-
-    def stop_thread(self):
-        '''stop the thread'''
-        if self._thread.is_alive():
-            for task in self._tasks:
-                task.stop_thread()
-            self._thread_run = False
-            self._thread.join()
-
-##########
-##Script##
-##########
-    def run(self):
-        ''' Loops through the standard converter function'''
-        while self._thread_run:
-            self._get_video_tasks()
-
-            if not self._thread_run:
-                return
-            for task in self._tasks:
-                task.start_thread()
-
-            if not self._task_do_loop():
-                return
-
-            wake_renamer = False
-            if self._clear_video_tasks():
-                wake_renamer = True
-
-            if wake_renamer:
-                RipperEvents().renamer.set()
-
-            if not self._thread_run:
-                return
-
-            RipperEvents().converter.wait()
-            RipperEvents().converter.clear()
 
     def _get_video_tasks(self):
         '''Grab video tasks and append them to the list'''
@@ -206,10 +153,3 @@ def create_video_converter_row(info_id, disc_rip_info, to_rip):
                     track_info=json.dumps(track.make_dict())
                 )
             )
-
-def create_audiocd_converter_row(info_id, disc_rip_info):
-    '''Function to add Audio CD tracks to Convertor DB'''
-    folder_name = str(info_id) + "/"
-    disc_info = json.dumps(disc_rip_info)
-    # 'audio_XX.wav'
-    #TODO FINISH THIS OFF

@@ -34,21 +34,17 @@ class FileSubsystem:
         )
         Database.call(msg)
         if isinstance(msg.return_data, dict):
-            Database.call(
-                SQLUpdate(
-                    VIDEO_INFO_DB,
-                    Where(
-                        "id",
-                        msg.return_data['id']
-                    ),
-                    iso_file=filename,
-                    ripped=False,
-                    ready_to_convert=False,
-                    ready_to_rename=False,
-                    ready_for_library=False,
-                    completed=False
+            if isinstance(filename, str) and filename != "":
+                Database.call(
+                    SQLUpdate(
+                        VIDEO_INFO_DB,
+                        Where(
+                            "id",
+                            msg.return_data['id']
+                        ),
+                        iso_file=filename
+                    )
                 )
-            )
             self._db_id = msg.return_data['id']
             return
 

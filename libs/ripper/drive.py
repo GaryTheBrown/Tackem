@@ -1,16 +1,9 @@
 '''Drive controller'''
 from libs.ripper.subsystems import FileSubsystem
 from libs.ripper.makemkv import MakeMKV
-from libs.database import Database
-from data.database.ripper import VIDEO_INFO_DB
-from libs.database.where import Where
-from libs.database.messages import SQLUpdate, SQLSelect, SQLInsert
-from libs.html_system import HTMLSystem
-from data.config import CONFIG
 from libs.config.list import ConfigList
 import threading
 import time
-import json
 import fcntl
 import os
 import time

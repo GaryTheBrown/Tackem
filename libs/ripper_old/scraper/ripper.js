@@ -8,13 +8,13 @@ function ClearModel(){
 }
 
 function FillModel(item) {
-	if (item['success']) {
-		$('#search_modal').find(".modal-title").html(item['header']);
-		$('#search_modal').find(".modal-body").html(item['body']);
-		$('#search_modal').find(".modal-footer").html(item['footer']);
+	if (item.success) {
+		$('#search_modal').find(".modal-title").html(item.header);
+		$('#search_modal').find(".modal-body").html(item.body);
+		$('#search_modal').find(".modal-footer").html(item.footer);
 		$('#search_modal').modal('show');
 	} else {
-		console.log("ERROR:" + item['status'] + ":" + item['reason']);
+		console.log("ERROR:" + item.status + ":" + item.reason);
 	}
 }
 
@@ -24,7 +24,7 @@ function CallAJAXToModel(url){
 			var item = JSON.parse(jsonitem);
 			FillModel(item);
 		}
-	})
+	});
 }
 
 function SearchMovie(query, year=null, page=1) {
@@ -53,17 +53,17 @@ function PopulateMovie(id){
 	$.ajax('%%BASEURL%%scraper/ripper/getmovie/' + id + '/', {
 		success: function(jsonitem) {
 			var item = JSON.parse(jsonitem);
-			if (item['success']) {
+			if (item.success) {
 				ClearModel();
-				$('#disctypesection').find('input[name="name"]').val(item['response']['title']);
-				$('#disctypesection').find('input[name="year"]').val(item['response']['release_date'].substring(0, 4));
-				$('#disctypesection').find('input[name="imdbid"]').val(item['response']['imdb_id']);
-				$('#disctypesection').find('select[name="originallanguage"]').val(item['response']['original_language']);
-				$('#disctypesection').find('input[name="moviedbid"]').val(item['response']['id']);
+				$('#disctypesection').find('input[name="name"]').val(item.response.title);
+				$('#disctypesection').find('input[name="year"]').val(item.response.release_date.substring(0, 4));
+				$('#disctypesection').find('input[name="imdbid"]').val(item.response.imdb_id);
+				$('#disctypesection').find('select[name="originallanguage"]').val(item.response.original_language);
+				$('#disctypesection').find('input[name="moviedbid"]').val(item.response.id);
 
 			}
 		}
-	})
+	});
 }
 
 function SearchTVShow(query, page=1){
@@ -71,14 +71,14 @@ function SearchTVShow(query, page=1){
 }
 
 function ButtonSearchTVShow(){
-	tvShowName = $('#disctypesection').find('input[name="name"]').val()
+	tvShowName = $('#disctypesection').find('input[name="name"]').val();
 	if (tvShowName != ""){
 		SearchTVShow(tvShowName, 1);
 	}
 }
 
 function ButtonFindTVShow(){
-	imdbid = $('#disctypesection').find('input[name="tvdbid"]').val()
+	imdbid = $('#disctypesection').find('input[name="tvdbid"]').val();
 	if (imdbid != ""){
 		CallAJAXToModel('%%BASEURL%%scraper/ripper/findtvshow/' + imdbid + '/');
 	}
@@ -87,14 +87,14 @@ function ButtonFindTVShow(){
 function PopulateTVShow(id){
 	$.ajax('%%BASEURL%%scraper/ripper/gettvshow/' + id + '/', {
 		success: function(jsonitem) {
-			var item = JSON.parse(jsonitem)
-			if (item['success']){
+			var item = JSON.parse(jsonitem);
+			if (item.success){
 				ClearModel();
-				$('#disctypesection').find('input[name="name"]').val(item['response']['name']);
-				$('#disctypesection').find('input[name="tvdbid"]').val(item['response']['external_ids']['tvdb_id']);
-				$('#disctypesection').find('select[name="originallanguage"]').val(item['response']['original_language']);
-				$('#disctypesection').find('input[name="moviedbid"]').val(item['response']['id']);
+				$('#disctypesection').find('input[name="name"]').val(item.response.name);
+				$('#disctypesection').find('input[name="tvdbid"]').val(item.response.external_ids.tvdb_id);
+				$('#disctypesection').find('select[name="originallanguage"]').val(item.response.original_language);
+				$('#disctypesection').find('input[name="moviedbid"]').val(item.response.id);
 			}
 		}
-	})
+	});
 }

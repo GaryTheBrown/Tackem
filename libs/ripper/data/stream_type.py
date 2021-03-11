@@ -1,32 +1,32 @@
 '''stream type information'''
 from abc import ABCMeta, abstractmethod
 import json
+from typing import Optional
 from data.languages import Languages
 
-#TODO Typing
 class StreamType(metaclass=ABCMeta):
     '''Master Type'''
     _types = ["video", "audio", "subtitle"]
 
-    def __init__(self, stream_type, stream_index, label):
+    def __init__(self, stream_type: str, stream_index: int, label: str):
         if stream_type in self._types:
             self._stream_type = stream_type
         self._stream_index = stream_index
         self._label = label
 
-    def stream_type(self):
+    def stream_type(self) -> str:
         '''returns the type'''
         return self._stream_type
 
-    def stream_index(self):
+    def stream_index(self) -> int:
         '''returns the index'''
         return self._stream_index
 
-    def label(self):
+    def label(self) -> str:
         '''return label'''
         return self._label
 
-    def make_dict(self, super_dict=None):
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -34,22 +34,22 @@ class StreamType(metaclass=ABCMeta):
         super_dict["label"] = self._label
         return super_dict
 
-    def _var_start(self):
+    def _var_start(self) -> str:
         '''returns the variable name start'''
         return "track_%%TRACKINDEX%%_stream_" + str(self._stream_index) + "_"
 
-    @abstractmethod
-    def get_edit_panel(self, section_info=""):
-        '''returns the edit panel'''
+    # @abstractmethod
+    # def get_edit_panel(self, section_info: str = "") -> str:
+    #     '''returns the edit panel'''
 
 
 class VideoStreamType(StreamType):
     '''Other Types'''
 
-    def __init__(self, stream_index, label=""):
+    def __init__(self, stream_index: int, label: str = ""):
         super().__init__("video", stream_index, label)
 
-    def make_dict(self, super_dict=None):
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -89,8 +89,17 @@ class VideoStreamType(StreamType):
 class AudioStreamType(StreamType):
     '''Other Types'''
 
-    def __init__(self, stream_index, dub=False, original=False, comment=False,
-                 visual_impaired=False, karaoke=False, label="", duplicate=False):
+    def __init__(
+        self,
+        stream_index: int,
+        dub: bool = False,
+        original: bool = False,
+        comment: bool = False,
+        visual_impaired: bool = False,
+        karaoke: bool = False,
+        label: str = "",
+        duplicate: bool = False
+    ):
         super().__init__("audio", stream_index, label)
         self._dub = dub
         self._original = original
@@ -99,31 +108,31 @@ class AudioStreamType(StreamType):
         self._karaoke = karaoke
         self._duplicate = duplicate
 
-    def dub(self):
+    def dub(self) -> bool:
         '''return dub'''
         return self._dub
 
-    def original(self):
+    def original(self) -> bool:
         '''return original'''
         return self._original
 
-    def comment(self):
+    def comment(self) -> bool:
         '''return comment'''
         return self._comment
 
-    def visual_impaired(self):
+    def visual_impaired(self) -> bool:
         '''return visual_impaired'''
         return self._visual_impaired
 
-    def karaoke(self):
+    def karaoke(self) -> bool:
         '''return karaoke'''
         return self._karaoke
 
-    def duplicate(self):
+    def duplicate(self) -> bool:
         '''return if duplicate stream'''
         return self._duplicate
 
-    def make_dict(self, super_dict=None):
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -210,8 +219,16 @@ class AudioStreamType(StreamType):
 class SubtitleStreamType(StreamType):
     '''Other Types'''
 
-    def __init__(self, stream_index, forced=False, hearing_impaired=False,
-                 lyrics=False, label="", duplicate=False, comment=False):
+    def __init__(
+        self,
+        stream_index: int,
+        forced: bool = False,
+        hearing_impaired: bool = False,
+        lyrics: bool = False,
+        label: str = "",
+        duplicate: bool = False,
+        comment: bool = False
+    ):
         super().__init__("subtitle", stream_index, label)
         self._forced = forced
         self._hearing_impaired = hearing_impaired
@@ -219,27 +236,27 @@ class SubtitleStreamType(StreamType):
         self._lyrics = lyrics
         self._duplicate = duplicate
 
-    def forced(self):
+    def forced(self) -> bool:
         '''return forced'''
         return self._forced
 
-    def hearing_impaired(self):
+    def hearing_impaired(self) -> bool:
         '''return hearing_impaired'''
         return self._hearing_impaired
 
-    def comment(self):
+    def comment(self) -> bool:
         '''return comment'''
         return self._comment
 
-    def lyrics(self):
+    def lyrics(self) -> bool:
         '''return lyrics'''
         return self._lyrics
 
-    def duplicate(self):
+    def duplicate(self) -> bool:
         '''return if duplicate'''
         return self._duplicate
 
-    def make_dict(self, super_dict=None):
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
@@ -310,7 +327,7 @@ class SubtitleStreamType(StreamType):
     #                                   stream_panel_html)
 
 
-def make_stream_type(stream_index, stream):
+def make_stream_type(stream_index: int, stream: str) -> StreamType:
     '''transforms the stream returned from the DB or API to the classes above'''
     if isinstance(stream, str):
         stream = json.loads(stream)
@@ -345,7 +362,7 @@ def make_stream_type(stream_index, stream):
     return None
 
 
-def make_blank_stream_type(stream_index, stream_type_code):
+def make_blank_stream_type(stream_index: int, stream_type_code: str) -> StreamType:
     '''make the blank stream type'''
     if stream_type_code.lower() == "video":
         return VideoStreamType(stream_index)

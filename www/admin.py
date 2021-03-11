@@ -25,7 +25,7 @@ class Admin(HTMLTEMPLATE):
                 CONFIG.save()
             except OSError:
                 print("ERROR WRITING Config FILE")
-        return self._template(CONFIG.html(), javascript="static/js/config.js")
+        return self._template(CONFIG.html(), javascript="js/config.js")
 
     @cherrypy.expose
     def users(self) -> str:
@@ -49,7 +49,7 @@ class Admin(HTMLTEMPLATE):
                 "pages/users",
                 USERSHTML=users_html
             ),
-            javascript="static/js/users.js"
+            javascript="js/users.js"
         )
 
     @cherrypy.expose

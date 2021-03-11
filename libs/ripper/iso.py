@@ -2,15 +2,9 @@
 from libs.ripper.subsystems import FileSubsystem
 from libs.file import File
 import os
-from libs.html_system import HTMLSystem
 from data.config import CONFIG
 from threading import BoundedSemaphore, Thread
 import time
-import json
-from libs.database.where import Where
-from data.database.ripper import VIDEO_INFO_DB
-from libs.database.messages.update import SQLUpdate
-from libs.database import Database
 from data.config import CONFIG
 from libs.file import File
 from libs.ripper.makemkv import MakeMKV
@@ -48,9 +42,6 @@ class ISORipper(FileSubsystem):
             self.__thread_run = False
             self._thread.join()
 
-##########
-##Script##
-##########
     def __run(self):
         ''' Loops through the standard ripper function'''
         with self._pool_sema:
@@ -95,16 +86,12 @@ class ISORipper(FileSubsystem):
             time.sleep(4)
         return True
 
-##############
-##HTML STUFF##
-##############
     def api_data(self):
         '''returns the data as json or dict for html'''
         i = f"ripping {self._disc['type']} video disc" if self._ripper else "Waiting For Free Slot"
         return_dict = {
             "filename": self.__filename,
             "info": i,
-            "ripping": False,
         }
         if self._ripper:
             return_dict.update(self._ripper.get_ripping_data())

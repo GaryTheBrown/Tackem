@@ -1,8 +1,8 @@
 '''Ripper init'''
+from libs.ripper.video_converter import VideoConverter
 from data import HOMEFOLDER
 from libs.ripper.iso import ISORipper
-from data.database.ripper import AUDIO_CONVERT_DB, AUDIO_INFO_DB
-from data.database.ripper import VIDEO_CONVERT_DB, VIDEO_INFO_DB
+from data.database.ripper import AUDIO_INFO_DB, VIDEO_CONVERT_DB, VIDEO_INFO_DB
 from pathlib import Path
 from data.config import CONFIG
 from libs.classproperty import classproperty
@@ -17,7 +17,10 @@ from libs.database import Database
 from threading import BoundedSemaphore
 from data.config import CONFIG
 
-#TODO move on to the converter
+#TODO add the converter to the ripper system and get it working. then make it so you can edit the
+# data while this happens. if no data exists at the end put it into the labeler holder otherwise
+# auto send it to the library for processing where it goes.
+
 #TODO at this point it should maybe convert all tracks if no info available but allow you
 # to say what is what for it to then follow the config rules in what to copy and then delete
 # any others. if its not input after the converter then wait in a hold till it knows what is
@@ -34,30 +37,27 @@ from data.config import CONFIG
 # functions for the new way. POSSABLY NEED TO CHANGE HOW THIS SHOWS SO POSSABLY NEEDS TO BE
 # REWRITTEN BUT USE IT FOR REFERENCE AND TAKE THE LAYOUT ACROSS
 
-# TODO add the option of ripping locally or just giving ISO, use the same evnet stuff thats in
-# library to watch a folder for new files then start a iso ripper (using limits semphores)
-
-# TODO get the converter back in.
-# would need to check the process of getting info from the bluray for it's codes we are using.
-# a seperate system for ripping drives should be created as another app.
+# TODO a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
 
 class Ripper:
     '''Main Class to create an instance of the plugin'''
 
     __running = False
-    __available_drives = Hardware.disc_drives()
-    __drives = []
+
+    __drives: List[Drive] = []
 
     __iso_pool_sema: BoundedSemaphore = None
-
     __iso_threads: List[ISORipper] = []
-    __loaded_isos: List[str] = []
+    __iso_loaded: List[str] = []
+
+    __video_converter_pool_sema: BoundedSemaphore = None
+    __video_converter_threads: List[VideoConverter] = []
+    __video_converter_loaded: List[int] = []
 
     # __video_labeler = None
     # __converter = None
     # __renamer = None
-    # __running = False
 
     @classproperty
     def running(cls):
@@ -77,7 +77,7 @@ class Ripper:
     @classproperty
     def isos(cls) -> List[ISORipper]:
         '''returns the iso threads'''
-        cls.cleanup_dead_threads()
+        cls.cleanup_dead_iso_threads()
         return cls.__iso_threads
 
     @classmethod
@@ -92,7 +92,6 @@ class Ripper:
 
         # Check/Create Database Tables
         Database.call(SQLTable(AUDIO_INFO_DB))
-        Database.call(SQLTable(AUDIO_CONVERT_DB))
         Database.call(SQLTable(VIDEO_INFO_DB))
         Database.call(SQLTable(VIDEO_CONVERT_DB))
 
@@ -102,6 +101,9 @@ class Ripper:
 
         if CONFIG['ripper']['iso']['enabled'].value:
             cls.__start_isos()
+
+        if CONFIG['ripper']['converter']['enabled'].value:
+            cls.__start_converters()
 
         cls.__running = True
 
@@ -120,7 +122,7 @@ class Ripper:
     @classmethod
     def __start_drives(cls):
         '''Starts the ripper drives'''
-        for key in cls.__available_drives.keys():
+        for key in Hardware.disc_drives().keys():
             if config := CONFIG['ripper']['drives'].get(key):
                 if config['enabled'].value:
                     cls.__drives.append(Drive(config))
@@ -131,8 +133,10 @@ class Ripper:
 
     @classmethod
     def __start_isos(cls):
-        '''starts the ripper system and checks the upload folders for isos to add'''
-        cls.__iso_pool_sema = BoundedSemaphore(value=CONFIG['ripper']['iso']['threadcount'].value)
+        '''starts the ISO ripper system and checks the upload folders for isos to add'''
+        cls.__iso_pool_sema = BoundedSemaphore(
+            value=CONFIG['ripper']['iso']['threadcount'].value
+        )
 
         #Check for Audio ISOs
         iso_path = File.location(CONFIG['ripper']['locations']['audioiso'].value)
@@ -146,43 +150,80 @@ class Ripper:
             filename = ("/"+"/".join(path.parts[1:])).replace(iso_path, "")
             cls.iso_add(filename, VIDEO_INFO_DB)
 
+    @classmethod
+    def __start_converters(cls):
+        '''starts the converter system and checks the DB for tasks to do'''
+        cls.__video_converter_pool_sema = BoundedSemaphore(
+            value=CONFIG['ripper']['converter']['threadcount'].value
+        )
+
+        #TODO load tasks from the DB
 
 
     @classmethod
     def stop(cls):
         '''Stops the ripper'''
-        if cls.__running:
-            # Stop the drives
-            for drive in cls.__drives:
-                drive.stop_thread()
+        if not cls.__running:
+            return
 
-            if isinstance(cls.__iso_pool_sema, BoundedSemaphore):
-                cls.cleanup_dead_threads()
-                for thread in cls.__iso_threads:
-                    thread.stop_thread()
-                cls.__iso_pool_sema = None
-                cls.__iso_threads = []
-                cls.__loaded_isos = []
-            cls.__running = False
+        # Stop the drives
+        for drive in cls.__drives:
+            drive.stop_thread()
+
+        if isinstance(cls.__iso_pool_sema, BoundedSemaphore):
+            cls.cleanup_dead_iso_threads()
+            for thread in cls.__iso_threads:
+                thread.stop_thread()
+            cls.__iso_pool_sema = None
+            cls.__iso_threads = []
+            cls.__iso_loaded = []
+
+        if isinstance(cls.__video_converter_pool_sema, BoundedSemaphore):
+
+            for thread in cls.__video_converter_threads:
+                thread.stop_thread()
+            cls.__video_converter_pool_sema = None
+            cls.__video_converter_threads = []
+            cls.__video_converter_loaded = []
+        cls.__running = False
 
     @classmethod
     def iso_add(cls, filename: str, table: Table) -> bool:
         '''Action for other systems to add iso mainly the upload side'''
-        #TODO need to change the DB calls in here to read the other info and add teh full info here
+        #TODO need to change the DB calls in here to read the other info and add thh full info here
         if not CONFIG['ripper']['iso']['enabled'].value:
             return False
-        if filename in cls.__loaded_isos:
+        if filename in cls.__iso_loaded:
             return False
-        cls.__loaded_isos.append(filename)
+        cls.__iso_loaded.append(filename)
         cls.__iso_threads.append(
             ISORipper(cls.__iso_pool_sema, filename, table == VIDEO_INFO_DB)
         )
-
         return True
 
     @classmethod
-    def cleanup_dead_threads(cls):
+    def cleanup_dead_iso_threads(cls):
         '''removes old threads from the list.'''
         if not CONFIG['ripper']['iso']['enabled'].value:
             return
         cls.__iso_threads = [t for t in cls.__iso_threads if t.thread_run]
+
+    @classmethod
+    def video_converter_add(cls, db_id: int) -> bool:
+        '''Action for other systems to add a video converter task'''
+        if not CONFIG['ripper']['converter']['enabled'].value:
+            return False
+        if db_id in cls.__video_converter_loaded:
+            return False
+
+        cls.__video_converter_loaded.append(db_id)
+        cls.__video_converter_threads.append(
+            VideoConverter(cls.__video_converter_pool_sema, db_id)
+        )
+
+    @classmethod
+    def cleanup_dead_video_converter_threads(cls):
+        '''removes old threads from the list.'''
+        if not CONFIG['ripper']['converter']['enabled'].value:
+            return
+        cls.__video_converter_threads = [t for t in cls.__video_converter_threads if t.thread_run]

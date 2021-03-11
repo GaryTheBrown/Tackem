@@ -1,24 +1,21 @@
 '''MakeMKV ripping controller'''
 import sys
 from libs.ripper.disc_info_grabber import rip_data
-from libs.database.messages import SQLUpdate
 from libs.database.where import Where
 from libs.database.messages import SQLSelect
 from libs.database import Database
 from data.config import CONFIG
 from libs.ripper.subsystems import RipperSubSystem
-from libs.ripper.converter import create_video_converter_row
 from data.database.ripper import VIDEO_INFO_DB as DB
-from libs.ripper.events import RipperEvents
 import os
 import pexpect
 from libs.file import File
 class MakeMKV(RipperSubSystem):
     '''MakeMKV ripping controller'''
 
-    def call(self, id: int) -> bool:
+    def call(self, db_id: int) -> bool:
         '''run the makemkv backup function MUST HAVE DATA IN THE DB'''
-        msg = SQLSelect(DB, Where("id", id))
+        msg = SQLSelect(DB, Where("db_", db_id))
         Database.call(msg)
 
         if not isinstance(msg.return_data, dict):
@@ -42,30 +39,15 @@ class MakeMKV(RipperSubSystem):
         elif disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir, device=device)
 
-        Database.call(SQLUpdate(DB, Where("id", id), ripped=True))
-
         comp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
         File.move(temp_dir, comp_dir)
 
-        #TODO need to deal with passing to the next system here.
-
-        # if CONFIG['ripper']['converter']['enabled'].value:
-        #     create_video_converter_row(
-        #         id,
-        #         disc_rip_info,
-        #         CONFIG['ripper']['videoripping']['torip'].value
-        #     )
-        #     Database.call(SQLUpdate(DB, Where("id", id), ready_to_convert=True))
-        #     RipperEvents().converter.set()
-        # else:
-        #     Database.call(SQLUpdate(DB, Where("id", id), ready_to_rename=True))
-        #     RipperEvents().renamer.set()
+        #TODO calls the next system
 
         if not device and CONFIG['ripper']['iso']['removeiso'].value:
             File.rm(File.location(self._in_file))
 
         return True
-
 
     def _makemkv_backup_from_disc(self, temp_dir: str, index: int = -1, device: bool = True):
         '''Do the mkv Backup from disc'''
