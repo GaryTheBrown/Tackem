@@ -64,7 +64,12 @@ class FFprobe:
             return len(self._info['streams'])
         return 0
 
-    def get_stream(self, index) -> Optional[dict]:
+    @property
+    def streams(self) -> list:
+        '''returns all the streams'''
+        return self._info.get("streams", [])
+
+    def stream(self, index) -> Optional[dict]:
         '''return a stream'''
         if 'streams' in self._info and self._info['streams']:
             return self._info['streams'][int(index)]
@@ -83,7 +88,7 @@ class FFprobe:
             return s_types
         return None
 
-    def get_streams_and_types(self) -> list:
+    def streams_and_types(self) -> list:
         '''returns a list of streams and there types'''
         if 'streams' in self._info and self._info['streams']:
             streams = []
@@ -91,7 +96,7 @@ class FFprobe:
                 streams.append(stream["codec_type"])
             return streams
 
-    def get_video_info(self) -> list:
+    def video_info(self) -> list:
         '''returns the video stream information'''
         videos = []
         if 'streams' in self._info and self._info['streams']:
@@ -101,7 +106,7 @@ class FFprobe:
 
         return videos
 
-    def get_audio_info(self) -> list:
+    def audio_info(self) -> list:
         '''returns the audio stream information'''
         audios = []
         if 'streams' in self._info and self._info['streams']:
@@ -110,7 +115,7 @@ class FFprobe:
                     audios.append(stream)
         return audios
 
-    def get_subtitle_info(self) -> list:
+    def subtitle_info(self) -> list:
         '''returns the subtitle stream information'''
         subtitles = []
         if 'streams' in self._info and self._info['streams']:
@@ -119,6 +124,6 @@ class FFprobe:
                     subtitles.append(stream)
         return subtitles
 
-    def get_format_info(self) -> dict:
+    def format_info(self) -> dict:
         '''returns the format information'''
         return self._info['format']

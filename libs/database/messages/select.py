@@ -15,7 +15,7 @@ class SQLSelect(SQLMessage):
         if returns is None:
             returns = ["*"]
 
-        if len(wheres) == 0:
+        if len(wheres) == 0 and table.soft_delete is False:
             super().__init__(f"SELECT {', '.join(returns)} FROM {table.name()}")
             return
 

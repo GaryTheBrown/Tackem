@@ -116,7 +116,8 @@ class Ripper:
             file.write('app_DefaultSelectionString = "+sel:all"\n')
             file.write('app_DefaultOutputFileName = "{t:N2}"\n')
             file.write('app_ccextractor = "/usr/bin/ccextractor"\n')
-            file.write('app_key = "' + CONFIG['ripper']['makemkv']['key'].value + '"')
+            file.write(f'app_key = "' + CONFIG['ripper']['makemkv']['key'].value + '"\n')
+            file.write('dvd_MinimumTitleLength = "0"')
 
 
     @classmethod
@@ -158,6 +159,7 @@ class Ripper:
         )
 
         #TODO load tasks from the DB
+
 
 
     @classmethod

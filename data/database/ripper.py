@@ -19,7 +19,8 @@ VIDEO_CONVERT_DB = Table(
     Column("filename", "text", not_null=True),
     Column("disc_info", "json"),
     Column("track_data", "json"),
-    Column("ripper_video_info_id", "bit", not_null=True, default=False)
+    Column("ripper_video_info_id", "bit", not_null=True, default=False),
+    soft_delete=True
 )
 
 VIDEO_INFO_DB = Table(

@@ -1,11 +1,12 @@
 '''Master Section for the Video Converter controller'''
+from libs.ripper.video_converter.base import VideoConverterBase
 from threading import BoundedSemaphore
 import threading
 import os
 import os.path
 import pexpect
 from libs.database import Database
-from libs.database.messages import SQLSelect, SQLUpdate
+from libs.database.messages import SQLSelect, SQLDelete
 from libs.database.where import Where
 from libs.file import File
 from libs.scraper import Scraper
@@ -22,76 +23,9 @@ from presets import get_video_preset_command
 # https://www.maxvergelli.com/how-to-convert-hdr10-videos-to-sdr-for-non-hdr-devices/
 # https://github.com/lasinger/3DVideos2Stereo
 
-class VideoConverter():
+class VideoConverterData(VideoConverterBase):
     '''Master Section for the Video Converter controller'''
 
-    def __init__(self, pool_sema: BoundedSemaphore, db_id: int):
-        self.__thread = threading.Thread(target=self.run, args=())
-        self.__thread.setName(f"Converter Task: {str(db_id)}")
-
-        self.__pool_sema = pool_sema
-        self.__db_id = db_id
-
-        self.__conf = CONFIG['ripper']['converter']
-        self.__infile: str = ""
-        self.__outfile: str = ""
-        self.__disc_language: str = ""
-        self.__probe_info: dict = {}
-        self.__command: list = []
-        self.__frame_count: int = 0
-        self.__frame_process: int = 0
-        self.__percent: float = 0.0
-
-        self.__active: bool = False
-        self.__thread_run: bool = True
-        self.__thread.start()
-
-    @property
-    def thread_run(self) -> bool:
-        '''return if thread is running'''
-        return self._thread.is_alive()
-
-    @property
-    def active(self) -> bool:
-        '''return if thread is Active'''
-        return self.__active
-
-    def stop_thread(self):
-        '''stop the thread'''
-        if self.__thread.is_alive():
-            self.__thread_run = False
-            self.__thread.join()
-
-###########
-##GETTERS##
-###########
-
-    def get_id(self):
-        '''returns the ID'''
-        return "v" + self._id
-
-    def api_data(self) -> dict:
-        '''returns the data as dict for html'''
-        file_name_split = self._filename.replace(".mkv", "").split("/")
-        return_dict = {
-            'id': self._id,
-            'discid': int(file_name_split[0]),
-            'trackid': int(file_name_split[1]),
-            'converting': self.__running,
-            'count': self.__frame_count,
-            'process': self.__frame_process,
-            'percent': self.__percent
-        }
-        return return_dict
-
-    def converting(self):
-        '''return if converting'''
-        return self.__running
-
-
-##########
-##Script##
-##########
     def run(self):
         ''' Loops through the standard converter function'''
 
@@ -104,16 +38,13 @@ class VideoConverter():
         if not self.__thread_run:
             return
 
-
-
-        self._id = msg.return_data['id']
         self._filename = msg.return_data['filename']
         self._disc_info = msg.return_data['disc_info']
         self._track_info = msg.return_data['track_info']
 
         msg = SQLSelect(
             VIDEO_CONVERT_DB,
-            Where("id", self._id)
+            Where("id", self._db_id)
         )
         Database.call(msg)
         self._sql_row_id = msg.return_data['id']
@@ -137,6 +68,7 @@ class VideoConverter():
                 File.move(self.__outfile, self.__infile)
                 if not self.__conf['keeporiginalfile'].value:
                     File.rm(self.__infile + ".OLD")
+                Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self.__db_id)))
 
     def _create_command(self):
         '''creates the conversion command here'''
