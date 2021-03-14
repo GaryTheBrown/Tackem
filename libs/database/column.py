@@ -186,13 +186,13 @@ class Column:
                 try:
                     json.loads(value)
                     return
-                except:
+                except Exception:
                     raise ValueError(f"{self.__name} has Invalid Json String")
             if isinstance(value, (list, dict)):
                 try:
                     json.dumps(value)
                     return
-                except:
+                except Exception:
                     raise ValueError(f"{self.__name} cannot convert to Json String")
 
         raise ValueError(f"{self.__name} Expecting {self.__type} found {type(value)}")

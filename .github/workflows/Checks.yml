@@ -26,14 +26,17 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install black flake8 pytest dlint
+        python -m pip install black dlint flake8 flake8-black flake8-bandit flake8-bugbear flake8-deprecated flake8-executable safety pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --show-source --statistics --max-line-length=100
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        # Basic Checks
+        flake8 . --count --show-source --statistics --max-line-length=100 --extend-ignore=DUO,S,E722
+        # Security
+        # flake8 . --count --show-source --statistics --max-line-length=100 --select=DUO,S,E722
+        # Complexity Checking
         # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
+
     #- name: Test with pytest
     #  run: |
     #    pytest
