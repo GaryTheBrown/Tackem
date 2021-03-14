@@ -31,9 +31,9 @@ jobs:
     - name: Lint with flake8
       run: |
         # Basic Checks
-        flake8 . --count --show-source --statistics --max-line-length=100 --extend-ignore=DUO,S,E722
+        flake8 . --count --show-source --statistics --max-line-length=100 --extend-ignore=DUO,S
         # Security
-        # flake8 . --count --show-source --statistics --max-line-length=100 --select=DUO,S,E722
+        # flake8 . --count --show-source --statistics --max-line-length=100 --select=DUO,S
         # Complexity Checking
         # flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
 
