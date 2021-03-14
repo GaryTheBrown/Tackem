@@ -16,9 +16,7 @@ class DiscType(metaclass=ABCMeta):
         self.__name = name
         self.__info = info
         self.__tracks = tracks if isinstance(tracks, list) else []
-        self.__language = (
-            language if len(language) == 2 and isinstance(language, str) else "en"
-        )
+        self.__language = language if len(language) == 2 and isinstance(language, str) else "en"
         self.__moviedbid = moviedbid
 
     @property
@@ -62,9 +60,7 @@ class DiscType(metaclass=ABCMeta):
             self.__tracks = tracks
 
     @abstractmethod
-    def make_dict(
-        self, super_dict: Optional[dict] = None, no_tracks: bool = False
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -148,9 +144,7 @@ class MovieDiscType(DiscType):
         """returns movie imdbid"""
         return self.__imdbid
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, no_tracks: bool = False
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -215,9 +209,7 @@ class TVShowDiscType(DiscType):
         """returns TV Show name"""
         return self.__tvdbid
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, no_tracks: bool = False
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -261,9 +253,7 @@ class DocumentaryDiscType(DiscType):
     def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
         super().__init__("Documentary", name, info, tracks, language, None)
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, no_tracks: bool = False
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -289,9 +279,7 @@ class OtherDiscType(DiscType):
     def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
         super().__init__("Other", name, info, tracks, language, None)
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, no_tracks: bool = False
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}

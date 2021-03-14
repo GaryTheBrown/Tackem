@@ -38,9 +38,7 @@ class APIBase:
         if user == self.GUEST or (is_admin and user == self.USER):
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
-    def _return_data(
-        self, user: int, system: str, action: str, success: bool, **kwargs
-    ) -> str:
+    def _return_data(self, user: int, system: str, action: str, success: bool, **kwargs) -> str:
         """creates the json for returning requiring some data but allowing more"""
         base = {"user": user, "system": system, "action": action, "success": success}
 

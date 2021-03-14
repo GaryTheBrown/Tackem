@@ -39,9 +39,7 @@ class VideoConverter(
             return
 
         self._filename = msg.return_data["filename"]
-        infile = File.location(
-            CONFIG["ripper"]["locations"]["videoripping"].value + self._filename
-        )
+        infile = File.location(CONFIG["ripper"]["locations"]["videoripping"].value + self._filename)
         outfile = infile.replace(".mkv", "") + ".NEW.mkv"
 
         if not os.path.exists(infile):
@@ -76,9 +74,7 @@ class VideoConverter(
         """creates the conversion command here"""
         probe_info = FFprobe(
             self._conf["ffprobelocation"].value,
-            File.location(
-                CONFIG["ripper"]["locations"]["videoripping"].value + self._filename
-            ),
+            File.location(CONFIG["ripper"]["locations"]["videoripping"].value + self._filename),
         )
 
         # Copy accross most metadata
@@ -105,9 +101,7 @@ class VideoConverter(
         track_info = make_track_type(db_info["track_info"])
         probe_info = FFprobe(
             self._conf["ffprobelocation"].value,
-            File.location(
-                CONFIG["ripper"]["locations"]["videoripping"].value + self._filename
-            ),
+            File.location(CONFIG["ripper"]["locations"]["videoripping"].value + self._filename),
         )
 
         # Deal with tagging here

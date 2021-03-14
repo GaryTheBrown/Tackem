@@ -161,9 +161,7 @@ def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
 
 def navbar_item(title: str, url: str) -> str:
     """A Navbar Item (not active)"""
-    return HTMLSystem.part(
-        "navbar/item", TITLE=title.title(), URL=url.replace(" ", "/")
-    )
+    return HTMLSystem.part("navbar/item", TITLE=title.title(), URL=url.replace(" ", "/"))
 
 
 def navbar_item_active(title: str) -> str:

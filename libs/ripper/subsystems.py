@@ -1,4 +1,5 @@
 """shared info between ripper systems"""
+from shutil import which
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.update import SQLUpdate
 from libs.database import Database
@@ -61,9 +62,7 @@ class FileSubsystem:
     def _get_udfInfo(self, in_file: str):
         """Grabs the relevent Data from UDF images"""
         list = {}
-        process = Popen(
-            ["udfinfo", File.location(in_file)], stdout=PIPE, stderr=DEVNULL
-        )
+        process = Popen([which("udfinfo"), File.location(in_file)], stdout=PIPE, stderr=DEVNULL)
         part_list = process.communicate()[0].decode("utf-8").split("\n")[:-1]
 
         for item in part_list:

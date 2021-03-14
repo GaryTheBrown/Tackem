@@ -30,9 +30,7 @@ class MakeMKV(RipperSubSystem):
                 CONFIG["ripper"]["locations"]["videoiso"].value,
             )
 
-        temp_dir = File.location(
-            f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/"
-        )
+        temp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
         device = msg.return_data["iso_file"] == ""
         if isinstance(disc_rip_info, list):
             self._track_data = True
@@ -42,9 +40,7 @@ class MakeMKV(RipperSubSystem):
         elif disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir, device=device)
 
-        comp_dir = File.location(
-            f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/"
-        )
+        comp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
         File.move(temp_dir, comp_dir)
 
         # TODO calls the next system
@@ -54,9 +50,7 @@ class MakeMKV(RipperSubSystem):
 
         return True
 
-    def _makemkv_backup_from_disc(
-        self, temp_dir: str, index: int = -1, device: bool = True
-    ):
+    def _makemkv_backup_from_disc(self, temp_dir: str, index: int = -1, device: bool = True):
         """Do the mkv Backup from disc"""
         try:
             File.mkdir(temp_dir)
@@ -96,9 +90,7 @@ class MakeMKV(RipperSubSystem):
                 self._ripping_track = None
                 break
             elif i == 1:
-                self._ripping_track = int(
-                    thread.match.group(0).split(":")[1].split(",")[1]
-                )
+                self._ripping_track = int(thread.match.group(0).split(":")[1].split(",")[1])
                 update_progress = True
             elif i == 2:
                 if update_progress:
@@ -106,12 +98,8 @@ class MakeMKV(RipperSubSystem):
                     self._ripping_file = int(values[0])
                     self._ripping_total = int(values[1])
                     self._ripping_max = int(values[2])
-                    self._ripping_file_p = round(
-                        float(int(values[0]) / int(values[2]) * 100), 2
-                    )
-                    self._ripping_total_p = round(
-                        float(int(values[1]) / int(values[2]) * 100), 2
-                    )
+                    self._ripping_file_p = round(float(int(values[0]) / int(values[2]) * 100), 2)
+                    self._ripping_total_p = round(float(int(values[1]) / int(values[2]) * 100), 2)
             elif i == 3:
                 update_progress = False
                 self._ripping_file = self._ripping_max

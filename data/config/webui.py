@@ -17,9 +17,7 @@ def webui_config() -> ConfigList:
             "The port the system is accessed on",
             input_attributes=InputAttributes(min=1001, max=65535),
         ),
-        ConfigObjString(
-            "baseurl", "/", "Base Url", "The Base Url must start and end with '/'"
-        ),
+        ConfigObjString("baseurl", "/", "Base Url", "The Base Url must start and end with '/'"),
         ConfigObjString(
             "uploadlocation",
             "upload/",

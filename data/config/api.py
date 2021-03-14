@@ -15,9 +15,7 @@ def api_config() -> ConfigList:
             "",
             "Master API Key",
             "The master API key for full control",
-            button=Button(
-                "Generate API Key", "generateAPIKey", True, input="api_masterkey"
-            ),
+            button=Button("Generate API Key", "generateAPIKey", True, input="api_masterkey"),
             input_attributes=InputAttributes("readonly"),
         ),
         ConfigObjString(
@@ -25,9 +23,7 @@ def api_config() -> ConfigList:
             "",
             "User API Key",
             "The user API key for limited control",
-            button=Button(
-                "Generate API Key", "generateAPIKey", True, input="api_userkey"
-            ),
+            button=Button("Generate API Key", "generateAPIKey", True, input="api_userkey"),
             input_attributes=InputAttributes("readonly"),
         ),
     )

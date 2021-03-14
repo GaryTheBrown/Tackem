@@ -66,9 +66,7 @@ class ConfigListHtml(ConfigListBase):
                 continue
 
             panels_html += HTMLSystem.part(
-                "section/tabpane"
-                if obj.var_name == "plugins"
-                else "section/tabpanewithmargin",
+                "section/tabpane" if obj.var_name == "plugins" else "section/tabpanewithmargin",
                 NAME=obj.var_name,
                 ACTIVE="active" if first else "",
                 HTML=obj.html(obj.var_name, True),
@@ -105,16 +103,10 @@ class ConfigListHtml(ConfigListBase):
             options_html = HTMLSystem.part(
                 "inputs/single/option",
                 LABEL="Please Select An Option",
-                input_attributes=InputAttributes(
-                    "required", "selected", "disabled"
-                ).html(),
+                input_attributes=InputAttributes("required", "selected", "disabled").html(),
             )
             for item in self.many_section_limit_list:
-                attr = (
-                    InputAttributes("disabled", "required").html()
-                    if item in self.keys()
-                    else ""
-                )
+                attr = InputAttributes("disabled", "required").html() if item in self.keys() else ""
                 options_html += HTMLSystem.part(
                     "inputs/single/option",
                     VALUE=item,
@@ -138,9 +130,7 @@ class ConfigListHtml(ConfigListBase):
         input_html += HTMLSystem.part(
             "inputs/button",
             LABEL="Add Instance",
-            DATA=InputAttributes(
-                data_click_action="addMulti", data_target=variable_name
-            ).html(),
+            DATA=InputAttributes(data_click_action="addMulti", data_target=variable_name).html(),
         )
 
         return HTMLSystem.part(
@@ -177,9 +167,7 @@ class ConfigListHtml(ConfigListBase):
     def __section(self, variable_name: str) -> str:
         """creates an Invisible to html section"""
 
-        var = (
-            f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
-        )
+        var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
         section_html = HTMLSystem.part(
             "section/section",
             SECTIONNAME=var,

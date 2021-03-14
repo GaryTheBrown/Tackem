@@ -137,9 +137,7 @@ class Ripper:
     @classmethod
     def __start_isos(cls):
         """starts the ISO ripper system and checks the upload folders for isos to add"""
-        cls.__iso_pool_sema = BoundedSemaphore(
-            value=CONFIG["ripper"]["iso"]["threadcount"].value
-        )
+        cls.__iso_pool_sema = BoundedSemaphore(value=CONFIG["ripper"]["iso"]["threadcount"].value)
 
         # Check for Audio ISOs
         iso_path = File.location(CONFIG["ripper"]["locations"]["audioiso"].value)
@@ -204,9 +202,7 @@ class Ripper:
         if filename in cls.__iso_loaded:
             return False
         cls.__iso_loaded.append(filename)
-        cls.__iso_threads.append(
-            ISORipper(cls.__iso_pool_sema, filename, table == VIDEO_INFO_DB)
-        )
+        cls.__iso_threads.append(ISORipper(cls.__iso_pool_sema, filename, table == VIDEO_INFO_DB))
         return True
 
     @classmethod
@@ -228,9 +224,7 @@ class Ripper:
             return False
 
         cls.__video_converter_loaded.append(db_id)
-        cls.__video_converter_threads.append(
-            VideoConverter(cls.__video_converter_pool_sema, db_id)
-        )
+        cls.__video_converter_threads.append(VideoConverter(cls.__video_converter_pool_sema, db_id))
         return True
 
     @classmethod
@@ -238,6 +232,4 @@ class Ripper:
         """removes old threads from the list."""
         if not CONFIG["ripper"]["converter"]["enabled"].value:
             return
-        cls.__video_converter_threads = [
-            t for t in cls.__video_converter_threads if t.thread_run
-        ]
+        cls.__video_converter_threads = [t for t in cls.__video_converter_threads if t.thread_run]

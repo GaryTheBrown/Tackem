@@ -33,9 +33,7 @@ class Scraper:
         """creates the base command keys"""
         base = "api_key=" + CONFIG["scraper"]["apikey"].value
         if adult:
-            base += (
-                f"&include_adult={str(CONFIG['scraper']['includeadult'].value).lower()}"
-            )
+            base += f"&include_adult={str(CONFIG['scraper']['includeadult'].value).lower()}"
         if language:
             base += f"&language={CONFIG['scraper']['language'].value}"
         return base

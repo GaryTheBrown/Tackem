@@ -4,9 +4,7 @@
 class Language:
     """Single Language Class"""
 
-    def __init__(
-        self, name: str, iso_639_1: str, iso_639_2t: str, iso_639_2b: str, family: str
-    ):
+    def __init__(self, name: str, iso_639_1: str, iso_639_2t: str, iso_639_2b: str, family: str):
         self.__name = name
         self.__iso_639_1 = iso_639_1
         self.__iso_639_2t = iso_639_2t
@@ -140,9 +138,7 @@ class Languages:
         Language("Latin", "la", "lat", "lat", "Indo-European"),
         Language("Luxembourgish, Letzeburgesch", "lb", "ltz", "ltz", "Indo-European"),
         Language("Ganda", "lg", "lug", "lug", "Niger–Congo"),
-        Language(
-            "Limburgan, Limburger, Limburgish", "li", "lim", "lim", "Indo-European"
-        ),
+        Language("Limburgan, Limburger, Limburgish", "li", "lim", "lim", "Indo-European"),
         Language("Lingala", "ln", "lin", "lin", "Niger–Congo"),
         Language("Lao", "lo", "lao", "lao", "Tai–Kadai"),
         Language("Lithuanian", "lt", "lit", "lit", "Indo-European"),

@@ -23,9 +23,7 @@ class DataList:
         if not isinstance(variable_name, str):
             raise ValueError("variable name is not a String")
         if not all([isinstance(x, DataListOption) for x in options]):
-            raise ValueError(
-                "One of the Data List Options is not the right Type of Class"
-            )
+            raise ValueError("One of the Data List Options is not the right Type of Class")
 
         self.__variable_name = variable_name
         self.__options = options

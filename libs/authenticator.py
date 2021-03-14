@@ -53,9 +53,7 @@ class Authentication:
         return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
     @classmethod
-    def login(
-        cls, username: str, password: str, timeout: int, returnurl: str
-    ) -> Union[bool, None]:
+    def login(cls, username: str, password: str, timeout: int, returnurl: str) -> Union[bool, None]:
         """Login Script"""
         if username == "" or password == "":
             return False

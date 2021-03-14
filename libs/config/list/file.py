@@ -116,12 +116,8 @@ class ConfigListFile(ConfigListBase):
                 if item.is_section:
                     return_string += item.get_spec_part(indent)
                 else:
-                    return_string += self.__tab(indent) + self.__open_bracket(
-                        indent + 1
-                    )
-                    return_string += (
-                        item.var_name + self.__close_bracket(indent + 1) + "\n"
-                    )
+                    return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+                    return_string += item.var_name + self.__close_bracket(indent + 1) + "\n"
                     return_string += item.get_spec_part(indent + 1)
             elif isinstance(item, ConfigObjBase):
                 return_string += self.__tab(indent) + item.spec

@@ -6,9 +6,7 @@ from libs.database.column import Column
 class Table:
     """Database Table"""
 
-    def __init__(
-        self, name: str, version: int, *data: Column, soft_delete: bool = False
-    ):
+    def __init__(self, name: str, version: int, *data: Column, soft_delete: bool = False):
         self.__name = name
         self.__version = version
         self.__data = list(data)
@@ -16,9 +14,7 @@ class Table:
 
         self.__main_data = [
             Column("id", "integer", primary_key=True, auto_increment=True),
-            Column(
-                "created_at", "timestamp", default="CURRENT_TIMESTAMP", default_raw=True
-            ),
+            Column("created_at", "timestamp", default="CURRENT_TIMESTAMP", default_raw=True),
             Column(
                 "updated_at",
                 "timestamp",

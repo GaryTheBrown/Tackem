@@ -85,9 +85,7 @@ class VideoConverterStreamMapping(VideoConverterBase):
                             return True
             elif self._conf["audio"]["audiolanguage"].value == "selectedandoriginal":
                 original_bool = stream_language == self.__disc_language
-                selected_bool = (
-                    stream_language in self._conf["audio"]["audiolanguages"].value
-                )
+                selected_bool = stream_language in self._conf["audio"]["audiolanguages"].value
                 if original_bool or selected_bool:
                     if self._conf["audio"]["audioformat"].value == "all":
                         return True
@@ -122,19 +120,13 @@ class VideoConverterStreamMapping(VideoConverterBase):
                     if self._conf["subtitles"]["subtitle"].value == "all":
                         return True
                     if self._conf["subtitles"]["subtitle"].value == "selected":
-                        if (
-                            stream_language
-                            in self._conf["subtitles"]["subtitlelanguages"].value
-                        ):
+                        if stream_language in self._conf["subtitles"]["subtitlelanguages"].value:
                             return True
             else:
                 if self._conf["subtitles"]["subtitle"].value == "all":
                     return True
                 if self._conf["subtitles"]["subtitle"].value == "selected":
-                    if (
-                        stream_language
-                        in self._conf["subtitles"]["subtitlelanguages"].value
-                    ):
+                    if stream_language in self._conf["subtitles"]["subtitlelanguages"].value:
                         return True
         return False
 

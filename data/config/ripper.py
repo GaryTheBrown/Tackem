@@ -59,9 +59,7 @@ def ripper_config() -> ConfigList:
                 "",
                 "",
                 ConfigObjEnabled(),
-                ConfigObjString(
-                    "label", "", "Label", "What do you want to call this drive?"
-                ),
+                ConfigObjString("label", "", "Label", "What do you want to call this drive?"),
                 ConfigObjString(
                     "link",
                     "",
@@ -253,12 +251,8 @@ def ripper_config() -> ConfigList:
                         ConfigObjOption("ab2r", "Half Top Bottom (Right Eye Top)"),
                         ConfigObjOption("al", "Alternating Frames (Left Eye First)"),
                         ConfigObjOption("ar", "Alternating Frames (Right Eye First)"),
-                        ConfigObjOption(
-                            "irl", "Interleaved Rows (Left Eye Has Top Row)"
-                        ),
-                        ConfigObjOption(
-                            "irr", "Interleaved Rows (Right Eye Has Top Row)"
-                        ),
+                        ConfigObjOption("irl", "Interleaved Rows (Left Eye Has Top Row)"),
+                        ConfigObjOption("irr", "Interleaved Rows (Right Eye Has Top Row)"),
                         ConfigObjOption("arbg", "Anaglyph Red/Blue Grayscale"),
                         ConfigObjOption("argg", "Anaglyph Red/Green Grayscale"),
                         ConfigObjOption("arcg", "Anaglyph Red/Cyan Grayscale"),
@@ -419,9 +413,7 @@ you will achieve better quality with a slower preset. Similarly, for constant qu
 you will simply save bitrate by choosing a slower preset.
 Use the slowest preset that you have patience for.""",
                     ),
-                    ConfigObjString(
-                        "x26extra", "", "Extra commands", "Other commands?"
-                    ),
+                    ConfigObjString("x26extra", "", "Extra commands", "Other commands?"),
                     is_section=True,
                 ),
                 ConfigObjOptionsRadio(

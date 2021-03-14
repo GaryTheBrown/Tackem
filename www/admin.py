@@ -63,9 +63,7 @@ class Admin(HTMLTEMPLATE):
             raise cherrypy.HTTPError(status=401)
         return self._template(HTMLSystem.part("pages/reboot"))
 
-    def __add_val_to_config(
-        self, key: str, config: ConfigList, key_list: list, value: Any
-    ):
+    def __add_val_to_config(self, key: str, config: ConfigList, key_list: list, value: Any):
         """recursive way of adding value into the config"""
         if len(key_list) == 1:
             if key_list[0] in config.keys():
@@ -82,9 +80,7 @@ class Admin(HTMLTEMPLATE):
                 config.clone_many_section(key_list[0])
 
             if key_list[0] in config.keys():
-                return self.__add_val_to_config(
-                    key, config[key_list[0]], key_list[1:], value
-                )
+                return self.__add_val_to_config(key, config[key_list[0]], key_list[1:], value)
 
             for obj in config:
                 if obj.is_section:

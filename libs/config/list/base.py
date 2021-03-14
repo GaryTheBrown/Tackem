@@ -20,7 +20,7 @@ class ConfigListBase(ConfigBase):
         many_section=None,
         many_section_limit_list: Optional[list] = None,
         hide_on_html: bool = False,
-        not_in_config: bool = False
+        not_in_config: bool = False,
     ):
         super().__init__(var_name, label, help_text, hide_on_html, not_in_config, rules)
         if is_section and not isinstance(is_section, bool):
@@ -31,9 +31,7 @@ class ConfigListBase(ConfigBase):
             if var_name == "root":
                 if all(not isinstance(x, ConfigListBase) for x in objects):
                     raise ValueError("objects is not all Config Lists")
-            elif all(
-                not isinstance(x, (ConfigListBase, ConfigObjBase)) for x in objects
-            ):
+            elif all(not isinstance(x, (ConfigListBase, ConfigObjBase)) for x in objects):
                 raise ValueError("objects is not all Config Lists or Objs")
         if objects:
             self._objects = list(objects)
@@ -47,9 +45,7 @@ class ConfigListBase(ConfigBase):
             if not isinstance(many_section_limit_list, list):
                 raise ValueError("Many Section Limit List is not a list")
             if all(not isinstance(x, str) for x in many_section_limit_list):
-                raise ValueError(
-                    "All Items in the Many Section Limit List need to be strings"
-                )
+                raise ValueError("All Items in the Many Section Limit List need to be strings")
         self.__many_section_limit_list = many_section_limit_list
 
     def __getitem__(self, key):

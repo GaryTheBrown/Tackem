@@ -85,6 +85,4 @@ class VideoConverterBase:
             if i == 1:
                 return_string = thread.match.group(0).replace("frame=", "").lstrip()
                 self.__frame_process = int(return_string)
-                self.__percent = round(
-                    float(self.__frame_process / self.__frame_count * 100), 2
-                )
+                self.__percent = round(float(self.__frame_process / self.__frame_count * 100), 2)

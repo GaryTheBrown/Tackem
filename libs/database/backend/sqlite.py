@@ -72,9 +72,7 @@ class SQLite(BackendBase):
 
     def __add_table(self, table: Table, update_version_table: bool = True) -> bool:
         """ Adds Table to the DB and then adds it into the table version DB"""
-        query = (
-            f"CREATE TABLE IF NOT EXISTS {table.name()}({', '.join(table.columns)});"
-        )
+        query = f"CREATE TABLE IF NOT EXISTS {table.name()}({', '.join(table.columns)});"
         BackendBase._conn.execute(query)
         BackendBase._conn.commit()
         if update_version_table:
@@ -89,9 +87,7 @@ class SQLite(BackendBase):
         """Update the table with the informaiton provided"""
 
         # first move the current table to a new name
-        BackendBase._conn.execute(
-            f"ALTER TABLE {table.name()} RENAME TO {table.name()}_old;"
-        )
+        BackendBase._conn.execute(f"ALTER TABLE {table.name()} RENAME TO {table.name()}_old;")
         BackendBase._conn.commit()
 
         # make the new version of the table

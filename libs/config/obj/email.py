@@ -46,9 +46,6 @@ class ConfigObjEmail(ConfigObjString):
         if not isinstance(value, str):
             return self.default_value
 
-        if (
-            re.match("^.+@([?)[a-zA-Z0-9-.]+.([a-zA-Z]{2,3}|[0-9]{1,3})(]?)$", value)
-            is not None
-        ):
+        if re.match("^.+@([?)[a-zA-Z0-9-.]+.([a-zA-Z]{2,3}|[0-9]{1,3})(]?)$", value) is not None:
             return value
         return self.default_value

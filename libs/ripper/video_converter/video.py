@@ -28,17 +28,13 @@ class VideoConverterVideo(VideoConverterBase):
                 if type_3d == "left_right":
                     # Both views are arranged side by side, Left-eye view is on the left
                     if aspect_ratio == "4:3" or aspect_ratio == "16:9":
-                        type_3d_in = (
-                            "sbs2l"  # side by side parallel with half width resolution
-                        )
+                        type_3d_in = "sbs2l"  # side by side parallel with half width resolution
                     else:
                         type_3d_in = "sbsl"  # side by side parallel
                 elif type_3d == "right_left":
                     # Both views are arranged side by side, Right-eye view is on the left
                     if aspect_ratio == "4:3" or aspect_ratio == "16:9":
-                        type_3d_in = (
-                            "sbs2r"  # side by side crosseye with half width resolution
-                        )
+                        type_3d_in = "sbs2r"  # side by side crosseye with half width resolution
                     else:
                         type_3d_in = "sbsr"  # side by side crosseye
                 elif type_3d == "bottom_top":
@@ -128,7 +124,5 @@ class VideoConverterVideo(VideoConverterBase):
                 if self._conf["video"]["x26extra"].value:
                     self._command.append(str(self._conf["video"]["x26extra"].value))
             elif self._conf["video"]["videocodec"].value == "preset":
-                video_command = get_video_preset_command(
-                    self._conf["video"]["videopreset"].value
-                )
+                video_command = get_video_preset_command(self._conf["video"]["videopreset"].value)
                 self._command.append(video_command)

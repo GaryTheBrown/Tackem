@@ -9,9 +9,7 @@ from libs.exceptions import SQLMessageError
 class SQLSelect(SQLMessage):
     """Select Message"""
 
-    def __init__(
-        self, table: Table, *wheres: Where, returns: Optional[List[str]] = None
-    ):
+    def __init__(self, table: Table, *wheres: Where, returns: Optional[List[str]] = None):
         if not isinstance(table, Table):
             raise SQLMessageError
 

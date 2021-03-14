@@ -55,9 +55,7 @@ class ISORipper(FileSubsystem):
             self._get_udfInfo(
                 File.location(
                     self.__filename,
-                    CONFIG["ripper"]["locations"][
-                        "videoiso" if self.__video else "audioiso"
-                    ].value,
+                    CONFIG["ripper"]["locations"]["videoiso" if self.__video else "audioiso"].value,
                 )
             )
             if self.__thread_run is False:
@@ -75,15 +73,11 @@ class ISORipper(FileSubsystem):
 
             self._ripper.call(self._db_id)
             self._ripper = None
-            Database.call(
-                SQLUpdate(VIDEO_INFO_DB, Where("id", self._db_id), iso_file="")
-            )
+            Database.call(SQLUpdate(VIDEO_INFO_DB, Where("id", self._db_id), iso_file=""))
 
     def __wait_for_file_copy_complete(self) -> bool:
         """watches the file size until it stops"""
-        path = CONFIG["ripper"]["locations"][
-            "videoiso" if self.__video else "audioiso"
-        ].value
+        path = CONFIG["ripper"]["locations"]["videoiso" if self.__video else "audioiso"].value
         filename = File.location(f"{path}{self.__filename}")
         historicalSize = -1
         while historicalSize != os.path.getsize(filename):
@@ -95,11 +89,7 @@ class ISORipper(FileSubsystem):
 
     def api_data(self):
         """returns the data as json or dict for html"""
-        i = (
-            f"ripping {self._disc['type']} video disc"
-            if self._ripper
-            else "Waiting For Free Slot"
-        )
+        i = f"ripping {self._disc['type']} video disc" if self._ripper else "Waiting For Free Slot"
         return_dict = {
             "filename": self.__filename,
             "info": i,

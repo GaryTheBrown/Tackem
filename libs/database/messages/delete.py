@@ -22,6 +22,4 @@ class SQLDelete(SQLMessage):
             where = " AND ".join(where_list)
             super().__init__(f"UPDATE {table.name()} SET {set} WHERE {where}")
         else:
-            super().__init__(
-                f"DELETE FROM {table.name()} WHERE {' AND '.join(where_list)}"
-            )
+            super().__init__(f"DELETE FROM {table.name()} WHERE {' AND '.join(where_list)}")

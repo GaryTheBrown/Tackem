@@ -172,11 +172,7 @@ class Column:
             or (self.__types[self.__type] == 5 and isinstance(value, time))
             or (self.__types[self.__type] == 6 and isinstance(value, int))
             or (self.__types[self.__type] == 7 and isinstance(value, datetime))
-            or (
-                self.__types[self.__type] == 8
-                and isinstance(value, int)
-                and 9999 >= value >= 0
-            )
+            or (self.__types[self.__type] == 8 and isinstance(value, int) and 9999 >= value >= 0)
             or (self.__types[self.__type] == 9 and isinstance(value, str))
             or (self.__types[self.__type] == 10 and isinstance(value, str))
         ):

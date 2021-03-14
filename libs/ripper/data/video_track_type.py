@@ -41,9 +41,7 @@ class VideoTrackType(metaclass=ABCMeta):
         """title line for sections"""
         return '<h1 class="text-center">' + title + "</h1>"
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -106,9 +104,7 @@ class DONTRIPTrackType(VideoTrackType):
         """return the reason not to rip this track"""
         return self.__reason
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -150,9 +146,7 @@ class MovieTrackType(VideoTrackType):
     #     '''return the tv show special number'''
     #     return self._tvshow_special_number
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ):
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True):
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -194,9 +188,7 @@ class TVShowTrackType(VideoTrackType):
         """returns tv show episode number"""
         return self.__episode
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -240,9 +232,7 @@ class ExtraTrackType(VideoTrackType):
         """returns extra name"""
         return self.__name
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -287,9 +277,7 @@ class TrailerTrackType(VideoTrackType):
         """returns trailers movie info"""
         return self.__info
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -317,9 +305,7 @@ class TrailerTrackType(VideoTrackType):
 class OtherTrackType(VideoTrackType):
     """Other Types"""
 
-    def __init__(
-        self, other_type: str, streams: Optional[list] = None, hdr: bool = False
-    ):
+    def __init__(self, other_type: str, streams: Optional[list] = None, hdr: bool = False):
         super().__init__("other", streams, hdr)
         self.__other_type = other_type
 
@@ -328,9 +314,7 @@ class OtherTrackType(VideoTrackType):
         """returns other type"""
         return self.__other_type
 
-    def make_dict(
-        self, super_dict: Optional[dict] = None, include_streams: bool = True
-    ) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
@@ -377,13 +361,9 @@ def make_track_type(track: Union[str, dict]) -> Optional[VideoTrackType]:
             hdr=track.get("hdr", False),
         )
     elif track["video_type"] == "trailer":
-        return TrailerTrackType(
-            track.get("info", ""), streams=streams, hdr=track.get("hdr", False)
-        )
+        return TrailerTrackType(track.get("info", ""), streams=streams, hdr=track.get("hdr", False))
     elif track["video_type"] == "extra":
-        return ExtraTrackType(
-            track.get("name", ""), streams=streams, hdr=track.get("hdr", False)
-        )
+        return ExtraTrackType(track.get("name", ""), streams=streams, hdr=track.get("hdr", False))
     elif track["video_type"] == "other":
         return OtherTrackType(
             track.get("other_type", ""), streams=streams, hdr=track.get("hdr", False)

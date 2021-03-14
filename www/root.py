@@ -30,9 +30,7 @@ class Root(HTMLTEMPLATE):
         if username != "" and password != "":
             Authentication.login(username, password, timeout, return_url)
 
-        return self._template(
-            HTMLSystem.part("pages/login", RETURNURL=return_url), navbar=False
-        )
+        return self._template(HTMLSystem.part("pages/login", RETURNURL=return_url), navbar=False)
 
     @cherrypy.expose
     def password(self, **kwargs: Any) -> str:
@@ -41,16 +39,10 @@ class Root(HTMLTEMPLATE):
         password = kwargs.get("password", None)
         new_password = kwargs.get("new_password", None)
         new_password_check = kwargs.get("new_password_check", None)
-        if (
-            password is not None
-            and new_password is not None
-            and new_password_check is not None
-        ):
+        if password is not None and new_password is not None and new_password_check is not None:
             if new_password == new_password_check:
                 if Authentication.change_password(password, new_password):
-                    raise cherrypy.HTTPRedirect(
-                        cherrypy.url().replace("/password", "/")
-                    )
+                    raise cherrypy.HTTPRedirect(cherrypy.url().replace("/password", "/"))
         return self._template(HTMLSystem.part("pages/password"), navbar=False)
 
     @cherrypy.expose

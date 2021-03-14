@@ -40,17 +40,12 @@ class FFprobe:
             infile,
         ]
         process = Popen(prog_args, stdout=PIPE, stderr=DEVNULL)
-        self._hdr_info = json.loads(process.communicate()[0].decode("utf-8"))["frames"][
-            0
-        ]
+        self._hdr_info = json.loads(process.communicate()[0].decode("utf-8"))["frames"][0]
         process.wait()
 
     def is_hdr(self) -> bool:
         """returns if the video is HDR"""
-        return (
-            "color_primaries" in self._hdr_info
-            and self._hdr_info["color_primaries"] == "bt2020"
-        )
+        return "color_primaries" in self._hdr_info and self._hdr_info["color_primaries"] == "bt2020"
 
         # TODO more HDR stuff here
 

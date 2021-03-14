@@ -61,9 +61,8 @@ class Tackem:
     @classmethod
     def run(cls):
         """Looping function"""
-        signal.signal(
-            signal.SIGINT, ctrl_c
-        )  # Setup signal to watch for ctrl + c command
+        # Setup signal to watch for ctrl + c command
+        signal.signal(signal.SIGINT, ctrl_c)
         cls.start()
         while True:
             event, data = RootEvent.wait_and_get_event()

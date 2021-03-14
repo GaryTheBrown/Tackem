@@ -19,9 +19,7 @@ def database_config() -> ConfigList:
                 ConfigObjRadio(
                     "sqlite3",
                     "SQLite3",
-                    input_attributes=InputAttributes(
-                        data_click_hide="database_mysql_section"
-                    ),
+                    input_attributes=InputAttributes(data_click_hide="database_mysql_section"),
                 ),
                 ConfigObjRadio(
                     "mysql",
@@ -62,9 +60,7 @@ def database_config() -> ConfigList:
                 "Database Password",
                 "The password for access to the database",
             ),
-            ConfigObjString(
-                "database", "tackem", "Database Name", "The name of the database"
-            ),
+            ConfigObjString("database", "tackem", "Database Name", "The name of the database"),
             is_section=True,
         ),
     )

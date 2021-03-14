@@ -119,13 +119,9 @@ class FileChecker:
                     print(f"FILE HAS GONE BAD {full_path}")
                     update_data["bad_file"] = 1
 
-                msg = SQLUpdate(
-                    LIBRARY_FILES_DB, Where("id", item["id"]), checksum=checksum
-                )
+                msg = SQLUpdate(LIBRARY_FILES_DB, Where("id", item["id"]), checksum=checksum)
 
             else:
-                msg = SQLUpdate(
-                    LIBRARY_FILES_DB, Where("id", item["id"]), missing_file=1
-                )
+                msg = SQLUpdate(LIBRARY_FILES_DB, Where("id", item["id"]), missing_file=1)
 
             Database.call(msg)

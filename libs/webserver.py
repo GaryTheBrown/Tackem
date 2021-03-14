@@ -75,15 +75,11 @@ class Webserver:
         conf_ripper = {
             "/tempvideo": {
                 "tools.staticdir.on": True,
-                "tools.staticdir.dir": File.location(
-                    ripper_cfg["locations"]["videoripping"].value
-                ),
+                "tools.staticdir.dir": File.location(ripper_cfg["locations"]["videoripping"].value),
             },
             "/tempaudio": {
                 "tools.staticdir.on": True,
-                "tools.staticdir.dir": File.location(
-                    ripper_cfg["locations"]["audioripping"].value
-                ),
+                "tools.staticdir.dir": File.location(ripper_cfg["locations"]["audioripping"].value),
             },
         }
 

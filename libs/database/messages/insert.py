@@ -16,6 +16,4 @@ class SQLInsert(SQLMessage):
 
         fields = ", ".join(key_values)
 
-        super().__init__(
-            f"INSERT INTO {table.name()} ({fields}) VALUES ({', '.join(value_list)});"
-        )
+        super().__init__(f"INSERT INTO {table.name()} ({fields}) VALUES ({', '.join(value_list)});")

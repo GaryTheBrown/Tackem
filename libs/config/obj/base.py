@@ -117,9 +117,7 @@ class ConfigObjBase(ABC, ConfigBase):
         data_list: Optional[DataList] = None,
         value_link: Optional[list] = None,
     ):
-        super().__init__(
-            var_name, label, help_text, hide_on_html, not_in_config, rules, value_link
-        )
+        super().__init__(var_name, label, help_text, hide_on_html, not_in_config, rules, value_link)
         if input_attributes and not isinstance(input_attributes, InputAttributes):
             raise ValueError("input_attributes not correct type")
         if data_list and not isinstance(data_list, DataList):
@@ -178,9 +176,7 @@ class ConfigObjBase(ABC, ConfigBase):
         """returns the full html code including label and help text"""
         if self.hide_on_html:
             return ""
-        var = (
-            f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
-        )
+        var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
 
         return HTMLSystem.part(
             "section/item",

@@ -35,9 +35,7 @@ def libraries_config() -> ConfigList:
                     "Auto File Check ",
                     "How often to automatically check the files for corruption",
                 ),
-                ConfigObjBoolean(
-                    "log", True, "Log", "should I log all runs of the filechecker?"
-                ),
+                ConfigObjBoolean("log", True, "Log", "should I log all runs of the filechecker?"),
             ),
             ConfigList(
                 "extensions",

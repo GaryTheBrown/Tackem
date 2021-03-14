@@ -5,9 +5,7 @@ import glob
 
 _DIR = os.path.dirname(__file__)
 _VIDEO_PRESET_FILES = glob.glob(_DIR + "/video/*.json")
-_VIDEO_PRESET_FILES_DATA = [
-    json.loads(str(open(x).read())) for x in _VIDEO_PRESET_FILES
-]
+_VIDEO_PRESET_FILES_DATA = [json.loads(str(open(x).read())) for x in _VIDEO_PRESET_FILES]
 
 
 def video_presets_config_options(obj):

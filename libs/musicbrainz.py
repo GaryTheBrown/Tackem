@@ -32,9 +32,7 @@ class MusicBrainz:
         if not self.__logged_in:
             return {}
         includes = ["artists", "recordings", "artist-credits"]
-        return musicbrainzngs.get_releases_by_discid(disc_id, includes=includes).get(
-            "disc", {}
-        )
+        return musicbrainzngs.get_releases_by_discid(disc_id, includes=includes).get("disc", {})
 
 
 MUSICBRAINZ = MusicBrainz()

@@ -1,4 +1,5 @@
 """Drive controller"""
+from shutil import which
 from libs.ripper.subsystems import FileSubsystem
 from libs.ripper.makemkv import MakeMKV
 from libs.config.list import ConfigList
@@ -168,21 +169,21 @@ class Drive(FileSubsystem):
 
     def __open_tray(self):
         """Send Command to open the tray"""
-        Popen(["eject", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def __close_tray(self):
         """Send Command to close the tray"""
-        Popen(["eject", "-t", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), "-t", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def __lock_tray(self):
         """Send Command to lock the tray"""
         self.__tray_locked = True
-        Popen(["eject", "-i1", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), "-i1", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def __unlock_tray(self):
         """Send Command to unlock the tray"""
         self.__tray_locked = False
-        Popen(["eject", "-i0", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), "-i0", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def api_data(self) -> dict:
         """returns the data as json or dict for html"""
