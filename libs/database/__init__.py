@@ -33,3 +33,11 @@ class Database:
     def call(cls, message: SQLMessage) -> Any:
         '''function to pass the query/table through to the backend thread'''
         return cls.__sql_system.call(message)
+
+    @classmethod
+    def count(cls, message: SQLMessage) -> int:
+        '''quick count how many results'''
+        cls.__sql_system.call(message)
+        if isinstance(message.return_data, dict):
+            return 1
+        return len(message.return_data)

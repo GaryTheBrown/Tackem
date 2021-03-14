@@ -1,5 +1,4 @@
 '''shared info between ripper systems'''
-
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.update import SQLUpdate
 from libs.database import Database
@@ -7,9 +6,7 @@ from libs.database.where import Where
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database.messages.select import SQLSelect
 from libs.file import File
-import time
 from subprocess import DEVNULL, PIPE, Popen
-
 
 class FileSubsystem:
     '''Disc and ISO SUbsystem'''

@@ -1,4 +1,6 @@
 '''Ripper init'''
+from libs.database.where import Where
+from libs.database.messages.select import SQLSelect
 from libs.ripper.video_converter import VideoConverter
 from data import HOMEFOLDER
 from libs.ripper.iso import ISORipper
@@ -20,6 +22,9 @@ from data.config import CONFIG
 #TODO add the converter to the ripper system and get it working. then make it so you can edit the
 # data while this happens. if no data exists at the end put it into the labeler holder otherwise
 # auto send it to the library for processing where it goes.
+
+#TODO need a way of the system checking if it needs to do any secondery convertion (audio stuff
+# mainly)
 
 #TODO at this point it should maybe convert all tracks if no info available but allow you
 # to say what is what for it to then follow the config rules in what to copy and then delete
@@ -56,7 +61,6 @@ class Ripper:
     __video_converter_loaded: List[int] = []
 
     # __video_labeler = None
-    # __converter = None
     # __renamer = None
 
     @classproperty
@@ -158,9 +162,13 @@ class Ripper:
             value=CONFIG['ripper']['converter']['threadcount'].value
         )
 
-        #TODO load tasks from the DB
-
-
+        msg = SQLSelect(VIDEO_CONVERT_DB)
+        Database.call(msg)
+        if isinstance(msg.return_data, dict):
+            cls.video_converter_add(msg.return_data['id'])
+        else:
+            for item in msg.return_data:
+                cls.video_converter_add(item['id'])
 
     @classmethod
     def stop(cls):
@@ -218,10 +226,14 @@ class Ripper:
         if db_id in cls.__video_converter_loaded:
             return False
 
+        if Database.count(SQLSelect(VIDEO_CONVERT_DB, Where("id", db_id))) != 1:
+            return False
+
         cls.__video_converter_loaded.append(db_id)
         cls.__video_converter_threads.append(
             VideoConverter(cls.__video_converter_pool_sema, db_id)
         )
+        return True
 
     @classmethod
     def cleanup_dead_video_converter_threads(cls):

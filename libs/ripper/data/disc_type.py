@@ -15,62 +15,67 @@ class DiscType(metaclass=ABCMeta):
     '''Master Disc Type'''
 
     def __init__(self, disc_type, name, info, tracks, language, moviedbid):
-        if disc_type in TYPES:
-            self._disc_type = disc_type
-        self._name = name
-        self._info = info
-        self._tracks = tracks if isinstance(tracks, list) else []
-        self._language = language if len(
+        self.__disc_type = disc_type if disc_type in TYPES else ""
+        self.__name = name
+        self.__info = info
+        self.__tracks = tracks if isinstance(tracks, list) else []
+        self.__language = language if len(
             language) == 2 and isinstance(language, str) else "en"
-        self._moviedbid = moviedbid
+        self.__moviedbid = moviedbid
 
+    @property
     def disc_type(self) -> str:
         '''returns the type'''
-        return self._disc_type
+        return self.__disc_type
 
+    @property
     def name(self) -> str:
         '''returns the name'''
-        return self._name
+        return self.__name
 
+    @property
     def info(self) -> str:
         '''returns the temp info'''
-        return self._info
+        return self.__info
 
+    @property
     def tracks(self) -> list:
         '''returns the tracks'''
-        return self._tracks
+        return self.__tracks
 
+    @property
     def language(self) -> str:
         '''returns the discs main language'''
-        return self._language
+        return self.__language
 
+    @property
     def moviedbid(self) -> str:
         '''returns the moviedbid'''
-        return self._moviedbid
+        return self.__moviedbid
 
     def set_track(self, track_id, track):
         '''sets the tracks'''
-        if self._tracks is not None:
-            self._tracks[track_id] = track
+        if self.__tracks is not None:
+            self.__tracks[track_id] = track
 
     def set_tracks(self, tracks) -> Optional[list]:
         '''sets the tracks'''
-        if self._tracks is not None and isinstance(tracks, list):
-            self._tracks = tracks
+        if self.__tracks is not None and isinstance(tracks, list):
+            self.__tracks = tracks
 
     @abstractmethod
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["disc_type"] = self._disc_type
-        super_dict["name"] = self._name
-        super_dict["info"] = self._info
-        super_dict["language"] = self._language
-        super_dict['moviedbid'] = self._moviedbid
+        super_dict["disc_type"] = self.__disc_type
+        super_dict["name"] = self.__name
+        super_dict["info"] = self.__info
+        super_dict["language"] = self.__language
+        super_dict['moviedbid'] = self.__moviedbid
         if not no_tracks:
             track_list = []
-            for track in self._tracks:
+            for track in self.__tracks:
                 if track is None:
                     track_list.append(None)
                 else:
@@ -124,29 +129,31 @@ class MovieDiscType(DiscType):
         super().__init__("Movie", name, info, tracks, language, moviedbid)
         current_year = int(datetime.date.today().year)
         if year == 0:
-            self._year = ""
+            self.__year = ""
         elif int(year) >= 1888 and int(year) <= current_year:
-            self._year = int(year)
+            self.__year = int(year)
         elif year < 1888:
-            self._year = 1888
+            self.__year = 1888
         elif year > current_year:
-            self._year = current_year
-        self._imdbid = imdbid
+            self.__year = current_year
+        self.__imdbid = imdbid
 
+    @property
     def year(self) -> int:
         '''returns movie year'''
-        return self._year
+        return self.__year
 
+    @property
     def imdbid(self) -> str:
         '''returns movie imdbid'''
-        return self._imdbid
+        return self.__imdbid
 
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["year"] = self._year
-        super_dict["imdbid"] = self._imdbid
+        super_dict["year"] = self.__year
+        super_dict["imdbid"] = self.__imdbid
         return super().make_dict(super_dict, no_tracks)
 
     # def get_edit_panel(self, search=True):
@@ -199,17 +206,18 @@ class TVShowDiscType(DiscType):
         moviedbid=""
     ):
         super().__init__("TV Show", name, info, tracks, language, moviedbid)
-        self._tvdbid = tvdbid
+        self.__tvdbid = tvdbid
 
+    @property
     def tvdbid(self) -> str:
         '''returns TV Show name'''
-        return self._tvdbid
+        return self.__tvdbid
 
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["tvdbid"] = self._tvdbid
+        super_dict["tvdbid"] = self.__tvdbid
         return super().make_dict(super_dict, no_tracks)
 
     # def get_edit_panel(self, search=True):

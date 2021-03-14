@@ -9,34 +9,37 @@ class StreamType(metaclass=ABCMeta):
     _types = ["video", "audio", "subtitle"]
 
     def __init__(self, stream_type: str, stream_index: int, label: str):
-        if stream_type in self._types:
-            self._stream_type = stream_type
-        self._stream_index = stream_index
-        self._label = label
+        self.__stream_type = stream_type if stream_type in self._types else ""
+        self.__stream_index = stream_index
+        self.__label = label
 
+    @property
     def stream_type(self) -> str:
         '''returns the type'''
-        return self._stream_type
+        return self.__stream_type
 
+    @property
     def stream_index(self) -> int:
         '''returns the index'''
-        return self._stream_index
+        return self.__stream_index
 
+    @property
     def label(self) -> str:
         '''return label'''
-        return self._label
+        return self.__label
 
     def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["stream_type"] = self._stream_type
-        super_dict["label"] = self._label
+        super_dict["stream_type"] = self.__stream_type
+        super_dict["label"] = self.__label
         return super_dict
 
+    @property
     def _var_start(self) -> str:
         '''returns the variable name start'''
-        return "track_%%TRACKINDEX%%_stream_" + str(self._stream_index) + "_"
+        return "track_%%TRACKINDEX%%_stream_" + str(self.__stream_index) + "_"
 
     # @abstractmethod
     # def get_edit_panel(self, section_info: str = "") -> str:
@@ -75,10 +78,10 @@ class VideoStreamType(StreamType):
     #             "Colour Primaries": section_info.get("color_primaries", "")
     #         }
     #     html = ghtml_parts.hidden(
-    #         self._var_start() + "stream_type", "video", True)
-    #     html += ghtml_parts.item(self._var_start() + "label", "Label",
+    #         self._var_start + "stream_type", "video", True)
+    #     html += ghtml_parts.item(self._var_start + "label", "Label",
     #                              "Label of the Subtitles",
-    #                              ghtml_parts.input_box("text", self._var_start() + "label",
+    #                              ghtml_parts.input_box("text", self._var_start + "label",
     #                                                    self._label),
     #                              True)
     #     stream_panel_html = html_parts.video_stream_panel(ffprobeinfo, html)
@@ -101,47 +104,53 @@ class AudioStreamType(StreamType):
         duplicate: bool = False
     ):
         super().__init__("audio", stream_index, label)
-        self._dub = dub
-        self._original = original
-        self._comment = comment
-        self._visual_impaired = visual_impaired
-        self._karaoke = karaoke
-        self._duplicate = duplicate
+        self.__dub = dub
+        self.__original = original
+        self.__comment = comment
+        self.__visual_impaired = visual_impaired
+        self.__karaoke = karaoke
+        self.__duplicate = duplicate
 
+    @property
     def dub(self) -> bool:
         '''return dub'''
-        return self._dub
+        return self.__dub
 
+    @property
     def original(self) -> bool:
         '''return original'''
-        return self._original
+        return self.__original
 
+    @property
     def comment(self) -> bool:
         '''return comment'''
-        return self._comment
+        return self.__comment
 
+    @property
     def visual_impaired(self) -> bool:
         '''return visual_impaired'''
-        return self._visual_impaired
+        return self.__visual_impaired
 
+    @property
     def karaoke(self) -> bool:
         '''return karaoke'''
-        return self._karaoke
+        return self.__karaoke
 
+    @property
     def duplicate(self) -> bool:
         '''return if duplicate stream'''
-        return self._duplicate
+        return self.__duplicate
 
     def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["dub"] = self._dub
-        super_dict["original"] = self._original
-        super_dict["comment"] = self._comment
-        super_dict["visual_impaired"] = self._visual_impaired
-        super_dict["karaoke"] = self._karaoke
-        super_dict["duplicate"] = self._duplicate
+        super_dict["dub"] = self.__dub
+        super_dict["original"] = self.__original
+        super_dict["comment"] = self.__comment
+        super_dict["visual_impaired"] = self.__visual_impaired
+        super_dict["karaoke"] = self.__karaoke
+        super_dict["duplicate"] = self.__duplicate
         return super().make_dict(super_dict)
 
     # def get_edit_panel(self, section_info=""):
@@ -167,48 +176,48 @@ class AudioStreamType(StreamType):
     #                                                                             ""))
     #         }
     #     html = ghtml_parts.hidden(
-    #         self._var_start() + "stream_type", "audio", True)
-    #     html += html_parts.video_item(self._var_start() + "dub", "Dubbed Audio",
+    #         self._var_start + "stream_type", "audio", True)
+    #     html += html_parts.video_item(self._var_start + "dub", "Dubbed Audio",
     #                                   "Is this a Dubbed Audio Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "dub",
+    #                                                               self._var_start + "dub",
     #                                                               self._dub),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "original", "Original Audio",
+    #     html += html_parts.video_item(self._var_start + "original", "Original Audio",
     #                                   "Is this the Original Audio Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "original",
+    #                                                               self._var_start + "original",
     #                                                               self._original),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "comment", "Comment Audio",
+    #     html += html_parts.video_item(self._var_start + "comment", "Comment Audio",
     #                                   "Is this a Commentary Audio Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "comment",
+    #                                                               self._var_start + "comment",
     #                                                               self._comment),
     #                                   True)
-    #     tmp_label = self._var_start() + "visual_impaired"
-    #     html += html_parts.video_item(self._var_start() + "visual_impaired",
+    #     tmp_label = self._var_start + "visual_impaired"
+    #     html += html_parts.video_item(self._var_start + "visual_impaired",
     #                                   "Visual Impaired Audio",
     #                                   "Is this a Visual Impaired Audio Track",
     #                                   ghtml_parts.checkbox_single("",
     #                                                               tmp_label,
     #                                                               self._visual_impaired),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "karaoke", "Karaoke Audio Track",
+    #     html += html_parts.video_item(self._var_start + "karaoke", "Karaoke Audio Track",
     #                                   "Is this a Karaoke Audio Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "karaoke",
+    #                                                               self._var_start + "karaoke",
     #                                                               self._karaoke),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "duplicate", "Duplicate",
+    #     html += html_parts.video_item(self._var_start + "duplicate", "Duplicate",
     #                                   "Is this a Duplicate Audio Track?",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "duplicate",
+    #                                                               self._var_start + "duplicate",
     #                                                               self._duplicate),
     #                                   True)
-    #     html += ghtml_parts.item(self._var_start() + "label", "Label",
+    #     html += ghtml_parts.item(self._var_start + "label", "Label",
     #                              "Label of the Subtitles",
-    #                              ghtml_parts.input_box("text", self._var_start() + "label",
+    #                              ghtml_parts.input_box("text", self._var_start + "label",
     #                                                    self._label),
     #                              True)
     #     stream_panel_html = html_parts.video_stream_panel(ffprobeinfo, html)
@@ -230,41 +239,46 @@ class SubtitleStreamType(StreamType):
         comment: bool = False
     ):
         super().__init__("subtitle", stream_index, label)
-        self._forced = forced
-        self._hearing_impaired = hearing_impaired
-        self._comment = comment
-        self._lyrics = lyrics
-        self._duplicate = duplicate
+        self.__forced = forced
+        self.__hearing_impaired = hearing_impaired
+        self.__comment = comment
+        self.__lyrics = lyrics
+        self.__duplicate = duplicate
 
+    @property
     def forced(self) -> bool:
         '''return forced'''
-        return self._forced
+        return self.__forced
 
+    @property
     def hearing_impaired(self) -> bool:
         '''return hearing_impaired'''
-        return self._hearing_impaired
+        return self.__hearing_impaired
 
+    @property
     def comment(self) -> bool:
         '''return comment'''
-        return self._comment
+        return self.__comment
 
+    @property
     def lyrics(self) -> bool:
         '''return lyrics'''
-        return self._lyrics
+        return self.__lyrics
 
+    @property
     def duplicate(self) -> bool:
         '''return if duplicate'''
-        return self._duplicate
+        return self.__duplicate
 
     def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         '''returns the tracks'''
         if super_dict is None:
             super_dict = {}
-        super_dict["forced"] = self._forced
-        super_dict["hearing_impaired"] = self._hearing_impaired
-        super_dict["comment"] = self._comment
-        super_dict["lyrics"] = self._lyrics
-        super_dict["duplicate"] = self._duplicate
+        super_dict["forced"] = self.__forced
+        super_dict["hearing_impaired"] = self.__hearing_impaired
+        super_dict["comment"] = self.__comment
+        super_dict["lyrics"] = self.__lyrics
+        super_dict["duplicate"] = self.__duplicate
         return super().make_dict(super_dict)
 
     # def get_edit_panel(self, section_info=""):
@@ -284,42 +298,42 @@ class SubtitleStreamType(StreamType):
     #         }
 
     #     html = ghtml_parts.hidden(
-    #         self._var_start() + "stream_type", "subtitle", True)
-    #     html += html_parts.video_item(self._var_start() + "forced", "Forced Subtitle",
+    #         self._var_start + "stream_type", "subtitle", True)
+    #     html += html_parts.video_item(self._var_start + "forced", "Forced Subtitle",
     #                                   "Is this a Forced Subtitle Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "forced",
+    #                                                               self._var_start + "forced",
     #                                                               self._forced),
     #                                   True)
-    #     tmp_variable = self._var_start() + "hearing_impaired"
-    #     html += html_parts.video_item(self._var_start() + "hearing_impaired",
+    #     tmp_variable = self._var_start + "hearing_impaired"
+    #     html += html_parts.video_item(self._var_start + "hearing_impaired",
     #                                   "Hearing Impaired Subtitle",
     #                                   "Is this a Hearing Impaired Subtitle Track",
     #                                   ghtml_parts.checkbox_single("",
     #                                                               tmp_variable,
     #                                                               self._hearing_impaired),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "lyrics", "Lyrics Track",
+    #     html += html_parts.video_item(self._var_start + "lyrics", "Lyrics Track",
     #                                   "Is this a Lyric Subtitle Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "lyrics",
+    #                                                               self._var_start + "lyrics",
     #                                                               self._lyrics),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "comment", "Comment Track",
+    #     html += html_parts.video_item(self._var_start + "comment", "Comment Track",
     #                                   "Is this a Commentary Subtitle Track",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "comment",
+    #                                                               self._var_start + "comment",
     #                                                               self._comment),
     #                                   True)
-    #     html += html_parts.video_item(self._var_start() + "duplicate", "Duplicate",
+    #     html += html_parts.video_item(self._var_start + "duplicate", "Duplicate",
     #                                   "Is this a Duplicate Subtitle Track?",
     #                                   ghtml_parts.checkbox_single("",
-    #                                                               self._var_start() + "duplicate",
+    #                                                               self._var_start + "duplicate",
     #                                                               self._duplicate),
     #                                   True)
-    #     html += ghtml_parts.item(self._var_start() + "label", "Label",
+    #     html += ghtml_parts.item(self._var_start + "label", "Label",
     #                              "Label of the Subtitles",
-    #                              ghtml_parts.input_box("text", self._var_start() + "label",
+    #                              ghtml_parts.input_box("text", self._var_start + "label",
     #                                                    self._label),
     #                              True)
     #     stream_panel_html = html_parts.video_stream_panel(ffprobeinfo, html)

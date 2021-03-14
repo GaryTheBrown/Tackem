@@ -1,4 +1,8 @@
 '''Master Section for the Drive controller'''
+from libs.database.where import Where
+from data.database.ripper import VIDEO_INFO_DB
+from libs.database.messages.update import SQLUpdate
+from libs.database import Database
 from libs.ripper.subsystems import FileSubsystem
 from libs.file import File
 import os
@@ -62,17 +66,17 @@ class ISORipper(FileSubsystem):
                 self._add_video_disc_to_database(self.__filename)
                 self._ripper = MakeMKV()
             else:
-                pass
+                return
                 # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
                                               # self._set_drive_status, self._thread_run)
             if self.__thread_run is False:
                 return
 
-            while self.__thread_run:
-                time.sleep(1)
-
-            # self._ripper.call(self._db_id)
+            self._ripper.call(self._db_id)
             self._ripper = None
+            Database.call(
+                SQLUpdate(VIDEO_INFO_DB, Where("id", self._db_id), iso_file="")
+            )
 
     def __wait_for_file_copy_complete(self) -> bool:
         '''watches the file size until it stops'''
