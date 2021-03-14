@@ -1,5 +1,4 @@
 """MakeMKV ripping controller"""
-import sys
 from libs.ripper.disc_info_grabber import rip_data
 from libs.database.where import Where
 from libs.database.messages import SQLSelect
@@ -85,9 +84,9 @@ class MakeMKV(RipperSubSystem):
         cpl = thread.compile_pattern_list(
             [
                 pexpect.EOF,
-                'PRGC:\d+,\d+,"Saving to MKV file"',
-                "PRGV:\d+,\d+,\d+",
-                'PRGC:\d+,\d+,"Analyzing seamless segments"',
+                r'PRGC:\d+,\d+,"Saving to MKV file"',
+                r"PRGV:\d+,\d+,\d+",
+                r'PRGC:\d+,\d+,"Analyzing seamless segments"',
             ]
         )
         update_progress = False

@@ -1,8 +1,5 @@
 """Start Point Of Program"""
 # https://docs.cherrypy.org/en/latest/tutorials.html
-from data import PROGRAMCONFIGLOCATION
-import os
-import os.path
 import platform
 import signal
 

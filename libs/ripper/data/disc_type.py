@@ -3,7 +3,6 @@ from abc import ABCMeta, abstractmethod
 import datetime
 import json
 from typing import Optional, Union
-from data.languages import Languages
 from . import video_track_type as track_type
 
 TYPES = {"Movie": "film", "TV Show": "tv", "Documentary": "video", "Other": "question"}

@@ -1,7 +1,6 @@
 """Upload Video ISO API"""
 from libs.database.where import Where
 from data.database.system import UPLOAD_DB
-from data.database.ripper import VIDEO_INFO_DB
 from libs.database.messages import SQLInsert, SQLSelect
 from libs.database import Database
 import cherrypy

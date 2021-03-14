@@ -15,9 +15,7 @@ from libs.hardware import Hardware
 from libs.ripper.drive import Drive
 from libs.database.table import Table
 from typing import List
-from libs.database import Database
 from threading import BoundedSemaphore
-from data.config import CONFIG
 
 # TODO add the converter to the ripper system and get it working. then make it so you can edit the
 # data while this happens. if no data exists at the end put it into the labeler holder otherwise
@@ -122,7 +120,7 @@ class Ripper:
             file.write('app_DefaultOutputFileName = "{t:N2}"\n')
             file.write('app_ccextractor = "/usr/bin/ccextractor"\n')
             file.write(
-                f'app_key = "' + CONFIG["ripper"]["makemkv"]["key"].value + '"\n'
+                'app_key = "' + CONFIG["ripper"]["makemkv"]["key"].value + '"\n'
             )
             file.write('dvd_MinimumTitleLength = "0"')
 

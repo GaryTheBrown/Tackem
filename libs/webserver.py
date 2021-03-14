@@ -10,7 +10,6 @@ from www.admin import Admin
 from api import API
 from libs.error_pages import setup_error_pages
 from data.config import CONFIG
-from data.config import CONFIG
 from libs.html_template import HTMLTEMPLATE
 from libs.database import Database
 from libs.database.messages import SQLTable

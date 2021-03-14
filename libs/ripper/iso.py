@@ -9,8 +9,6 @@ import os
 from data.config import CONFIG
 from threading import BoundedSemaphore, Thread
 import time
-from data.config import CONFIG
-from libs.file import File
 from libs.ripper.makemkv import MakeMKV
 
 

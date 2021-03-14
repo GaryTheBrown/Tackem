@@ -47,10 +47,6 @@ class BackendBase(metaclass=ABCMeta):
         """return if thread is running"""
         return self.__thread.is_alive()
 
-    ##################
-    ##USER FUNCTIONS##
-    ##################
-
     def call(self, message: SQLMessage):
         """function to pass the query/table through to the backend thread"""
         if not isinstance(message, SQLMessage):
@@ -60,9 +56,6 @@ class BackendBase(metaclass=ABCMeta):
         self._event_lock.set()
         message.event_wait()
 
-    ##########
-    ##THREAD##
-    ##########
     def run(self):
         """Threadded Run"""
         self._startup()

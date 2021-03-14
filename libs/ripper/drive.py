@@ -6,7 +6,6 @@ import threading
 import time
 import fcntl
 import os
-import time
 from subprocess import DEVNULL, PIPE, Popen
 
 
@@ -56,9 +55,6 @@ class Drive(FileSubsystem):
             self.__thread_run = False
             self.__thread.join()
 
-    ##########
-    ##Script##
-    ##########
     def __run(self):
         """ Loops through the standard ripper function"""
         while self.__thread_run:
@@ -170,10 +166,6 @@ class Drive(FileSubsystem):
     #     self.disc_rip_info = disc_rip_info
     #     return True
 
-    ################
-    ##TRAYCONTROLS##
-    ################
-
     def __open_tray(self):
         """Send Command to open the tray"""
         Popen(["eject", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
@@ -192,9 +184,6 @@ class Drive(FileSubsystem):
         self.__tray_locked = False
         Popen(["eject", "-i0", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
 
-    ##############
-    ##HTML STUFF##
-    ##############
     def api_data(self) -> dict:
         """returns the data as json or dict for html"""
         return_dict = {

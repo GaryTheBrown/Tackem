@@ -63,7 +63,7 @@ class VideoConverterBase:
         cmd += '" -map 0:v:0 -c copy -f null -'
         frames = 0
         thread = pexpect.spawn(cmd, encoding="utf-8")
-        cpl = thread.compile_pattern_list([pexpect.EOF, "frame= *\d+"])
+        cpl = thread.compile_pattern_list([pexpect.EOF, r"frame= *\d+"])
         while True:
             i = thread.expect_list(cpl, timeout=None)
             if i == 0:  # EOF
@@ -76,7 +76,7 @@ class VideoConverterBase:
         """method to convert file"""
         self.__active = True
         thread = pexpect.spawn(" ".join(self._command), encoding="utf-8")
-        cpl = thread.compile_pattern_list([pexpect.EOF, "frame= *\d+"])
+        cpl = thread.compile_pattern_list([pexpect.EOF, r"frame= *\d+"])
         while True:
             i = thread.expect_list(cpl, timeout=None)
             if i == 0:  # EOF

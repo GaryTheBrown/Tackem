@@ -51,7 +51,7 @@ class ConfigListFile(ConfigListBase):
                 if item.is_section:
                     item.update_configobj(config)
                 else:
-                    if not item.var_name in config:
+                    if item.var_name not in config:
                         config[item.var_name] = {}
                     item.update_configobj(config[item.var_name])
             else:

@@ -1,7 +1,6 @@
 """Upload Audio ISO API"""
 from libs.database.where import Where
 from data.database.system import UPLOAD_DB
-from data.database.ripper import AUDIO_INFO_DB
 from libs.database import Database
 import cherrypy
 from api.base import APIBase

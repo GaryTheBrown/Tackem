@@ -1,7 +1,6 @@
 """HTML TEMPLATE"""
 from typing import List, Optional, Union
 from data import PROGRAMVERSION
-from data.config import CONFIG
 from libs.authenticator import Authentication
 from libs.html_system import HTMLSystem
 from libs.ripper import Ripper

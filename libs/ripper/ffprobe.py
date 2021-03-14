@@ -57,8 +57,12 @@ class FFprobe:
     def hdr_settings(self) -> str:
         """generates the x265 params for HDR"""
 
-    # -x265-params hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:
-    # master-display=G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(40000000,50):max-cll=0,0
+    # -x265-params
+    # hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:
+    # master-display=G(8500,39850)
+    #                B(6550,2300)
+    #                R(35400,14600)
+    #                WP(15635,16450)L(40000000,50):max-cll=0,0
 
     def has_chapters(self) -> bool:
         """returns true if file has chapters"""

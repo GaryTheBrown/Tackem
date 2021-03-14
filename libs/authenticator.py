@@ -113,7 +113,7 @@ class Authentication:
         """change the logged in users password"""
         if password == "" or new_password == "":
             return False
-        if not "sessionid" in cherrypy.request.cookie.keys():
+        if "sessionid" not in cherrypy.request.cookie.keys():
             return False
         session_id = cherrypy.request.cookie["sessionid"].value
         user_id = cls.__temp_sessions[session_id]["id"]

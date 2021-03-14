@@ -88,7 +88,7 @@ class VideoConverter(
         self._command.append("-map_chapters 0")
 
         # Deal with mapping all streams here
-        self._command.append(f"-map 0")
+        self._command.append("-map 0")
 
         # Deal with video resolution here
         self._sort_video_data(probe_info)

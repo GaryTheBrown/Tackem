@@ -8,7 +8,7 @@ from data.config import CONFIG
 class Scraper:
     """Scraper html System Here"""
 
-    __con: HTTPSConnection = None
+    __conn: HTTPSConnection = None
     __image_config: dict = {}
     __working = False
 
@@ -18,9 +18,6 @@ class Scraper:
         cls.__image_config = cls.__configuration()
         cls.__working = bool(cls.__image_config)
 
-    ###########
-    ##GETTERS##
-    ###########
     @classproperty
     def working(cls) -> bool:
         """returns if the system is working"""
@@ -31,9 +28,6 @@ class Scraper:
         """returns the base address for the image"""
         return cls.__image_config["secure_base_url"]
 
-    #############
-    ##SHORTCUTS##
-    #############
     @classmethod
     def __base(cls, adult: bool = True, language: bool = True) -> str:
         """creates the base command keys"""
@@ -51,9 +45,6 @@ class Scraper:
         """message returned when the scraper failed"""
         return f"Search Failed\nStatus: {status}\nReason: {reason}\n"
 
-    ############
-    ##COMMANDS##
-    ############
     @classmethod
     def __configuration(cls):
         """config section for startup getting info mainly image urls"""
@@ -80,9 +71,6 @@ class Scraper:
             return_data["response"] = json.loads(response.read().decode("utf-8"))
         return return_data
 
-    #################
-    ##MOVIE SECTION##
-    #################
     @classmethod
     def search_for_movie(cls, query: str, page: int = 1, year: int = None) -> dict:
         """searches for a movie getting all options"""
@@ -104,9 +92,6 @@ class Scraper:
         """returns the full movie details"""
         return cls.__get_request(f"/3/movie/{str(movie_id)}?{cls.__base(adult=False)}")
 
-    ##################
-    ##TVSHOW SECTION##
-    ##################
     @classmethod
     def search_for_tvshow(cls, query: str, page: int = 1) -> dict:
         """searches for a movie getting all options"""

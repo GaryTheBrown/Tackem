@@ -1,8 +1,7 @@
 """stream type information"""
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import json
 from typing import Optional
-from data.languages import Languages
 
 
 class StreamType(metaclass=ABCMeta):
@@ -293,7 +292,7 @@ class SubtitleStreamType(StreamType):
     #             "Language": language,
     #             "Default": bool(section_info.get("disposition", {}).get("default", "")),
     #             "Forced": bool(section_info.get("disposition", {}).get("forced", "")),
-    #             "Hearing Impaired": bool(section_info.get("disposition", {}).get("hearing_impaired",
+    #             "Hearing Impaired":bool(section_info.get("disposition",{}).get("hearing_impaired",
     #                                                                              "")),
     #             "Commentary": bool(section_info.get("disposition", {}).get("comment", "")),
     #             "Lyrics": bool(section_info.get("disposition", {}).get("lyrics", ""))

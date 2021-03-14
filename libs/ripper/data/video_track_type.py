@@ -1,5 +1,5 @@
 """video track type information"""
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import json
 from typing import Optional, Union
 from . import stream_type

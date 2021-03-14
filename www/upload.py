@@ -1,6 +1,5 @@
 """Script For the Root Of The System"""
 from libs.ripper import Ripper
-from libs.authenticator import Authentication
 from data.database.ripper import AUDIO_INFO_DB, VIDEO_INFO_DB
 from libs.database.messages.delete import SQLDelete
 import os

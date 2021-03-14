@@ -91,9 +91,6 @@ class RipperSubSystem:
         self._ripping_file_p = 0.0
         self._ripping_total_p = 0.0
 
-    ###########
-    ##GETTERS##
-    ###########
     def get_ripping_data(self) -> dict:
         """returns the data as dict for html"""
         ripping_track = "N/A" if self._ripping_track is False else self._ripping_track

@@ -1,5 +1,4 @@
 """WebUI Config"""
-import os
 from libs.config.list import ConfigList
 from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.obj.string import ConfigObjString
