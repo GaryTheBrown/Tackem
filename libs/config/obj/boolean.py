@@ -1,4 +1,4 @@
-'''Config Object Boolean'''
+"""Config Object Boolean"""
 from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
@@ -6,27 +6,24 @@ from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
-DEFAULT_STYLE = {
-    "data_onstyle": "primary",
-    "data_offstyle": "info"
-}
+DEFAULT_STYLE = {"data_onstyle": "primary", "data_offstyle": "info"}
 
 
 class ConfigObjBoolean(ConfigObjBase):
-    '''Config Item Boolean'''
+    """Config Item Boolean"""
 
     def __init__(
-            self,
-            var_name: str,
-            default_value: bool,
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None,
-            value_link: Optional[list] = None
+        self,
+        var_name: str,
+        default_value: bool,
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        input_attributes: Optional[InputAttributes] = None,
+        data_list: Optional[DataList] = None,
+        value_link: Optional[list] = None,
     ):
         if not isinstance(default_value, bool):
             raise ValueError("default value is not a boolean")
@@ -45,11 +42,11 @@ class ConfigObjBoolean(ConfigObjBase):
             rules,
             input_attributes,
             data_list,
-            value_link
+            value_link,
         )
 
     def _set_value(self, value) -> bool:
-        '''hidden abstract method for setting the value with checking of type in sub classes'''
+        """hidden abstract method for setting the value with checking of type in sub classes"""
         if isinstance(value, bool):
             return value
 
@@ -68,7 +65,7 @@ class ConfigObjBoolean(ConfigObjBase):
 
     @property
     def spec(self) -> str:
-        '''Returns the line for the config option'''
+        """Returns the line for the config option"""
         if self.not_in_config:
             return ""
 
@@ -83,7 +80,7 @@ class ConfigObjBoolean(ConfigObjBase):
         return string
 
     def item_html(self, variable_name: str) -> str:
-        '''Returns the html for the config option'''
+        """Returns the html for the config option"""
         if self.hide_on_html:
             return ""
         other = ""
@@ -95,11 +92,11 @@ class ConfigObjBoolean(ConfigObjBase):
             VALUE=self.value,
             CHECKED="checked" if self.value else "",
             ENABLED=str(self.value),
-            OTHER=other
+            OTHER=other,
         )
 
     def to_type(self, value: Any) -> bool:
-        '''returns the value in the correct format'''
+        """returns the value in the correct format"""
         try:
             return bool(value)
         except ValueError:

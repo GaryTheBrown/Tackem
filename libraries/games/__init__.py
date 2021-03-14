@@ -1,1 +1,1 @@
-'''Library Games Controller'''
+"""Library Games Controller"""

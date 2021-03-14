@@ -1,4 +1,4 @@
-'''Config Object String'''
+"""Config Object String"""
 from typing import Any, Optional
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.input_attributes import InputAttributes
@@ -9,24 +9,24 @@ from libs.html_system import HTMLSystem
 
 
 class ConfigObjIpAddr(ConfigObjString):
-    '''Config Item Ip Address'''
+    """Config Item Ip Address"""
 
     __config_type = "ip_addr"
     __html_type = "text"
 
     def __init__(
-            self,
-            var_name: str,
-            default_value: str,
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None,
-            button: Optional[Button] = None,
-            value_link: Optional[list] = None
+        self,
+        var_name: str,
+        default_value: str,
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        input_attributes: Optional[InputAttributes] = None,
+        data_list: Optional[DataList] = None,
+        button: Optional[Button] = None,
+        value_link: Optional[list] = None,
     ):
         if not isinstance(default_value, str):
             raise ValueError("Default Value is not an Ip Address")
@@ -49,12 +49,12 @@ class ConfigObjIpAddr(ConfigObjString):
             rules,
             input_attributes,
             data_list,
-            value_link
+            value_link,
         )
         self.__button = button
 
     def _set_value(self, value: Any):
-        '''hidden abstract method for setting the value with checking of type in sub classes'''
+        """hidden abstract method for setting the value with checking of type in sub classes"""
         if not isinstance(value, str):
             return self.default_value
 

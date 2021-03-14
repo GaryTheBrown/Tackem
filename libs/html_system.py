@@ -1,20 +1,20 @@
-'''HTML Systems'''
+"""HTML Systems"""
 from typing import Any
 import os
 import re
 
 
 class HTMLSystem:
-    '''HTML Systems'''
+    """HTML Systems"""
 
     @classmethod
     def open(cls, file: str, extension: str = "html") -> str:
-        '''opens the file and returns it'''
+        """opens the file and returns it"""
         return str(open(f"{os.getcwd()}/www/html/{file}.{extension}", "r").read())
 
     @classmethod
     def part(cls, file: str, **kwargs: Any) -> str:
-        '''All in one html template sorter'''
+        """All in one html template sorter"""
         html = cls.open(file)
 
         for key, arg in kwargs.items():
@@ -28,16 +28,10 @@ class HTMLSystem:
 
     @classmethod
     def script_link(cls, location: str) -> str:
-        '''returns a script link item'''
-        return cls.part(
-            "tags/scriptlink",
-            LOCATION=location
-        )
+        """returns a script link item"""
+        return cls.part("tags/scriptlink", LOCATION=location)
 
     @classmethod
     def stylesheet_link(cls, location: str) -> str:
-        '''returns a script link item'''
-        return cls.part(
-            "tags/stylesheetlink",
-            LOCATION=location
-        )
+        """returns a script link item"""
+        return cls.part("tags/stylesheetlink", LOCATION=location)

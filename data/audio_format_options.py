@@ -1,8 +1,8 @@
-''' audio format options'''
+""" audio format options"""
 
 
 def audio_format_options(obj):
-    '''returns the list of audio formats'''
+    """returns the list of audio formats"""
     return [
         obj("pcm", "PCM"),
         obj("mp2", "MP2"),
@@ -18,5 +18,5 @@ def audio_format_options(obj):
         obj("dtshdhr", "DTS-HD High Resolution"),
         obj("dtsx", "DTS:X"),
         obj("da", "Dolby Atmos"),
-        obj("a3d", "Auro 3D")
+        obj("a3d", "Auro 3D"),
     ]

@@ -1,4 +1,4 @@
-'''Ripper Linux init'''
+"""Ripper Linux init"""
 import platform
 
 from data import PROGRAMCONFIGLOCATION, PLUGINFOLDERLOCATION
@@ -34,19 +34,20 @@ from .renamer import Renamer
 
 
 class Ripper:
-    '''Main Class to create an instance of the plugin'''
+    """Main Class to create an instance of the plugin"""
 
     def __init__(self):
         pass
 
     def startup(self):
-        '''Ripper Startup Script'''
-        if platform.system() == 'Linux':
+        """Ripper Startup Script"""
+        if platform.system() == "Linux":
             for dri in Hardware.disc_drives():
-                if dri in ROOT_Config['ripper']['drives']:
-                    if ROOT_Config['ripper']['drives'][dri]["enabled"].value:
-                        self._drives.append(DriveLinux(
-                            dri, Hardware.disc_drives()[dri]))
+                if dri in ROOT_Config["ripper"]["drives"]:
+                    if ROOT_Config["ripper"]["drives"][dri]["enabled"].value:
+                        self._drives.append(
+                            DriveLinux(dri, Hardware.disc_drives()[dri])
+                        )
 
         # Check if Devices Exist and if not it will stop the plugin from loading
         if not self._drives:
@@ -56,7 +57,7 @@ class Ripper:
         for drive in self._drives:
             drive.start_thread()
 
-        if ROOT_Config['ripper']['converter']['enabled'].value:
+        if ROOT_Config["ripper"]["converter"]["enabled"].value:
             self._converter.start_thread()
 
         print("START RENAMER THREAD")
@@ -66,7 +67,7 @@ class Ripper:
         return True, ""
 
     def shutdown(self):
-        '''stop the plugin'''
+        """stop the plugin"""
         for drive in self._drives:
             drive._unlock_tray()
             drive.stop_thread()
@@ -79,13 +80,13 @@ class Ripper:
         self._running = False
 
     def get_drives(self):
-        '''gets the drives'''
+        """gets the drives"""
         return self._drives
 
     def get_video_labeler(self):
-        '''returns the video_labeler system'''
+        """returns the video_labeler system"""
         return self._video_labeler
 
     def get_converter(self):
-        '''returns the converter system'''
+        """returns the converter system"""
         return self._converter

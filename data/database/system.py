@@ -1,4 +1,4 @@
-'''Library Files Table'''
+"""Library Files Table"""
 from libs.database.column import Column
 from libs.database.table import Table
 
@@ -16,5 +16,5 @@ UPLOAD_DB = Table(
     Column("filename", "text", not_null=True),
     Column("filesize", "bigint", not_null=True),
     Column("system", "text", not_null=True),
-    soft_delete=True
+    soft_delete=True,
 )

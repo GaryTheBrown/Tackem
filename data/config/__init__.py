@@ -1,4 +1,4 @@
-'''The CONFIG Options for the system'''
+"""The CONFIG Options for the system"""
 from libs.config.list import ConfigList
 from .api import api_config
 from .database import database_config

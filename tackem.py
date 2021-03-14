@@ -1,4 +1,4 @@
-'''Start Point Of Program'''
+"""Start Point Of Program"""
 # https://docs.cherrypy.org/en/latest/tutorials.html
 from data import PROGRAMCONFIGLOCATION
 import os
@@ -13,6 +13,7 @@ from libs.authenticator import Authentication
 from libs.database import Database
 from libs.webserver import Webserver
 from libs.ripper import Ripper
+
 # TODO intergrate Libraries into main program
 # is it going to be a single or multi instance?
 
@@ -26,11 +27,11 @@ from libs.ripper import Ripper
 
 
 class Tackem:
-    '''main program entrance'''
+    """main program entrance"""
 
     @classmethod
     def start(cls):
-        '''Start of the program'''
+        """Start of the program"""
         print("LOADING Config...")
         CONFIG.load()
         print("STARTING DATABASE...")
@@ -47,7 +48,7 @@ class Tackem:
 
     @classmethod
     def stop(cls):
-        '''Stop commands'''
+        """Stop commands"""
         print("STOPPING WEB SERVICES...")
         Webserver.stop()
         if Ripper.running:
@@ -59,7 +60,7 @@ class Tackem:
 
     @classmethod
     def shutdown(cls):
-        '''Shutdown commands'''
+        """Shutdown commands"""
         cls.stop()
         print("SAVING Config FILE...")
         CONFIG.save()
@@ -67,9 +68,10 @@ class Tackem:
 
     @classmethod
     def run(cls):
-        '''Looping function'''
+        """Looping function"""
         signal.signal(
-            signal.SIGINT, ctrl_c)  # Setup signal to watch for ctrl + c command
+            signal.SIGINT, ctrl_c
+        )  # Setup signal to watch for ctrl + c command
         cls.start()
         while True:
             event, data = RootEvent.wait_and_get_event()
@@ -90,16 +92,17 @@ class Tackem:
 
 # Catching the ctrl + c event and doing a clean shutdown
 def ctrl_c(_, __):
-    '''Function to call once ctrl + c is pressed'''
+    """Function to call once ctrl + c is pressed"""
     print(" caught Shutting Down Cleanly...")
     RootEvent.set_event("shutdown")
 
 
 if __name__ == "__main__":
-    if platform.system() != 'Linux':
-        print("""
+    if platform.system() != "Linux":
+        print(
+            """
 This Program is only developed to run on LINUX Parts may not work as expected please report any
  issues you find for other platforms on guthub"""
-              )
+        )
     Tackem().run()
     signal.signal(signal.SIGINT, False)

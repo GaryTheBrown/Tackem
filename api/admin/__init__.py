@@ -1,4 +1,4 @@
-'''ADMIN ROOT API'''
+"""ADMIN ROOT API"""
 import cherrypy
 from api.base import APIBase
 from api.admin.config import APIAdminConfig
@@ -10,21 +10,21 @@ from libs.events import RootEvent
 
 @cherrypy.expose
 class APIAdmin(APIBase):
-    '''ROOT API'''
+    """ROOT API"""
 
     def _cp_dispatch(self, vpath):
-        '''cp dispatcher overwrite'''
+        """cp dispatcher overwrite"""
         if len(vpath) == 0:
             return self
 
-        if cherrypy.request.params['user'] != self.MASTER:
+        if cherrypy.request.params["user"] != self.MASTER:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
         section = vpath.pop(0)
         if section == "reboot":
-            cherrypy.request.params['action'] = "reboot"
+            cherrypy.request.params["action"] = "reboot"
         elif section == "shutdown":
-            cherrypy.request.params['action'] = "shutdown"
+            cherrypy.request.params["action"] = "shutdown"
         elif section == "config":
             return APIAdminConfig()
         elif section == "userAdd":
@@ -36,7 +36,7 @@ class APIAdmin(APIBase):
         return self
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
-        '''GET Function'''
+        """GET Function"""
         user = kwargs.get("user", self.GUEST)
         action = kwargs.get("action", None)
 

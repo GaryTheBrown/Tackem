@@ -1,4 +1,4 @@
-'''SQL MESSAGE SYSTEM DATA'''
+"""SQL MESSAGE SYSTEM DATA"""
 from libs.database.table import Table
 import time
 from typing import Any
@@ -8,7 +8,7 @@ from libs.exceptions import SQLMessageError
 
 
 class SQLUpdate(SQLMessage):
-    '''Update Rows Message'''
+    """Update Rows Message"""
 
     def __init__(self, table: Table, *wheres: Where, **key_values: Any):
         if not isinstance(table, Table):

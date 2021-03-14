@@ -1,4 +1,4 @@
-'''Get Tv Show API'''
+"""Get Tv Show API"""
 import cherrypy
 from api.base import APIBase
 from data.config import CONFIG
@@ -6,10 +6,10 @@ from data.config import CONFIG
 
 @cherrypy.expose
 class APIScraperGetTvshow(APIBase):
-    '''Get Tv Show API'''
+    """Get Tv Show API"""
 
     def POST(self, **kwargs) -> str:
-        '''POST Function'''
+        """POST Function"""
         user = kwargs.get("user", self.GUEST)
         if user == self.GUEST:
             raise cherrypy.HTTPError(status=403)
@@ -28,9 +28,8 @@ class APIScraperGetTvshow(APIBase):
                 "Adding Instance of {} - {}".format(plugin_type, plugin_name),
                 False,
                 instance=instance,
-                error="Missing Data Passed. Requires {}".format(
-                    ", ".join(required)),
-                errorNumber=0
+                error="Missing Data Passed. Requires {}".format(", ".join(required)),
+                errorNumber=0,
             )
 
         var = instance.lower().replace(" ", "")
@@ -42,7 +41,7 @@ class APIScraperGetTvshow(APIBase):
                 False,
                 instance=instance,
                 error="Instance already exists",
-                errorNumber=1
+                errorNumber=1,
             )
 
         if not CONFIG["plugins"][plugin_type][plugin_name].clone_many_section(instance):
@@ -53,11 +52,10 @@ class APIScraperGetTvshow(APIBase):
                 False,
                 instance=instance,
                 error="Cloning Data Failed",
-                errorNumber=2
+                errorNumber=2,
             )
 
-        variable_name = "plugins_{}_{}".format(
-            plugin_type, plugin_name)
+        variable_name = "plugins_{}_{}".format(plugin_type, plugin_name)
         return self._return_data(
             user,
             "config",
@@ -65,9 +63,8 @@ class APIScraperGetTvshow(APIBase):
             True,
             instance=instance,
             html=CONFIG["plugins"][plugin_type][plugin_name][instance].panel(
-                variable_name,
-                instance.title()
-            )
+                variable_name, instance.title()
+            ),
         )
 
     # def gettvshow(self, tvshow_id) -> str:

@@ -1,4 +1,4 @@
-'''Base for the backend'''
+"""Base for the backend"""
 from abc import ABCMeta, abstractmethod
 import threading
 from typing import List
@@ -8,7 +8,8 @@ from libs.exceptions import TableCheckFailure
 
 
 class BackendBase(metaclass=ABCMeta):
-    '''Base for the backend'''
+    """Base for the backend"""
+
     _running = threading.Event()
     _event_lock = threading.Event()
     _event_list: List[SQLMessage] = []
@@ -21,21 +22,21 @@ class BackendBase(metaclass=ABCMeta):
     __debug_output = False
 
     def __init__(self):
-        '''INIT'''
+        """INIT"""
         self.__thread = threading.Thread(target=self.run, args=())
         self.__thread.setName("DATABASE")
         self.__thread.start()
         self._running.wait()
 
     def start_thread(self) -> bool:
-        '''start the thread'''
+        """start the thread"""
         if not self.__thread.is_alive():
             self.__thread.start()
             return True
         return False
 
     def stop_thread(self):
-        '''stop the thread'''
+        """stop the thread"""
         if self.__thread.is_alive():
             self.__thread_run = False
             self._event_lock.set()
@@ -43,16 +44,15 @@ class BackendBase(metaclass=ABCMeta):
 
     @property
     def thread_run(self) -> bool:
-        '''return if thread is running'''
+        """return if thread is running"""
         return self.__thread.is_alive()
 
-
-##################
-##USER FUNCTIONS##
-##################
+    ##################
+    ##USER FUNCTIONS##
+    ##################
 
     def call(self, message: SQLMessage):
-        '''function to pass the query/table through to the backend thread'''
+        """function to pass the query/table through to the backend thread"""
         if not isinstance(message, SQLMessage):
             return None
         with self._event_list_lock:
@@ -60,11 +60,11 @@ class BackendBase(metaclass=ABCMeta):
         self._event_lock.set()
         message.event_wait()
 
-##########
-##THREAD##
-##########
+    ##########
+    ##THREAD##
+    ##########
     def run(self):
-        '''Threadded Run'''
+        """Threadded Run"""
         self._startup()
         self._running.set()
         while self.__thread_run:
@@ -72,7 +72,7 @@ class BackendBase(metaclass=ABCMeta):
         self._shutdown()
 
     def __run_loop(self):
-        '''run commands'''
+        """run commands"""
         self._event_lock.wait()
         while self._event_list:
             with self._event_list_lock:
@@ -93,7 +93,7 @@ class BackendBase(metaclass=ABCMeta):
             self.__do_job(job)
 
     def __do_job(self, job: SQLMessage):
-        '''do the magic work for each job'''
+        """do the magic work for each job"""
         if self.__debug_output:
             print(job.query)
         cursor = self._get_cursor()
@@ -107,16 +107,16 @@ class BackendBase(metaclass=ABCMeta):
 
     @abstractmethod
     def _startup(self):
-        '''Setup the System Here'''
+        """Setup the System Here"""
 
     @abstractmethod
     def _shutdown(self):
-        '''Shutdown the System Here'''
+        """Shutdown the System Here"""
 
     @abstractmethod
     def _get_cursor(self):
-        '''returns a sql cursor'''
+        """returns a sql cursor"""
 
     @abstractmethod
     def _table_check(self, table: Table) -> bool:
-        '''Check, Create or Update Table in DB.'''
+        """Check, Create or Update Table in DB."""

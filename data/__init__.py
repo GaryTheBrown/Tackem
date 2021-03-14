@@ -1,4 +1,4 @@
-'''GLOBAL VARIABLES'''
+"""GLOBAL VARIABLES"""
 import os.path as path
 
 HOMEFOLDER = path.expanduser("~")

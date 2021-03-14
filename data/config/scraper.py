@@ -1,4 +1,4 @@
-'''Scraper Config'''
+"""Scraper Config"""
 from data.locale_options import OPTIONS as locale_options
 from libs.config.list import ConfigList
 from libs.config.obj.boolean import ConfigObjBoolean
@@ -7,7 +7,7 @@ from libs.config.obj.options.select import ConfigObjOptionsSelect
 
 
 def scraper_config() -> ConfigList:
-    '''Scraper Config'''
+    """Scraper Config"""
     return ConfigList(
         "scraper",
         "Video Scraper (The Movie DB)",
@@ -21,20 +21,14 @@ def scraper_config() -> ConfigList:
             "url",
             "api.themoviedb.org",
             "Base Url",
-            "The API base url for TMDB API access Leave alone unless you need to move this"
+            "The API base url for TMDB API access Leave alone unless you need to move this",
         ),
-        ConfigObjBoolean(
-            "includeadult",
-            False,
-            "",
-            "",
-            hide_on_html=True
-        ),
+        ConfigObjBoolean("includeadult", False, "", "", hide_on_html=True),
         ConfigObjOptionsSelect(
             "language",
             locale_options,
             "en-gb",
             "Language",
-            "language to use when scraping the data"
-        )
+            "language to use when scraping the data",
+        ),
     )

@@ -1,4 +1,4 @@
-'''Config Object Options Select'''
+"""Config Object Options Select"""
 from typing import Optional, List, Union
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
@@ -8,20 +8,20 @@ from libs.html_system import HTMLSystem
 
 
 class ConfigObjOptionsSelect(ConfigObjOptionsBase):
-    '''Config Item Options Select'''
+    """Config Item Options Select"""
 
     def __init__(
-            self,
-            var_name: str,
-            values: List[ConfigObjOption],
-            default_value: Union[str, int, float],
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            input_attributes: Optional[InputAttributes] = None,
-            value_link: Optional[list] = None
+        self,
+        var_name: str,
+        values: List[ConfigObjOption],
+        default_value: Union[str, int, float],
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        input_attributes: Optional[InputAttributes] = None,
+        value_link: Optional[list] = None,
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
@@ -30,8 +30,7 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
         if isinstance(default_value, list):
             for val in default_value:
                 if not isinstance(val, (str, int, float)):
-                    raise ValueError(
-                        "default value item is not a string, int or float")
+                    raise ValueError("default value item is not a string, int or float")
         for value in values:
             if not isinstance(value, ConfigObjOption):
                 raise ValueError("value is not a ConfigObjOption")
@@ -46,11 +45,11 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             not_in_config,
             rules,
             input_attributes,
-            value_link
+            value_link,
         )
 
     def item_html(self, variable_name: str) -> str:
-        '''Returns the html for the config option'''
+        """Returns the html for the config option"""
         if self.hide_on_html:
             return ""
         other = ""
@@ -60,5 +59,5 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             "inputs/select",
             OPTIONS=super().item_html(variable_name),
             VARIABLENAME=variable_name,
-            OTHER=other
+            OTHER=other,
         )

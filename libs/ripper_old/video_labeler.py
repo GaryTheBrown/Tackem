@@ -1,4 +1,4 @@
-'''Master Section for the VideoLabeler controller'''
+"""Master Section for the VideoLabeler controller"""
 import json
 from libs.database import Database
 from libs.database.messages import SQLSelect, SQLTableCountWhere, SQLUpdate
@@ -10,56 +10,53 @@ from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import DiscType
 
 
-class VideoLabeler():
-    '''Master Section for the Drive controller'''
+class VideoLabeler:
+    """Master Section for the Drive controller"""
 
-##############
-##HTML STUFF##
-##############
+    ##############
+    ##HTML STUFF##
+    ##############
 
     @classmethod
     def get_count(cls):
-        '''returns the data as dict for html'''
+        """returns the data as dict for html"""
         msg = SQLTableCountWhere(
             INFO_DB,
             Where("ripped", True),
             Where("ready_to_convert", False),
-            Where("ready_to_rename", False)
+            Where("ready_to_rename", False),
         )
         Database.call(msg)
-        return msg.return_data['count(*)']
+        return msg.return_data["count(*)"]
 
     @classmethod
     def get_ids(cls):
-        '''returns the data as dict for html'''
+        """returns the data as dict for html"""
         msg = SQLSelect(
             INFO_DB,
             Where("ripped", True),
             Where("ready_to_convert", False),
-            Where("ready_to_rename", False)
+            Where("ready_to_rename", False),
         )
         Database.call(msg)
-        return [item['id'] for item in msg.return_data]
+        return [item["id"] for item in msg.return_data]
 
     @classmethod
     def get_data(cls):
-        '''returns the data as dict for html'''
+        """returns the data as dict for html"""
         msg = SQLSelect(
             INFO_DB,
             Where("ripped", True),
             Where("ready_to_convert", False),
-            Where("ready_to_rename", False)
+            Where("ready_to_rename", False),
         )
         Database.call(msg)
         return msg.return_data
 
     @classmethod
     def get_data_by_id(cls, db_id):
-        '''returns the data by id as dict for html'''
-        msg = SQLSelect(
-            INFO_DB,
-            Where("id", db_id)
-        )
+        """returns the data by id as dict for html"""
+        msg = SQLSelect(INFO_DB, Where("id", db_id))
         Database.call(msg)
         if not msg.return_data:
             return False
@@ -73,7 +70,7 @@ class VideoLabeler():
 
     @classmethod
     def set_data(cls, db_id, data, finished=False):
-        '''Sets Data Back in the Database'''
+        """Sets Data Back in the Database"""
         if issubclass(type(data), DiscType):
             rip_data = json.dumps(data.make_dict())
         elif isinstance(data, dict):
@@ -82,56 +79,40 @@ class VideoLabeler():
             return
         dict_for_db = {"rip_data": rip_data}
         if finished:
-            if CONFIG['ripper']['converter']['enabled'].value:
+            if CONFIG["ripper"]["converter"]["enabled"].value:
                 create_video_converter_row(
-                    db_id,
-                    data,
-                    CONFIG['ripper']['videoripping']['torip'].value
+                    db_id, data, CONFIG["ripper"]["videoripping"]["torip"].value
                 )
                 dict_for_db["ready_to_convert"] = True
             else:
                 dict_for_db["ready_to_rename"] = True
-        Database.call(
-            SQLUpdate(
-                INFO_DB,
-                Where("id", db_id),
-                **dict_for_db
-            )
-        )
+        Database.call(SQLUpdate(INFO_DB, Where("id", db_id), **dict_for_db))
         if finished:
-            if CONFIG['ripper']['converter']['enabled'].value:
+            if CONFIG["ripper"]["converter"]["enabled"].value:
                 RipperEvents().converter.set()
             else:
                 RipperEvents().renamer.set()
 
     @classmethod
     def clear_rip_data(cls, db_id):
-        '''Clears the rip data from the database'''
-        Database.call(
-            SQLUpdate(
-                INFO_DB,
-                Where("id", db_id),
-                rip_data=None
-            )
-        )
+        """Clears the rip data from the database"""
+        Database.call(SQLUpdate(INFO_DB, Where("id", db_id), rip_data=None))
 
     @classmethod
     def clear_rip_track_data(cls, db_id, track_id):
-        '''Clears the rip data from the database'''
+        """Clears the rip data from the database"""
         msg1 = SQLSelect(
             INFO_DB,
             Where("id", db_id),
         )
         Database.call(msg1)
-        rip_data = json.loads(msg1.return_data['rip_data'])
-        if isinstance(rip_data, dict) and "tracks" in rip_data \
-                and isinstance(rip_data["tracks"], list) and len(rip_data["tracks"]) >= track_id:
+        rip_data = json.loads(msg1.return_data["rip_data"])
+        if (
+            isinstance(rip_data, dict)
+            and "tracks" in rip_data
+            and isinstance(rip_data["tracks"], list)
+            and len(rip_data["tracks"]) >= track_id
+        ):
             rip_data["tracks"][track_id] = None
             to_save = json.dumps(rip_data)
-            Database.call(
-                SQLUpdate(
-                    INFO_DB,
-                    Where("id", db_id),
-                    rip_data=to_save
-                )
-            )
+            Database.call(SQLUpdate(INFO_DB, Where("id", db_id), rip_data=to_save))

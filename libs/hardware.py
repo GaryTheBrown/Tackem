@@ -1,29 +1,29 @@
-'''Class to get all Hardware info needed'''
+"""Class to get all Hardware info needed"""
 import platform
 import re
 from subprocess import DEVNULL, PIPE, Popen
 
 
 class Hardware:
-    '''Class to get all Hardware info needed'''
+    """Class to get all Hardware info needed"""
 
     DRIVES = {}
 
     @classmethod
     def disc_drives(cls) -> dict:
-        '''issues the hwinfo command and passes the info back in a dict'''
+        """issues the hwinfo command and passes the info back in a dict"""
         if cls.DRIVES:
             return cls.DRIVES
-        if platform.system() == 'Linux':
+        if platform.system() == "Linux":
             cls.DRIVES = cls.__disc_drive_linux()
             return {}
 
     @classmethod
     def __disc_drive_linux(cls) -> dict:
-        '''issues the hwinfo command and passes the info back in a dict'''
+        """issues the hwinfo command and passes the info back in a dict"""
         process = Popen(["hwinfo", "--cdrom"], stdout=PIPE, stderr=DEVNULL)
         returned_message = process.communicate()[0]
-        devices = returned_message.decode('utf-8').rstrip().split("\n\n")
+        devices = returned_message.decode("utf-8").rstrip().split("\n\n")
         device_list = []
         for device in devices:
             device_single_list = {}
@@ -39,10 +39,9 @@ class Hardware:
         drives = {}
         for hwinfo_item in device_list:
             temp = {}
-            temp['uuid'] = hwinfo_item['unique_id']
-            temp['label'] = hwinfo_item["device_file"].split(" ")[0]
-            temp['link'] = hwinfo_item["device_file"].split(" ")[0]
-            temp['model'] = ",".join(re.findall(
-                r'"(.*?)"', hwinfo_item["model"]))
-            drives[temp['uuid']] = temp
+            temp["uuid"] = hwinfo_item["unique_id"]
+            temp["label"] = hwinfo_item["device_file"].split(" ")[0]
+            temp["link"] = hwinfo_item["device_file"].split(" ")[0]
+            temp["model"] = ",".join(re.findall(r'"(.*?)"', hwinfo_item["model"]))
+            drives[temp["uuid"]] = temp
         return drives

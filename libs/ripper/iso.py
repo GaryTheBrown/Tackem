@@ -1,4 +1,4 @@
-'''Master Section for the Drive controller'''
+"""Master Section for the Drive controller"""
 from libs.database.where import Where
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database.messages.update import SQLUpdate
@@ -15,7 +15,7 @@ from libs.ripper.makemkv import MakeMKV
 
 
 class ISORipper(FileSubsystem):
-    '''Master Section for the Drive controller'''
+    """Master Section for the Drive controller"""
 
     def __init__(self, pool_sema: BoundedSemaphore, filename: str, video: bool = True):
         super().__init__()
@@ -33,22 +33,22 @@ class ISORipper(FileSubsystem):
 
     @property
     def thread_run(self) -> bool:
-        '''return if thread is running'''
+        """return if thread is running"""
         return self._thread.is_alive()
 
     @property
     def active(self) -> bool:
-        '''return if thread is Active'''
+        """return if thread is Active"""
         return self.__active
 
     def stop_thread(self):
-        '''stop the thread'''
+        """stop the thread"""
         if self._thread.is_alive():
             self.__thread_run = False
             self._thread.join()
 
     def __run(self):
-        ''' Loops through the standard ripper function'''
+        """ Loops through the standard ripper function"""
         with self._pool_sema:
             self.__active = True
             if self.__wait_for_file_copy_complete() is False:
@@ -57,7 +57,9 @@ class ISORipper(FileSubsystem):
             self._get_udfInfo(
                 File.location(
                     self.__filename,
-                    CONFIG['ripper']['locations']["videoiso" if self.__video else "audioiso"].value
+                    CONFIG["ripper"]["locations"][
+                        "videoiso" if self.__video else "audioiso"
+                    ].value,
                 )
             )
             if self.__thread_run is False:
@@ -80,11 +82,13 @@ class ISORipper(FileSubsystem):
             )
 
     def __wait_for_file_copy_complete(self) -> bool:
-        '''watches the file size until it stops'''
-        path = CONFIG['ripper']["locations"]["videoiso" if self.__video else "audioiso"].value
+        """watches the file size until it stops"""
+        path = CONFIG["ripper"]["locations"][
+            "videoiso" if self.__video else "audioiso"
+        ].value
         filename = File.location(f"{path}{self.__filename}")
         historicalSize = -1
-        while (historicalSize != os.path.getsize(filename)):
+        while historicalSize != os.path.getsize(filename):
             if self.__thread_run is False:
                 return False
             historicalSize = os.path.getsize(filename)
@@ -92,8 +96,12 @@ class ISORipper(FileSubsystem):
         return True
 
     def api_data(self):
-        '''returns the data as json or dict for html'''
-        i = f"ripping {self._disc['type']} video disc" if self._ripper else "Waiting For Free Slot"
+        """returns the data as json or dict for html"""
+        i = (
+            f"ripping {self._disc['type']} video disc"
+            if self._ripper
+            else "Waiting For Free Slot"
+        )
         return_dict = {
             "filename": self.__filename,
             "info": i,

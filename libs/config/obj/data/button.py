@@ -1,10 +1,10 @@
-'''Button'''
+"""Button"""
 from typing import Any
 from libs.html_system import HTMLSystem
 
 
 class Button:
-    '''Button'''
+    """Button"""
 
     def __init__(self, label: str, action: str, append: bool, **kwargs: Any):
         if not isinstance(label, str):
@@ -21,7 +21,7 @@ class Button:
 
     @property
     def html(self) -> str:
-        '''returns the buttons html'''
+        """returns the buttons html"""
         data = f'data-click-action="{self.__action}"'
         for key, value in self.__kwargs.items():
             data += f' data-{key}="{value}"'

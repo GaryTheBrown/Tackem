@@ -1,4 +1,4 @@
-'''Script For the Admin System'''
+"""Script For the Admin System"""
 import cherrypy
 from typing import Any
 from libs.config.list import ConfigList
@@ -9,11 +9,11 @@ from data.config import CONFIG
 
 
 class Admin(HTMLTEMPLATE):
-    '''Admin'''
+    """Admin"""
 
     @cherrypy.expose
     def config(self, **kwargs: Any) -> str:
-        '''CONFIG System'''
+        """CONFIG System"""
         Authentication.check_auth()
         if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
@@ -30,55 +30,43 @@ class Admin(HTMLTEMPLATE):
 
     @cherrypy.expose
     def users(self) -> str:
-        '''Grab the users info'''
+        """Grab the users info"""
         Authentication.check_auth()
         if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
         data = Authentication.get_users()
         users_html = ""
         for item in data:
-            admin = "checked" if item['is_admin'] else ""
-            admin += " disabled" if item['id'] == 1 else ""
+            admin = "checked" if item["is_admin"] else ""
+            admin += " disabled" if item["id"] == 1 else ""
             users_html += HTMLSystem.part(
-                "section/user",
-                USERID=item['id'],
-                NAME=item['username'],
-                ISADMIN=admin
+                "section/user", USERID=item["id"], NAME=item["username"], ISADMIN=admin
             )
         return self._template(
-            HTMLSystem.part(
-                "pages/users",
-                USERSHTML=users_html
-            ),
-            javascript="js/users.js"
+            HTMLSystem.part("pages/users", USERSHTML=users_html),
+            javascript="js/users.js",
         )
 
     @cherrypy.expose
     def shutdown(self) -> str:
-        '''shutdown the system page'''
+        """shutdown the system page"""
         Authentication.check_auth()
         if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
-        return self._template(
-            HTMLSystem.part(
-                "pages/shutdown"
-            )
-        )
+        return self._template(HTMLSystem.part("pages/shutdown"))
 
     @cherrypy.expose
     def reboot(self) -> str:
-        '''reboot the system page'''
+        """reboot the system page"""
         Authentication.check_auth()
         if not Authentication.is_admin():
             raise cherrypy.HTTPError(status=401)
-        return self._template(
-            HTMLSystem.part(
-                "pages/reboot"
-            )
-        )
+        return self._template(HTMLSystem.part("pages/reboot"))
 
-    def __add_val_to_config(self, key: str, config: ConfigList, key_list: list, value: Any):
-        '''recursive way of adding value into the config'''
+    def __add_val_to_config(
+        self, key: str, config: ConfigList, key_list: list, value: Any
+    ):
+        """recursive way of adding value into the config"""
         if len(key_list) == 1:
             if key_list[0] in config.keys():
                 config[key_list[0]].value = value
@@ -94,7 +82,9 @@ class Admin(HTMLTEMPLATE):
                 config.clone_many_section(key_list[0])
 
             if key_list[0] in config.keys():
-                return self.__add_val_to_config(key, config[key_list[0]], key_list[1:], value)
+                return self.__add_val_to_config(
+                    key, config[key_list[0]], key_list[1:], value
+                )
 
             for obj in config:
                 if obj.is_section:

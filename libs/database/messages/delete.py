@@ -1,4 +1,4 @@
-'''SQL MESSAGE SYSTEM DATA'''
+"""SQL MESSAGE SYSTEM DATA"""
 import time
 from libs.database.table import Table
 from typing import List
@@ -8,7 +8,7 @@ from libs.exceptions import SQLMessageError
 
 
 class SQLDelete(SQLMessage):
-    '''Delete Message'''
+    """Delete Message"""
 
     def __init__(self, table: Table, *wheres: Where):
         if not isinstance(table, Table):
@@ -20,8 +20,9 @@ class SQLDelete(SQLMessage):
         where_list = [where.query for where in wheres]
         if table.soft_delete:
             set = f"deleted_at = {int(time.time())}"
-            where = ' AND '.join(where_list)
+            where = " AND ".join(where_list)
             super().__init__(f"UPDATE {table.name()} SET {set} WHERE {where}")
         else:
             super().__init__(
-                f"DELETE FROM {table.name()} WHERE {' AND '.join(where_list)}")
+                f"DELETE FROM {table.name()} WHERE {' AND '.join(where_list)}"
+            )

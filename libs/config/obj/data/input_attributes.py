@@ -1,13 +1,22 @@
-'''Input Attributes'''
+"""Input Attributes"""
 from typing import Any
 
 
 class InputAttributes:
-    '''Input Attributes'''
+    """Input Attributes"""
 
     __kwargs = [
-        "size", "maxlength", "height", "width", "list", "min", "max", "pattern",
-        "placeholder", "step", "alt"
+        "size",
+        "maxlength",
+        "height",
+        "width",
+        "list",
+        "min",
+        "max",
+        "pattern",
+        "placeholder",
+        "step",
+        "alt",
     ]
 
     def __init__(self, *args, **kwargs):
@@ -22,7 +31,7 @@ class InputAttributes:
         self.add_if_missing(*args, **kwargs)
 
     def needed(self, *args: str):
-        '''checks if the items are set otherwise raises an exception'''
+        """checks if the items are set otherwise raises an exception"""
         missing_list = []
         for arg in args:
             if arg == "autofocus" and not self.__autofocus:
@@ -46,34 +55,35 @@ class InputAttributes:
             raise ValueError("MISSING ARGUMENTS: " + ", ".join(missing_list))
 
     def block(self, *args: str):
-        '''checks if any of the items are set and raises an exception if so'''
+        """checks if any of the items are set and raises an exception if so"""
         block_list = []
         for arg in args:
-            if (arg == "autofocus" and self.__autofocus) \
-                    or (arg == "readonly" and self.__readonly) \
-                    or (arg == "disabled" and self.__disabled) \
-                    or (arg == "multiple" and self.__multiple) \
-                    or (arg == "required" and self.__required) \
-                    or (arg == "selected" and self.__selected) \
-                    or (arg == "hidden" and self.__hidden) \
-                    or (arg in self.__dict):
+            if (
+                (arg == "autofocus" and self.__autofocus)
+                or (arg == "readonly" and self.__readonly)
+                or (arg == "disabled" and self.__disabled)
+                or (arg == "multiple" and self.__multiple)
+                or (arg == "required" and self.__required)
+                or (arg == "selected" and self.__selected)
+                or (arg == "hidden" and self.__hidden)
+                or (arg in self.__dict)
+            ):
                 block_list.append(arg)
 
         if block_list:
-            raise ValueError("BLOCKED ARGUMENTS FOUND: " +
-                             ", ".join(block_list))
+            raise ValueError("BLOCKED ARGUMENTS FOUND: " + ", ".join(block_list))
 
     @property
     def spec(self) -> str:
-        '''Returns the line for the config option'''
+        """Returns the line for the config option"""
         variable_count = False
         return_string = ""
 
-        _min = self.__dict.get('min', None)
+        _min = self.__dict.get("min", None)
         if _min:
             return_string += "min=" + str(_min)
             variable_count = True
-        _max = self.__dict.get('max', None)
+        _max = self.__dict.get("max", None)
         if _max:
             if variable_count:
                 return_string += ", "
@@ -81,7 +91,7 @@ class InputAttributes:
         return return_string
 
     def html(self) -> str:
-        '''returns html ready string'''
+        """returns html ready string"""
         string = ""
 
         for key, value in self.__dict.items():
@@ -105,19 +115,19 @@ class InputAttributes:
         return string
 
     def get(self, key: str, default: Any = None) -> Any:
-        '''returns a value in the dictonary'''
+        """returns a value in the dictonary"""
         return self.__dict.get(key, default)
 
     def __getitem__(self, key: str) -> Any:
-        '''[] getter'''
+        """[] getter"""
         return self.__dict.get(key, None)
 
     def __setitem__(self, key: str, value: Any):
-        '''[] setter'''
+        """[] setter"""
         self.__dict[key] = value
 
     def __iter__(self):
-        '''getter itteration'''
+        """getter itteration"""
         return iter(self.__dict)
 
     def __len__(self) -> int:
@@ -125,41 +135,41 @@ class InputAttributes:
 
     @property
     def autofocus(self) -> bool:
-        '''returns if autofocus'''
+        """returns if autofocus"""
         return self.__autofocus
 
     @property
     def readonly(self) -> bool:
-        '''returns if read only'''
+        """returns if read only"""
         return self.__readonly
 
     @property
     def disabled(self) -> bool:
-        '''returns if disabled'''
+        """returns if disabled"""
         return self.__disabled
 
     @property
     def multiple(self) -> bool:
-        '''returns multiple'''
+        """returns multiple"""
         return self.__multiple
 
     @property
     def required(self) -> bool:
-        '''returns if required'''
+        """returns if required"""
         return self.__required
 
     @property
     def selected(self) -> bool:
-        '''returns if selected'''
+        """returns if selected"""
         return self.__selected
 
     @property
     def hidden(self) -> bool:
-        '''returns if hidden'''
+        """returns if hidden"""
         return self.__hidden
 
     def add_if_missing(self, *args, **kwargs):
-        ''' checks for the attributes then sets missing ones'''
+        """ checks for the attributes then sets missing ones"""
         for arg in args:
             if arg == "autofocus":
                 self.__autofocus = True

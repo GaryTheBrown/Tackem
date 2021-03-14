@@ -1,4 +1,4 @@
-'''RIPPER ISOS API'''
+"""RIPPER ISOS API"""
 from api.ripper.iso.data import APIRipperISOData
 from api.ripper.iso.upload_audio import APIRipperIsoUploadAudio
 from api.ripper.iso.upload_video import APIRipperIsoUploadVideo
@@ -9,12 +9,12 @@ from data.config import CONFIG
 
 @cherrypy.expose
 class APIRipperIsos(APIBase):
-    '''Ripper ISOS API'''
+    """Ripper ISOS API"""
 
     def _cp_dispatch(self, vpath):
-        '''cp dispatcher overwrite'''
+        """cp dispatcher overwrite"""
 
-        if not CONFIG['ripper']['iso']['enabled'].value or len(vpath) == 0:
+        if not CONFIG["ripper"]["iso"]["enabled"].value or len(vpath) == 0:
             return self
 
         section = vpath.pop(0)

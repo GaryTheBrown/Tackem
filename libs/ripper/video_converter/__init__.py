@@ -1,4 +1,4 @@
-'''Master Section for the Video Converter controller'''
+"""Master Section for the Video Converter controller"""
 from abc import ABCMeta
 from libs.ripper.video_converter.chapters import VideoConverterChapters
 from libs.ripper.video_converter.stream_mapping import VideoConverterStreamMapping
@@ -22,12 +22,12 @@ class VideoConverter(
     VideoConverterMetadata,
     VideoConverterStreamMapping,
     VideoConverterVideo,
-    metaclass=ABCMeta
+    metaclass=ABCMeta,
 ):
-    '''Master Section for the Video Converter controller'''
+    """Master Section for the Video Converter controller"""
 
     def run(self):
-        ''' Loops through the standard converter function'''
+        """ Loops through the standard converter function"""
 
         msg = SQLSelect(VIDEO_CONVERT_DB, Where("id", self._db_id))
         Database.call(msg)
@@ -38,9 +38,10 @@ class VideoConverter(
         if not self._thread_run:
             return
 
-        self._filename = msg.return_data['filename']
+        self._filename = msg.return_data["filename"]
         infile = File.location(
-            CONFIG['ripper']['locations']['videoripping'].value + self._filename)
+            CONFIG["ripper"]["locations"]["videoripping"].value + self._filename
+        )
         outfile = infile.replace(".mkv", "") + ".NEW.mkv"
 
         if not os.path.exists(infile):
@@ -49,10 +50,10 @@ class VideoConverter(
         if os.path.exists(outfile):
             os.remove(outfile)
 
-        self._command.append(self._conf['ffmpeglocation'].value)
+        self._command.append(self._conf["ffmpeglocation"].value)
         self._command.append("-i")
         self._command.append(f'"{infile}"')
-        if msg.return_data['disc_info'] == {}:
+        if msg.return_data["disc_info"] == {}:
             self.__create_command_no_info()
         else:
             self.__create_command_with_info(msg.return_data)
@@ -67,17 +68,17 @@ class VideoConverter(
             if self._do_conversion():
                 File.move(infile, infile + ".OLD")
                 File.move(outfile, infile)
-                if not self._conf['keeporiginalfile'].value:
+                if not self._conf["keeporiginalfile"].value:
                     File.rm(infile + ".OLD")
-                Database.call(SQLDelete(VIDEO_CONVERT_DB,
-                                        Where("id", self.__db_id)))
+                Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self.__db_id)))
 
     def __create_command_no_info(self):
-        '''creates the conversion command here'''
+        """creates the conversion command here"""
         probe_info = FFprobe(
-            self._conf['ffprobelocation'].value,
-            File.location(CONFIG['ripper']['locations']
-                          ['videoripping'].value + self._filename)
+            self._conf["ffprobelocation"].value,
+            File.location(
+                CONFIG["ripper"]["locations"]["videoripping"].value + self._filename
+            ),
         )
 
         # Copy accross most metadata
@@ -93,19 +94,20 @@ class VideoConverter(
         self._sort_video_data(probe_info)
 
         # tell ffmpeg to copy the audio
-        self._command.append('-c:a copy')
+        self._command.append("-c:a copy")
 
         # tell ffmpeg to copy the subtitles
-        self._command.append('-c:s copy')
+        self._command.append("-c:s copy")
 
     def __create_command_with_info(self, db_info: dict):
-        '''creates the conversion command here'''
-        disc_info = make_disc_type(db_info['disc_info'])
-        track_info = make_track_type(db_info['track_info'])
+        """creates the conversion command here"""
+        disc_info = make_disc_type(db_info["disc_info"])
+        track_info = make_track_type(db_info["track_info"])
         probe_info = FFprobe(
-            self._conf['ffprobelocation'].value,
-            File.location(CONFIG['ripper']['locations']
-                          ['videoripping'].value + self._filename)
+            self._conf["ffprobelocation"].value,
+            File.location(
+                CONFIG["ripper"]["locations"]["videoripping"].value + self._filename
+            ),
         )
 
         # Deal with tagging here
@@ -121,7 +123,7 @@ class VideoConverter(
         self._sort_video_data(probe_info)
 
         # tell ffmpeg to copy the audio
-        self._command.append('-c:a copy')
+        self._command.append("-c:a copy")
 
         # tell ffmpeg to copy the subtitles
-        self._command.append('-c:s copy')
+        self._command.append("-c:s copy")

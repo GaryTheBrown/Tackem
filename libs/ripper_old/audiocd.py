@@ -1,4 +1,4 @@
-'''Audio Ripping Feature'''
+"""Audio Ripping Feature"""
 from abc import ABCMeta, abstractmethod
 import json
 import discid
@@ -19,7 +19,7 @@ from data.database.ripper import AUDIO_INFO_DB as INFO_DB
 
 
 class AudioCD(RipperSubSystem, metaclass=ABCMeta):
-    '''Audio ripping controller'''
+    """Audio ripping controller"""
 
     def __init__(self, device: str):
         super().__init__(device)
@@ -30,11 +30,11 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
         self._db_id = None
         self._ripping_max = 100
 
-##########
-##CHECKS##
-##########
+    ##########
+    ##CHECKS##
+    ##########
     def _get_musicbrainz_disc_id(self):
-        '''gets the musicbrainz disc id'''
+        """gets the musicbrainz disc id"""
         disc_data = discid.read(self._device)
         self._disc_id = disc_data.id
         self._track_count = disc_data.last_track_num
@@ -43,21 +43,21 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
         elif disc_data.first_track_num == 2:
             self._track_count -= 1
 
-#######################
-##DATABASE & API CALL##
-#######################
+    #######################
+    ##DATABASE & API CALL##
+    #######################
     def _check_db_and_api_for_disc_info(self):
-        '''checks the DB and API for the Disc info'''
+        """checks the DB and API for the Disc info"""
         msg1 = SQLSelect(
             INFO_DB["name"],
             Where("musicbrainz_disc_id", self._disc_id),
-            Where("track_count", self._track_count)
+            Where("track_count", self._track_count),
         )
         Database.call(msg1)
         if msg1.return_data:  # info in local DB
-            self._db_id = msg1.return_data['id']
-            self._release_id = msg1.return_data['release_id']
-            disc_info_json = msg1.return_data['disc_data']
+            self._db_id = msg1.return_data["id"]
+            self._release_id = msg1.return_data["release_id"]
+            disc_info_json = msg1.return_data["disc_data"]
             Database.call(
                 SQLUpdate(
                     INFO_DB["name"],
@@ -66,7 +66,7 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
                     ready_to_convert=False,
                     ready_to_rename=False,
                     ready_for_library=False,
-                    completed=False
+                    completed=False,
                 )
             )
 
@@ -78,25 +78,25 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
                 SQLInsert(
                     INFO_DB["name"],
                     musicbrainz_disc_id=self._disc_id,
-                    track_count=self._track_count
+                    track_count=self._track_count,
                 )
             )
 
             msg3 = SQLSelect(
                 INFO_DB["name"],
                 Where("musicbrainz_disc_id", self._disc_id),
-                Where("track_count", self._track_count)
+                Where("track_count", self._track_count),
             )
             Database.call(msg3)
-            self._db_id = msg3.return_data['id']
+            self._db_id = msg3.return_data["id"]
 
         if self._disc_info is None:
             data = MUSICBRAINZ.get_data_for_discid(self._disc_id)
             if data.get("release-count", 0) == 1:
-                self._disc_info = data['release-list'][0]
-                self._release_id = self._disc_info['id']
+                self._disc_info = data["release-list"][0]
+                self._release_id = self._disc_info["id"]
             elif data.get("release-count", 0) > 1:
-                self._disc_info = data['release-list']
+                self._disc_info = data["release-list"]
             else:
                 self._disc_info = None
 
@@ -110,20 +110,19 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
                 )
             )
 
-
-#####################
-##DISC RIP COMMANDS##
-#####################
+    #####################
+    ##DISC RIP COMMANDS##
+    #####################
 
     @abstractmethod
     def _rip_disc(self):
-        '''command to rip the cd here'''
+        """command to rip the cd here"""
 
-#######################
-##SEND TO NEXT SYSTEM##
-#######################
+    #######################
+    ##SEND TO NEXT SYSTEM##
+    #######################
     def _send_to_next_system(self):
-        '''method to send info to the next step in the process'''
+        """method to send info to the next step in the process"""
         # if self._config['converter']['enabled']:
         #     create_video_converter_row(self._db, self._thread_name, self._db_id,
         #                                self._disc_rip_info, self._config['videoripping']['torip'])
@@ -134,12 +133,13 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
         #     self._db.update(self._thread_name, INFO_DB["name"], self._db_id,
         #                     {"ready_to_rename":True})
         #     RipperEvents().renamer.set()
-##########
-##Script##
-##########
+
+    ##########
+    ##Script##
+    ##########
 
     def run(self):
-        '''script to rip audio cd'''
+        """script to rip audio cd"""
         self._set_drive_status("Get disc unique data")
         self._get_musicbrainz_disc_id()
         if not self._thread_run:
@@ -151,12 +151,6 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
         self._set_drive_status("Ripping Disc")
         self._rip_disc()
         self._set_drive_status("idle")
-        Database.call(
-            SQLUpdate(
-                INFO_DB["name"],
-                Where("id", self._db_id),
-                ripped=True
-            )
-        )
+        Database.call(SQLUpdate(INFO_DB["name"], Where("id", self._db_id), ripped=True))
         if self._release_id:
             self._send_to_next_system()

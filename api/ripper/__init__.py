@@ -1,4 +1,4 @@
-'''RIPPER API'''
+"""RIPPER API"""
 from api.ripper.iso import APIRipperIsos
 from api.ripper.drives import APIRipperDrives
 import cherrypy
@@ -8,12 +8,12 @@ from data.config import CONFIG
 
 @cherrypy.expose
 class APIRipper(APIBase):
-    '''Ripper API'''
+    """Ripper API"""
 
     def _cp_dispatch(self, vpath):
-        '''cp dispatcher overwrite'''
+        """cp dispatcher overwrite"""
 
-        if not CONFIG['ripper']['enabled'].value or len(vpath) == 0:
+        if not CONFIG["ripper"]["enabled"].value or len(vpath) == 0:
             return self
 
         section = vpath.pop(0)

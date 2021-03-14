@@ -1,4 +1,4 @@
-'''CONFIG List Class'''
+"""CONFIG List Class"""
 import copy
 from typing import Any, Optional
 from libs.config.base import ConfigBase
@@ -7,20 +7,20 @@ from libs.config.obj.base import ConfigObjBase
 
 
 class ConfigListBase(ConfigBase):
-    '''CONFIG List Class'''
+    """CONFIG List Class"""
 
     def __init__(
-            self,
-            var_name: str,
-            label: str,
-            *objects,
-            help_text: str = "",
-            rules: Optional[ConfigRules] = None,
-            is_section: bool = False,
-            many_section=None,
-            many_section_limit_list: Optional[list] = None,
-            hide_on_html: bool = False,
-            not_in_config: bool = False
+        self,
+        var_name: str,
+        label: str,
+        *objects,
+        help_text: str = "",
+        rules: Optional[ConfigRules] = None,
+        is_section: bool = False,
+        many_section=None,
+        many_section_limit_list: Optional[list] = None,
+        hide_on_html: bool = False,
+        not_in_config: bool = False
     ):
         super().__init__(var_name, label, help_text, hide_on_html, not_in_config, rules)
         if is_section and not isinstance(is_section, bool):
@@ -31,7 +31,9 @@ class ConfigListBase(ConfigBase):
             if var_name == "root":
                 if all(not isinstance(x, ConfigListBase) for x in objects):
                     raise ValueError("objects is not all Config Lists")
-            elif all(not isinstance(x, (ConfigListBase, ConfigObjBase)) for x in objects):
+            elif all(
+                not isinstance(x, (ConfigListBase, ConfigObjBase)) for x in objects
+            ):
                 raise ValueError("objects is not all Config Lists or Objs")
         if objects:
             self._objects = list(objects)
@@ -39,15 +41,15 @@ class ConfigListBase(ConfigBase):
             self._objects = []
 
         if many_section and not isinstance(many_section, ConfigListBase):
-            raise ValueError(
-                "Many Section is not a config List object or None")
+            raise ValueError("Many Section is not a config List object or None")
         self.__many_section = many_section
         if many_section_limit_list:
             if not isinstance(many_section_limit_list, list):
                 raise ValueError("Many Section Limit List is not a list")
             if all(not isinstance(x, str) for x in many_section_limit_list):
                 raise ValueError(
-                    "All Items in the Many Section Limit List need to be strings")
+                    "All Items in the Many Section Limit List need to be strings"
+                )
         self.__many_section_limit_list = many_section_limit_list
 
     def __getitem__(self, key):
@@ -65,18 +67,18 @@ class ConfigListBase(ConfigBase):
         return len(self._objects)
 
     def keys(self) -> list:
-        '''returns all keys for the objects'''
+        """returns all keys for the objects"""
         return [x.var_name for x in self._objects]
 
     def get(self, key, default: Any = None) -> Any:
-        '''returns the data if found otherwise returns the default value'''
+        """returns the data if found otherwise returns the default value"""
         for obj in self._objects:
             if obj.key == key.lower():
                 return obj
         return default
 
     def append(self, obj):
-        '''appends the object to the list'''
+        """appends the object to the list"""
         if obj is None:
             return
         if not isinstance(obj, ConfigListBase) and not isinstance(obj, ConfigObjBase):
@@ -84,7 +86,7 @@ class ConfigListBase(ConfigBase):
         self._objects.append(obj)
 
     def delete(self, key: str) -> bool:
-        '''removed the config object according to var_name'''
+        """removed the config object according to var_name"""
         for i, obj in enumerate(self._objects):
             if obj.key == key.lower():
                 del self._objects[i]
@@ -92,7 +94,7 @@ class ConfigListBase(ConfigBase):
         return False
 
     def clear(self):
-        '''removes all sub objects'''
+        """removes all sub objects"""
         for item in self._objects:
             if isinstance(item, ConfigListBase):
                 item.clear()
@@ -105,26 +107,26 @@ class ConfigListBase(ConfigBase):
 
     @property
     def count(self) -> int:
-        '''returns the count of the config objects'''
+        """returns the count of the config objects"""
         return len(self._objects)
 
     @property
     def is_section(self) -> bool:
-        '''returns if the list is a section'''
+        """returns if the list is a section"""
         return self.__is_section
 
     @property
     def many_section(self):
-        '''returns the Many Section'''
+        """returns the Many Section"""
         return self.__many_section
 
     @property
     def many_section_limit_list(self) -> list:
-        '''returns the Many Section Limit List'''
+        """returns the Many Section Limit List"""
         return self.__many_section_limit_list
 
     def clone_many_section(self, var_name: str) -> bool:
-        '''Clones the Many Section For Multi Instance config sections'''
+        """Clones the Many Section For Multi Instance config sections"""
         var = var_name.lower().replace(" ", "")
         if var in self.keys():
             return False
@@ -137,7 +139,7 @@ class ConfigListBase(ConfigBase):
         return False
 
     def find_and_get(self, location: list) -> Any:
-        '''Find and Get a config Item'''
+        """Find and Get a config Item"""
         for obj in self._objects:
             if location[0] != obj.var_name:
                 continue
@@ -157,7 +159,7 @@ class ConfigListBase(ConfigBase):
         return None
 
     def find_and_set(self, location: list, value: Any):
-        '''Find and set a config Item'''
+        """Find and set a config Item"""
         for obj in self._objects:
             if location[0] != obj.var_name:
                 continue

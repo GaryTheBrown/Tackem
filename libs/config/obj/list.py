@@ -1,4 +1,4 @@
-'''Config Object List'''
+"""Config Object List"""
 from typing import Any, Optional
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
@@ -8,23 +8,23 @@ from libs.html_system import HTMLSystem
 
 
 class ConfigObjList(ConfigObjBase):
-    '''Config Item List'''
+    """Config Item List"""
 
     __config_type = "list"
     __html_type = "text"
 
     def __init__(
-            self,
-            var_name: str,
-            default_value: list,
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            input_attributes: Optional[InputAttributes] = None,
-            data_list: Optional[DataList] = None,
-            value_link: Optional[list] = None
+        self,
+        var_name: str,
+        default_value: list,
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        input_attributes: Optional[InputAttributes] = None,
+        data_list: Optional[DataList] = None,
+        value_link: Optional[list] = None,
     ):
         if not isinstance(default_value, list):
             raise ValueError("Default Value is not a List")
@@ -39,11 +39,11 @@ class ConfigObjList(ConfigObjBase):
             rules,
             input_attributes,
             data_list,
-            value_link
+            value_link,
         )
 
     def _set_value(self, value: Any) -> Optional[list]:
-        '''hidden abstract method for setting the value with checking of type in sub classes'''
+        """hidden abstract method for setting the value with checking of type in sub classes"""
         if isinstance(value, list):
             return value
         if isinstance(value, str):
@@ -52,7 +52,7 @@ class ConfigObjList(ConfigObjBase):
 
     @property
     def spec(self) -> str:
-        '''Returns the line for the config option'''
+        """Returns the line for the config option"""
         if self.not_in_config:
             return ""
 
@@ -68,7 +68,7 @@ class ConfigObjList(ConfigObjBase):
         return string
 
     def item_html(self, variable_name: str) -> str:
-        '''Returns the html for the config option'''
+        """Returns the html for the config option"""
         if self.hide_on_html:
             return ""
         other = ""
@@ -84,7 +84,7 @@ class ConfigObjList(ConfigObjBase):
 
     @property
     def _default_list_to_spec(self) -> str:
-        '''Created the default value String'''
+        """Created the default value String"""
         return_list = []
         for value in self.default_value:
             if isinstance(value, str):

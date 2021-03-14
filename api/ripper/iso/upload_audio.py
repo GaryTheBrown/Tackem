@@ -1,4 +1,4 @@
-'''Upload Audio ISO API'''
+"""Upload Audio ISO API"""
 from libs.database.where import Where
 from data.database.system import UPLOAD_DB
 from data.database.ripper import AUDIO_INFO_DB
@@ -12,10 +12,10 @@ from libs.database.messages import SQLInsert, SQLSelect
 
 @cherrypy.expose
 class APIRipperIsoUploadAudio(APIBase):
-    '''Upload Audio ISO API'''
+    """Upload Audio ISO API"""
 
     def POST(self, **kwargs) -> str:
-        '''POST Function'''
+        """POST Function"""
         user = kwargs.get("user", self.GUEST)
         if user == self.GUEST:
             raise cherrypy.HTTPError(status=403)
@@ -27,7 +27,7 @@ class APIRipperIsoUploadAudio(APIBase):
                 "Upload Audio ISO",
                 False,
                 error="Missing Filename",
-                errorNumber=0
+                errorNumber=0,
             )
         if "filesize" not in kwargs:
             return self._return_data(
@@ -36,13 +36,13 @@ class APIRipperIsoUploadAudio(APIBase):
                 "Upload Audio ISO",
                 False,
                 error="Missing Filesize",
-                errorNumber=0
+                errorNumber=0,
             )
 
         msg = SQLSelect(
             UPLOAD_DB,
-            Where("filename", kwargs['filename']),
-            Where("filesize", kwargs['filesize']),
+            Where("filename", kwargs["filename"]),
+            Where("filesize", kwargs["filesize"]),
         )
 
         Database.call(msg)
@@ -53,19 +53,18 @@ class APIRipperIsoUploadAudio(APIBase):
                 "Ripper",
                 "Upload Audio ISO",
                 True,
-                key=msg.return_data['key'],
-                url=f"{url}/upload/?key={msg.return_data['key']}"
+                key=msg.return_data["key"],
+                url=f"{url}/upload/?key={msg.return_data['key']}",
             )
 
-        key = ''.join(random.choices(
-            string.ascii_lowercase + string.digits, k=40))
+        key = "".join(random.choices(string.ascii_lowercase + string.digits, k=40))
         Database.call(
             SQLInsert(
                 UPLOAD_DB,
                 key=key,
-                filename=kwargs['filename'],
-                filesize=kwargs['filesize'],
-                system="RIPPER_ISO_AUDIO"
+                filename=kwargs["filename"],
+                filesize=kwargs["filesize"],
+                system="RIPPER_ISO_AUDIO",
             )
         )
 
@@ -75,5 +74,5 @@ class APIRipperIsoUploadAudio(APIBase):
             "Upload Audio ISO",
             True,
             key=key,
-            url=f"{cherrypy.url()}/upload/{key}"
+            url=f"{cherrypy.url()}/upload/{key}",
         )

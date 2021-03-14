@@ -1,4 +1,4 @@
-'''Audio Ripping Feature'''
+"""Audio Ripping Feature"""
 import os
 import pexpect
 from data import PROGRAMCONFIGLOCATION
@@ -9,17 +9,21 @@ from .audiocd import AudioCD
 
 
 class AudioCDLinux(AudioCD):
-    '''Audio CD ripping controller'''
+    """Audio CD ripping controller"""
 
-#####################
-##DISC RIP COMMANDS##
-#####################
+    #####################
+    ##DISC RIP COMMANDS##
+    #####################
     def _rip_disc(self):
-        '''command to rip the cd here'''
-        temp_loc = CONFIG['plugins']['ripping']['ripper']['locations']['audioripping'].value
+        """command to rip the cd here"""
+        temp_loc = CONFIG["plugins"]["ripping"]["ripper"]["locations"][
+            "audioripping"
+        ].value
         if temp_loc[0] != "/":
             temp_loc = PROGRAMCONFIGLOCATION
-            temp_loc += CONFIG['plugins']['ripping']['ripper']['locations']['audioripping'].value
+            temp_loc += CONFIG["plugins"]["ripping"]["ripper"]["locations"][
+                "audioripping"
+            ].value
         temp_dir = temp_loc + str(self._db_id)
         try:
             os.mkdir(temp_dir)
@@ -34,13 +38,9 @@ class AudioCDLinux(AudioCD):
             self._device,
         ]
 
-        thread = pexpect.spawn(" ".join(prog_args),
-                               encoding='utf-8', cwd=temp_dir)
+        thread = pexpect.spawn(" ".join(prog_args), encoding="utf-8", cwd=temp_dir)
 
-        cpl = thread.compile_pattern_list([
-            pexpect.EOF,
-            '\d+%'
-        ])
+        cpl = thread.compile_pattern_list([pexpect.EOF, "\d+%"])
         self._ripping_track = 0
         while True:
             i = thread.expect_list(cpl, timeout=None)
@@ -54,7 +54,8 @@ class AudioCDLinux(AudioCD):
                     next_track = False
                 else:
                     next_track = True
-                total = round(((self._ripping_track - 1) *
-                               100 + value) / self._track_count, 2)
+                total = round(
+                    ((self._ripping_track - 1) * 100 + value) / self._track_count, 2
+                )
                 self._ripping_file_p = self._ripping_file = value
                 self._ripping_total_p = self._ripping_total = total

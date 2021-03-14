@@ -1,4 +1,4 @@
-''' Locale Language options'''
+""" Locale Language options"""
 from libs.config.obj.data.option import ConfigObjOption
 
 OPTIONS = [
@@ -164,5 +164,5 @@ OPTIONS = [
     ConfigObjOption("cy", "Welsh"),
     ConfigObjOption("xh", "Xhosa"),
     ConfigObjOption("yi", "Yiddish"),
-    ConfigObjOption("zu", "Zulu")
+    ConfigObjOption("zu", "Zulu"),
 ]

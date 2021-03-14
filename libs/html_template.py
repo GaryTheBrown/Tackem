@@ -1,4 +1,4 @@
-'''HTML TEMPLATE'''
+"""HTML TEMPLATE"""
 from typing import List, Optional, Union
 from data import PROGRAMVERSION
 from data.config import CONFIG
@@ -7,21 +7,22 @@ from libs.html_system import HTMLSystem
 from libs.ripper import Ripper
 
 
-class HTMLTEMPLATE():
-    '''Template Base Class For All WWW SYSTEMS'''
+class HTMLTEMPLATE:
+    """Template Base Class For All WWW SYSTEMS"""
+
     _baseurl = "/"
 
     @classmethod
     def set_baseurl(cls, baseurl: str):
-        '''sets the base url for use rather than accessing through the config each time'''
+        """sets the base url for use rather than accessing through the config each time"""
         cls._baseurl = baseurl
 
     def __init__(
-            self,
-            name: str,
-            key: str,
-            base_stylesheet: Optional[str] = None,
-            base_javascript: Optional[str] = None
+        self,
+        name: str,
+        key: str,
+        base_stylesheet: Optional[str] = None,
+        base_javascript: Optional[str] = None,
     ):
         self._name = name
         self._key = key
@@ -29,13 +30,13 @@ class HTMLTEMPLATE():
         self._base_javascript = base_javascript
 
     def _template(
-            self,
-            body: str,
-            navbar: bool = True,
-            javascript: Optional[Union[List[str], str]] = None,
-            stylesheet: Optional[Union[List[str], str]] = None
+        self,
+        body: str,
+        navbar: bool = True,
+        javascript: Optional[Union[List[str], str]] = None,
+        stylesheet: Optional[Union[List[str], str]] = None,
     ) -> str:
-        '''Create The Template Layout'''
+        """Create The Template Layout"""
         navbar_html = ""
         if isinstance(navbar, str):
             navbar_html = navbar
@@ -43,7 +44,7 @@ class HTMLTEMPLATE():
             navbar_html = HTMLSystem.part(
                 "navbar/master",
                 NAVBARRIGHT=self._navbar_right_items(),
-                NAVBARITEMS=self._navbar_left_items()
+                NAVBARITEMS=self._navbar_left_items(),
             )
 
         javascript_extra_html = ""
@@ -51,8 +52,7 @@ class HTMLTEMPLATE():
             for key in self._base_javascript:
                 javascript_extra_html += HTMLSystem.script_link(key)
         elif isinstance(self._base_javascript, str):
-            javascript_extra_html = HTMLSystem.script_link(
-                self._base_javascript)
+            javascript_extra_html = HTMLSystem.script_link(self._base_javascript)
 
         if isinstance(javascript, list):
             for key in javascript:
@@ -65,8 +65,7 @@ class HTMLTEMPLATE():
             for key in self._base_stylesheet:
                 stylesheet_extra_html += HTMLSystem.stylesheet_link(key)
         elif isinstance(self._base_stylesheet, str):
-            stylesheet_extra_html = HTMLSystem.stylesheet_link(
-                self._base_stylesheet)
+            stylesheet_extra_html = HTMLSystem.stylesheet_link(self._base_stylesheet)
 
         if isinstance(stylesheet, list):
             for key in stylesheet:
@@ -90,11 +89,11 @@ class HTMLTEMPLATE():
             BODY=body,
             BASEURL=self._baseurl,
             PROGRAMVERSION=PROGRAMVERSION,
-            TITLE=title
+            TITLE=title,
         )
 
     def _error_page(self, code: int) -> str:
-        '''Shows the error Page'''
+        """Shows the error Page"""
         # if not any codes bellow or 404
         page = '<h1 class="text-center">404 Not Found</h1>'
         if code == 401:
@@ -102,7 +101,7 @@ class HTMLTEMPLATE():
         return self._template(page, False)
 
     def _navbar_left_items(self) -> str:
-        '''Navigation Bar Left Items For The System'''
+        """Navigation Bar Left Items For The System"""
         nav_items_html = ""
         if not Authentication.check_logged_in():
             return nav_items_html
@@ -114,7 +113,7 @@ class HTMLTEMPLATE():
         return nav_items_html
 
     def _navbar_right_items(self) -> str:
-        '''Navigation Bar Left Items For The System'''
+        """Navigation Bar Left Items For The System"""
         navbar_about_html = navbar_item("About", "about")
         navbar_item_html = navbar_item("CONFIG", "admin/config")
         navbar_users_html = navbar_item("Users", "admin/users")
@@ -131,59 +130,43 @@ class HTMLTEMPLATE():
                 admin_html += navbar_users_html
                 admin_html += navbar_reboot_html
                 admin_html += navbar_shutdown_html
-                navbar_right_html += navbar_dropdown_right(
-                    "Admin", "admin", admin_html)
+                navbar_right_html += navbar_dropdown_right("Admin", "admin", admin_html)
             user_html = navbar_password_html
             user_html += navbar_logout_html
-            navbar_right_html += navbar_dropdown_right(
-                "User", "user", user_html)
+            navbar_right_html += navbar_dropdown_right("User", "user", user_html)
         else:
             navbar_right_html += navbar_login_html
         return navbar_right_html
 
 
 def navbar_dropdown(title: str, dropdown_id: str, items: str) -> str:
-    '''A Navbar Item (not active)'''
+    """A Navbar Item (not active)"""
     return HTMLSystem.part(
-        "navbar/dropdown",
-        TITLE=title.title(),
-        DROPDOWNID=dropdown_id,
-        ITEMS=items
+        "navbar/dropdown", TITLE=title.title(), DROPDOWNID=dropdown_id, ITEMS=items
     )
 
 
 def navbar_dropdown_right(title: str, dropdown_id: str, items: str) -> str:
-    '''A Navbar Item right aligned (not active)'''
+    """A Navbar Item right aligned (not active)"""
     return HTMLSystem.part(
-        "navbar/dropdownright",
-        TITLE=title.title(),
-        DROPDOWNID=dropdown_id,
-        ITEMS=items
+        "navbar/dropdownright", TITLE=title.title(), DROPDOWNID=dropdown_id, ITEMS=items
     )
 
 
 def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
-    '''A Navbar Item (not active)'''
+    """A Navbar Item (not active)"""
     return HTMLSystem.part(
-        "navbar/dropright",
-        TITLE=title.title(),
-        DROPDOWNID=dropdown_id,
-        ITEMS=items
+        "navbar/dropright", TITLE=title.title(), DROPDOWNID=dropdown_id, ITEMS=items
     )
 
 
 def navbar_item(title: str, url: str) -> str:
-    '''A Navbar Item (not active)'''
+    """A Navbar Item (not active)"""
     return HTMLSystem.part(
-        "navbar/item",
-        TITLE=title.title(),
-        URL=url.replace(" ", "/")
+        "navbar/item", TITLE=title.title(), URL=url.replace(" ", "/")
     )
 
 
 def navbar_item_active(title: str) -> str:
-    '''A Navbar Item (not active)'''
-    return HTMLSystem.part(
-        "navbar/itemactive",
-        TITLE=title.title()
-    )
+    """A Navbar Item (not active)"""
+    return HTMLSystem.part("navbar/itemactive", TITLE=title.title())

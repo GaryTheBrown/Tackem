@@ -1,1 +1,1 @@
-'''Library Music Controller'''
+"""Library Music Controller"""

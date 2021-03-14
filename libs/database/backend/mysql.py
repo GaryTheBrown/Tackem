@@ -1,4 +1,4 @@
-'''MYSQL System'''
+"""MYSQL System"""
 import mysql.connector
 from data.config import CONFIG
 from libs.database.backend.base import BackendBase
@@ -6,17 +6,17 @@ from libs.database.table import Table
 
 
 class MySQL(BackendBase):
-    '''MySQL system'''
+    """MySQL system"""
 
     def __startup(self):
-        '''Setup SQLlite Here'''
+        """Setup SQLlite Here"""
         config = {
-            'user': CONFIG['database']['mysql']['username'].value,
-            'password': CONFIG['database']['mysql']['password'].value,
-            'host': CONFIG['database']['mysql']['host'].value,
-            'port': CONFIG['database']['mysql']['port'].value,
-            'database': CONFIG['database']['mysql']['database'].value,
-            'raise_on_warnings': True
+            "user": CONFIG["database"]["mysql"]["username"].value,
+            "password": CONFIG["database"]["mysql"]["password"].value,
+            "host": CONFIG["database"]["mysql"]["host"].value,
+            "port": CONFIG["database"]["mysql"]["port"].value,
+            "database": CONFIG["database"]["mysql"]["database"].value,
+            "raise_on_warnings": True,
         }
 
         try:
@@ -33,12 +33,12 @@ class MySQL(BackendBase):
         #     self.__add_table(TABLE_VERSION_DB, False)
 
     def __shutdown(self):
-        '''Shutdown the System Here'''
+        """Shutdown the System Here"""
         super()._conn.close()
 
     def __get_cursor(self):
-        '''returns a sql cursor'''
+        """returns a sql cursor"""
         return super()._conn.cursor(dictionary=True)
 
     def __table_check(self, table: Table) -> bool:
-        '''checks if the table exists adds it if it doesn't and update it if needed'''
+        """checks if the table exists adds it if it doesn't and update it if needed"""

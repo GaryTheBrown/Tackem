@@ -1,24 +1,24 @@
-'''drives pages'''
+"""drives pages"""
 import cherrypy
 from libs.authenticator import Authentication
 from libs.html_template import HTMLTEMPLATE
 
 
 class Drives(HTMLTEMPLATE):
-    '''DRIVES WEBUI'''
+    """DRIVES WEBUI"""
 
     def _return(self):
-        '''return on fail'''
+        """return on fail"""
         raise cherrypy.HTTPRedirect(self._baseurl + "ripping/ripper/")
 
     @cherrypy.expose
     def index(self):
-        '''index page return to ripper main page'''
+        """index page return to ripper main page"""
         self._return()
 
     @cherrypy.expose
     def single(self, index=None):
-        '''get single Drive'''
+        """get single Drive"""
         Authentication.check_auth()
         if index is None:
             self._return()

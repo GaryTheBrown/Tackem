@@ -1,9 +1,9 @@
-'''CONFIG Rules'''
+"""CONFIG Rules"""
 from typing import Union
 
 
 class ConfigRules:
-    ''' Data for any group rules'''
+    """ Data for any group rules"""
 
     def __init__(self, for_each: Union[list, dict] = None):
         # Defaults
@@ -15,5 +15,5 @@ class ConfigRules:
 
     @property
     def for_each(self) -> Union[list, dict]:
-        '''return the list to show for each'''
+        """return the list to show for each"""
         return self.__for_each

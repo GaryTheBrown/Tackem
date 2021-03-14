@@ -1,4 +1,4 @@
-'''Class Property Magic'''
+"""Class Property Magic"""
 
 
 class classproperty(property):

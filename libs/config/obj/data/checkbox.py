@@ -1,21 +1,21 @@
-'''Config Object Checkbox'''
+"""Config Object Checkbox"""
 from typing import Optional
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.html_system import HTMLSystem
 
 
 class ConfigObjCheckbox:
-    '''Config Item Checkbox'''
+    """Config Item Checkbox"""
 
     def __init__(
-            self,
-            value: str,
-            label: str,
-            read_only: bool = False,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            short_label: str = "",
-            input_attributes: Optional[InputAttributes] = None,
+        self,
+        value: str,
+        label: str,
+        read_only: bool = False,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        short_label: str = "",
+        input_attributes: Optional[InputAttributes] = None,
     ):
         if not isinstance(value, str):
             raise ValueError("value is not a string")
@@ -43,13 +43,13 @@ class ConfigObjCheckbox:
 
     @property
     def spec(self) -> str:
-        '''Returns the line for the config option'''
+        """Returns the line for the config option"""
         if self.not_in_config:
             return ""
         return '"' + self.value + '"'
 
     def __attributes(self, checked: bool) -> str:
-        '''returns the attributes as a string for the config html'''
+        """returns the attributes as a string for the config html"""
         string = ""
         if self.__input_attributes:
             string = self.__input_attributes.html()
@@ -60,7 +60,7 @@ class ConfigObjCheckbox:
         return string
 
     def html(self, checked: bool, variable_name: str) -> str:
-        '''Returns the option html for the config'''
+        """Returns the option html for the config"""
         if self.__hide_on_html:
             return ""
         return HTMLSystem.part(
@@ -68,35 +68,35 @@ class ConfigObjCheckbox:
             VALUE=self.__value,
             VARIABLENAME=variable_name,
             LABEL=self.__label,
-            OTHER=self.__attributes(checked)
+            OTHER=self.__attributes(checked),
         )
 
     @property
     def value(self):
-        '''Returns Value'''
+        """Returns Value"""
         return self.__value
 
     @property
     def label(self):
-        '''Returns Label'''
+        """Returns Label"""
         return self.__label
 
     @property
     def hide_on_html(self):
-        '''Returns Hide ON HTML'''
+        """Returns Hide ON HTML"""
         return self.__hide_on_html
 
     @property
     def not_in_config(self):
-        '''Returns not in Config'''
+        """Returns not in Config"""
         return self.__not_in_config
 
     @property
     def short_label(self):
-        '''Returns the Shortened Label'''
+        """Returns the Shortened Label"""
         return self.__short_label
 
     @property
     def input_attributes(self) -> Optional[InputAttributes]:
-        '''returns the input attributes'''
+        """returns the input attributes"""
         return self.__input_attributes

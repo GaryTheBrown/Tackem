@@ -1,7 +1,7 @@
-'''
+"""
 Creates checksum hash for a file in Binary from SHA256
 If storing in the DB you need a BINARY(32)
-'''
+"""
 import datetime
 import hashlib
 import threading
@@ -14,13 +14,13 @@ from data.database.library import LIBRARY_FILES_DB
 
 
 class FileChecker:
-    '''system to check the files are not damaged'''
+    """system to check the files are not damaged"""
 
     __BLOCKSIZE = 65536
     __list = []
     __event = threading.Event()
     __lock = threading.Lock()
-    __config = CONFIG['libraries']['global']['autofilecheck']
+    __config = CONFIG["libraries"]["global"]["autofilecheck"]
 
     def __init__(self):
 
@@ -31,28 +31,28 @@ class FileChecker:
         self._thread_run = False
 
     def start(self):
-        '''starts the file checker'''
+        """starts the file checker"""
         if self._thread_run is False:
             self._thread_run = True
             self.__thread.start()
 
     def stop(self):
-        '''stops the Library'''
+        """stops the Library"""
         if self._thread_run is True:
             self._thread_run = False
             self.__event.set()
 
     def extend(self, data: list):
-        '''Extend the list of files to check'''
+        """Extend the list of files to check"""
         with self.__lock:
             self.__list.extend(data)
         self.__event.set()
 
     def get_file_checksum(self, file: str) -> str:
-        '''Creates checksum hash for a file in Binary from SHA256'''
+        """Creates checksum hash for a file in Binary from SHA256"""
 
         hasher = hashlib.sha256()
-        with open(file, 'rb') as open_file:
+        with open(file, "rb") as open_file:
             buffer = open_file.read(self.__BLOCKSIZE)
             while len(buffer) > 0:
                 hasher.update(buffer)
@@ -60,8 +60,8 @@ class FileChecker:
         return hasher.digest()
 
     def check_for_files(self):
-        '''Threadded Script For running'''
-        regularity = self.__config['regularity'].value
+        """Threadded Script For running"""
+        regularity = self.__config["regularity"].value
 
         if regularity == "disabled":
             return
@@ -83,17 +83,14 @@ class FileChecker:
             now = now + datetime.timedelta(years=-1)
 
         timestamp = int(now.timestamp())
-        msg = SQLSelect(
-            LIBRARY_FILES_DB,
-            Where("last_check", timestamp, ">")
-        )
+        msg = SQLSelect(LIBRARY_FILES_DB, Where("last_check", timestamp, ">"))
 
         Database.call(msg)
 
         self.extend(msg.return_data)
 
     def run(self):
-        '''Threadded Script For running'''
+        """Threadded Script For running"""
         while self._thread_run:
             self.__event.wait()
             if not self._thread_run:
@@ -112,29 +109,23 @@ class FileChecker:
             with self.__lock:
                 item = self.__list.pop()
 
-            full_path = item['folder'] + item['file']
+            full_path = item["folder"] + item["file"]
             if Path(full_path).is_file():
                 checksum = self.get_file_checksum(full_path)
 
-                update_data = {
-                    "checksum": checksum
-                }
+                update_data = {"checksum": checksum}
 
-                if checksum != item['checksum']:
+                if checksum != item["checksum"]:
                     print(f"FILE HAS GONE BAD {full_path}")
-                    update_data['bad_file'] = 1
+                    update_data["bad_file"] = 1
 
                 msg = SQLUpdate(
-                    LIBRARY_FILES_DB,
-                    Where("id", item['id']),
-                    checksum=checksum
+                    LIBRARY_FILES_DB, Where("id", item["id"]), checksum=checksum
                 )
 
             else:
                 msg = SQLUpdate(
-                    LIBRARY_FILES_DB,
-                    Where("id", item['id']),
-                    missing_file=1
+                    LIBRARY_FILES_DB, Where("id", item["id"]), missing_file=1
                 )
 
             Database.call(msg)

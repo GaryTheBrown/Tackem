@@ -1,9 +1,9 @@
-'''Where Object'''
+"""Where Object"""
 from typing import Any
 
 
 class Where:
-    '''Where Object'''
+    """Where Object"""
 
     def __init__(self, key: str, value: Any, expression: str = "="):
         self.__key = key
@@ -12,20 +12,20 @@ class Where:
 
     @property
     def key(self):
-        '''returns key'''
+        """returns key"""
         return self.__key
 
     @property
     def value(self):
-        '''return value'''
+        """return value"""
         return self.__value
 
     @property
     def expression(self):
-        '''return expression'''
+        """return expression"""
         return self.__expression
 
     @property
     def query(self):
-        '''returns the query String'''
+        """returns the query String"""
         return f"{self.__key}{self.__expression}'{self.__value}'"

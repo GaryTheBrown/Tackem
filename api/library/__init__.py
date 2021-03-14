@@ -1,18 +1,18 @@
-'''LIBRARY ROOT API'''
+"""LIBRARY ROOT API"""
 import cherrypy
 from api.base import APIBase
 
 
 @cherrypy.expose
 class APILibrary(APIBase):
-    '''ROOT API'''
+    """ROOT API"""
 
     def _cp_dispatch(self, vpath):
-        '''cp dispatcher overwrite'''
+        """cp dispatcher overwrite"""
         if len(vpath) == 0:
             return self
 
-        if cherrypy.request.params['user'] != self.MASTER:
+        if cherrypy.request.params["user"] != self.MASTER:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
         if len(vpath) == 1:
@@ -36,7 +36,7 @@ class APILibrary(APIBase):
         return self
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
-        '''GET Function'''
+        """GET Function"""
         user = kwargs.get("user", self.GUEST)
         action = kwargs.get("action", None)
 

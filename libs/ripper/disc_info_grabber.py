@@ -1,33 +1,30 @@
-'''function to grab the info needed for makemkv and the converter'''
+"""function to grab the info needed for makemkv and the converter"""
 import json
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database import Database
 from libs.database.messages import SQLUpdate
 from libs.database.where import Where
 from libs.ripper.data.disc_type import DiscType, make_disc_type
+
 # from .data import disc_type, video_track_type as track_type
 
 
 def rip_data(db_data: dict) -> DiscType:
-    '''comment'''
-    if db_data['rip_data'] is not None:
-        return make_disc_type(json.loads(db_data['rip_data']))
+    """comment"""
+    if db_data["rip_data"] is not None:
+        return make_disc_type(json.loads(db_data["rip_data"]))
 
-    rip_list = apiaccess_video_disc_id(db_data['uuid'], db_data['label'])
+    rip_list = apiaccess_video_disc_id(db_data["uuid"], db_data["label"])
     if isinstance(rip_list, str) and isinstance(json.loads(rip_list), (dict, list)):
         Database.call(
-            SQLUpdate(
-                VIDEO_INFO_DB,
-                Where("id", db_data['id']),
-                rip_data=rip_list
-            )
+            SQLUpdate(VIDEO_INFO_DB, Where("id", db_data["id"]), rip_data=rip_list)
         )
         return make_disc_type(json.loads(rip_list))
 
 
 def apiaccess_video_disc_id(uuid: str, label: str):
-    '''will access the api and check if the disc exists
-    TEMP FUNCTION BELLOW TO EXPAND WHEN READY TO.'''
+    """will access the api and check if the disc exists
+    TEMP FUNCTION BELLOW TO EXPAND WHEN READY TO."""
     return 1
     # uuid_temp = "36cc8c4d00000000"
     # label_temp = "AQUA_TEEN_COLON_MOVIE"

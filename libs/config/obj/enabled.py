@@ -1,10 +1,10 @@
-'''Config Object Boolean'''
+"""Config Object Boolean"""
 from libs.config.obj.boolean import ConfigObjBoolean
 from libs.config.obj.data.input_attributes import InputAttributes
 
 
 class ConfigObjEnabled(ConfigObjBoolean):
-    '''Config Item Boolean'''
+    """Config Item Boolean"""
 
     def __init__(self, default_value=False, disabled=False):
         super().__init__(
@@ -19,9 +19,9 @@ class ConfigObjEnabled(ConfigObjBoolean):
                 data_onstyle="success",
                 data_offstyle="secondary",
                 data_width="124",
-            )
+            ),
         )
 
     def add_panel_toggle(self):
-        '''Adds the toggle command'''
+        """Adds the toggle command"""
         self.input_attributes.add_if_missing(data_toggle_panel="true")

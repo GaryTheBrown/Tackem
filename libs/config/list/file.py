@@ -1,4 +1,4 @@
-'''CONFIG List Class'''
+"""CONFIG List Class"""
 from typing import Optional
 from configobj import ConfigObj
 from validate import Validator
@@ -10,7 +10,7 @@ from libs.file import File
 
 
 class ConfigListFile(ConfigListBase):
-    '''CONFIG List Class'''
+    """CONFIG List Class"""
 
     __config: ConfigObj = None
 
@@ -21,8 +21,7 @@ class ConfigListFile(ConfigListBase):
         # to check spec output uncomment bellow
         # print(temp_spec)
         spec = temp_spec.split("\n")
-        self.__config = ConfigObj(
-            PROGRAMCONFIGLOCATION + "config.ini", configspec=spec)
+        self.__config = ConfigObj(PROGRAMCONFIGLOCATION + "config.ini", configspec=spec)
         validator = Validator(EXTRA_FUNCTIONS)
         self.__config.validate(validator, copy=True)
         self.__config.filename = PROGRAMCONFIGLOCATION + "config.ini"
@@ -30,7 +29,7 @@ class ConfigListFile(ConfigListBase):
         self.load_configobj()
 
     def save(self):
-        '''Save the Config'''
+        """Save the Config"""
         self.update_configobj()
         try:
             self.__config.write()
@@ -38,7 +37,7 @@ class ConfigListFile(ConfigListBase):
             print("ERROR WRITING Config FILE")
 
     def update_configobj(self, config: ConfigObj = None):
-        '''Updates the config Object for saving'''
+        """Updates the config Object for saving"""
         if self._objects is None:
             return
 
@@ -59,7 +58,7 @@ class ConfigListFile(ConfigListBase):
                 config[item.var_name] = item.value
 
     def load_configobj(self, config: ConfigObj = None, many_type: Optional[str] = None):
-        '''Loads the congfig object into the master config file'''
+        """Loads the congfig object into the master config file"""
         if self._objects is None:
             return
 
@@ -108,7 +107,7 @@ class ConfigListFile(ConfigListBase):
             # TODO  make this check for a rule and then do the rule magic here.
 
     def get_spec_part(self, indent: int) -> str:
-        '''function for recursion of list'''
+        """function for recursion of list"""
         return_string = ""
         for item in self._objects:
             if item.not_in_config:
@@ -117,39 +116,39 @@ class ConfigListFile(ConfigListBase):
                 if item.is_section:
                     return_string += item.get_spec_part(indent)
                 else:
-                    return_string += self.__tab(indent) + \
-                        self.__open_bracket(indent + 1)
-                    return_string += item.var_name + \
-                        self.__close_bracket(indent + 1) + "\n"
+                    return_string += self.__tab(indent) + self.__open_bracket(
+                        indent + 1
+                    )
+                    return_string += (
+                        item.var_name + self.__close_bracket(indent + 1) + "\n"
+                    )
                     return_string += item.get_spec_part(indent + 1)
             elif isinstance(item, ConfigObjBase):
                 return_string += self.__tab(indent) + item.spec
 
         if self.many_section:
-            return_string += self.__tab(indent) + \
-                self.__open_bracket(indent + 1)
-            return_string += "__many__" + \
-                self.__close_bracket(indent + 1) + "\n"
+            return_string += self.__tab(indent) + self.__open_bracket(indent + 1)
+            return_string += "__many__" + self.__close_bracket(indent + 1) + "\n"
             return_string += self.many_section.get_spec_part(indent + 1)
 
         return return_string
 
     def __tab(self, count: int) -> str:
-        '''Insert the tabbing'''
+        """Insert the tabbing"""
         return_string = ""
         for _ in range(count):
             return_string += "    "
         return return_string
 
     def __open_bracket(self, count: int) -> str:
-        '''Insert the open brackets'''
+        """Insert the open brackets"""
         return_string = ""
         for _ in range(count):
             return_string += "["
         return return_string
 
     def __close_bracket(self, count: int) -> str:
-        '''Insert the close brackets'''
+        """Insert the close brackets"""
         return_string = ""
         for _ in range(count):
             return_string += "]"

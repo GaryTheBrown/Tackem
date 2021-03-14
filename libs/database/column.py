@@ -1,11 +1,11 @@
-'''Column Defenition Stuff Useful for updating tables'''
+"""Column Defenition Stuff Useful for updating tables"""
 from typing import Optional, Any
 from datetime import datetime, date, time
 import json
 
 
 class Column:
-    '''Column'''
+    """Column"""
 
     TYPE_BIT = "bit"
     TYPE_TINYINT = "tinyint"
@@ -44,31 +44,55 @@ class Column:
         # bool
         "bit": 0,
         # ints
-        "tinyint": 1, "smallint": 1, "int": 1, "mediumint": 1, "integer": 1, "bigint": 1,
+        "tinyint": 1,
+        "smallint": 1,
+        "int": 1,
+        "mediumint": 1,
+        "integer": 1,
+        "bigint": 1,
         # float
-        "real": 2, "double": 2, "float": 2, "decimal": 2, "numeric": 2,
-
+        "real": 2,
+        "double": 2,
+        "float": 2,
+        "decimal": 2,
+        "numeric": 2,
         # text
-        "char": 3, "varchar": 3, "binary": 3, "varbinary": 3, "tinyblob": 3, "blob": 3,
-        "mediumblob": 3, "longblob": 3, "tinytext": 3, "text": 3, "mediumtext": 3, "longtext": 3,
+        "char": 3,
+        "varchar": 3,
+        "binary": 3,
+        "varbinary": 3,
+        "tinyblob": 3,
+        "blob": 3,
+        "mediumblob": 3,
+        "longblob": 3,
+        "tinytext": 3,
+        "text": 3,
+        "mediumtext": 3,
+        "longtext": 3,
         # special
-        "date": 4, "time": 5, "timestamp": 6, "datetime": 7,
-        "year": 8, "enum": 9, "set": 10, "json": 11
+        "date": 4,
+        "time": 5,
+        "timestamp": 6,
+        "datetime": 7,
+        "year": 8,
+        "enum": 9,
+        "set": 10,
+        "json": 11,
     }
 
     def __init__(
-            self,
-            name: str,
-            variable_type: str,
-            primary_key: bool = False,
-            unique: bool = False,
-            not_null: bool = False,
-            default: Any = None,
-            default_raw: bool = False,
-            size: Optional[int] = None,
-            decimal: Optional[int] = None,
-            unsigned: bool = False,
-            auto_increment: bool = False,
+        self,
+        name: str,
+        variable_type: str,
+        primary_key: bool = False,
+        unique: bool = False,
+        not_null: bool = False,
+        default: Any = None,
+        default_raw: bool = False,
+        size: Optional[int] = None,
+        decimal: Optional[int] = None,
+        unsigned: bool = False,
+        auto_increment: bool = False,
     ):
         self.__name = name
         self.__type = variable_type
@@ -84,72 +108,78 @@ class Column:
 
     @property
     def name(self):
-        '''returns the name'''
+        """returns the name"""
         return self.__name
 
     @property
     def variable_type(self):
-        '''returns the variable_type'''
+        """returns the variable_type"""
         return self.__type
 
     @property
     def primary_key(self):
-        '''returns the primary_key'''
+        """returns the primary_key"""
         return self.__primary_key
 
     @property
     def unique(self):
-        '''returns the unique'''
+        """returns the unique"""
         return self.__unique
 
     @property
     def not_null(self):
-        '''returns the not_null'''
+        """returns the not_null"""
         return self.__not_null
 
     @property
     def default(self):
-        '''returns the default'''
+        """returns the default"""
         return self.__default
 
     @property
     def default_raw(self):
-        '''returns the default_raw'''
+        """returns the default_raw"""
         return self.__default_raw
 
     @property
     def size(self):
-        '''returns the size'''
+        """returns the size"""
         return self.__size
 
     @property
     def decimal(self):
-        '''returns the decimal'''
+        """returns the decimal"""
         return self.__decimal
 
     @property
     def unsigned(self):
-        '''returns the unsigned'''
+        """returns the unsigned"""
         return self.__unsigned
 
     @property
     def auto_increment(self):
-        '''returns the auto_increment'''
+        """returns the auto_increment"""
         return self.__auto_increment
 
     def check_value(self, value: Any):
-        '''checks the value is correct depending on the type set will throw errors if wrong'''
-        if (self.__types[self.__type] == 0 and isinstance(value, bool)) \
-                or (self.__types[self.__type] == 1 and isinstance(value, int)) \
-                or (self.__types[self.__type] == 2 and isinstance(value, float)) \
-                or (self.__types[self.__type] == 3 and isinstance(value, str)) \
-                or (self.__types[self.__type] == 4 and isinstance(value, date)) \
-                or (self.__types[self.__type] == 5 and isinstance(value, time)) \
-                or (self.__types[self.__type] == 6 and isinstance(value, int)) \
-                or (self.__types[self.__type] == 7 and isinstance(value, datetime)) \
-                or (self.__types[self.__type] == 8 and isinstance(value, int) and 9999 >= value >= 0) \
-                or (self.__types[self.__type] == 9 and isinstance(value, str)) \
-                or (self.__types[self.__type] == 10 and isinstance(value, str)):
+        """checks the value is correct depending on the type set will throw errors if wrong"""
+        if (
+            (self.__types[self.__type] == 0 and isinstance(value, bool))
+            or (self.__types[self.__type] == 1 and isinstance(value, int))
+            or (self.__types[self.__type] == 2 and isinstance(value, float))
+            or (self.__types[self.__type] == 3 and isinstance(value, str))
+            or (self.__types[self.__type] == 4 and isinstance(value, date))
+            or (self.__types[self.__type] == 5 and isinstance(value, time))
+            or (self.__types[self.__type] == 6 and isinstance(value, int))
+            or (self.__types[self.__type] == 7 and isinstance(value, datetime))
+            or (
+                self.__types[self.__type] == 8
+                and isinstance(value, int)
+                and 9999 >= value >= 0
+            )
+            or (self.__types[self.__type] == 9 and isinstance(value, str))
+            or (self.__types[self.__type] == 10 and isinstance(value, str))
+        ):
             return
         if self.__types[self.__type] == 11:
             if isinstance(value, str):
@@ -163,14 +193,12 @@ class Column:
                     json.dumps(value)
                     return
                 except:
-                    raise ValueError(
-                        f"{self.__name} cannot convert to Json String")
+                    raise ValueError(f"{self.__name} cannot convert to Json String")
 
-        raise ValueError(
-            f"{self.__name} Expecting {self.__type} found {type(value)}")
+        raise ValueError(f"{self.__name} Expecting {self.__type} found {type(value)}")
 
     def create_string(self) -> str:
-        '''turns Column info into a string for commands'''
+        """turns Column info into a string for commands"""
         return_string = f'"{self.__name}" {self.__type.upper()}'
         if self.__size and self.__decimal:
             return_string += f"({self.__size}, {self.__decimal})"

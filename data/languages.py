@@ -1,10 +1,12 @@
-'''special system for languages including conversion between types'''
+"""special system for languages including conversion between types"""
 
 
 class Language:
-    '''Single Language Class'''
+    """Single Language Class"""
 
-    def __init__(self, name: str, iso_639_1: str, iso_639_2t: str, iso_639_2b: str, family: str):
+    def __init__(
+        self, name: str, iso_639_1: str, iso_639_2t: str, iso_639_2b: str, family: str
+    ):
         self.__name = name
         self.__iso_639_1 = iso_639_1
         self.__iso_639_2t = iso_639_2t
@@ -13,32 +15,33 @@ class Language:
 
     @property
     def name(self):
-        '''Returns Name'''
+        """Returns Name"""
         return self.__name
 
     @property
     def iso_639_1(self):
-        '''Returns 2 letter code'''
+        """Returns 2 letter code"""
         return self.__iso_639_1
 
     @property
     def iso_639_2t(self):
-        '''Returns 3 letter local name'''
+        """Returns 3 letter local name"""
         return self.__iso_639_2t
 
     @property
     def iso_639_2b(self):
-        '''Returns 3 letter english name'''
+        """Returns 3 letter english name"""
         return self.__iso_639_2b
 
     @property
     def family(self):
-        '''Returns family'''
+        """Returns family"""
         return self.__family
 
 
 class Languages:
-    '''controller for languages'''
+    """controller for languages"""
+
     __LANGUAGES = [
         Language("Abkhazian", "ab", "abk", "abk", "Northwest Caucasian"),
         Language("Afar", "aa", "aar", "aar", "Afro-Asiatic"),
@@ -77,8 +80,7 @@ class Languages:
         Language("Croatian", "hr", "hrv", "hrv", "Indo-European"),
         Language("Czech", "cs", "ces", "cze", "Indo-European"),
         Language("Danish", "da", "dan", "dan", "Indo-European"),
-        Language("Divehi, Dhivehi, Maldivian", "dv",
-                 "div", "div", "Indo-European"),
+        Language("Divehi, Dhivehi, Maldivian", "dv", "div", "div", "Indo-European"),
         Language("Dutch, Flemish", "nl", "nld", "dut", "Indo-European"),
         Language("Dzongkha", "dz", "dzo", "dzo", "Sino-Tibetan"),
         Language("English", "en", "eng", "eng", "Indo-European"),
@@ -103,8 +105,13 @@ class Languages:
         Language("Hindi", "hi", "hin", "hin", "Indo-European"),
         Language("Hiri Motu", "ho", "hmo", "hmo", "Austronesian"),
         Language("Hungarian", "hu", "hun", "hun", "Uralic"),
-        Language("Interlingua (International Auxiliary Language Association)", "ia", "ina", "ina",
-                 "Constructed"),
+        Language(
+            "Interlingua (International Auxiliary Language Association)",
+            "ia",
+            "ina",
+            "ina",
+            "Constructed",
+        ),
         Language("Indonesian", "id", "ind", "ind", "Austronesian"),
         Language("Interlingue, Occidental", "ie", "ile", "ile", "Constructed"),
         Language("Irish", "ga", "gle", "gle", "Indo-European"),
@@ -116,8 +123,7 @@ class Languages:
         Language("Inuktitut", "iu", "iku", "iku", "Eskimo–Aleut"),
         Language("Japanese", "ja", "jpn", "jpn", "Japonic"),
         Language("Javanese", "jv", "jav", "jav", "Austronesian"),
-        Language("Kalaallisut, Greenlandic", "kl",
-                 "kal", "kal", "Eskimo–Aleut"),
+        Language("Kalaallisut, Greenlandic", "kl", "kal", "kal", "Eskimo–Aleut"),
         Language("Kannada", "kn", "kan", "kan", "Dravidian"),
         Language("Kanuri", "kr", "kau", "kau", "Nilo-Saharan"),
         Language("Kashmiri", "ks", "kas", "kas", "Indo-European"),
@@ -132,11 +138,11 @@ class Languages:
         Language("Kurdish", "ku", "kur", "kur", "Indo-European"),
         Language("Kuanyama, Kwanyama", "kj", "kua", "kua", "Niger–Congo"),
         Language("Latin", "la", "lat", "lat", "Indo-European"),
-        Language("Luxembourgish, Letzeburgesch",
-                 "lb", "ltz", "ltz", "Indo-European"),
+        Language("Luxembourgish, Letzeburgesch", "lb", "ltz", "ltz", "Indo-European"),
         Language("Ganda", "lg", "lug", "lug", "Niger–Congo"),
-        Language("Limburgan, Limburger, Limburgish",
-                 "li", "lim", "lim", "Indo-European"),
+        Language(
+            "Limburgan, Limburger, Limburgish", "li", "lim", "lim", "Indo-European"
+        ),
         Language("Lingala", "ln", "lin", "lin", "Niger–Congo"),
         Language("Lao", "lo", "lao", "lao", "Tai–Kadai"),
         Language("Lithuanian", "lt", "lit", "lit", "Indo-European"),
@@ -164,8 +170,13 @@ class Languages:
         Language("South Ndebele", "nr", "nbl", "nbl", "Niger–Congo"),
         Language("Occitan", "oc", "oci", "oci", "Indo-European"),
         Language("Ojibwa", "oj", "oji", "oji", "Algonquian"),
-        Language("Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic",
-                 "cu", "chu", "chu", "Indo-European"),
+        Language(
+            "Church Slavic, Old Slavonic, Church Slavonic, Old Bulgarian, Old Church Slavonic",
+            "cu",
+            "chu",
+            "chu",
+            "Indo-European",
+        ),
         Language("Oromo", "om", "orm", "orm", "Afro-Asiatic"),
         Language("Oriya", "or", "ori", "ori", "Indo-European"),
         Language("Ossetian, Ossetic", "os", "oss", "oss", "Indo-European"),
@@ -178,8 +189,7 @@ class Languages:
         Language("Quechua", "qu", "que", "que", "Quechuan"),
         Language("Romansh", "rm", "roh", "roh", "Indo-European"),
         Language("Rundi", "rn", "run", "run", "Niger–Congo"),
-        Language("Romanian, Moldavian, Moldovan",
-                 "ro", "ron", "rum", "Indo-European"),
+        Language("Romanian, Moldavian, Moldovan", "ro", "ron", "rum", "Indo-European"),
         Language("Russian", "ru", "rus", "rus", "Indo-European"),
         Language("Sanskrit", "sa", "san", "san", "Indo-European"),
         Language("Sardinian", "sc", "srd", "srd", "Indo-European"),
@@ -188,8 +198,7 @@ class Languages:
         Language("Samoan", "sm", "smo", "smo", "Austronesian"),
         Language("Sango", "sg", "sag", "sag", "Creole"),
         Language("Serbian", "sr", "srp", "srp", "Indo-European"),
-        Language("Gaelic, Scottish Gaelic", "gd",
-                 "gla", "gla", "Indo-European"),
+        Language("Gaelic, Scottish Gaelic", "gd", "gla", "gla", "Indo-European"),
         Language("Shona", "sn", "sna", "sna", "Niger–Congo"),
         Language("Sinhala, Sinhalese", "si", "sin", "sin", "Indo-European"),
         Language("Slovak", "sk", "slk", "slo", "Indo-European"),
@@ -231,27 +240,27 @@ class Languages:
         Language("Yiddish", "yi", "yid", "yid", "Indo-European"),
         Language("Yoruba", "yo", "yor", "yor", "Niger–Congo"),
         Language("Zhuang, Chuang", "za", "zha", "zha", "Tai–Kadai"),
-        Language("Zulu", "zu", "zul", "zul", "Niger–Congo")
+        Language("Zulu", "zu", "zul", "zul", "Niger–Congo"),
     ]
 
     @classmethod
     def config_option_2(cls, obj):
-        '''returns a list of 2 letter codes'''
+        """returns a list of 2 letter codes"""
         return [obj(x.iso_639_1, x.name) for x in cls.__LANGUAGES]
 
     @classmethod
     def config_option_3t(cls, obj):
-        '''returns a list of 3 letter local codes'''
+        """returns a list of 3 letter local codes"""
         return [obj(x.iso_639_2t, x.name) for x in cls.__LANGUAGES]
 
     @classmethod
     def config_option_3b(cls, obj):
-        '''returns a list of 3 letter English codes'''
+        """returns a list of 3 letter English codes"""
         return [obj(x.iso_639_2b, x.name) for x in cls.__LANGUAGES]
 
     @classmethod
     def get_name_from_2(cls, code: str):
-        '''gets the name from the 2 letter code'''
+        """gets the name from the 2 letter code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.name
@@ -259,7 +268,7 @@ class Languages:
 
     @classmethod
     def get_name_from_3t(cls, code: str):
-        '''gets the name from the 3 letter local code'''
+        """gets the name from the 3 letter local code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.name
@@ -267,7 +276,7 @@ class Languages:
 
     @classmethod
     def get_name_from_3b(cls, code: str):
-        '''gets the name from the 3 letter English code'''
+        """gets the name from the 3 letter English code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.name
@@ -275,7 +284,7 @@ class Languages:
 
     @classmethod
     def convert_2_to_3t(cls, code: str):
-        '''converts from 2 letter code to 3 letter local code'''
+        """converts from 2 letter code to 3 letter local code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.iso_639_2t
@@ -283,7 +292,7 @@ class Languages:
 
     @classmethod
     def convert_2_to_3b(cls, code: str):
-        '''converts from 2 letter code to 3 letter English code'''
+        """converts from 2 letter code to 3 letter English code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:
                 return language.iso_639_2t
@@ -291,7 +300,7 @@ class Languages:
 
     @classmethod
     def convert_3t_to_2(cls, code: str):
-        '''converts from 3 letter local code to 2 letter code'''
+        """converts from 3 letter local code to 2 letter code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.iso_639_1
@@ -299,7 +308,7 @@ class Languages:
 
     @classmethod
     def convert_3t_to_3b(cls, code: str):
-        '''converts from 3 letter local code to 3 letter English code'''
+        """converts from 3 letter local code to 3 letter English code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_2t == code:
                 return language.iso_639_2b
@@ -307,7 +316,7 @@ class Languages:
 
     @classmethod
     def convert_3b_to_2(cls, code: str):
-        '''converts from 3 letter English code to 2 letter code'''
+        """converts from 3 letter English code to 2 letter code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.iso_639_1
@@ -315,7 +324,7 @@ class Languages:
 
     @classmethod
     def convert_3b_to_3t(cls, code: str):
-        '''converts from 3 letter English code to 3 letter local code'''
+        """converts from 3 letter English code to 3 letter local code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_2b == code:
                 return language.iso_639_2t

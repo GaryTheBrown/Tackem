@@ -1,4 +1,4 @@
-'''User Add API'''
+"""User Add API"""
 import cherrypy
 from api.base import APIBase
 from libs.authenticator import Authentication
@@ -6,10 +6,10 @@ from libs.authenticator import Authentication
 
 @cherrypy.expose
 class APIAdminUserAdd(APIBase):
-    '''User Add API'''
+    """User Add API"""
 
     def POST(self, **kwargs) -> str:
-        '''POST Function'''
+        """POST Function"""
         user = kwargs.get("user", self.GUEST)
         if "username" not in kwargs:
             return self._return_data(
@@ -18,7 +18,7 @@ class APIAdminUserAdd(APIBase):
                 "Add User",
                 False,
                 error="Missing User Name",
-                errorNumber=0
+                errorNumber=0,
             )
         if "password" not in kwargs:
             return self._return_data(
@@ -27,7 +27,7 @@ class APIAdminUserAdd(APIBase):
                 "Add User",
                 False,
                 error="Missing User Password",
-                errorNumber=1
+                errorNumber=1,
             )
         if "isadmin" not in kwargs:
             return self._return_data(
@@ -36,13 +36,9 @@ class APIAdminUserAdd(APIBase):
                 "Add User",
                 False,
                 error="Missing is admin Setting",
-                errorNumber=2
+                errorNumber=2,
             )
         Authentication.add_user(
-            kwargs['username'], kwargs['password'], bool(kwargs['isadmin']))
-        return self._return_data(
-            user,
-            "User",
-            "Add User",
-            True
+            kwargs["username"], kwargs["password"], bool(kwargs["isadmin"])
         )
+        return self._return_data(user, "User", "Add User", True)

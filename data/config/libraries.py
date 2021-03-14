@@ -1,4 +1,4 @@
-'''Libraries Config'''
+"""Libraries Config"""
 from libs.config.list import ConfigList
 from libs.config.obj.boolean import ConfigObjBoolean
 from libs.config.obj.enabled import ConfigObjEnabled
@@ -9,7 +9,7 @@ from libs.config.obj.options.select import ConfigObjOptionsSelect
 
 
 def libraries_config() -> ConfigList:
-    '''Libraries Config'''
+    """Libraries Config"""
     return ConfigList(
         "libraries",
         "Libraries",
@@ -33,41 +33,29 @@ def libraries_config() -> ConfigList:
                     ],
                     "monthly",
                     "Auto File Check ",
-                    "How often to automatically check the files for corruption"
+                    "How often to automatically check the files for corruption",
                 ),
                 ConfigObjBoolean(
-                    "log",
-                    True,
-                    "Log",
-                    "should I log all runs of the filechecker?"
-                )
+                    "log", True, "Log", "should I log all runs of the filechecker?"
+                ),
             ),
             ConfigList(
                 "extensions",
                 "Extensions",
                 ConfigObjStringList(
                     "video",
-                    [
-                        "mkv",
-                        "avi",
-                        "mp4",
-                        "m2ts"
-                    ],
+                    ["mkv", "avi", "mp4", "m2ts"],
                     "Video File Extensions",
-                    "what extensions are linked to video files"
+                    "what extensions are linked to video files",
                 ),
                 ConfigObjStringList(
                     "audio",
-                    [
-                        "mp3",
-                        "ogg",
-                        "flac"
-                    ],
+                    ["mp3", "ogg", "flac"],
                     "Audio File Extensions",
-                    "what extensions are linked to audio files"
+                    "what extensions are linked to audio files",
                 )
                 # Game Extensions will go into a folder that stores info on each system supported
-            )
+            ),
         ),
         ConfigList(
             "games",
@@ -80,13 +68,11 @@ def libraries_config() -> ConfigList:
                     "location",
                     "Library/Games/",
                     "Games Library Location",
-                    "Where is the library stored?"
-                )
+                    "Where is the library stored?",
+                ),
             ),
             # This should be generated from the folder that stores info on each system supported.
-            many_section_limit_list=[
-                "SNES", "NES"
-            ]
+            many_section_limit_list=["SNES", "NES"],
         ),
         ConfigList(
             "movies",
@@ -99,9 +85,9 @@ def libraries_config() -> ConfigList:
                     "location",
                     "Library/Movies/",
                     "Movies Location",
-                    "Where is the library stored?"
-                )
-            )
+                    "Where is the library stored?",
+                ),
+            ),
         ),
         ConfigList(
             "tvshows",
@@ -114,9 +100,9 @@ def libraries_config() -> ConfigList:
                     "location",
                     "Library/TVShows/",
                     "TV Show Location",
-                    "Where is the library stored?"
-                )
-            )
+                    "Where is the library stored?",
+                ),
+            ),
         ),
         ConfigList(
             "music",
@@ -129,8 +115,8 @@ def libraries_config() -> ConfigList:
                     "location",
                     "Library/Music/",
                     "Music Location",
-                    "Where is the library stored?"
-                )
-            )
-        )
+                    "Where is the library stored?",
+                ),
+            ),
+        ),
     )

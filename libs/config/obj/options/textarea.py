@@ -1,4 +1,4 @@
-'''Config Object Options Radio'''
+"""Config Object Options Radio"""
 from typing import Optional, List, Union
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.radio import ConfigObjRadio
@@ -8,20 +8,20 @@ from libs.html_system import HTMLSystem
 
 
 class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
-    '''Config Item Options Radio'''
+    """Config Item Options Radio"""
 
     def __init__(
-            self,
-            var_name: str,
-            values: List[ConfigObjRadio],
-            default_value: Union[str, int],
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            input_attributes: Optional[InputAttributes] = None,
-            value_link: Optional[list] = None
+        self,
+        var_name: str,
+        values: List[ConfigObjRadio],
+        default_value: Union[str, int],
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        input_attributes: Optional[InputAttributes] = None,
+        value_link: Optional[list] = None,
     ):
         if not isinstance(values, list):
             raise ValueError("values is not a value")
@@ -42,11 +42,11 @@ class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
             not_in_config,
             rules,
             input_attributes,
-            value_link
+            value_link,
         )
 
     def item_html(self, variable_name: str) -> str:
-        '''Returns the html for the config option'''
+        """Returns the html for the config option"""
         if self.hide_on_html:
             return ""
         return HTMLSystem.part(
@@ -54,5 +54,5 @@ class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
             VARIABLENAME=self.var_name,
             VALUE=self.value,
             OTHER=self.input_attributes.html,
-            ROWS=5
+            ROWS=5,
         )

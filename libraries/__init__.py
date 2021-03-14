@@ -1,4 +1,4 @@
-'''Libraries Root'''
+"""Libraries Root"""
 from data.config import CONFIG
 from data.database.library import LIBRARY_FILES_DB
 from libs.database import Database
@@ -8,7 +8,7 @@ from libraries.movies import MoviesLibrary
 
 
 class Libraries:
-    '''Libraries Root'''
+    """Libraries Root"""
 
     __checksum = None
     __movies = {}
@@ -25,22 +25,21 @@ class Libraries:
 
         self.__checksum = FileChecker()
 
-        config = CONFIG['libraries']
+        config = CONFIG["libraries"]
 
-        for movie_library in config['movies']:
-            self.__movies[movie_library.var_name] = MoviesLibrary(
-                movie_library)
+        for movie_library in config["movies"]:
+            self.__movies[movie_library.var_name] = MoviesLibrary(movie_library)
 
         # for tvshows_library in config['tvshows']:
         # for music_library in config['music']:
         # for games_library in config['games']:
 
     def start(self):
-        '''Start the library systems'''
+        """Start the library systems"""
         self.__checksum.start()
 
     def stop(self):
-        '''Stop the library systems'''
+        """Stop the library systems"""
         self.__checksum.stop()
 
 

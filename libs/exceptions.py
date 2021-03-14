@@ -1,29 +1,29 @@
-'''Custom Exceptions'''
+"""Custom Exceptions"""
 
 
 class TableError(Exception):
-    '''Error in a Table'''
+    """Error in a Table"""
 
 
 class ColumnNotFoundError(TableError):
-    '''Column Has Not Been Found in the Table'''
+    """Column Has Not Been Found in the Table"""
 
 
 class DatabaseError(Exception):
-    '''Database Error'''
+    """Database Error"""
 
 
 class TableCheckFailure(DatabaseError):
-    '''Table Check Failure'''
+    """Table Check Failure"""
 
 
 class QueryError(Exception):
-    '''Query Errors'''
+    """Query Errors"""
 
 
 class ConditionError(QueryError):
-    '''Error in the Condition'''
+    """Error in the Condition"""
 
 
 class SQLMessageError(Exception):
-    '''SQL Message Error'''
+    """SQL Message Error"""

@@ -1,4 +1,4 @@
-'''SCRAPER ROOT API'''
+"""SCRAPER ROOT API"""
 import cherrypy
 from api.base import APIBase
 from .find_movie import APIScraperFindMovie
@@ -11,10 +11,10 @@ from .search_tvshow import APIScraperSearchTvshow
 
 @cherrypy.expose
 class APIScraper(APIBase):
-    '''ROOT API'''
+    """ROOT API"""
 
     def _cp_dispatch(self, vpath):
-        '''cp dispatcher overwrite'''
+        """cp dispatcher overwrite"""
         if len(vpath) == 0:
             return self
 

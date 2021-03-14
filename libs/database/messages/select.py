@@ -1,4 +1,4 @@
-'''SQL MESSAGE SYSTEM DATA'''
+"""SQL MESSAGE SYSTEM DATA"""
 from libs.database.table import Table
 from typing import List, Optional
 from libs.database.messages.sql_message import SQLMessage
@@ -7,9 +7,11 @@ from libs.exceptions import SQLMessageError
 
 
 class SQLSelect(SQLMessage):
-    '''Select Message'''
+    """Select Message"""
 
-    def __init__(self, table: Table, *wheres: Where, returns: Optional[List[str]] = None):
+    def __init__(
+        self, table: Table, *wheres: Where, returns: Optional[List[str]] = None
+    ):
         if not isinstance(table, Table):
             raise SQLMessageError
 
@@ -17,8 +19,7 @@ class SQLSelect(SQLMessage):
             returns = ["*"]
 
         if len(wheres) == 0 and table.soft_delete is False:
-            super().__init__(
-                f"SELECT {', '.join(returns)} FROM {table.name()}")
+            super().__init__(f"SELECT {', '.join(returns)} FROM {table.name()}")
             return
 
         where_list = [where.query for where in wheres]

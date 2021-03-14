@@ -1,4 +1,4 @@
-'''ROOT API'''
+"""ROOT API"""
 from api.ripper import APIRipper
 from api.scraper import APIScraper
 import cherrypy
@@ -11,10 +11,10 @@ from libs.authenticator import Authentication
 
 @cherrypy.expose
 class API(APIBase):
-    '''ROOT API'''
+    """ROOT API"""
 
     def _cp_dispatch(self, vpath):
-        '''cp dispatcher overwrite'''
+        """cp dispatcher overwrite"""
         user = None
         if len(vpath) == 0:
             return self
@@ -30,7 +30,7 @@ class API(APIBase):
             user = self._check_session_id()
             section = api_key
 
-        cherrypy.request.params['user'] = user
+        cherrypy.request.params["user"] = user
 
         if section == "admin":
             return APIAdmin()
@@ -43,7 +43,7 @@ class API(APIBase):
         return self
 
     def _check_api_key(self, key: str) -> int:
-        '''checks the api key against the master and user keys and returns the level'''
+        """checks the api key against the master and user keys and returns the level"""
         if key is None or not isinstance(key, str):
             return self.GUEST
         if key == CONFIG["api"]["masterkey"].value:
@@ -53,7 +53,7 @@ class API(APIBase):
         return self.GUEST
 
     def _check_session_id(self) -> int:
-        '''checks the session Id is in the list'''
+        """checks the session Id is in the list"""
         if not Authentication.check_logged_in():
             return self.GUEST
         if Authentication.is_admin():

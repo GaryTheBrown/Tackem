@@ -1,4 +1,4 @@
-'''Import all Messages here so everything is pulled from the same place'''
+"""Import all Messages here so everything is pulled from the same place"""
 from libs.database.messages.delete import SQLDelete
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.select import SQLSelect

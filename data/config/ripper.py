@@ -1,4 +1,4 @@
-'''Ripper Config'''
+"""Ripper Config"""
 import platform
 from data.audio_format_options import audio_format_options
 from data.languages import Languages
@@ -31,18 +31,15 @@ RIPPERREQUIREDLINUX = [
     "lsblk",
     "hwinfo",
     "blkid",
-    "udfinfo"
+    "udfinfo",
 ]
 
-YES_NO_IA = InputAttributes(
-    data_on="Yes",
-    data_off="No"
-)
+YES_NO_IA = InputAttributes(data_on="Yes", data_off="No")
 
 
 def ripper_config() -> ConfigList:
-    '''Ripper Config'''
-    if platform.system() != 'Linux':
+    """Ripper Config"""
+    if platform.system() != "Linux":
         return None
     if not check_for_required_programs(RIPPERREQUIREDLINUX, "Ripper"):
         return None
@@ -63,10 +60,7 @@ def ripper_config() -> ConfigList:
                 "",
                 ConfigObjEnabled(),
                 ConfigObjString(
-                    "label",
-                    "",
-                    "Label",
-                    "What do you want to call this drive?"
+                    "label", "", "Label", "What do you want to call this drive?"
                 ),
                 ConfigObjString(
                     "link",
@@ -74,10 +68,7 @@ def ripper_config() -> ConfigList:
                     "Drive Link",
                     "Address of the drive",
                     not_in_config=True,
-                    input_attributes=InputAttributes(
-                        "readonly",
-                        "disabled"
-                    )
+                    input_attributes=InputAttributes("readonly", "disabled"),
                 ),
                 ConfigObjString(
                     "uuid",
@@ -85,10 +76,7 @@ def ripper_config() -> ConfigList:
                     "Unique ID",
                     "A Unique code for the drive",
                     not_in_config=True,
-                    input_attributes=InputAttributes(
-                        "read_only",
-                        "disabled"
-                    )
+                    input_attributes=InputAttributes("read_only", "disabled"),
                 ),
                 ConfigObjString(
                     "model",
@@ -96,13 +84,10 @@ def ripper_config() -> ConfigList:
                     "Drive Model",
                     "Model of the drive",
                     not_in_config=True,
-                    input_attributes=InputAttributes(
-                        "read_only",
-                        "disabled"
-                    )
-                )
+                    input_attributes=InputAttributes("read_only", "disabled"),
+                ),
             ),
-            rules=ConfigRules(for_each=Hardware.disc_drives())
+            rules=ConfigRules(for_each=Hardware.disc_drives()),
         ),
         ConfigList(
             "iso",
@@ -113,17 +98,14 @@ def ripper_config() -> ConfigList:
                 1,
                 "How Many Instances",
                 "How Many Instances of MakeMKV do you want to allow at once?",
-                input_attributes=InputAttributes(
-                    min=1,
-                    max=5
-                )
+                input_attributes=InputAttributes(min=1, max=5),
             ),
             ConfigObjBoolean(
                 "removeiso",
                 True,
                 "Remove ISO",
                 "Do you want to delete the ISO after ripping?",
-                input_attributes=YES_NO_IA
+                input_attributes=YES_NO_IA,
             ),
         ),
         ConfigList(
@@ -133,38 +115,38 @@ def ripper_config() -> ConfigList:
                 "videoiso",
                 "videoiso/",
                 "ISO Location",
-                "Where do you want to watch for video ISOs?"
+                "Where do you want to watch for video ISOs?",
             ),
             ConfigObjString(
                 "videoripping",
                 "videoripping/",
                 "Ripping Location",
-                "Where do you want to store video discs while ripping them?"
+                "Where do you want to store video discs while ripping them?",
             ),
             ConfigObjString(
                 "videoripped",
                 "videoripped/",
                 "Ripped Location",
-                "Where do you want to move the video discs to when completed"
+                "Where do you want to move the video discs to when completed",
             ),
             ConfigObjString(
                 "audioiso",
                 "audioiso/",
                 "ISO Location",
-                "Where do you want to watch for audio ISOs?"
+                "Where do you want to watch for audio ISOs?",
             ),
             ConfigObjString(
                 "audioripping",
                 "audioripping/",
                 "Ripping Location",
-                "Where do you want to store audio cds while ripping them?"
+                "Where do you want to store audio cds while ripping them?",
             ),
             ConfigObjString(
                 "audioripped",
                 "audioripped/",
                 "Ripped Location",
-                "Where do you want to move the audio cds to when completed"
-            )
+                "Where do you want to move the audio cds to when completed",
+            ),
         ),
         ConfigList(
             "makemkv",
@@ -173,8 +155,8 @@ def ripper_config() -> ConfigList:
                 "key",
                 "",
                 "Licence Key",
-                "Please enter your licence key for makemkv here (restart needed)"
-            )
+                "Please enter your licence key for makemkv here (restart needed)",
+            ),
         ),
         ConfigList(
             "videoripping",
@@ -186,12 +168,12 @@ def ripper_config() -> ConfigList:
                     ConfigObjCheckbox("tvshow", "TV Show Episode"),
                     ConfigObjCheckbox("trailer", "Trailer"),
                     ConfigObjCheckbox("extra", "Extra"),
-                    ConfigObjCheckbox("other", "Other")
+                    ConfigObjCheckbox("other", "Other"),
                 ],
                 ["movie", "tvshow", "other"],
                 "What to Rip",
-                "What File Types do you want to rip and include"
-            )
+                "What File Types do you want to rip and include",
+            ),
         ),
         ConfigList(
             "audioripping",
@@ -205,37 +187,34 @@ def ripper_config() -> ConfigList:
                 "ffmpeglocation",
                 "ffmpeg",
                 "FFmpeg Location",
-                "Where is FFmpeg located?"
+                "Where is FFmpeg located?",
             ),
             ConfigObjString(
                 "ffprobelocation",
                 "ffprobe",
                 "FFprobe Location",
-                "Where is FFprobe located?"
+                "Where is FFprobe located?",
             ),
             ConfigObjIntegerNumber(
                 "threadcount",
                 1,
                 "How Many Instances?",
                 "How Many Threads (Max of 5)",
-                input_attributes=InputAttributes(
-                    min=1,
-                    max=5
-                )
+                input_attributes=InputAttributes(min=1, max=5),
             ),
             ConfigObjBoolean(
                 "keeporiginalfile",
                 False,
                 "Keep Original File",
                 "If you want to keep the original file after conversion",
-                input_attributes=YES_NO_IA
+                input_attributes=YES_NO_IA,
             ),
             ConfigObjOptionsSelect(
                 "defaultlanguage",
                 Languages().config_option_3t(ConfigObjOption),
                 "eng",
                 "Default Language",
-                "What is your main language?"
+                "What is your main language?",
             ),
             # TODO need to sort this so it can be different for 3D SD HD UHD and HDR Files
             ConfigList(
@@ -256,76 +235,55 @@ def ripper_config() -> ConfigList:
                         # ConfigObjOption("x265default", "convert to x265 Default"),
                         # ConfigObjOption("x265custom", "convert to x265 Custom")
                     ],
-                    'keep',
+                    "keep",
                     "HDR Mode",
-                    "How to treat HDR videos"
+                    "How to treat HDR videos",
                 ),
                 ConfigObjOptionsSelect(
                     "video3dtype",
                     [
                         ConfigObjOption("keep", "Keep Original"),
-                        ConfigObjOption(
-                            "sbsl", "Side by Side (Left Eye First)"),
-                        ConfigObjOption(
-                            "sbsr", "Side by Side (Right Eye First)"),
-                        ConfigObjOption(
-                            "sbs2l", "Half Side by Side (Left Eye First)"),
-                        ConfigObjOption(
-                            "sbs2r", "Half Side by Side (Right Eye First)"),
+                        ConfigObjOption("sbsl", "Side by Side (Left Eye First)"),
+                        ConfigObjOption("sbsr", "Side by Side (Right Eye First)"),
+                        ConfigObjOption("sbs2l", "Half Side by Side (Left Eye First)"),
+                        ConfigObjOption("sbs2r", "Half Side by Side (Right Eye First)"),
                         ConfigObjOption("abl", "Top Bottom (Left Eye Top)"),
                         ConfigObjOption("abr", "Top Bottom (Right Eye Top)"),
+                        ConfigObjOption("ab2l", "Half Top Bottom (Left Eye Top)"),
+                        ConfigObjOption("ab2r", "Half Top Bottom (Right Eye Top)"),
+                        ConfigObjOption("al", "Alternating Frames (Left Eye First)"),
+                        ConfigObjOption("ar", "Alternating Frames (Right Eye First)"),
                         ConfigObjOption(
-                            "ab2l", "Half Top Bottom (Left Eye Top)"),
+                            "irl", "Interleaved Rows (Left Eye Has Top Row)"
+                        ),
                         ConfigObjOption(
-                            "ab2r", "Half Top Bottom (Right Eye Top)"),
-                        ConfigObjOption(
-                            "al", "Alternating Frames (Left Eye First)"),
-                        ConfigObjOption(
-                            "ar", "Alternating Frames (Right Eye First)"),
-                        ConfigObjOption(
-                            "irl", "Interleaved Rows (Left Eye Has Top Row)"),
-                        ConfigObjOption(
-                            "irr", "Interleaved Rows (Right Eye Has Top Row)"),
+                            "irr", "Interleaved Rows (Right Eye Has Top Row)"
+                        ),
                         ConfigObjOption("arbg", "Anaglyph Red/Blue Grayscale"),
-                        ConfigObjOption(
-                            "argg", "Anaglyph Red/Green Grayscale"),
+                        ConfigObjOption("argg", "Anaglyph Red/Green Grayscale"),
                         ConfigObjOption("arcg", "Anaglyph Red/Cyan Grayscale"),
-                        ConfigObjOption(
-                            "arch", "Anaglyph Red/Cyan Half Coloured"),
+                        ConfigObjOption("arch", "Anaglyph Red/Cyan Half Coloured"),
                         ConfigObjOption("arcc", "Anaglyph Red/Cyan Colour"),
-                        ConfigObjOption(
-                            "arcd", "Anaglyph Red/Cyan Colour dubois"),
-                        ConfigObjOption(
-                            "agmg", "Anaglyph Green/Magenta Grayscale"),
-                        ConfigObjOption(
-                            "agmh", "Anaglyph Green/Magenta Half Coloured"),
-                        ConfigObjOption(
-                            "agmc", "Anaglyph Green/Magenta Coloured"),
-                        ConfigObjOption(
-                            "agmd", "Anaglyph Green/Magenta Colour Dubois"),
-                        ConfigObjOption(
-                            "aybg", "Anaglyph Yellow/Blue Grayscale"),
-                        ConfigObjOption(
-                            "aybh", "Anaglyph Yellow/Blue Half Coloured"),
-                        ConfigObjOption(
-                            "aybc", "Anaglyph Yellow/Blue Coloured"),
-                        ConfigObjOption(
-                            "aybd", "Anaglyph Yellow/Blue Colour Dubois"),
+                        ConfigObjOption("arcd", "Anaglyph Red/Cyan Colour dubois"),
+                        ConfigObjOption("agmg", "Anaglyph Green/Magenta Grayscale"),
+                        ConfigObjOption("agmh", "Anaglyph Green/Magenta Half Coloured"),
+                        ConfigObjOption("agmc", "Anaglyph Green/Magenta Coloured"),
+                        ConfigObjOption("agmd", "Anaglyph Green/Magenta Colour Dubois"),
+                        ConfigObjOption("aybg", "Anaglyph Yellow/Blue Grayscale"),
+                        ConfigObjOption("aybh", "Anaglyph Yellow/Blue Half Coloured"),
+                        ConfigObjOption("aybc", "Anaglyph Yellow/Blue Coloured"),
+                        ConfigObjOption("aybd", "Anaglyph Yellow/Blue Colour Dubois"),
                         ConfigObjOption("ml", "Mono Output (Left Eye Only)"),
                         ConfigObjOption("mr", "Mono Output (Right Eye Only)"),
-                        ConfigObjOption(
-                            "chl", "Checkerboard (Left Eye First)"),
-                        ConfigObjOption(
-                            "chr", "Checkerboard (Right Eye First)"),
-                        ConfigObjOption(
-                            "icl", "Interleaved Columns (Left Eye First)"),
-                        ConfigObjOption(
-                            "icr", "Interleaved Columns (Right Eye First)"),
-                        ConfigObjOption("hdmi", "HDMI Frame Pack")
+                        ConfigObjOption("chl", "Checkerboard (Left Eye First)"),
+                        ConfigObjOption("chr", "Checkerboard (Right Eye First)"),
+                        ConfigObjOption("icl", "Interleaved Columns (Left Eye First)"),
+                        ConfigObjOption("icr", "Interleaved Columns (Right Eye First)"),
+                        ConfigObjOption("hdmi", "HDMI Frame Pack"),
                     ],
-                    'keep',
+                    "keep",
                     "3D Type",
-                    "what 3D mode do you want to transform 3d Discs into"
+                    "what 3D mode do you want to transform 3d Discs into",
                 ),
                 ConfigObjOptionsSelect(
                     "videoresolution",
@@ -334,11 +292,11 @@ def ripper_config() -> ConfigList:
                         ConfigObjOption("2160", "4K"),
                         ConfigObjOption("1080", "1080"),
                         ConfigObjOption("720", "720"),
-                        ConfigObjOption("sd", "SD")
+                        ConfigObjOption("sd", "SD"),
                     ],
-                    'keep',
+                    "keep",
                     "Max Video Resolution",
-                    "What is the maximum resolution you want to keep or downscale to?"
+                    "What is the maximum resolution you want to keep or downscale to?",
                 ),
                 ConfigObjOptionsRadio(
                     "videocodec",
@@ -349,9 +307,9 @@ def ripper_config() -> ConfigList:
                             input_attributes=InputAttributes(
                                 data_click_hide=[
                                     "ripper_converter_video_videopreset",
-                                    "ripper_converter_video_x26custom_section"
+                                    "ripper_converter_video_x26custom_section",
                                 ]
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "x264default",
@@ -359,9 +317,9 @@ def ripper_config() -> ConfigList:
                             input_attributes=InputAttributes(
                                 data_click_hide=[
                                     "ripper_converter_video_videopreset",
-                                    "ripper_converter_video_x26custom_section"
+                                    "ripper_converter_video_x26custom_section",
                                 ]
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "x265default",
@@ -369,45 +327,45 @@ def ripper_config() -> ConfigList:
                             input_attributes=InputAttributes(
                                 data_click_hide=[
                                     "ripper_converter_video_videopreset",
-                                    "ripper_converter_video_x26custom_section"
+                                    "ripper_converter_video_x26custom_section",
                                 ]
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "x264custom",
                             "X264 Custom",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_video_x26custom_section",
-                                data_click_hide="ripper_converter_video_videopreset"
-                            )
+                                data_click_hide="ripper_converter_video_videopreset",
+                            ),
                         ),
                         ConfigObjRadio(
                             "x265custom",
                             "X265 Custom",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_video_x26custom_section",
-                                data_click_hide="ripper_converter_video_videopreset"
-                            )
+                                data_click_hide="ripper_converter_video_videopreset",
+                            ),
                         ),
                         ConfigObjRadio(
                             "preset",
                             "Preset (choose from a list)",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_video_videopreset",
-                                data_click_hide="ripper_converter_video_x26custom_section"
-                            )
-                        )
+                                data_click_hide="ripper_converter_video_x26custom_section",
+                            ),
+                        ),
                     ],
-                    'keep',
+                    "keep",
                     "Video Codec",
-                    "What video codec do you wish to convert to?"
+                    "What video codec do you wish to convert to?",
                 ),
                 ConfigObjOptionsSelect(
                     "videopreset",
                     video_presets_config_options(ConfigObjOption),
                     "",
                     "Video Preset",
-                    "What preset do you want to use?"
+                    "What preset do you want to use?",
                 ),
                 ConfigList(
                     "x26custom",
@@ -424,10 +382,7 @@ same as the input but it isn't technically lossless. The range is exponential, s
 value +6 results in roughly half the bitrate / file size, while -6 leads to roughly twice the
 bitrate. Choose the highest CRF value that still provides an acceptable quality. If the output looks
 good, then try a higher value. If it looks bad, choose a lower value.""",
-                        input_attributes=InputAttributes(
-                            min=0,
-                            max=51
-                        )
+                        input_attributes=InputAttributes(min=0, max=51),
                     ),
                     ConfigObjIntegerNumber(
                         "x26crf10bit",
@@ -439,7 +394,7 @@ quality possible.""",
                         input_attributes=InputAttributes(
                             min=0,
                             max=63,
-                        )
+                        ),
                     ),
                     ConfigObjOptionsSelect(
                         "x26preset",
@@ -452,7 +407,7 @@ quality possible.""",
                             ConfigObjOption("medium", "Medium"),
                             ConfigObjOption("slow", "Slow"),
                             ConfigObjOption("slower", "Slower"),
-                            ConfigObjOption("veryslow", "Very Slow")
+                            ConfigObjOption("veryslow", "Very Slow"),
                         ],
                         "medium",
                         "Preset",
@@ -462,27 +417,24 @@ A slower preset will provide better compression (compression is quality per file
 This means that, for example, if you target a certain file size or constant bit rate,
 you will achieve better quality with a slower preset. Similarly, for constant quality encoding,
 you will simply save bitrate by choosing a slower preset.
-Use the slowest preset that you have patience for."""
+Use the slowest preset that you have patience for.""",
                     ),
                     ConfigObjString(
-                        "x26extra",
-                        "",
-                        "Extra commands",
-                        "Other commands?"
+                        "x26extra", "", "Extra commands", "Other commands?"
                     ),
-                    is_section=True
+                    is_section=True,
                 ),
                 ConfigObjOptionsRadio(
                     "originalordub",
                     [
                         ConfigObjRadio("original", "Original"),
-                        ConfigObjRadio("dub", "Dubbed")
+                        ConfigObjRadio("dub", "Dubbed"),
                     ],
-                    'all',
+                    "all",
                     "Original or Dubbed Language",
                     """
 Do you want the default stream to be the Original language or dubbed in your language if available?
-"""
+""",
                 ),
             ),
             ConfigList(
@@ -497,33 +449,33 @@ Do you want the default stream to be the Original language or dubbed in your lan
                             "All",
                             input_attributes=InputAttributes(
                                 data_click_hide="ripper_converter_audio_audiolanglist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "original",
                             "Original Language Only",
                             input_attributes=InputAttributes(
                                 data_click_hide="ripper_converter_audio_audiolanglist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "selectedandoriginal",
                             "Original Language + Selected Languages",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_audio_audiolanglist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "selected",
                             "Selected Languages",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_audio_audiolanglist_section"
-                            )
-                        )
+                            ),
+                        ),
                     ],
-                    'all',
+                    "all",
                     "Audio Languages",
-                    "What Audio Languages do you want to keep?"
+                    "What Audio Languages do you want to keep?",
                 ),
                 ConfigList(
                     "audiolanglist",
@@ -545,35 +497,35 @@ Do you want the default stream to be the Original language or dubbed in your lan
                             "All",
                             input_attributes=InputAttributes(
                                 data_click_hide="ripper_converter_audio_audioformatlist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "highest",
                             "Highest Quality",
                             input_attributes=InputAttributes(
                                 "disabled",
-                                data_click_hide="ripper_converter_audio_audioformatlist_section"
-                            )
+                                data_click_hide="ripper_converter_audio_audioformatlist_section",
+                            ),
                         ),
                         ConfigObjRadio(
                             "selected",
                             "Selected Formats",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_audio_audioformatlist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "convert",
                             "Convert to Selected Formats",
                             input_attributes=InputAttributes(
                                 "disabled",
-                                data_click_show="ripper_converter_audio_audioformatlist_section"
-                            )
-                        )
+                                data_click_show="ripper_converter_audio_audioformatlist_section",
+                            ),
+                        ),
                     ],
-                    'all',
+                    "all",
                     "Audio Format",
-                    "What Audio Formats do you want to keep?"
+                    "What Audio Formats do you want to keep?",
                 ),
                 ConfigList(
                     "audioformatlist",
@@ -583,16 +535,16 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         audio_format_options(ConfigObjCheckbox),
                         "",
                         "Audio Formats",
-                        ""
+                        "",
                     ),
-                    is_section=True
+                    is_section=True,
                 ),
                 ConfigObjBoolean(
                     "keepcommentary",
                     True,
                     "Keep Commentary",
                     "Do you want to keep the commentary track(s)?",
-                    input_attributes=YES_NO_IA
+                    input_attributes=YES_NO_IA,
                 ),
             ),
             ConfigList(
@@ -604,7 +556,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                     True,
                     "Keep Chapters",
                     "Do you want to keep the chapter points?",
-                    input_attributes=YES_NO_IA
+                    input_attributes=YES_NO_IA,
                 ),
             ),
             ConfigList(
@@ -619,26 +571,26 @@ Do you want the default stream to be the Original language or dubbed in your lan
                             "All",
                             input_attributes=InputAttributes(
                                 data_click_hide="ripper_converter_subtitles_subtitleslist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "none",
                             "None",
                             input_attributes=InputAttributes(
                                 data_click_hide="ripper_converter_subtitles_subtitleslist_section"
-                            )
+                            ),
                         ),
                         ConfigObjRadio(
                             "selected",
                             "Selected Subtitles",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_subtitles_subtitleslist_section"
-                            )
-                        )
+                            ),
+                        ),
                     ],
-                    'all',
+                    "all",
                     "Subtitles",
-                    "What subtitles do you want to keep?"
+                    "What subtitles do you want to keep?",
                 ),
                 ConfigList(
                     "subtitleslist",
@@ -648,17 +600,17 @@ Do you want the default stream to be the Original language or dubbed in your lan
                         Languages().config_option_3t(ConfigObjCheckbox),
                         "",
                         "Subtitle Languages",
-                        ""
+                        "",
                     ),
-                    is_section=True
+                    is_section=True,
                 ),
                 ConfigObjBoolean(
                     "keepclosedcaptions",
                     True,
                     "Keep Closed Captions",
                     "Do you want to keep the closed captions?",
-                    input_attributes=YES_NO_IA
+                    input_attributes=YES_NO_IA,
                 ),
-            )
-        )
+            ),
+        ),
     )

@@ -1,4 +1,4 @@
-'''Find Movie API'''
+"""Find Movie API"""
 import cherrypy
 from api.base import APIBase
 from data.config import CONFIG
@@ -6,10 +6,10 @@ from data.config import CONFIG
 
 @cherrypy.expose
 class APIScraperFindMovie(APIBase):
-    '''Find Movie API'''
+    """Find Movie API"""
 
     def POST(self, **kwargs) -> str:
-        '''POST Function'''
+        """POST Function"""
         user = kwargs.get("user", self.GUEST)
         if user == self.GUEST:
             raise cherrypy.HTTPError(status=403)
@@ -29,7 +29,7 @@ class APIScraperFindMovie(APIBase):
                 False,
                 instance=instance,
                 error=f'Missing Data Passed. Requires {", ".join(required)}',
-                errorNumber=0
+                errorNumber=0,
             )
 
         var = instance.lower().replace(" ", "")
@@ -41,7 +41,7 @@ class APIScraperFindMovie(APIBase):
                 False,
                 instance=instance,
                 error="Instance already exists",
-                errorNumber=1
+                errorNumber=1,
             )
 
         if not CONFIG["plugins"][plugin_type][plugin_name].clone_many_section(instance):
@@ -52,7 +52,7 @@ class APIScraperFindMovie(APIBase):
                 False,
                 instance=instance,
                 error="Cloning Data Failed",
-                errorNumber=2
+                errorNumber=2,
             )
 
         return self._return_data(
@@ -62,9 +62,8 @@ class APIScraperFindMovie(APIBase):
             True,
             instance=instance,
             html=CONFIG["plugins"][plugin_type][plugin_name][instance].panel(
-                f"plugins_{plugin_type}_{plugin_name}",
-                instance.title()
-            )
+                f"plugins_{plugin_type}_{plugin_name}", instance.title()
+            ),
         )
 
     # def findmovie(self, imdb_id) -> str:
