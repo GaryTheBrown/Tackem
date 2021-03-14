@@ -33,11 +33,11 @@ jobs:
         # Basic Checks
         python -m flake8 . --count --show-source --statistics --max-line-length=100 --extend-ignore=BLK,DUO,S
         # Black (contradicts others)
-        # python -m flake8 . --count --show-source --statistics --max-line-length=100 --extend-ignore=BLK,DUO,S
+        python -m flake8 . --count --exit-zero --show-source --statistics --max-line-length=100 --select=BLK
         # Security
-        # python -m flake8 . --count --show-source --statistics --max-line-length=100 --select=DUO,S
+        python -m flake8 . --count --exit-zero --show-source --statistics --max-line-length=100 --select=DUO,S
         # Complexity Checking
-        # python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
+        python -m flake8 . --count --exit-zero --show-source --statistics --max-line-length=100  --max-complexity=10
 
     #- name: Test with pytest
     #  run: |
