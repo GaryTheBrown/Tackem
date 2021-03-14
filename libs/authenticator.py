@@ -11,6 +11,7 @@ from libs.database.table import Table
 from libs.database.where import Where
 from data.config import CONFIG
 
+
 class Authentication:
     '''Authentication system for all html pages listed'''
 

@@ -1,6 +1,7 @@
 '''Input Attributes'''
 from typing import Any
 
+
 class InputAttributes:
     '''Input Attributes'''
 

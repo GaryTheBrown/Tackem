@@ -2,6 +2,7 @@
 from typing import Any
 from libs.html_system import HTMLSystem
 
+
 class Button:
     '''Button'''
 

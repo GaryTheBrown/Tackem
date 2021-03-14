@@ -3,10 +3,12 @@ import platform
 import re
 from subprocess import DEVNULL, PIPE, Popen
 
+
 class Hardware:
     '''Class to get all Hardware info needed'''
 
     DRIVES = {}
+
     @classmethod
     def disc_drives(cls) -> dict:
         '''issues the hwinfo command and passes the info back in a dict'''
@@ -40,6 +42,7 @@ class Hardware:
             temp['uuid'] = hwinfo_item['unique_id']
             temp['label'] = hwinfo_item["device_file"].split(" ")[0]
             temp['link'] = hwinfo_item["device_file"].split(" ")[0]
-            temp['model'] = ",".join(re.findall(r'"(.*?)"', hwinfo_item["model"]))
+            temp['model'] = ",".join(re.findall(
+                r'"(.*?)"', hwinfo_item["model"]))
             drives[temp['uuid']] = temp
         return drives

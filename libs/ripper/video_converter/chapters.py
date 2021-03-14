@@ -2,6 +2,7 @@
 from libs.ripper.ffprobe import FFprobe
 from libs.ripper.video_converter.base import VideoConverterBase
 
+
 class VideoConverterChapters(VideoConverterBase):
     '''Video Controller Chapters code'''
 

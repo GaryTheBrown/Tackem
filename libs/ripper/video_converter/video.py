@@ -3,12 +3,13 @@ from libs.ripper.video_converter.base import VideoConverterBase
 from libs.ripper.ffprobe import FFprobe
 from presets import get_video_preset_command
 
-#TODO HDR Support need to use bellow info to check the file for HDR and if it is then make sure the
+# TODO HDR Support need to use bellow info to check the file for HDR and if it is then make sure the
 # system forces x265 mode.
-#split the converter settings up so we can give different options for SD HD UHD and HDR
+# split the converter settings up so we can give different options for SD HD UHD and HDR
 # https://codecalamity.com/encoding-uhd-4k-hdr10-videos-with-ffmpeg/
 # https://www.maxvergelli.com/how-to-convert-hdr10-videos-to-sdr-for-non-hdr-devices/
 # https://github.com/lasinger/3DVideos2Stereo
+
 
 class VideoConverterVideo(VideoConverterBase):
     '''Video Controller Video code'''
@@ -63,7 +64,7 @@ class VideoConverterVideo(VideoConverterBase):
                     # Both views are arranged in a column based interleaving manner,
                     # Left-eye view is first column
                     type_3d_in = 'icl'
-                #These two seem to be the MVC format
+                # These two seem to be the MVC format
                 elif type_3d == 'block_lr':
                     # Both eyes laced in one Block, Left-eye view is first alternating frames
                     type_3d_in = 'al'
@@ -75,7 +76,8 @@ class VideoConverterVideo(VideoConverterBase):
                     self._command.append(
                         f"-vf stereo3d={type_3d_in}:{type_3d_out}")
                     if type_3d_out == "ml" or type_3d_out == "mr":
-                        self._command.append('-metadata:s:v:0 stereo_mode="mono"')
+                        self._command.append(
+                            '-metadata:s:v:0 stereo_mode="mono"')
         if self._conf['video']["videoresolution"].value != "keep":
             if self._conf['video']["videoresolution"].value == "sd":  # 576 or 480
                 if video_info['height'] > 576:  # PAL spec resolution
@@ -83,7 +85,8 @@ class VideoConverterVideo(VideoConverterBase):
             else:  # HD videos Here
                 if video_info['height'] > self._conf['video']["videoresolution"].value:
                     self._command.append(
-                        "-vf scale=-2:" + self._conf['video']["videoresolution"].value
+                        "-vf scale=-2:" +
+                        self._conf['video']["videoresolution"].value
                     )
         else:
             keep = True
@@ -94,7 +97,7 @@ class VideoConverterVideo(VideoConverterBase):
                 return False
             elif self._conf['video']['hdrmode'].value == "x265default":
                 self._command.append('-c:v libx265')
-                #TODO need to DEAL with HDR Magic here
+                # TODO need to DEAL with HDR Magic here
         else:
             if self._conf['video']['videocodec'].value == "keep" and keep:
                 return False
@@ -108,22 +111,29 @@ class VideoConverterVideo(VideoConverterBase):
                 self._command.append(self._conf['video']['x26preset'].value)
                 self._command.append('-crf')
                 if "10le" in video_info.get("pix_fmt", ""):
-                    self._command.append(str(self._conf['video']['x26crf10bit'].value))
+                    self._command.append(
+                        str(self._conf['video']['x26crf10bit'].value))
                 else:
-                    self._command.append(str(self._conf['video']['x26crf8bit'].value))
+                    self._command.append(
+                        str(self._conf['video']['x26crf8bit'].value))
                 if self._conf['video']['x26extra'].value:
-                    self._command.append(str(self._conf['video']['x26extra'].value))
+                    self._command.append(
+                        str(self._conf['video']['x26extra'].value))
             elif self._conf['video']['videocodec'].value == "x265custom":
                 self._command.append('-c:v libx265')
                 self._command.append('-preset')
                 self._command.append(self._conf['video']['x26preset'].value)
                 self._command.append('-crf')
                 if "10le" in video_info.get("pix_fmt", ""):
-                    self._command.append(str(self._conf['video']['x26crf10bit'].value))
+                    self._command.append(
+                        str(self._conf['video']['x26crf10bit'].value))
                 else:
-                    self._command.append(str(self._conf['video']['x26crf8bit'].value))
+                    self._command.append(
+                        str(self._conf['video']['x26crf8bit'].value))
                 if self._conf['video']['x26extra'].value:
-                    self._command.append(str(self._conf['video']['x26extra'].value))
+                    self._command.append(
+                        str(self._conf['video']['x26extra'].value))
             elif self._conf['video']['videocodec'].value == "preset":
-                video_command = get_video_preset_command(self._conf['video']['videopreset'].value)
+                video_command = get_video_preset_command(
+                    self._conf['video']['videopreset'].value)
                 self._command.append(video_command)

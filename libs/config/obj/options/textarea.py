@@ -6,6 +6,7 @@ from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
+
 class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
     '''Config Item Options Radio'''
 

@@ -12,6 +12,7 @@ from libs.database.messages import SQLSelect, SQLUpdate
 from libs.database.where import Where
 from data.database.library import LIBRARY_FILES_DB
 
+
 class FileChecker:
     '''system to check the files are not damaged'''
 

@@ -5,6 +5,7 @@ from libs.database.messages.sql_message import SQLMessage
 from libs.database.where import Where
 from libs.exceptions import SQLMessageError
 
+
 class SQLSelect(SQLMessage):
     '''Select Message'''
 
@@ -16,7 +17,8 @@ class SQLSelect(SQLMessage):
             returns = ["*"]
 
         if len(wheres) == 0 and table.soft_delete is False:
-            super().__init__(f"SELECT {', '.join(returns)} FROM {table.name()}")
+            super().__init__(
+                f"SELECT {', '.join(returns)} FROM {table.name()}")
             return
 
         where_list = [where.query for where in wheres]

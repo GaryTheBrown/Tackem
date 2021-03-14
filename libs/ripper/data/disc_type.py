@@ -11,6 +11,7 @@ TYPES = {"Movie": "film",
          "Other": "question"
          }
 
+
 class DiscType(metaclass=ABCMeta):
     '''Master Disc Type'''
 

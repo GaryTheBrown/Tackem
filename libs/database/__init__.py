@@ -7,6 +7,7 @@ from libs.database.table import Table
 from libs.database.backend.sqlite import SQLite
 from libs.database.backend.mysql import MySQL
 
+
 class Database:
     '''SQL System'''
     __sql_system: BackendBase = None

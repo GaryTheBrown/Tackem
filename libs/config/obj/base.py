@@ -7,6 +7,7 @@ from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
+
 class ConfigObjBase(ABC, ConfigBase):
     '''Shared Data for all config Objects'''
 

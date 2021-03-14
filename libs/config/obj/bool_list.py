@@ -5,6 +5,7 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 
+
 class ConfigObjBoolList(ConfigObjList):
     '''Config Item Bool List'''
 

@@ -3,6 +3,7 @@ import cherrypy
 from api.base import APIBase
 from libs.authenticator import Authentication
 
+
 @cherrypy.expose
 class APIAdminUserAdd(APIBase):
     '''User Add API'''

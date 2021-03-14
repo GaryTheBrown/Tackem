@@ -3,6 +3,7 @@ from libs.config.list import ConfigList
 from libs.config.obj.password import ConfigObjPassword
 from libs.config.obj.string import ConfigObjString
 
+
 def musicbrainz_config() -> ConfigList:
     '''Musicbrainz Config'''
     ConfigList(

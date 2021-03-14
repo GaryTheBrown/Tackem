@@ -4,7 +4,9 @@ from data import PROGRAMCONFIGLOCATION
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table
 from data.database.system import TABLE_VERSION_DB
-#https://docs.python.org/3/library/sqlite3.html
+# https://docs.python.org/3/library/sqlite3.html
+
+
 def dict_factory(cursor, row):
     '''makes the return data from the database a dict'''
     return_data = {}
@@ -12,12 +14,14 @@ def dict_factory(cursor, row):
         return_data[col[0]] = row[idx]
     return return_data
 
+
 class SQLite(BackendBase):
     '''SQLite system'''
 
     def _startup(self):
         '''Setup SQLlite Here'''
-        BackendBase._conn = sqlite3.connect(PROGRAMCONFIGLOCATION + '/Tackem.db')
+        BackendBase._conn = sqlite3.connect(
+            PROGRAMCONFIGLOCATION + '/Tackem.db')
         BackendBase._conn.row_factory = dict_factory
         if not self.__check_version_table_exists():
             self.__add_table(TABLE_VERSION_DB, False)
@@ -82,18 +86,19 @@ class SQLite(BackendBase):
             BackendBase._conn.commit()
         return True
 
-
     def __update_table(self, table: Table) -> bool:
         '''Update the table with the informaiton provided'''
 
         # first move the current table to a new name
-        BackendBase._conn.execute(f"ALTER TABLE {table.name()} RENAME TO {table.name()}_old;")
+        BackendBase._conn.execute(
+            f"ALTER TABLE {table.name()} RENAME TO {table.name()}_old;")
         BackendBase._conn.commit()
 
         # make the new version of the table
         self.__add_table(table, False)
 
-        cursor = BackendBase._conn.execute(f"SELECT * FROM {table.name()}_old;")
+        cursor = BackendBase._conn.execute(
+            f"SELECT * FROM {table.name()}_old;")
         old_dict = cursor.fetchall()
 
         if old_dict:

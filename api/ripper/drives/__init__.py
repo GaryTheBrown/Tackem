@@ -4,6 +4,7 @@ import cherrypy
 from api.base import APIBase
 from data.config import CONFIG
 
+
 @cherrypy.expose
 class APIRipperDrives(APIBase):
     '''Ripper Drives API'''

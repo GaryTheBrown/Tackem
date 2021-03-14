@@ -3,6 +3,7 @@ import json
 from subprocess import DEVNULL, PIPE, Popen
 from typing import Optional
 
+
 class FFprobe:
     '''ffprobe system'''
 
@@ -40,18 +41,19 @@ class FFprobe:
             infile
         ]
         process = Popen(prog_args, stdout=PIPE, stderr=DEVNULL)
-        self._hdr_info = json.loads(process.communicate()[0].decode('utf-8'))['frames'][0]
+        self._hdr_info = json.loads(
+            process.communicate()[0].decode('utf-8'))['frames'][0]
         process.wait()
 
     def is_hdr(self) -> bool:
         '''returns if the video is HDR'''
         return 'color_primaries' in self._hdr_info and self._hdr_info['color_primaries'] == "bt2020"
 
-        #TODO more HDR stuff here
+        # TODO more HDR stuff here
 
     def hdr_settings(self) -> str:
         '''generates the x265 params for HDR'''
-#-x265-params hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:
+# -x265-params hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:
 # master-display=G(8500,39850)B(6550,2300)R(35400,14600)WP(15635,16450)L(40000000,50):max-cll=0,0
 
     def has_chapters(self) -> bool:

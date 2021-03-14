@@ -5,6 +5,7 @@ import cherrypy
 from api.base import APIBase
 from data.config import CONFIG
 
+
 @cherrypy.expose
 class APIRipper(APIBase):
     '''Ripper API'''

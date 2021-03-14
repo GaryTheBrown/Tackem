@@ -7,9 +7,11 @@ from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
 DEFAULT_STYLE = {
-    "data_onstyle":"primary",
-    "data_offstyle":"info"
+    "data_onstyle": "primary",
+    "data_offstyle": "info"
 }
+
+
 class ConfigObjBoolean(ConfigObjBase):
     '''Config Item Boolean'''
 

@@ -2,6 +2,7 @@
 import cherrypy
 from api.base import APIBase
 
+
 @cherrypy.expose
 class APIMoviesLibrary(APIBase):
     '''ROOT API'''
@@ -22,7 +23,6 @@ class APIMoviesLibrary(APIBase):
                 return self
             if section == "list":
                 return self
-
 
         return self
 

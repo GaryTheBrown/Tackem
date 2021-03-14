@@ -4,6 +4,7 @@ import json
 from libs.classproperty import classproperty
 from data.config import CONFIG
 
+
 class Scraper:
     '''Scraper html System Here'''
 
@@ -139,6 +140,6 @@ class Scraper:
     def get_tvshow_episode_details(cls, tvshow_id, season, episode) -> dict:
         '''returns the full tv show details'''
         return cls.__get_request(
-            f"/3/tv/{str(tvshow_id)}/season/{str(season)}" \
-                + f"/episode/{str(episode)}?{cls.__base(adult=False)}"
+            f"/3/tv/{str(tvshow_id)}/season/{str(season)}"
+            + f"/episode/{str(episode)}?{cls.__base(adult=False)}"
         )

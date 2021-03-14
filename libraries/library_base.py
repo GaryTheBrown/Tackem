@@ -13,6 +13,7 @@ from libs.config.list import ConfigList
 from data.database.library import LIBRARY_FILES_DB
 from data.config import CONFIG
 
+
 class LibraryBase(metaclass=ABCMeta):
     '''Base Library Class'''
 
@@ -46,7 +47,8 @@ class LibraryBase(metaclass=ABCMeta):
 
         self._thread_run = False
         self._thread = threading.Thread(target=self.run, args=())
-        self._thread.setName(f"{LibraryBase.type_to_string(library_type)} Library: {self._name}")
+        self._thread.setName(
+            f"{LibraryBase.type_to_string(library_type)} Library: {self._name}")
 
         self.__folder_watcher = None
         self.__folder_observer = None
@@ -74,8 +76,8 @@ class LibraryBase(metaclass=ABCMeta):
         path = self._config['location'].value
         go_recursively = True
         self.__folder_observer = Observer()
-        self.__folder_observer.schedule(self.__folder_watcher, path, recursive=go_recursively)
-
+        self.__folder_observer.schedule(
+            self.__folder_watcher, path, recursive=go_recursively)
 
     def start(self):
         '''Start the library'''

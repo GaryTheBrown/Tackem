@@ -6,6 +6,7 @@ from libs.authenticator import Authentication
 from libs.html_system import HTMLSystem
 from libs.ripper import Ripper
 
+
 class HTMLTEMPLATE():
     '''Template Base Class For All WWW SYSTEMS'''
     _baseurl = "/"
@@ -140,6 +141,7 @@ class HTMLTEMPLATE():
             navbar_right_html += navbar_login_html
         return navbar_right_html
 
+
 def navbar_dropdown(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
     return HTMLSystem.part(
@@ -148,6 +150,7 @@ def navbar_dropdown(title: str, dropdown_id: str, items: str) -> str:
         DROPDOWNID=dropdown_id,
         ITEMS=items
     )
+
 
 def navbar_dropdown_right(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item right aligned (not active)'''
@@ -158,6 +161,7 @@ def navbar_dropdown_right(title: str, dropdown_id: str, items: str) -> str:
         ITEMS=items
     )
 
+
 def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
     '''A Navbar Item (not active)'''
     return HTMLSystem.part(
@@ -167,6 +171,7 @@ def navbar_drop_right(title: str, dropdown_id: str, items: str) -> str:
         ITEMS=items
     )
 
+
 def navbar_item(title: str, url: str) -> str:
     '''A Navbar Item (not active)'''
     return HTMLSystem.part(
@@ -174,6 +179,7 @@ def navbar_item(title: str, url: str) -> str:
         TITLE=title.title(),
         URL=url.replace(" ", "/")
     )
+
 
 def navbar_item_active(title: str) -> str:
     '''A Navbar Item (not active)'''

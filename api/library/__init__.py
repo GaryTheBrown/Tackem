@@ -2,6 +2,7 @@
 import cherrypy
 from api.base import APIBase
 
+
 @cherrypy.expose
 class APILibrary(APIBase):
     '''ROOT API'''

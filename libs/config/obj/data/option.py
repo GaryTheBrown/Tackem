@@ -3,6 +3,7 @@ from typing import Optional
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.html_system import HTMLSystem
 
+
 class ConfigObjOption:
     '''Config Item Options'''
 

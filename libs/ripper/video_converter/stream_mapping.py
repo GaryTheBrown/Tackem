@@ -4,6 +4,7 @@ from libs.ripper.ffprobe import FFprobe
 from libs.ripper.video_converter.base import VideoConverterBase
 from libs.ripper.data.stream_type import StreamType
 
+
 class VideoConverterStreamMapping(VideoConverterBase):
     '''Video Controller Stream Mapping code'''
 
@@ -26,8 +27,9 @@ class VideoConverterStreamMapping(VideoConverterBase):
         for index, stream in enumerate(track_info.streams):
             if map_links[index] is not None:
                 deposition = self.__make_deposition(stream,
-                                                   probe_info.get_stream(index)["disposition"]
-                                                   )
+                                                    probe_info.get_stream(
+                                                        index)["disposition"]
+                                                    )
                 if stream.stream_type() == "video":
                     if stream.label != "":
                         self._command.append(
@@ -59,8 +61,6 @@ class VideoConverterStreamMapping(VideoConverterBase):
                         "-disposition:s:" + str(subtitle_count))
                     self._command.append(str(deposition))
                     subtitle_count += 1
-
-
 
     def __map_stream(self, probe_info: FFprobe, index: int, stream: StreamType):
         '''system to return if to map the stream'''

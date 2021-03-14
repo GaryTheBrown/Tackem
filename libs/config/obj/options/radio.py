@@ -5,6 +5,7 @@ from libs.config.obj.data.radio import ConfigObjRadio
 from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
 
+
 class ConfigObjOptionsRadio(ConfigObjOptionsBase):
     '''Config Item Options Radio'''
 

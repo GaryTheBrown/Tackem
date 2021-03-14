@@ -4,6 +4,7 @@ from libs.ripper.data.video_track_type import VideoTrackType
 from libs.scraper import Scraper
 from libs.ripper.video_converter.base import VideoConverterBase
 
+
 class VideoConverterMetadata(VideoConverterBase):
     '''Video Controller MetaData code'''
 
@@ -39,8 +40,8 @@ class VideoConverterMetadata(VideoConverterBase):
             tags.append('show="' + disc_info.name + '"')
             if track_type == "tvshow":
                 scraper_info = Scraper.get_tvshow_episode_details(disc_info.moviedbid,
-                                                                    track_info.season,
-                                                                    track_info.episode)
+                                                                  track_info.season,
+                                                                  track_info.episode)
                 scraper_data = scraper_info['response']
                 tags.append('season=' + str(track_info.season))
                 tags.append('episode=' + str(track_info.episode))

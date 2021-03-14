@@ -3,11 +3,13 @@ import os
 import pathlib
 import shutil
 from data import PROGRAMCONFIGLOCATION
+
+
 class File:
     '''Class full of file functions'''
 
     @classmethod
-    def location(cls, folder: str, root: str = PROGRAMCONFIGLOCATION ) -> str:
+    def location(cls, folder: str, root: str = PROGRAMCONFIGLOCATION) -> str:
         '''returns the absolute location'''
         if folder[0] != "/":
             folder = root + folder

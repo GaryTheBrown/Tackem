@@ -2,6 +2,7 @@
 from libs.config.obj.boolean import ConfigObjBoolean
 from libs.config.obj.data.input_attributes import InputAttributes
 
+
 class ConfigObjEnabled(ConfigObjBoolean):
     '''Config Item Boolean'''
 

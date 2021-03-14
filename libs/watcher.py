@@ -5,17 +5,19 @@ import os
 import threading
 from typing import Callable
 
+
 class FolderWatcher:
     '''Custom Folder Watcher'''
 
     __single_sleep = 1
 
     def __init__(self,
-        folder: str,
-        callable: Callable[[], None], # (folder, difference in count since last)
-        recursive: bool = True,
-        sleep_timer: int = 300
-    ):
+                 folder: str,
+                 # (folder, difference in count since last)
+                 callable: Callable[[], None],
+                 recursive: bool = True,
+                 sleep_timer: int = 300
+                 ):
         self.__folder = File.location(folder)
         self.__callable = callable
         self.__folder_count = False

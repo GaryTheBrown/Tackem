@@ -7,6 +7,7 @@ from libs.html_system import HTMLSystem
 from data.config import CONFIG
 from libs.ripper import Ripper
 
+
 class RipperRoot(HTMLTEMPLATE):
     '''ROOT OF PLUGINS WEBUI HERE'''
     @cherrypy.expose

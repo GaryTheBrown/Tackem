@@ -5,6 +5,7 @@ from libs.config.base import ConfigBase
 from libs.config.rules import ConfigRules
 from libs.config.obj.base import ConfigObjBase
 
+
 class ConfigListBase(ConfigBase):
     '''CONFIG List Class'''
 

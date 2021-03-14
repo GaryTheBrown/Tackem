@@ -8,6 +8,7 @@ from .get_tvshow import APIScraperGetTvshow
 from .search_movie import APIScraperSearchMovie
 from .search_tvshow import APIScraperSearchTvshow
 
+
 @cherrypy.expose
 class APIScraper(APIBase):
     '''ROOT API'''

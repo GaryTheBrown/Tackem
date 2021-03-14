@@ -5,6 +5,7 @@ from libs.config.obj.boolean import ConfigObjBoolean
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.options.select import ConfigObjOptionsSelect
 
+
 def scraper_config() -> ConfigList:
     '''Scraper Config'''
     return ConfigList(

@@ -7,6 +7,7 @@ from libs.database.where import Where
 from libs.ripper.data.disc_type import DiscType, make_disc_type
 # from .data import disc_type, video_track_type as track_type
 
+
 def rip_data(db_data: dict) -> DiscType:
     '''comment'''
     if db_data['rip_data'] is not None:

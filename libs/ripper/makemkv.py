@@ -10,6 +10,8 @@ from data.database.ripper import VIDEO_INFO_DB as DB
 import os
 import pexpect
 from libs.file import File
+
+
 class MakeMKV(RipperSubSystem):
     '''MakeMKV ripping controller'''
 
@@ -29,7 +31,8 @@ class MakeMKV(RipperSubSystem):
                 CONFIG['ripper']['locations']['videoiso'].value
             )
 
-        temp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
+        temp_dir = File.location(
+            f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
         device = msg.return_data['iso_file'] == ""
         if isinstance(disc_rip_info, list):
             self._track_data = True
@@ -39,10 +42,11 @@ class MakeMKV(RipperSubSystem):
         elif disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir, device=device)
 
-        comp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
+        comp_dir = File.location(
+            f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
         File.move(temp_dir, comp_dir)
 
-        #TODO calls the next system
+        # TODO calls the next system
 
         if not device and CONFIG['ripper']['iso']['removeiso'].value:
             File.rm(File.location(self._in_file))
@@ -87,7 +91,8 @@ class MakeMKV(RipperSubSystem):
                 self._ripping_track = None
                 break
             elif i == 1:
-                self._ripping_track = int(thread.match.group(0).split(":")[1].split(",")[1])
+                self._ripping_track = int(
+                    thread.match.group(0).split(":")[1].split(",")[1])
                 update_progress = True
             elif i == 2:
                 if update_progress:

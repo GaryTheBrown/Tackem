@@ -3,6 +3,7 @@ import cherrypy
 from api.base import APIBase
 from data.config import CONFIG
 
+
 @cherrypy.expose
 class APIScraperGetMovie(APIBase):
     '''Get Movie API'''
@@ -14,11 +15,11 @@ class APIScraperGetMovie(APIBase):
             raise cherrypy.HTTPError(status=403)
 
         required = []
-        if (plugin_type:= kwargs.get("plugin_type", "")) == "":
+        if (plugin_type := kwargs.get("plugin_type", "")) == "":
             required.append("plugin_type")
-        if (plugin_name:= kwargs.get("plugin_name", "")) == "":
+        if (plugin_name := kwargs.get("plugin_name", "")) == "":
             required.append("plugin_name")
-        if (instance:= kwargs.get("instance", "")) == "":
+        if (instance := kwargs.get("instance", "")) == "":
             required.append("instance")
         if required:
             return self._return_data(

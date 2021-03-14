@@ -6,6 +6,7 @@ from libs.config.obj.data.button import Button
 from libs.config.obj.string import ConfigObjString
 from libs.config.rules import ConfigRules
 
+
 class ConfigObjEmail(ConfigObjString):
     '''Config Obj String'''
 

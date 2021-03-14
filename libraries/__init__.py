@@ -28,7 +28,8 @@ class Libraries:
         config = CONFIG['libraries']
 
         for movie_library in config['movies']:
-            self.__movies[movie_library.var_name] = MoviesLibrary(movie_library)
+            self.__movies[movie_library.var_name] = MoviesLibrary(
+                movie_library)
 
         # for tvshows_library in config['tvshows']:
         # for music_library in config['music']:
@@ -41,5 +42,6 @@ class Libraries:
     def stop(self):
         '''Stop the library systems'''
         self.__checksum.stop()
+
 
 LIBRARIES = Libraries()

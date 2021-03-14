@@ -1,5 +1,6 @@
 '''special system for languages including conversion between types'''
 
+
 class Language:
     '''Single Language Class'''
 
@@ -34,6 +35,7 @@ class Language:
     def family(self):
         '''Returns family'''
         return self.__family
+
 
 class Languages:
     '''controller for languages'''

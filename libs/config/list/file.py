@@ -8,6 +8,7 @@ from libs.config.list.base import ConfigListBase
 from libs.config.obj.base import ConfigObjBase
 from libs.file import File
 
+
 class ConfigListFile(ConfigListBase):
     '''CONFIG List Class'''
 
@@ -66,7 +67,7 @@ class ConfigListFile(ConfigListBase):
             config = self.__config
         for key, value in config.items():
             restart = False
-            if isinstance(value, dict): # if item is a deeper layer
+            if isinstance(value, dict):  # if item is a deeper layer
                 if key in self.keys():
                     item = self.get(key)
                     item.load_configobj(value)
@@ -104,10 +105,7 @@ class ConfigListFile(ConfigListBase):
                             self.clone_many_section(key)
                             new_item = self.get(key)
                             new_item.load_configobj(item)
-            #TODO  make this check for a rule and then do the rule magic here.
-
-
-
+            # TODO  make this check for a rule and then do the rule magic here.
 
     def get_spec_part(self, indent: int) -> str:
         '''function for recursion of list'''

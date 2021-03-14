@@ -2,6 +2,7 @@
 from typing import Optional
 from threading import Event
 
+
 class RootEvent:
     '''Event to control the loop function'''
     _events = []
@@ -23,6 +24,7 @@ class RootEvent:
     def call_event(cls):
         '''Set an event for the root thread to do'''
         cls._event.set()
+
 
 class RootEventMaster(RootEvent):
     '''Event to wait for the command and then return what to do.'''

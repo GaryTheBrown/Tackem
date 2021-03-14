@@ -2,6 +2,7 @@
 import platform
 from shutil import which
 
+
 def check_for_required_programs(
         program_list: list,
         plugin: str = None,
@@ -11,6 +12,7 @@ def check_for_required_programs(
     if platform.system() == 'Linux':
         return __linux(program_list, plugin, output)
     return "OTHER OS's NOT IMPLEMENTET", 1
+
 
 def __linux(
         program_list: list,

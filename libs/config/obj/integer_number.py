@@ -6,6 +6,7 @@ from libs.config.obj.data.button import Button
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
+
 class ConfigObjIntegerNumber(ConfigObjBase):
     '''Config Item Integer Number'''
 

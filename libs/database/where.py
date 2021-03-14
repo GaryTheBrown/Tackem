@@ -1,6 +1,7 @@
 '''Where Object'''
 from typing import Any
 
+
 class Where:
     '''Where Object'''
 

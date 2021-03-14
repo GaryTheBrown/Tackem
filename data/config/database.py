@@ -7,6 +7,7 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.radio import ConfigObjRadio
 from libs.config.obj.options.radio import ConfigObjOptionsRadio
 
+
 def database_config() -> ConfigList:
     '''Database Config'''
     return ConfigList(

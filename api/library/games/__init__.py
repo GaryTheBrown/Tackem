@@ -2,6 +2,7 @@
 import cherrypy
 from api.base import APIBase
 
+
 @cherrypy.expose
 class APIGamesLibrary(APIBase):
     '''ROOT API'''
@@ -22,7 +23,6 @@ class APIGamesLibrary(APIBase):
                 return self
             if section == "list":
                 return self
-
 
         return self
 

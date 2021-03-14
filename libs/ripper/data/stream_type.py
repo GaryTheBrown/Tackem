@@ -4,6 +4,7 @@ import json
 from typing import Optional
 from data.languages import Languages
 
+
 class StreamType(metaclass=ABCMeta):
     '''Master Type'''
     _types = ["video", "audio", "subtitle"]

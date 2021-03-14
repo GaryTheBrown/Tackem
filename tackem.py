@@ -24,6 +24,7 @@ from libs.ripper import Ripper
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
 # TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
 
+
 class Tackem:
     '''main program entrance'''
 
@@ -67,7 +68,8 @@ class Tackem:
     @classmethod
     def run(cls):
         '''Looping function'''
-        signal.signal(signal.SIGINT, ctrl_c) # Setup signal to watch for ctrl + c command
+        signal.signal(
+            signal.SIGINT, ctrl_c)  # Setup signal to watch for ctrl + c command
         cls.start()
         while True:
             event, data = RootEvent.wait_and_get_event()
@@ -92,11 +94,12 @@ def ctrl_c(_, __):
     print(" caught Shutting Down Cleanly...")
     RootEvent.set_event("shutdown")
 
+
 if __name__ == "__main__":
     if platform.system() != 'Linux':
         print("""
 This Program is only developed to run on LINUX Parts may not work as expected please report any
  issues you find for other platforms on guthub"""
-        )
+              )
     Tackem().run()
     signal.signal(signal.SIGINT, False)

@@ -8,6 +8,7 @@ from api.library import APILibrary
 from data.config import CONFIG
 from libs.authenticator import Authentication
 
+
 @cherrypy.expose
 class API(APIBase):
     '''ROOT API'''

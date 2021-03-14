@@ -8,6 +8,8 @@ from api.base import APIBase
 import string
 import random
 from libs.database.messages import SQLInsert, SQLSelect
+
+
 @cherrypy.expose
 class APIRipperIsoUploadAudio(APIBase):
     '''Upload Audio ISO API'''
@@ -37,7 +39,6 @@ class APIRipperIsoUploadAudio(APIBase):
                 errorNumber=0
             )
 
-
         msg = SQLSelect(
             UPLOAD_DB,
             Where("filename", kwargs['filename']),
@@ -56,7 +57,8 @@ class APIRipperIsoUploadAudio(APIBase):
                 url=f"{url}/upload/?key={msg.return_data['key']}"
             )
 
-        key = ''.join(random.choices(string.ascii_lowercase + string.digits, k=40))
+        key = ''.join(random.choices(
+            string.ascii_lowercase + string.digits, k=40))
         Database.call(
             SQLInsert(
                 UPLOAD_DB,

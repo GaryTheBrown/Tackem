@@ -5,6 +5,7 @@ from libs.config.obj.data.data_list import DataList
 from libs.config.obj.list import ConfigObjList
 from libs.config.rules import ConfigRules
 
+
 class ConfigObjFloatList(ConfigObjList):
     '''Config Item Float List'''
 

@@ -9,6 +9,7 @@ import string
 import random
 from api.base import APIBase
 
+
 @cherrypy.expose
 class APIRipperIsoUploadVideo(APIBase):
     '''Upload Video ISO API'''
@@ -55,7 +56,8 @@ class APIRipperIsoUploadVideo(APIBase):
                 url=f"{url}/upload/?key={msg.return_data['key']}"
             )
 
-        key = ''.join(random.choices(string.ascii_lowercase + string.digits, k=40))
+        key = ''.join(random.choices(
+            string.ascii_lowercase + string.digits, k=40))
         Database.call(
             SQLInsert(
                 UPLOAD_DB,

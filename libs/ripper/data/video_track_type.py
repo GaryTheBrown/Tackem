@@ -12,6 +12,7 @@ TYPES = {"dontrip": "ban",
          "other": "plus"
          }
 
+
 class VideoTrackType(metaclass=ABCMeta):
     '''Master Type'''
 

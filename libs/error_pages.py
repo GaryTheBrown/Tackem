@@ -1,6 +1,7 @@
 '''Error Pages'''
 import cherrypy
 
+
 def setup_error_pages(
         e400: bool = True,
         e401: bool = True,
@@ -24,7 +25,9 @@ def setup_error_pages(
     if e500:
         cherrypy.config.update({'error_page.500': error_page_500})
 
-#def error_page_400(status, message, traceback, version) -> str:
+# def error_page_400(status, message, traceback, version) -> str:
+
+
 def error_page_400(status, message, traceback, version) -> str:
     '''400 error page'''
     return 'Error 400 Bad Request'

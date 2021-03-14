@@ -1,6 +1,7 @@
 '''Upload Partials'''
 from libs.html_system import HTMLSystem
 
+
 class PartialsUpload:
     '''Upload Partials'''
 

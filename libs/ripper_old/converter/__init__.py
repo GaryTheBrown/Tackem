@@ -10,6 +10,7 @@ from data.database.ripper import VIDEO_INFO_DB as INFO_DB
 from libs.ripper.data.disc_type import make_disc_type
 from libs.ripper.data.video_track_type import make_track_type
 
+
 class ConverterInit():
     '''Master Section for the Converter controller'''
 
@@ -24,6 +25,7 @@ class ConverterInit():
 ###########
 ##GETTERS##
 ###########
+
     def get_quick_data(self):
         '''returns the data as dict for html'''
         return [task.get_quick_data() for task in self._tasks]
@@ -56,7 +58,6 @@ class ConverterInit():
             if task.get_id() == task_id:
                 return task.converting()
         return None
-
 
     def _get_video_tasks(self):
         '''Grab video tasks and append them to the list'''

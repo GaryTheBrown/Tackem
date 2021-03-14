@@ -6,6 +6,7 @@ from libs.database.table import Table
 from libs.database.messages.sql_message import SQLMessage
 from libs.exceptions import TableCheckFailure
 
+
 class BackendBase(metaclass=ABCMeta):
     '''Base for the backend'''
     _running = threading.Event()
@@ -49,6 +50,7 @@ class BackendBase(metaclass=ABCMeta):
 ##################
 ##USER FUNCTIONS##
 ##################
+
     def call(self, message: SQLMessage):
         '''function to pass the query/table through to the backend thread'''
         if not isinstance(message, SQLMessage):

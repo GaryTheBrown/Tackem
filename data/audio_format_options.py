@@ -1,5 +1,6 @@
 ''' audio format options'''
 
+
 def audio_format_options(obj):
     '''returns the list of audio formats'''
     return [

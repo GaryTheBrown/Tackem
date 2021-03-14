@@ -3,6 +3,7 @@ from libs.ripper import Ripper
 import cherrypy
 from api.base import APIBase
 
+
 @cherrypy.expose
 class APIRipperDrivesData(APIBase):
     '''Base Template For the API'''

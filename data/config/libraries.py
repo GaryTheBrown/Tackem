@@ -7,6 +7,7 @@ from libs.config.obj.string_list import ConfigObjStringList
 from libs.config.obj.data.option import ConfigObjOption
 from libs.config.obj.options.select import ConfigObjOptionsSelect
 
+
 def libraries_config() -> ConfigList:
     '''Libraries Config'''
     return ConfigList(
@@ -65,7 +66,7 @@ def libraries_config() -> ConfigList:
                     "Audio File Extensions",
                     "what extensions are linked to audio files"
                 )
-                #Game Extensions will go into a folder that stores info on each system supported
+                # Game Extensions will go into a folder that stores info on each system supported
             )
         ),
         ConfigList(
@@ -82,7 +83,7 @@ def libraries_config() -> ConfigList:
                     "Where is the library stored?"
                 )
             ),
-            #This should be generated from the folder that stores info on each system supported.
+            # This should be generated from the folder that stores info on each system supported.
             many_section_limit_list=[
                 "SNES", "NES"
             ]

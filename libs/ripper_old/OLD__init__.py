@@ -21,8 +21,8 @@ from .renamer import Renamer
 # DRIVES = {}
 
 # if platform.system() == 'Linux':
-    # if check_for_required_programs(SETTINGS['linux_programs'], output=False):
-        # DRIVES = get_hwinfo_linux()
+# if check_for_required_programs(SETTINGS['linux_programs'], output=False):
+# DRIVES = get_hwinfo_linux()
 
 
 # def check_enabled():
@@ -39,14 +39,14 @@ class Ripper:
     def __init__(self):
         pass
 
-
     def startup(self):
         '''Ripper Startup Script'''
         if platform.system() == 'Linux':
             for dri in Hardware.disc_drives():
                 if dri in ROOT_Config['ripper']['drives']:
                     if ROOT_Config['ripper']['drives'][dri]["enabled"].value:
-                        self._drives.append(DriveLinux(dri, Hardware.disc_drives()[dri]))
+                        self._drives.append(DriveLinux(
+                            dri, Hardware.disc_drives()[dri]))
 
         # Check if Devices Exist and if not it will stop the plugin from loading
         if not self._drives:

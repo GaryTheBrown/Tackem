@@ -28,7 +28,7 @@ LIBRARY_FILES_DB = Table(
     ),
     Column(
         "last_check",
-        "bigint" # unix timestamp
+        "bigint"  # unix timestamp
     ),
     Column(
         "bad_file",

@@ -6,6 +6,7 @@ from libs.config.obj.data.data_list import DataList
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
+
 class ConfigObjList(ConfigObjBase):
     '''Config Item List'''
 

@@ -2,19 +2,20 @@
 from typing import Any, Optional
 from libs.config.rules import ConfigRules
 
+
 class ConfigBase:
     '''CONFIG Base Class'''
 
     def __init__(
-            self,
-            var_name: str,
-            label: str,
-            help_text: str,
-            hide_on_html: bool = False,
-            not_in_config: bool = False,
-            rules: Optional[ConfigRules] = None,
-            value_link: Optional[list] = None
-        ):
+        self,
+        var_name: str,
+        label: str,
+        help_text: str,
+        hide_on_html: bool = False,
+        not_in_config: bool = False,
+        rules: Optional[ConfigRules] = None,
+        value_link: Optional[list] = None
+    ):
         if not isinstance(var_name, str):
             raise ValueError("variable name is not a string")
         if not isinstance(label, str):

@@ -7,6 +7,7 @@ from libs.html_template import HTMLTEMPLATE
 from libs.authenticator import Authentication
 from data.config import CONFIG
 
+
 class Admin(HTMLTEMPLATE):
     '''Admin'''
 

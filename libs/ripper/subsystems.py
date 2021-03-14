@@ -8,6 +8,7 @@ from libs.database.messages.select import SQLSelect
 from libs.file import File
 from subprocess import DEVNULL, PIPE, Popen
 
+
 class FileSubsystem:
     '''Disc and ISO SUbsystem'''
 
@@ -19,7 +20,7 @@ class FileSubsystem:
         }
 
         self._db_id = None
-        self._ripper = None # whatever the ripper is makemkv and cd ripper
+        self._ripper = None  # whatever the ripper is makemkv and cd ripper
 
     def _add_video_disc_to_database(self, filename: str = ""):
         '''sets up the DB stuff for disc'''
@@ -67,19 +68,21 @@ class FileSubsystem:
     def _get_udfInfo(self, in_file: str):
         '''Grabs the relevent Data from UDF images'''
         list = {}
-        process = Popen(["udfinfo", File.location(in_file)], stdout=PIPE, stderr=DEVNULL)
+        process = Popen(["udfinfo", File.location(in_file)],
+                        stdout=PIPE, stderr=DEVNULL)
         part_list = process.communicate()[0].decode('utf-8').split("\n")[:-1]
 
         for item in part_list:
             list[item.split("=")[0]] = item.split("=")[1]
         if process.returncode != 0:
-            self._disc = {"disc_type":"audiocd"}
+            self._disc = {"disc_type": "audiocd"}
 
         self._disc = {
-            'label':list['label'],
-            'uuid':list['uuid'],
-            'type':"bluray" if list['udfrev'] == "2.50" else "dvd"
+            'label': list['label'],
+            'uuid': list['uuid'],
+            'type': "bluray" if list['udfrev'] == "2.50" else "dvd"
         }
+
 
 class RipperSubSystem():
     '''Ripper Subsystem controller'''

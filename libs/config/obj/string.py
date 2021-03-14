@@ -7,6 +7,7 @@ from libs.config.obj.data.button import Button
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 
+
 class ConfigObjString(ConfigObjBase):
     '''Config Item String'''
 

@@ -4,6 +4,7 @@ from libs.config.obj.enabled import ConfigObjEnabled
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.html_system import HTMLSystem
 
+
 class ConfigListHtml(ConfigListBase):
     '''Config List Class'''
 
@@ -79,7 +80,8 @@ class ConfigListHtml(ConfigListBase):
         return HTMLSystem.part(
             "section/panel",
             TITLE=title,
-            CONTROL=self.__controls(variable_name) if self.many_section else "",
+            CONTROL=self.__controls(
+                variable_name) if self.many_section else "",
             VARIABLENAME=variable_name,
             PANELNAME=f"{variable_name}_panel",
             SECTION=self.__section_data(variable_name),
@@ -102,7 +104,8 @@ class ConfigListHtml(ConfigListBase):
             options_html = HTMLSystem.part(
                 "inputs/single/option",
                 LABEL="Please Select An Option",
-                input_attributes=InputAttributes("required", "selected", "disabled").html()
+                input_attributes=InputAttributes(
+                    "required", "selected", "disabled").html()
             )
             for item in self.many_section_limit_list:
                 attr = InputAttributes("disabled", "required").html(
@@ -151,7 +154,7 @@ class ConfigListHtml(ConfigListBase):
                 continue
             html += obj.html(variable_name)
 
-        #TODO MANY SECTION MISSING FROM HERE
+        # TODO MANY SECTION MISSING FROM HERE
 
         return html
 

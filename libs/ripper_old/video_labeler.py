@@ -125,7 +125,7 @@ class VideoLabeler():
         Database.call(msg1)
         rip_data = json.loads(msg1.return_data['rip_data'])
         if isinstance(rip_data, dict) and "tracks" in rip_data \
-            and isinstance(rip_data["tracks"], list) and len(rip_data["tracks"]) >= track_id:
+                and isinstance(rip_data["tracks"], list) and len(rip_data["tracks"]) >= track_id:
             rip_data["tracks"][track_id] = None
             to_save = json.dumps(rip_data)
             Database.call(

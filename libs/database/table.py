@@ -2,6 +2,7 @@
 from typing import Any, List
 from libs.database.column import Column
 
+
 class Table:
     '''Database Table'''
 
@@ -10,7 +11,6 @@ class Table:
         self.__version = version
         self.__data = list(data)
         self.__soft_delete = soft_delete
-
 
         self.__main_data = [
             Column(

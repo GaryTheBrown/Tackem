@@ -4,6 +4,7 @@ from data.config import CONFIG
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table
 
+
 class MySQL(BackendBase):
     '''MySQL system'''
 
@@ -38,7 +39,6 @@ class MySQL(BackendBase):
     def __get_cursor(self):
         '''returns a sql cursor'''
         return super()._conn.cursor(dictionary=True)
-
 
     def __table_check(self, table: Table) -> bool:
         '''checks if the table exists adds it if it doesn't and update it if needed'''

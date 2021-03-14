@@ -46,7 +46,8 @@ def drives(drive_list, config_drives, vertical=False):
     drives_html = ""
     for drive_index, drive_obj in enumerate(drive_list):
         cfg_name = drive_obj.get_cfg_name()
-        drives_html += drive(drive_obj, drive_index, config_drives[cfg_name]['name'], vertical)
+        drives_html += drive(drive_obj, drive_index,
+                             config_drives[cfg_name]['name'], vertical)
     return drives_html
 
 

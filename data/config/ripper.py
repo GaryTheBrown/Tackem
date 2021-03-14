@@ -39,6 +39,7 @@ YES_NO_IA = InputAttributes(
     data_off="No"
 )
 
+
 def ripper_config() -> ConfigList:
     '''Ripper Config'''
     if platform.system() != 'Linux':
@@ -236,11 +237,11 @@ def ripper_config() -> ConfigList:
                 "Default Language",
                 "What is your main language?"
             ),
-            #TODO need to sort this so it can be different for 3D SD HD UHD and HDR Files
-             ConfigList(
+            # TODO need to sort this so it can be different for 3D SD HD UHD and HDR Files
+            ConfigList(
                 "video",
                 "Video",
-                #VIDEO SECTION
+                # VIDEO SECTION
                 # ConfigObjBoolean(
                 #     "videoinserttags",
                 #     True,
@@ -263,38 +264,63 @@ def ripper_config() -> ConfigList:
                     "video3dtype",
                     [
                         ConfigObjOption("keep", "Keep Original"),
-                        ConfigObjOption("sbsl", "Side by Side (Left Eye First)"),
-                        ConfigObjOption("sbsr", "Side by Side (Right Eye First)"),
-                        ConfigObjOption("sbs2l", "Half Side by Side (Left Eye First)"),
-                        ConfigObjOption("sbs2r", "Half Side by Side (Right Eye First)"),
+                        ConfigObjOption(
+                            "sbsl", "Side by Side (Left Eye First)"),
+                        ConfigObjOption(
+                            "sbsr", "Side by Side (Right Eye First)"),
+                        ConfigObjOption(
+                            "sbs2l", "Half Side by Side (Left Eye First)"),
+                        ConfigObjOption(
+                            "sbs2r", "Half Side by Side (Right Eye First)"),
                         ConfigObjOption("abl", "Top Bottom (Left Eye Top)"),
                         ConfigObjOption("abr", "Top Bottom (Right Eye Top)"),
-                        ConfigObjOption("ab2l", "Half Top Bottom (Left Eye Top)"),
-                        ConfigObjOption("ab2r", "Half Top Bottom (Right Eye Top)"),
-                        ConfigObjOption("al", "Alternating Frames (Left Eye First)"),
-                        ConfigObjOption("ar", "Alternating Frames (Right Eye First)"),
-                        ConfigObjOption("irl", "Interleaved Rows (Left Eye Has Top Row)"),
-                        ConfigObjOption("irr", "Interleaved Rows (Right Eye Has Top Row)"),
+                        ConfigObjOption(
+                            "ab2l", "Half Top Bottom (Left Eye Top)"),
+                        ConfigObjOption(
+                            "ab2r", "Half Top Bottom (Right Eye Top)"),
+                        ConfigObjOption(
+                            "al", "Alternating Frames (Left Eye First)"),
+                        ConfigObjOption(
+                            "ar", "Alternating Frames (Right Eye First)"),
+                        ConfigObjOption(
+                            "irl", "Interleaved Rows (Left Eye Has Top Row)"),
+                        ConfigObjOption(
+                            "irr", "Interleaved Rows (Right Eye Has Top Row)"),
                         ConfigObjOption("arbg", "Anaglyph Red/Blue Grayscale"),
-                        ConfigObjOption("argg", "Anaglyph Red/Green Grayscale"),
+                        ConfigObjOption(
+                            "argg", "Anaglyph Red/Green Grayscale"),
                         ConfigObjOption("arcg", "Anaglyph Red/Cyan Grayscale"),
-                        ConfigObjOption("arch", "Anaglyph Red/Cyan Half Coloured"),
+                        ConfigObjOption(
+                            "arch", "Anaglyph Red/Cyan Half Coloured"),
                         ConfigObjOption("arcc", "Anaglyph Red/Cyan Colour"),
-                        ConfigObjOption("arcd", "Anaglyph Red/Cyan Colour dubois"),
-                        ConfigObjOption("agmg", "Anaglyph Green/Magenta Grayscale"),
-                        ConfigObjOption("agmh", "Anaglyph Green/Magenta Half Coloured"),
-                        ConfigObjOption("agmc", "Anaglyph Green/Magenta Coloured"),
-                        ConfigObjOption("agmd", "Anaglyph Green/Magenta Colour Dubois"),
-                        ConfigObjOption("aybg", "Anaglyph Yellow/Blue Grayscale"),
-                        ConfigObjOption("aybh", "Anaglyph Yellow/Blue Half Coloured"),
-                        ConfigObjOption("aybc", "Anaglyph Yellow/Blue Coloured"),
-                        ConfigObjOption("aybd", "Anaglyph Yellow/Blue Colour Dubois"),
+                        ConfigObjOption(
+                            "arcd", "Anaglyph Red/Cyan Colour dubois"),
+                        ConfigObjOption(
+                            "agmg", "Anaglyph Green/Magenta Grayscale"),
+                        ConfigObjOption(
+                            "agmh", "Anaglyph Green/Magenta Half Coloured"),
+                        ConfigObjOption(
+                            "agmc", "Anaglyph Green/Magenta Coloured"),
+                        ConfigObjOption(
+                            "agmd", "Anaglyph Green/Magenta Colour Dubois"),
+                        ConfigObjOption(
+                            "aybg", "Anaglyph Yellow/Blue Grayscale"),
+                        ConfigObjOption(
+                            "aybh", "Anaglyph Yellow/Blue Half Coloured"),
+                        ConfigObjOption(
+                            "aybc", "Anaglyph Yellow/Blue Coloured"),
+                        ConfigObjOption(
+                            "aybd", "Anaglyph Yellow/Blue Colour Dubois"),
                         ConfigObjOption("ml", "Mono Output (Left Eye Only)"),
                         ConfigObjOption("mr", "Mono Output (Right Eye Only)"),
-                        ConfigObjOption("chl", "Checkerboard (Left Eye First)"),
-                        ConfigObjOption("chr", "Checkerboard (Right Eye First)"),
-                        ConfigObjOption("icl", "Interleaved Columns (Left Eye First)"),
-                        ConfigObjOption("icr", "Interleaved Columns (Right Eye First)"),
+                        ConfigObjOption(
+                            "chl", "Checkerboard (Left Eye First)"),
+                        ConfigObjOption(
+                            "chr", "Checkerboard (Right Eye First)"),
+                        ConfigObjOption(
+                            "icl", "Interleaved Columns (Left Eye First)"),
+                        ConfigObjOption(
+                            "icr", "Interleaved Columns (Right Eye First)"),
                         ConfigObjOption("hdmi", "HDMI Frame Pack")
                     ],
                     'keep',
@@ -462,7 +488,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
             ConfigList(
                 "audio",
                 "Audio",
-                #AUDIO SECTION
+                # AUDIO SECTION
                 ConfigObjOptionsRadio(
                     "audiolanguage",
                     [
@@ -572,7 +598,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
             ConfigList(
                 "chapters",
                 "Chapters",
-                #CHAPTERS SECTION
+                # CHAPTERS SECTION
                 ConfigObjBoolean(
                     "keepchapters",
                     True,
@@ -584,7 +610,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
             ConfigList(
                 "subtitles",
                 "Subtitles",
-                #SUBTITLES SECTION
+                # SUBTITLES SECTION
                 ConfigObjOptionsRadio(
                     "subtitle",
                     [

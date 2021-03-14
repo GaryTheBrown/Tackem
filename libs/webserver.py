@@ -15,6 +15,8 @@ from libs.html_template import HTMLTEMPLATE
 from libs.database import Database
 from libs.database.messages import SQLTable
 from data.database.system import UPLOAD_DB
+
+
 class Webserver:
     '''Webserver'''
     __running = False
@@ -34,8 +36,8 @@ class Webserver:
             'server.socket_port': CONFIG['webui']['port'].value,
             'server.threadPool': 10,
             'server.environment': "production",
-            'server.max_request_body_size' : 0,
-            'server.socket_timeout' : 60,
+            'server.max_request_body_size': 0,
+            'server.socket_timeout': 60,
             'log.screen': False,
             'log.access_file': '',
             'log.error_file': '',
@@ -80,7 +82,7 @@ class Webserver:
         }
 
         conf_upload = {
-            "/":{
+            "/": {
                 'response.timeout': 3600
             }
         }
@@ -90,7 +92,8 @@ class Webserver:
         cherrypy.tree.mount(Root("", ""), baseurl, conf_root)
         cherrypy.tree.mount(Admin("Admin", ""), baseurl + "admin/", conf_root)
         cherrypy.tree.mount(API(), baseurl + "api/", conf_api)
-        cherrypy.tree.mount(Upload("Upload", ""), baseurl + "upload/", conf_upload)
+        cherrypy.tree.mount(Upload("Upload", ""),
+                            baseurl + "upload/", conf_upload)
 
         File.mkdir(File.location(CONFIG['webui']['uploadlocation'].value))
 

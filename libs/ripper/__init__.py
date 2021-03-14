@@ -19,24 +19,24 @@ from libs.database import Database
 from threading import BoundedSemaphore
 from data.config import CONFIG
 
-#TODO add the converter to the ripper system and get it working. then make it so you can edit the
+# TODO add the converter to the ripper system and get it working. then make it so you can edit the
 # data while this happens. if no data exists at the end put it into the labeler holder otherwise
 # auto send it to the library for processing where it goes.
 
-#TODO need a way of the system checking if it needs to do any secondery convertion (audio stuff
+# TODO need a way of the system checking if it needs to do any secondery convertion (audio stuff
 # mainly)
 
-#TODO at this point it should maybe convert all tracks if no info available but allow you
+# TODO at this point it should maybe convert all tracks if no info available but allow you
 # to say what is what for it to then follow the config rules in what to copy and then delete
 # any others. if its not input after the converter then wait in a hold till it knows what is
 # what. so a labeler section now works after the convertor and it's just a holding section
 # if in here then saving the track data will send it to the library
 
-#TODO deal with the renamer (this may just be removed and changed to move to library as we can pass
+# TODO deal with the renamer (this may just be removed and changed to move to library as we can pass
 # the info in for what it is and let the library worry about it's filename)
 
-#TODO WWW all the systems back to life
-#TODO Add in the video Labeler and renamer as well, then look at adding the Audio stuff
+# TODO WWW all the systems back to life
+# TODO Add in the video Labeler and renamer as well, then look at adding the Audio stuff
 
 # TODO get the ripper html stuff moved into the www folder in a single file removing the html part
 # functions for the new way. POSSABLY NEED TO CHANGE HOW THIS SHOWS SO POSSABLY NEEDS TO BE
@@ -44,6 +44,7 @@ from data.config import CONFIG
 
 # TODO a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
+
 
 class Ripper:
     '''Main Class to create an instance of the plugin'''
@@ -120,9 +121,9 @@ class Ripper:
             file.write('app_DefaultSelectionString = "+sel:all"\n')
             file.write('app_DefaultOutputFileName = "{t:N2}"\n')
             file.write('app_ccextractor = "/usr/bin/ccextractor"\n')
-            file.write(f'app_key = "' + CONFIG['ripper']['makemkv']['key'].value + '"\n')
+            file.write(f'app_key = "' +
+                       CONFIG['ripper']['makemkv']['key'].value + '"\n')
             file.write('dvd_MinimumTitleLength = "0"')
-
 
     @classmethod
     def __start_drives(cls):
@@ -143,14 +144,16 @@ class Ripper:
             value=CONFIG['ripper']['iso']['threadcount'].value
         )
 
-        #Check for Audio ISOs
-        iso_path = File.location(CONFIG['ripper']['locations']['audioiso'].value)
+        # Check for Audio ISOs
+        iso_path = File.location(
+            CONFIG['ripper']['locations']['audioiso'].value)
         for path in Path(iso_path).rglob('*.iso'):
             filename = ("/"+"/".join(path.parts[1:])).replace(iso_path, "")
             cls.iso_add(filename, AUDIO_INFO_DB)
 
-        #Check For Video ISOs
-        iso_path = File.location(CONFIG['ripper']['locations']['videoiso'].value)
+        # Check For Video ISOs
+        iso_path = File.location(
+            CONFIG['ripper']['locations']['videoiso'].value)
         for path in Path(iso_path).rglob('*.iso'):
             filename = ("/"+"/".join(path.parts[1:])).replace(iso_path, "")
             cls.iso_add(filename, VIDEO_INFO_DB)
@@ -200,7 +203,7 @@ class Ripper:
     @classmethod
     def iso_add(cls, filename: str, table: Table) -> bool:
         '''Action for other systems to add iso mainly the upload side'''
-        #TODO need to change the DB calls in here to read the other info and add thh full info here
+        # TODO need to change the DB calls in here to read the other info and add thh full info here
         if not CONFIG['ripper']['iso']['enabled'].value:
             return False
         if filename in cls.__iso_loaded:
@@ -240,4 +243,5 @@ class Ripper:
         '''removes old threads from the list.'''
         if not CONFIG['ripper']['converter']['enabled'].value:
             return
-        cls.__video_converter_threads = [t for t in cls.__video_converter_threads if t.thread_run]
+        cls.__video_converter_threads = [
+            t for t in cls.__video_converter_threads if t.thread_run]

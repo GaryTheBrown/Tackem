@@ -16,6 +16,7 @@ from libs.database.messages.select import SQLSelect
 from libs.ripper.video_converter.metadata import VideoConverterMetadata
 from libs.ripper.video_converter.video import VideoConverterVideo
 
+
 class VideoConverter(
     VideoConverterChapters,
     VideoConverterMetadata,
@@ -38,12 +39,13 @@ class VideoConverter(
             return
 
         self._filename = msg.return_data['filename']
-        infile = File.location(CONFIG['ripper']['locations']['videoripping'].value + self._filename)
+        infile = File.location(
+            CONFIG['ripper']['locations']['videoripping'].value + self._filename)
         outfile = infile.replace(".mkv", "") + ".NEW.mkv"
 
         if not os.path.exists(infile):
             print("ERROR:" + infile + " missing")
-            return # PROBLEM HERE AS IN FILE MISSING
+            return  # PROBLEM HERE AS IN FILE MISSING
         if os.path.exists(outfile):
             os.remove(outfile)
 
@@ -67,16 +69,18 @@ class VideoConverter(
                 File.move(outfile, infile)
                 if not self._conf['keeporiginalfile'].value:
                     File.rm(infile + ".OLD")
-                Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self.__db_id)))
+                Database.call(SQLDelete(VIDEO_CONVERT_DB,
+                                        Where("id", self.__db_id)))
 
     def __create_command_no_info(self):
         '''creates the conversion command here'''
         probe_info = FFprobe(
             self._conf['ffprobelocation'].value,
-            File.location(CONFIG['ripper']['locations']['videoripping'].value + self._filename)
+            File.location(CONFIG['ripper']['locations']
+                          ['videoripping'].value + self._filename)
         )
 
-        #Copy accross most metadata
+        # Copy accross most metadata
         self._command.append("-map_metadata 0")
 
         # Deal with chapters here
@@ -100,7 +104,8 @@ class VideoConverter(
         track_info = make_track_type(db_info['track_info'])
         probe_info = FFprobe(
             self._conf['ffprobelocation'].value,
-            File.location(CONFIG['ripper']['locations']['videoripping'].value + self._filename)
+            File.location(CONFIG['ripper']['locations']
+                          ['videoripping'].value + self._filename)
         )
 
         # Deal with tagging here

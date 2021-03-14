@@ -3,6 +3,7 @@ from libs.database.messages.sql_message import SQLMessage
 from libs.database.table import Table
 from libs.exceptions import SQLMessageError
 
+
 class SQLTable(SQLMessage):
     '''Table Checker Message'''
 

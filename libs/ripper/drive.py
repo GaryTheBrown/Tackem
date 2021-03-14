@@ -9,6 +9,7 @@ import os
 import time
 from subprocess import DEVNULL, PIPE, Popen
 
+
 class Drive(FileSubsystem):
     '''Master Section for the Drive controller'''
 
@@ -134,7 +135,7 @@ class Drive(FileSubsystem):
             self._disc['type'] = "none"
             return False
 
-        #wait for disc ready
+        # wait for disc ready
         process = Popen(
             ["udevadm", "info", "--query=all", f"--name={self.__device}"],
             stdout=PIPE,
@@ -173,27 +174,28 @@ class Drive(FileSubsystem):
 ################
 ##TRAYCONTROLS##
 ################
+
     def __open_tray(self):
         '''Send Command to open the tray'''
         Popen(["eject", self.__device],
-                stdout=DEVNULL, stderr=DEVNULL).wait()
+              stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def __close_tray(self):
         '''Send Command to close the tray'''
         Popen(["eject", "-t", self.__device],
-                stdout=DEVNULL, stderr=DEVNULL).wait()
+              stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def __lock_tray(self):
         '''Send Command to lock the tray'''
         self.__tray_locked = True
         Popen(["eject", "-i1", self.__device],
-                stdout=DEVNULL, stderr=DEVNULL).wait()
+              stdout=DEVNULL, stderr=DEVNULL).wait()
 
     def __unlock_tray(self):
         '''Send Command to unlock the tray'''
         self.__tray_locked = False
         Popen(["eject", "-i0", self.__device],
-                stdout=DEVNULL, stderr=DEVNULL).wait()
+              stdout=DEVNULL, stderr=DEVNULL).wait()
 
 ##############
 ##HTML STUFF##

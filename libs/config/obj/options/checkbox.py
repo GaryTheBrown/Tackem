@@ -5,6 +5,7 @@ from libs.config.obj.data.checkbox import ConfigObjCheckbox
 from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
 
+
 class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
     '''Config Item Options CheckBox'''
 
@@ -53,7 +54,8 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
 
         default = self.default_value
         if isinstance(default, list):
-            default = "list(" + ', '.join([f"'{x}'" for x in self.default_value]) + ")"
+            default = "list(" + \
+                ', '.join([f"'{x}'" for x in self.default_value]) + ")"
         else:
             default = f"'{self.default_value}'"
         string = f"{self.var_name} = string_list(default={default})\n"

@@ -3,6 +3,7 @@ from typing import Optional
 import json
 import cherrypy
 
+
 class APIBase:
     '''Base Template For the API'''
 

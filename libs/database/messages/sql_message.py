@@ -3,6 +3,7 @@ from typing import Union
 import threading
 from libs.database.table import Table
 
+
 class SQLMessage:
     '''Struct to hold the message for easier reading in here'''
 

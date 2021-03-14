@@ -4,6 +4,7 @@ import threading
 import pexpect
 from data.config import CONFIG
 
+
 class VideoConverterBase():
     '''Master Section for the Video Converter controller'''
 
@@ -82,7 +83,8 @@ class VideoConverterBase():
                 self.__active = False
                 return True
             if i == 1:
-                return_string = thread.match.group(0).replace("frame=", "").lstrip()
+                return_string = thread.match.group(
+                    0).replace("frame=", "").lstrip()
                 self.__frame_process = int(return_string)
                 self.__percent = round(
                     float(self.__frame_process / self.__frame_count * 100), 2)

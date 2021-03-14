@@ -3,6 +3,7 @@ from typing import Optional, Any
 from datetime import datetime, date, time
 import json
 
+
 class Column:
     '''Column'''
 
@@ -44,7 +45,7 @@ class Column:
         "bit": 0,
         # ints
         "tinyint": 1, "smallint": 1, "int": 1, "mediumint": 1, "integer": 1, "bigint": 1,
-        #float
+        # float
         "real": 2, "double": 2, "float": 2, "decimal": 2, "numeric": 2,
 
         # text
@@ -139,16 +140,16 @@ class Column:
     def check_value(self, value: Any):
         '''checks the value is correct depending on the type set will throw errors if wrong'''
         if (self.__types[self.__type] == 0 and isinstance(value, bool)) \
-        or (self.__types[self.__type] == 1 and isinstance(value, int)) \
-        or (self.__types[self.__type] == 2 and isinstance(value, float)) \
-        or (self.__types[self.__type] == 3 and isinstance(value, str)) \
-        or (self.__types[self.__type] == 4 and isinstance(value, date)) \
-        or (self.__types[self.__type] == 5 and isinstance(value, time)) \
-        or (self.__types[self.__type] == 6 and isinstance(value, int)) \
-        or (self.__types[self.__type] == 7 and isinstance(value, datetime)) \
-        or (self.__types[self.__type] == 8 and isinstance(value, int) and 9999 >= value >= 0) \
-        or (self.__types[self.__type] == 9 and isinstance(value, str)) \
-        or (self.__types[self.__type] == 10 and isinstance(value, str)):
+                or (self.__types[self.__type] == 1 and isinstance(value, int)) \
+                or (self.__types[self.__type] == 2 and isinstance(value, float)) \
+                or (self.__types[self.__type] == 3 and isinstance(value, str)) \
+                or (self.__types[self.__type] == 4 and isinstance(value, date)) \
+                or (self.__types[self.__type] == 5 and isinstance(value, time)) \
+                or (self.__types[self.__type] == 6 and isinstance(value, int)) \
+                or (self.__types[self.__type] == 7 and isinstance(value, datetime)) \
+                or (self.__types[self.__type] == 8 and isinstance(value, int) and 9999 >= value >= 0) \
+                or (self.__types[self.__type] == 9 and isinstance(value, str)) \
+                or (self.__types[self.__type] == 10 and isinstance(value, str)):
             return
         if self.__types[self.__type] == 11:
             if isinstance(value, str):
@@ -162,9 +163,11 @@ class Column:
                     json.dumps(value)
                     return
                 except:
-                    raise ValueError(f"{self.__name} cannot convert to Json String")
+                    raise ValueError(
+                        f"{self.__name} cannot convert to Json String")
 
-        raise ValueError(f"{self.__name} Expecting {self.__type} found {type(value)}")
+        raise ValueError(
+            f"{self.__name} Expecting {self.__type} found {type(value)}")
 
     def create_string(self) -> str:
         '''turns Column info into a string for commands'''

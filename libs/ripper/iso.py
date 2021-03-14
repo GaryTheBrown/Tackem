@@ -13,6 +13,7 @@ from data.config import CONFIG
 from libs.file import File
 from libs.ripper.makemkv import MakeMKV
 
+
 class ISORipper(FileSubsystem):
     '''Master Section for the Drive controller'''
 
@@ -25,7 +26,7 @@ class ISORipper(FileSubsystem):
         self.__filename = filename
         self.__video = video
 
-        self._ripper = None # whatever the ripper is makemkv and cd ripper
+        self._ripper = None  # whatever the ripper is makemkv and cd ripper
         self.__active = False
         self.__thread_run = True
         self._thread.start()
@@ -68,7 +69,7 @@ class ISORipper(FileSubsystem):
             else:
                 return
                 # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
-                                              # self._set_drive_status, self._thread_run)
+                # self._set_drive_status, self._thread_run)
             if self.__thread_run is False:
                 return
 

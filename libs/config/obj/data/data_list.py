@@ -1,6 +1,7 @@
 '''Config Object Data List'''
 from libs.html_system import HTMLSystem
 
+
 class DataListOption:
     '''Config Object Data List Option'''
 
@@ -16,6 +17,7 @@ class DataListOption:
             "input/datalistoption",
             VALUE=self.__value
         )
+
 
 class DataList:
     '''Config Object Data List'''

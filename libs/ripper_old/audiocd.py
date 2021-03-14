@@ -54,7 +54,7 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
             Where("track_count", self._track_count)
         )
         Database.call(msg1)
-        if msg1.return_data: # info in local DB
+        if msg1.return_data:  # info in local DB
             self._db_id = msg1.return_data['id']
             self._release_id = msg1.return_data['release_id']
             disc_info_json = msg1.return_data['disc_data']
@@ -114,6 +114,7 @@ class AudioCD(RipperSubSystem, metaclass=ABCMeta):
 #####################
 ##DISC RIP COMMANDS##
 #####################
+
     @abstractmethod
     def _rip_disc(self):
         '''command to rip the cd here'''
