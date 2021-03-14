@@ -14,14 +14,9 @@ from libs.database import Database
 from libs.webserver import Webserver
 from libs.ripper import Ripper
 
+# TODO finish off the Ripper system
 # TODO intergrate Libraries into main program
-# is it going to be a single or multi instance?
-
-# TODO allow the converter to be called from elsewhere in the system but keep its config in the
-# Ripper section as this will mainly be for ripping but the user may want to convert a unsupported
-
 # TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
-
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
 # TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
 
