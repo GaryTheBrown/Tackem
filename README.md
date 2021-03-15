@@ -1,6 +1,7 @@
 # Tackem
 
 [![Flake8](https://github.com/GaryTheBrown/Tackem/actions/workflows/Checks.yml/badge.svg)](https://github.com/GaryTheBrown/Tackem/actions/workflows/Checks.yml)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 - An All in one system to manage a library of Movies, TV Shows, Music, Games. (In Progress)
 - It is capable of ripping Discs (if optical drives are present) and converting it or an ISO into a

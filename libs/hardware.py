@@ -1,7 +1,8 @@
 """Class to get all Hardware info needed"""
 import platform
 import re
-from subprocess import DEVNULL, PIPE, Popen
+from shutil import which
+from subprocess import PIPE, Popen
 
 
 class Hardware:
@@ -21,7 +22,7 @@ class Hardware:
     @classmethod
     def __disc_drive_linux(cls) -> dict:
         """issues the hwinfo command and passes the info back in a dict"""
-        process = Popen(["hwinfo", "--cdrom"], stdout=PIPE, stderr=DEVNULL)
+        process = Popen([which("hwinfo"), "--cdrom"], stdout=PIPE)
         returned_message = process.communicate()[0]
         devices = returned_message.decode("utf-8").rstrip().split("\n\n")
         device_list = []

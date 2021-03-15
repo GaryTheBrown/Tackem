@@ -7,7 +7,7 @@ import threading
 import time
 import fcntl
 import os
-from subprocess import DEVNULL, PIPE, Popen
+from subprocess import PIPE, Popen
 
 
 class Drive(FileSubsystem):
@@ -134,9 +134,8 @@ class Drive(FileSubsystem):
 
         # wait for disc ready
         process = Popen(
-            ["udevadm", "info", "--query=all", f"--name={self.__device}"],
+            [which("udevadm"), "info", "--query=all", f"--name={self.__device}"],
             stdout=PIPE,
-            stderr=DEVNULL,
         )
         message = process.communicate()[0].decode("utf-8")
         while message == "":
@@ -169,21 +168,21 @@ class Drive(FileSubsystem):
 
     def __open_tray(self):
         """Send Command to open the tray"""
-        Popen([which("eject"), self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), self.__device]).wait()
 
     def __close_tray(self):
         """Send Command to close the tray"""
-        Popen([which("eject"), "-t", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), "-t", self.__device]).wait()
 
     def __lock_tray(self):
         """Send Command to lock the tray"""
         self.__tray_locked = True
-        Popen([which("eject"), "-i1", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), "-i1", self.__device]).wait()
 
     def __unlock_tray(self):
         """Send Command to unlock the tray"""
         self.__tray_locked = False
-        Popen([which("eject"), "-i0", self.__device], stdout=DEVNULL, stderr=DEVNULL).wait()
+        Popen([which("eject"), "-i0", self.__device]).wait()
 
     def api_data(self) -> dict:
         """returns the data as json or dict for html"""

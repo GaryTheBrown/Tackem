@@ -27,7 +27,7 @@ class Root(HTMLTEMPLATE):
         username = kwargs.get("username", "")
         password = kwargs.get("password", "")
         timeout = kwargs.get("timeout", "")
-        if username != "" and password != "":
+        if len(username) > 0 and len(password) > 0:
             Authentication.login(username, password, timeout, return_url)
 
         return self._template(HTMLSystem.part("pages/login", RETURNURL=return_url), navbar=False)

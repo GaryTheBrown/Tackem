@@ -1,5 +1,7 @@
 """Authentication system for all html pages listed"""
+from libs.file import File
 from typing import Union
+import random
 import uuid
 import hashlib
 import cherrypy
@@ -39,10 +41,14 @@ class Authentication:
     @classmethod
     def __add_admin_account(cls):
         """adds an admin account"""
+        password = cls.generate_password()
+        with open(File.location("adminpasssword"), "w") as f:
+            f.write(password)
+
         msg = SQLInsert(
             cls.__db_info,
             username="admin",
-            password=cls.__password_encryption("admin"),
+            password=cls.__password_encryption(password),
             is_admin=True,
         )
         Database.call(msg)
@@ -53,9 +59,22 @@ class Authentication:
         return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
     @classmethod
+    def generate_password(cls, length: int = 16) -> str:
+        """Generates a random password"""
+
+        def rchar():
+            rnd = random.SystemRandom()
+            return rnd.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+
+        password = rchar()
+        for _ in range(length + 1):
+            password += rchar()
+        return password
+
+    @classmethod
     def login(cls, username: str, password: str, timeout: int, returnurl: str) -> Union[bool, None]:
         """Login Script"""
-        if username == "" or password == "":
+        if not username or not password:
             return False
 
         msg = SQLSelect(cls.__db_info, Where("username", username))
@@ -68,8 +87,6 @@ class Authentication:
         cls.__temp_sessions[session_id] = msg.return_data
         cherrypy.response.cookie["sessionid"] = session_id
         cherrypy.response.cookie["sessionid"]["max-age"] = int(timeout) * 60
-        if password == "admin":
-            raise cherrypy.HTTPRedirect(cherrypy.url().replace("login", "password"))
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("/login", returnurl))
 
     @classmethod
@@ -109,7 +126,7 @@ class Authentication:
     @classmethod
     def change_password(cls, password: str, new_password: str) -> bool:
         """change the logged in users password"""
-        if password == "" or new_password == "":
+        if not password or not new_password:
             return False
         if "sessionid" not in cherrypy.request.cookie.keys():
             return False
@@ -168,11 +185,11 @@ class Authentication:
     ):
         """update the user info"""
         data = {}
-        if isinstance(username, str) and username != "":
+        if isinstance(username, str) and len(username) > 0:
             data["username"] = username
-        if isinstance(password, str) and password != "":
+        if isinstance(password, str) and len(password) > 0:
             data["password"] = cls.__password_encryption(password)
-        if isinstance(is_admin, bool) and is_admin != "":
+        if isinstance(is_admin, bool):
             data["is_admin"] = is_admin
 
         Database.call(SQLUpdate(cls.__db_info, Where("id", user_id), **data))

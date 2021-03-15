@@ -1,6 +1,7 @@
 """ffprobe system"""
 import json
-from subprocess import DEVNULL, PIPE, Popen
+from shutil import which
+from subprocess import PIPE, Popen
 from typing import Optional
 
 
@@ -9,7 +10,7 @@ class FFprobe:
 
     def __init__(self, ffprob_location, infile):
         prog_args = [
-            ffprob_location,
+            which(ffprob_location),
             "-v",
             "quiet",
             "-print_format",
@@ -19,12 +20,12 @@ class FFprobe:
             "-show_format",
             infile,
         ]
-        process = Popen(prog_args, stdout=PIPE, stderr=DEVNULL)
+        process = Popen(prog_args, stdout=PIPE)
         self._info = json.loads(process.communicate()[0].decode("utf-8"))
         process.wait()
 
         prog_args = [
-            ffprob_location,
+            which(ffprob_location),
             "-hide_banner",
             "-loglevel",
             "warning",
@@ -39,7 +40,7 @@ class FFprobe:
             "-i ",
             infile,
         ]
-        process = Popen(prog_args, stdout=PIPE, stderr=DEVNULL)
+        process = Popen(prog_args, stdout=PIPE)
         self._hdr_info = json.loads(process.communicate()[0].decode("utf-8"))["frames"][0]
         process.wait()
 

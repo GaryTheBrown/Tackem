@@ -7,7 +7,7 @@ from libs.database.where import Where
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database.messages.select import SQLSelect
 from libs.file import File
-from subprocess import DEVNULL, PIPE, Popen
+from subprocess import PIPE, Popen
 
 
 class FileSubsystem:
@@ -62,7 +62,7 @@ class FileSubsystem:
     def _get_udfInfo(self, in_file: str):
         """Grabs the relevent Data from UDF images"""
         list = {}
-        process = Popen([which("udfinfo"), File.location(in_file)], stdout=PIPE, stderr=DEVNULL)
+        process = Popen([which("udfinfo"), File.location(in_file)], stdout=PIPE)
         part_list = process.communicate()[0].decode("utf-8").split("\n")[:-1]
 
         for item in part_list:

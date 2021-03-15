@@ -28,18 +28,12 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -r requirements-dev.txt
         python -m pip install -r requirements.txt
-    - name: flake8 Lint
+    - name: flake8
       run: |
-        python -m flake8 . --count --show-source --statistics --max-line-length=100 --extend-ignore=BLK,DUO,S
-    - name: flake8 Black
+        python -m flake8 . --count --show-source --statistics --extend-ignore=S --max-complexity=18
+    - name: flake8-security
       run: |
-        python -m flake8 . --count --exit-zero --show-source --statistics --max-line-length=100 --select=BLK
-    - name: flake8 Security
-      run: |
-        python -m flake8 . --count --exit-zero --show-source --statistics --max-line-length=100 --select=DUO,S
-    - name: flake8 Complexity
-      run: |
-        python -m flake8 . --count --exit-zero --show-source --statistics --max-line-length=100 --max-complexity=10
+        python -m flake8 . --count --exit-zero --show-source --statistics --select=S
     #- name: Test with pytest
     #  run: |
     #    pytest

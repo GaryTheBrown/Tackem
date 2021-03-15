@@ -33,7 +33,7 @@ class Webserver:
 
         cherrypy.config.update(
             {
-                "server.socket_host": "0.0.0.0",
+                "server.socket_host": CONFIG["webui"]["socket"].value,
                 "server.socket_port": CONFIG["webui"]["port"].value,
                 "server.threadPool": 10,
                 "server.environment": "production",
