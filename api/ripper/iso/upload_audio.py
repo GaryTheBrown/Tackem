@@ -1,12 +1,15 @@
 """Upload Audio ISO API"""
-from libs.database.where import Where
+import random
+import string
+
+import cherrypy
+
+from api.base import APIBase
 from data.database.system import UPLOAD_DB
 from libs.database import Database
-import cherrypy
-from api.base import APIBase
-import string
-import random
-from libs.database.messages import SQLInsert, SQLSelect
+from libs.database.messages import SQLInsert
+from libs.database.messages import SQLSelect
+from libs.database.where import Where
 
 
 @cherrypy.expose

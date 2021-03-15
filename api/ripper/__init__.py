@@ -1,8 +1,9 @@
 """RIPPER API"""
-from api.ripper.iso import APIRipperIsos
-from api.ripper.drives import APIRipperDrives
 import cherrypy
+
 from api.base import APIBase
+from api.ripper.drives import APIRipperDrives
+from api.ripper.iso import APIRipperIsos
 from data.config import CONFIG
 
 

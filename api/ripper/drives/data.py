@@ -1,7 +1,8 @@
 """Base Template For the API"""
-from libs.ripper import Ripper
 import cherrypy
+
 from api.base import APIBase
+from libs.ripper import Ripper
 
 
 @cherrypy.expose

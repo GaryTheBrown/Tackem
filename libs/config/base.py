@@ -1,5 +1,7 @@
 """CONFIG Base Data Class"""
-from typing import Any, Optional
+from typing import Any
+from typing import Optional
+
 from libs.config.rules import ConfigRules
 
 

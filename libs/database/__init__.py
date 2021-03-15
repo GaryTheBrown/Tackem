@@ -1,9 +1,10 @@
 """SQL System"""
-from libs.database.backend.base import BackendBase
 from typing import Any
+
 from data.config import CONFIG
-from libs.database.messages.sql_message import SQLMessage
+from libs.database.backend.base import BackendBase
 from libs.database.backend.sqlite import SQLite
+from libs.database.messages.sql_message import SQLMessage
 
 
 class Database:

@@ -1,8 +1,9 @@
 """Config Object Integer Range"""
 from typing import Optional
-from libs.config.obj.integer_number import ConfigObjIntegerNumber
-from libs.config.obj.data.input_attributes import InputAttributes
+
 from libs.config.obj.data.button import Button
+from libs.config.obj.data.input_attributes import InputAttributes
+from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.rules import ConfigRules
 
 

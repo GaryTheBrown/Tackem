@@ -1,9 +1,11 @@
 """Base for the backend"""
-from abc import ABCMeta, abstractmethod
 import threading
+from abc import ABCMeta
+from abc import abstractmethod
 from typing import List
-from libs.database.table import Table
+
 from libs.database.messages.sql_message import SQLMessage
+from libs.database.table import Table
 from libs.exceptions import TableCheckFailure
 
 

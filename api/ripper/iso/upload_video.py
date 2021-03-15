@@ -1,12 +1,15 @@
 """Upload Video ISO API"""
-from libs.database.where import Where
-from data.database.system import UPLOAD_DB
-from libs.database.messages import SQLInsert, SQLSelect
-from libs.database import Database
-import cherrypy
-import string
 import random
+import string
+
+import cherrypy
+
 from api.base import APIBase
+from data.database.system import UPLOAD_DB
+from libs.database import Database
+from libs.database.messages import SQLInsert
+from libs.database.messages import SQLSelect
+from libs.database.where import Where
 
 
 @cherrypy.expose

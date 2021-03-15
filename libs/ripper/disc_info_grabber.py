@@ -1,10 +1,12 @@
 """function to grab the info needed for makemkv and the converter"""
 import json
+
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database import Database
 from libs.database.messages import SQLUpdate
 from libs.database.where import Where
-from libs.ripper.data.disc_type import DiscType, make_disc_type
+from libs.ripper.data.disc_type import DiscType
+from libs.ripper.data.disc_type import make_disc_type
 
 # from .data import disc_type, video_track_type as track_type
 

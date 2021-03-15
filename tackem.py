@@ -3,13 +3,12 @@
 import platform
 import signal
 
-from libs.events import RootEventMaster as RootEvent
-
 from data.config import CONFIG
 from libs.authenticator import Authentication
 from libs.database import Database
-from libs.webserver import Webserver
+from libs.events import RootEventMaster as RootEvent
 from libs.ripper import Ripper
+from libs.webserver import Webserver
 
 # TODO finish off the Ripper system
 # TODO intergrate Libraries into main program

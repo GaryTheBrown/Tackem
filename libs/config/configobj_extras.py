@@ -1,5 +1,6 @@
 """configobj Extra Checks"""
 import re
+
 from validate import ValidateError
 
 

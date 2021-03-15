@@ -1,6 +1,6 @@
 """Event to control the loop function"""
-from typing import Optional
 from threading import Event
+from typing import Optional
 
 
 class RootEvent:

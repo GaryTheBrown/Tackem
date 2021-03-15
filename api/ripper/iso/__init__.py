@@ -1,9 +1,10 @@
 """RIPPER ISOS API"""
+import cherrypy
+
+from api.base import APIBase
 from api.ripper.iso.data import APIRipperISOData
 from api.ripper.iso.upload_audio import APIRipperIsoUploadAudio
 from api.ripper.iso.upload_video import APIRipperIsoUploadVideo
-import cherrypy
-from api.base import APIBase
 from data.config import CONFIG
 
 

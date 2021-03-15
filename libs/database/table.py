@@ -1,5 +1,6 @@
 """Database Table"""
 from typing import Any
+
 from libs.database.column import Column
 
 

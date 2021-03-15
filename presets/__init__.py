@@ -1,7 +1,7 @@
 """functions to load presets"""
-import os
-import json
 import glob
+import json
+import os
 
 _DIR = os.path.dirname(__file__)
 _VIDEO_PRESET_FILES = glob.glob(_DIR + "/video/*.json")

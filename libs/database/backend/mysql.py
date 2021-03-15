@@ -1,5 +1,6 @@
 """MYSQL System"""
 import mysql.connector
+
 from data.config import CONFIG
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table

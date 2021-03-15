@@ -1,6 +1,7 @@
 """Base Template For the API"""
-from typing import Optional
 import json
+from typing import Optional
+
 import cherrypy
 
 

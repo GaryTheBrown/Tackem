@@ -1,17 +1,20 @@
 """Script For the Root Of The System"""
-from libs.ripper import Ripper
-from data.database.ripper import AUDIO_INFO_DB, VIDEO_INFO_DB
-from libs.database.messages.delete import SQLDelete
 import os
-from libs.database.where import Where
+import shutil
+
+import cherrypy
+
+from data.config import CONFIG
+from data.database.ripper import AUDIO_INFO_DB
+from data.database.ripper import VIDEO_INFO_DB
 from data.database.system import UPLOAD_DB
 from libs.database import Database
 from libs.database.messages import SQLSelect
-from data.config import CONFIG
-import cherrypy
-import shutil
-from libs.html_template import HTMLTEMPLATE
+from libs.database.messages.delete import SQLDelete
+from libs.database.where import Where
 from libs.file import File
+from libs.html_template import HTMLTEMPLATE
+from libs.ripper import Ripper
 
 
 class Upload(HTMLTEMPLATE):

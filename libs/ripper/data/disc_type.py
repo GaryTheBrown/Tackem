@@ -1,8 +1,11 @@
 """disc type information"""
-from abc import ABCMeta, abstractmethod
 import datetime
 import json
-from typing import Optional, Union
+from abc import ABCMeta
+from abc import abstractmethod
+from typing import Optional
+from typing import Union
+
 from . import video_track_type as track_type
 
 TYPES = {"Movie": "film", "TV Show": "tv", "Documentary": "video", "Other": "question"}

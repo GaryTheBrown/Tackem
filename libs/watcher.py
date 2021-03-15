@@ -1,9 +1,10 @@
 """Custom Watchers"""
-from libs.file import File
-import time
 import os
 import threading
+import time
 from typing import Callable
+
+from libs.file import File
 
 
 class FolderWatcher:

@@ -1,7 +1,7 @@
 """HTML Systems"""
-from typing import Any
 import os
 import re
+from typing import Any
 
 
 class HTMLSystem:

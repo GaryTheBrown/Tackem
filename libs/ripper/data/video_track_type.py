@@ -1,7 +1,9 @@
 """video track type information"""
-from abc import ABCMeta
 import json
-from typing import Optional, Union
+from abc import ABCMeta
+from typing import Optional
+from typing import Union
+
 from . import stream_type
 
 TYPES = {

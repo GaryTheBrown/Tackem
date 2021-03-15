@@ -1,5 +1,6 @@
 """Functions to call an http based API"""
 import json
+
 import requests
 
 

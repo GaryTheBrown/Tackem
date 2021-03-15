@@ -1,11 +1,11 @@
 """Libraries Config"""
 from libs.config.list import ConfigList
 from libs.config.obj.boolean import ConfigObjBoolean
+from libs.config.obj.data.option import ConfigObjOption
 from libs.config.obj.enabled import ConfigObjEnabled
+from libs.config.obj.options.select import ConfigObjOptionsSelect
 from libs.config.obj.string import ConfigObjString
 from libs.config.obj.string_list import ConfigObjStringList
-from libs.config.obj.data.option import ConfigObjOption
-from libs.config.obj.options.select import ConfigObjOptionsSelect
 
 
 def libraries_config() -> ConfigList:

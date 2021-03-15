@@ -1,5 +1,6 @@
 """Startup Arguments Setup"""
 import argparse
+
 from data import PROGRAMVERSION
 
 # TODO reimplement this into the program as not used at all

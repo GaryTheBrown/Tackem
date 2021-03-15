@@ -1,5 +1,6 @@
 """User Delete API"""
 import cherrypy
+
 from api.base import APIBase
 from libs.authenticator import Authentication
 

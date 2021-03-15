@@ -1,5 +1,8 @@
 """HTML TEMPLATE"""
-from typing import List, Optional, Union
+from typing import List
+from typing import Optional
+from typing import Union
+
 from data import PROGRAMVERSION
 from libs.authenticator import Authentication
 from libs.html_system import HTMLSystem

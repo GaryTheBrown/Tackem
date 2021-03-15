@@ -1,9 +1,12 @@
 """Shared Data for all config Objects"""
-from typing import Any, Optional
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
+from typing import Any
+from typing import Optional
+
 from libs.config.base import ConfigBase
-from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.data_list import DataList
+from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
 from libs.html_system import HTMLSystem
 

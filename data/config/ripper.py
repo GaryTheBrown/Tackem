@@ -1,20 +1,21 @@
 """Ripper Config"""
 import platform
+
 from data.audio_format_options import audio_format_options
 from data.languages import Languages
 from libs.config.list import ConfigList
-from libs.config.rules import ConfigRules
 from libs.config.obj.boolean import ConfigObjBoolean
-from libs.config.obj.enabled import ConfigObjEnabled
-from libs.config.obj.integer_number import ConfigObjIntegerNumber
-from libs.config.obj.string import ConfigObjString
 from libs.config.obj.data.checkbox import ConfigObjCheckbox
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
 from libs.config.obj.data.radio import ConfigObjRadio
+from libs.config.obj.enabled import ConfigObjEnabled
+from libs.config.obj.integer_number import ConfigObjIntegerNumber
+from libs.config.obj.options.checkbox import ConfigObjOptionsCheckBox
 from libs.config.obj.options.radio import ConfigObjOptionsRadio
 from libs.config.obj.options.select import ConfigObjOptionsSelect
-from libs.config.obj.options.checkbox import ConfigObjOptionsCheckBox
+from libs.config.obj.string import ConfigObjString
+from libs.config.rules import ConfigRules
 from libs.hardware import Hardware
 from libs.program_checker import check_for_required_programs
 from presets import video_presets_config_options

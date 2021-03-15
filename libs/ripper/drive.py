@@ -1,13 +1,15 @@
 """Drive controller"""
-from shutil import which
-from libs.ripper.subsystems import FileSubsystem
-from libs.ripper.makemkv import MakeMKV
-from libs.config.list import ConfigList
-import threading
-import time
 import fcntl
 import os
-from subprocess import PIPE, Popen
+import threading
+import time
+from shutil import which
+from subprocess import PIPE
+from subprocess import Popen
+
+from libs.config.list import ConfigList
+from libs.ripper.makemkv import MakeMKV
+from libs.ripper.subsystems import FileSubsystem
 
 
 class Drive(FileSubsystem):

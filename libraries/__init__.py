@@ -1,10 +1,10 @@
 """Libraries Root"""
 from data.config import CONFIG
 from data.database.library import LIBRARY_FILES_DB
-from libs.database import Database
-from libs.database.table import SQLTable
 from libraries.file_checker import FileChecker
 from libraries.movies import MoviesLibrary
+from libs.database import Database
+from libs.database.table import SQLTable
 
 
 class Libraries:

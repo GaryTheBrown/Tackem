@@ -1,7 +1,8 @@
 """SQL MESSAGE SYSTEM DATA"""
 import time
-from libs.database.table import Table
+
 from libs.database.messages.sql_message import SQLMessage
+from libs.database.table import Table
 from libs.database.where import Where
 from libs.exceptions import SQLMessageError
 

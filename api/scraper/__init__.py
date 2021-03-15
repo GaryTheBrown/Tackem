@@ -1,12 +1,13 @@
 """SCRAPER ROOT API"""
 import cherrypy
-from api.base import APIBase
+
 from .find_movie import APIScraperFindMovie
 from .find_tvshow import APIScraperFindTvshow
 from .get_movie import APIScraperGetMovie
 from .get_tvshow import APIScraperGetTvshow
 from .search_movie import APIScraperSearchMovie
 from .search_tvshow import APIScraperSearchTvshow
+from api.base import APIBase
 
 
 @cherrypy.expose

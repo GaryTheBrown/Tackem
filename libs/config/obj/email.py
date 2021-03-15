@@ -1,8 +1,10 @@
 """Config Obj String"""
 import re
-from typing import Any, Optional
-from libs.config.obj.data.input_attributes import InputAttributes
+from typing import Any
+from typing import Optional
+
 from libs.config.obj.data.button import Button
+from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.string import ConfigObjString
 from libs.config.rules import ConfigRules
 

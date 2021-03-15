@@ -1,8 +1,8 @@
 """Video Controller MetaData code"""
 from libs.ripper.data.disc_type import DiscType
 from libs.ripper.data.video_track_type import VideoTrackType
-from libs.scraper import Scraper
 from libs.ripper.video_converter.base import VideoConverterBase
+from libs.scraper import Scraper
 
 
 class VideoConverterMetadata(VideoConverterBase):

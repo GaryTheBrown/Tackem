@@ -1,11 +1,12 @@
 """Ripper Root pages"""
-from www.partial.uploads import PartialsUpload
-from libs.authenticator import Authentication
 import cherrypy
-from libs.html_template import HTMLTEMPLATE
-from libs.html_system import HTMLSystem
+
 from data.config import CONFIG
+from libs.authenticator import Authentication
+from libs.html_system import HTMLSystem
+from libs.html_template import HTMLTEMPLATE
 from libs.ripper import Ripper
+from www.partial.uploads import PartialsUpload
 
 
 class RipperRoot(HTMLTEMPLATE):

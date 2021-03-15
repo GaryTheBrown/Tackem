@@ -1,6 +1,7 @@
 """SQL MESSAGE SYSTEM DATA"""
-from typing import Union
 import threading
+from typing import Union
+
 from libs.database.table import Table
 
 

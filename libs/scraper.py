@@ -1,8 +1,9 @@
 """Scraper System"""
-from http.client import HTTPSConnection
 import json
-from libs.classproperty import classproperty
+from http.client import HTTPSConnection
+
 from data.config import CONFIG
+from libs.classproperty import classproperty
 
 
 class Scraper:

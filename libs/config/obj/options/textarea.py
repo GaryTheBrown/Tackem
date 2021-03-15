@@ -1,5 +1,8 @@
 """Config Object Options Radio"""
-from typing import Optional, List, Union
+from typing import List
+from typing import Optional
+from typing import Union
+
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.radio import ConfigObjRadio
 from libs.config.obj.options.base import ConfigObjOptionsBase

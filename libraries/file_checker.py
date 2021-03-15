@@ -6,11 +6,13 @@ import datetime
 import hashlib
 import threading
 from pathlib import Path
+
 from data.config import CONFIG
-from libs.database import Database
-from libs.database.messages import SQLSelect, SQLUpdate
-from libs.database.where import Where
 from data.database.library import LIBRARY_FILES_DB
+from libs.database import Database
+from libs.database.messages import SQLSelect
+from libs.database.messages import SQLUpdate
+from libs.database.where import Where
 
 
 class FileChecker:

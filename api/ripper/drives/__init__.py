@@ -1,7 +1,8 @@
 """RIPPER DRIVES API"""
-from api.ripper.drives.data import APIRipperDrivesData
 import cherrypy
+
 from api.base import APIBase
+from api.ripper.drives.data import APIRipperDrivesData
 from data.config import CONFIG
 
 

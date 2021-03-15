@@ -1,9 +1,11 @@
 """CONFIG List Class"""
 import copy
-from typing import Any, Optional
+from typing import Any
+from typing import Optional
+
 from libs.config.base import ConfigBase
-from libs.config.rules import ConfigRules
 from libs.config.obj.base import ConfigObjBase
+from libs.config.rules import ConfigRules
 
 
 class ConfigListBase(ConfigBase):

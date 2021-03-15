@@ -2,7 +2,8 @@
 import platform
 import re
 from shutil import which
-from subprocess import PIPE, Popen
+from subprocess import PIPE
+from subprocess import Popen
 
 
 class Hardware:

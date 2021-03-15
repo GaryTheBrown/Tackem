@@ -1,9 +1,11 @@
 """Config Object String"""
-from typing import Any, Optional
-from libs.config.obj.string import ConfigObjString
-from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.data.data_list import DataList
+from typing import Any
+from typing import Optional
+
 from libs.config.obj.data.button import Button
+from libs.config.obj.data.data_list import DataList
+from libs.config.obj.data.input_attributes import InputAttributes
+from libs.config.obj.string import ConfigObjString
 from libs.config.rules import ConfigRules
 
 

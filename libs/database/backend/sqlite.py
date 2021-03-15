@@ -1,9 +1,10 @@
 """SQLLite System"""
 import sqlite3
+
 from data import PROGRAMCONFIGLOCATION
+from data.database.system import TABLE_VERSION_DB
 from libs.database.backend.base import BackendBase
 from libs.database.table import Table
-from data.database.system import TABLE_VERSION_DB
 
 # https://docs.python.org/3/library/sqlite3.html
 

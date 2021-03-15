@@ -1,5 +1,4 @@
 """The CONFIG Options for the system"""
-from libs.config.list import ConfigList
 from .api import api_config
 from .database import database_config
 from .libraries import libraries_config
@@ -7,6 +6,7 @@ from .musicbrainz import musicbrainz_config
 from .ripper import ripper_config
 from .scraper import scraper_config
 from .webui import webui_config
+from libs.config.list import ConfigList
 
 CONFIG = ConfigList("root", "Root")
 CONFIG.append(database_config())

@@ -1,7 +1,9 @@
 """Master Section for the Video Converter controller"""
-from threading import BoundedSemaphore
 import threading
+from threading import BoundedSemaphore
+
 import pexpect
+
 from data.config import CONFIG
 
 

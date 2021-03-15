@@ -1,8 +1,9 @@
 """Config Item Password"""
 from typing import Optional
-from libs.config.obj.string import ConfigObjString
-from libs.config.obj.data.input_attributes import InputAttributes
+
 from libs.config.obj.data.button import Button
+from libs.config.obj.data.input_attributes import InputAttributes
+from libs.config.obj.string import ConfigObjString
 from libs.config.rules import ConfigRules
 
 

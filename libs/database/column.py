@@ -1,7 +1,10 @@
 """Column Defenition Stuff Useful for updating tables"""
-from typing import Optional, Any
-from datetime import datetime, date, time
 import json
+from datetime import date
+from datetime import datetime
+from datetime import time
+from typing import Any
+from typing import Optional
 
 
 class Column:

@@ -1,15 +1,17 @@
 """Master Section for the Drive controller"""
-from libs.database.where import Where
-from data.database.ripper import VIDEO_INFO_DB
-from libs.database.messages.update import SQLUpdate
-from libs.database import Database
-from libs.ripper.subsystems import FileSubsystem
-from libs.file import File
 import os
-from data.config import CONFIG
-from threading import BoundedSemaphore, Thread
 import time
+from threading import BoundedSemaphore
+from threading import Thread
+
+from data.config import CONFIG
+from data.database.ripper import VIDEO_INFO_DB
+from libs.database import Database
+from libs.database.messages.update import SQLUpdate
+from libs.database.where import Where
+from libs.file import File
 from libs.ripper.makemkv import MakeMKV
+from libs.ripper.subsystems import FileSubsystem
 
 
 class ISORipper(FileSubsystem):

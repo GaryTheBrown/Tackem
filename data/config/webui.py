@@ -1,8 +1,8 @@
 """WebUI Config"""
 from libs.config.list import ConfigList
+from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.obj.string import ConfigObjString
-from libs.config.obj.data.input_attributes import InputAttributes
 
 
 def webui_config() -> ConfigList:

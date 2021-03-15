@@ -1,11 +1,13 @@
 """Script For the Admin System"""
-import cherrypy
 from typing import Any
+
+import cherrypy
+
+from data.config import CONFIG
+from libs.authenticator import Authentication
 from libs.config.list import ConfigList
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
-from libs.authenticator import Authentication
-from data.config import CONFIG
 
 
 class Admin(HTMLTEMPLATE):

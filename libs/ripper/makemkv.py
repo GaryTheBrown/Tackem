@@ -1,14 +1,16 @@
 """MakeMKV ripping controller"""
-from libs.ripper.disc_info_grabber import rip_data
-from libs.database.where import Where
-from libs.database.messages import SQLSelect
-from libs.database import Database
-from data.config import CONFIG
-from libs.ripper.subsystems import RipperSubSystem
-from data.database.ripper import VIDEO_INFO_DB as DB
 import os
+
 import pexpect
+
+from data.config import CONFIG
+from data.database.ripper import VIDEO_INFO_DB as DB
+from libs.database import Database
+from libs.database.messages import SQLSelect
+from libs.database.where import Where
 from libs.file import File
+from libs.ripper.disc_info_grabber import rip_data
+from libs.ripper.subsystems import RipperSubSystem
 
 
 class MakeMKV(RipperSubSystem):

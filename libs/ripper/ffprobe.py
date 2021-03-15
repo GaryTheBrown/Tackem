@@ -1,7 +1,8 @@
 """ffprobe system"""
 import json
 from shutil import which
-from subprocess import PIPE, Popen
+from subprocess import PIPE
+from subprocess import Popen
 from typing import Optional
 
 

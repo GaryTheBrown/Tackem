@@ -1,17 +1,23 @@
 """Authentication system for all html pages listed"""
-from libs.file import File
-from typing import Union
+import hashlib
 import random
 import uuid
-import hashlib
+from typing import Union
+
 import cherrypy
+
+from data.config import CONFIG
 from libs.database import Database
-from libs.database.messages import SQLDelete, SQLInsert, SQLSelect, SQLTable
-from libs.database.messages import SQLTableCountWhere, SQLUpdate
 from libs.database.column import Column
+from libs.database.messages import SQLDelete
+from libs.database.messages import SQLInsert
+from libs.database.messages import SQLSelect
+from libs.database.messages import SQLTable
+from libs.database.messages import SQLTableCountWhere
+from libs.database.messages import SQLUpdate
 from libs.database.table import Table
 from libs.database.where import Where
-from data.config import CONFIG
+from libs.file import File
 
 
 class Authentication:

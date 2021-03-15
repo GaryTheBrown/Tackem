@@ -1,9 +1,11 @@
 """Script For the Root Of The System"""
 from typing import Any
+
 import cherrypy
+
+from libs.authenticator import Authentication
 from libs.html_system import HTMLSystem
 from libs.html_template import HTMLTEMPLATE
-from libs.authenticator import Authentication
 
 
 class Root(HTMLTEMPLATE):

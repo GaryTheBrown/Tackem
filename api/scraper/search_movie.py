@@ -1,5 +1,6 @@
 """Search Movie API"""
 import cherrypy
+
 from api.base import APIBase
 from data.config import CONFIG
 

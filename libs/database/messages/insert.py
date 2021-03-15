@@ -1,7 +1,8 @@
 """SQL MESSAGE SYSTEM DATA"""
-from libs.database.table import Table
 from typing import Any
+
 from libs.database.messages.sql_message import SQLMessage
+from libs.database.table import Table
 from libs.exceptions import SQLMessageError
 
 

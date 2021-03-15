@@ -1,17 +1,23 @@
 """Base Library Controller"""
-from typing import Generator
 import threading
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 from pathlib import Path
-from watchdog.events import PatternMatchingEventHandler, FileSystemEvent
+from typing import Generator
+
+from watchdog.events import FileSystemEvent
+from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
+
+from data.config import CONFIG
+from data.database.library import LIBRARY_FILES_DB
+from libs.config.list import ConfigList
 from libs.database import Database
-from libs.database.messages import SQLInsert, SQLSelect, SQLTable
+from libs.database.messages import SQLInsert
+from libs.database.messages import SQLSelect
+from libs.database.messages import SQLTable
 from libs.database.table import Table
 from libs.database.where import Where
-from libs.config.list import ConfigList
-from data.database.library import LIBRARY_FILES_DB
-from data.config import CONFIG
 
 
 class LibraryBase(metaclass=ABCMeta):

@@ -1,13 +1,15 @@
 """shared info between ripper systems"""
 from shutil import which
-from libs.database.messages.insert import SQLInsert
-from libs.database.messages.update import SQLUpdate
-from libs.database import Database
-from libs.database.where import Where
+from subprocess import PIPE
+from subprocess import Popen
+
 from data.database.ripper import VIDEO_INFO_DB
+from libs.database import Database
+from libs.database.messages.insert import SQLInsert
 from libs.database.messages.select import SQLSelect
+from libs.database.messages.update import SQLUpdate
+from libs.database.where import Where
 from libs.file import File
-from subprocess import PIPE, Popen
 
 
 class FileSubsystem:

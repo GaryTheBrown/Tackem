@@ -1,6 +1,6 @@
 """stream type information"""
-from abc import ABCMeta
 import json
+from abc import ABCMeta
 from typing import Optional
 
 

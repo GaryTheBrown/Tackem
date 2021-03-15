@@ -1,6 +1,8 @@
 """Config Object Options Checkbox"""
 import re
-from typing import Any, Optional
+from typing import Any
+from typing import Optional
+
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules

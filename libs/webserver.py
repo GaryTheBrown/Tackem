@@ -1,19 +1,21 @@
 """Webserver"""
-from www.upload import Upload
-from www.ripper import RipperRoot
-from libs.ripper import Ripper
-from libs.file import File
 import os
+
 import cherrypy
-from www.root import Root
-from www.admin import Admin
+
 from api import API
-from libs.error_pages import setup_error_pages
 from data.config import CONFIG
-from libs.html_template import HTMLTEMPLATE
+from data.database.system import UPLOAD_DB
 from libs.database import Database
 from libs.database.messages import SQLTable
-from data.database.system import UPLOAD_DB
+from libs.error_pages import setup_error_pages
+from libs.file import File
+from libs.html_template import HTMLTEMPLATE
+from libs.ripper import Ripper
+from www.admin import Admin
+from www.ripper import RipperRoot
+from www.root import Root
+from www.upload import Upload
 
 
 class Webserver:

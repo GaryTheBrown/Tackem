@@ -1,21 +1,24 @@
 """Ripper init"""
-from libs.database.where import Where
-from libs.database.messages.select import SQLSelect
-from libs.ripper.video_converter import VideoConverter
-from data import HOMEFOLDER
-from libs.ripper.iso import ISORipper
-from data.database.ripper import AUDIO_INFO_DB, VIDEO_CONVERT_DB, VIDEO_INFO_DB
 from pathlib import Path
+from threading import BoundedSemaphore
+from typing import List
+
+from data import HOMEFOLDER
 from data.config import CONFIG
+from data.database.ripper import AUDIO_INFO_DB
+from data.database.ripper import VIDEO_CONVERT_DB
+from data.database.ripper import VIDEO_INFO_DB
 from libs.classproperty import classproperty
 from libs.database import Database
 from libs.database.messages import SQLTable
+from libs.database.messages.select import SQLSelect
+from libs.database.table import Table
+from libs.database.where import Where
 from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive import Drive
-from libs.database.table import Table
-from typing import List
-from threading import BoundedSemaphore
+from libs.ripper.iso import ISORipper
+from libs.ripper.video_converter import VideoConverter
 
 # TODO add the converter to the ripper system and get it working. then make it so you can edit the
 # data while this happens. if no data exists at the end put it into the labeler holder otherwise

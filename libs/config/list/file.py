@@ -1,7 +1,9 @@
 """CONFIG List Class"""
 from typing import Optional
+
 from configobj import ConfigObj
 from validate import Validator
+
 from data import PROGRAMCONFIGLOCATION
 from libs.config.configobj_extras import EXTRA_FUNCTIONS
 from libs.config.list.base import ConfigListBase
