@@ -29,6 +29,10 @@ class StreamType(metaclass=ABCMeta):
         """return label"""
         return self.__label
 
+    def json(self) -> str:
+        """returns the Stream Type as a Json String"""
+        return json.dumps(self.make_dict())
+
     def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         """returns the tracks"""
         if super_dict is None:

@@ -43,6 +43,10 @@ class VideoTrackType(metaclass=ABCMeta):
         """title line for sections"""
         return '<h1 class="text-center">' + title + "</h1>"
 
+    def json(self) -> str:
+        """returns the Disc Type as a Json String"""
+        return json.dumps(self.make_dict())
+
     def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
         """returns the tracks"""
         if super_dict is None:
@@ -131,27 +135,35 @@ class DONTRIPTrackType(VideoTrackType):
 class MovieTrackType(VideoTrackType):
     """Movie Type"""
 
-    # tvshow_link=None, tvshow_special_number=None,
-    def __init__(self, streams: Optional[list] = None, hdr: bool = False):
+    def __init__(
+        self,
+        streams: Optional[list] = None,
+        tvshow_link=None,
+        tvshow_special_number=None,
+        hdr: bool = False,
+    ):
         super().__init__("movie", streams, hdr)
 
-    #     self._tvshow_link = tvshow_link
-    #     self._tvshow_special_number = tvshow_special_number
+        self.__tvshow_link = tvshow_link
+        self.__tvshow_special_number = tvshow_special_number
 
-    # @property
-    # def tvshow_link(self):
-    #     '''return the tv show name for linking'''
-    #     return self._tvshow_link
+    @property
+    def tvshow_link(self):
+        """return the tv show name for linking"""
+        return self.__tvshow_link
 
-    # @property
-    # def tvshow_special_number(self):
-    #     '''return the tv show special number'''
-    #     return self._tvshow_special_number
+    @property
+    def tvshow_special_number(self):
+        """return the tv show special number"""
+        return self.__tvshow_special_number
 
     def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True):
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
+        if self.__tvshow_link is not None:
+            super_dict["tv_show_link"] = self.__tvshow_link
+            super_dict["tv_show_special_number"] = self.__tvshow_special_number
         return super().make_dict(super_dict, include_streams)
 
     # def get_edit_panel(self, ffprobe=None):
@@ -380,10 +392,7 @@ def make_blank_track_type(track_type_code: str) -> Optional[VideoTrackType]:
     elif track_type_code.lower() == "movie":
         return MovieTrackType()
     elif track_type_code.lower() == "tvshow":
-        return TVShowTrackType(
-            "",
-            "",
-        )
+        return TVShowTrackType("", "")
     elif track_type_code.lower() == "trailer":
         return TrailerTrackType("")
     elif track_type_code.lower() == "extra":

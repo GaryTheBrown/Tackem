@@ -33,11 +33,7 @@ class FileSubsystem:
         if isinstance(msg.return_data, dict):
             if isinstance(filename, str) and filename != "":
                 Database.call(
-                    SQLUpdate(
-                        VIDEO_INFO_DB,
-                        Where("id", msg.return_data["id"]),
-                        iso_file=filename,
-                    )
+                    SQLUpdate(VIDEO_INFO_DB, Where("id", msg.return_data["id"]), iso_file=filename)
                 )
             self._db_id = msg.return_data["id"]
             return

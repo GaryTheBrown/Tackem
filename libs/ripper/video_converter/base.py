@@ -1,6 +1,5 @@
 """Master Section for the Video Converter controller"""
 import threading
-from threading import BoundedSemaphore
 
 import pexpect
 
@@ -10,7 +9,7 @@ from data.config import CONFIG
 class VideoConverterBase:
     """Master Section for the Video Converter controller"""
 
-    def __init__(self, pool_sema: BoundedSemaphore, db_id: int):
+    def __init__(self, pool_sema: threading.BoundedSemaphore, db_id: int):
         self.__thread = threading.Thread(target=self.run, args=())
         self.__thread.setName(f"Converter Task: {str(db_id)}")
 
@@ -24,6 +23,7 @@ class VideoConverterBase:
         self.__frame_process: int = 0
         self.__percent: float = 0.0
 
+        self._wait = threading.Event()
         self._thread_run: bool = True
         self.__active: bool = False
         self.__thread.start()
@@ -42,7 +42,12 @@ class VideoConverterBase:
         """stop the thread"""
         if self.__thread.is_alive():
             self._thread_run = False
+            self._wait.set()
             self.__thread.join()
+
+    def release_wait(self):
+        """releases the wait if the system needs to wait for information"""
+        self._wait.set()
 
     def api_data(self) -> dict:
         """returns the data as dict for html"""

@@ -16,10 +16,11 @@ VIDEO_CONVERT_DB = Table(
     "ripper_video_convert_info",
     1,
     Column("info_id", "integer", not_null=True),
+    Column("ripper_video_info_id", "integer", not_null=True),
+    Column("track_number", "integer", not_null=True),
     Column("filename", "text", not_null=True),
-    Column("disc_info", "json"),
     Column("track_data", "json"),
-    Column("ripper_video_info_id", "bit", not_null=True, default=False),
+    Column("video_converted", "bit", not_null=True, default=False),
     soft_delete=True,
 )
 
@@ -30,5 +31,6 @@ VIDEO_INFO_DB = Table(
     Column("uuid", "varchar(16)", default=""),
     Column("label", "text", default=""),
     Column("disc_type", "varchar(6)", default=""),
+    Column("disc_data", "json"),
     Column("rip_data", "json"),
 )

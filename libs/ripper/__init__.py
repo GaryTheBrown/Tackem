@@ -20,18 +20,16 @@ from libs.ripper.drive import Drive
 from libs.ripper.iso import ISORipper
 from libs.ripper.video_converter import VideoConverter
 
-# TODO add the converter to the ripper system and get it working. then make it so you can edit the
-# data while this happens. if no data exists at the end put it into the labeler holder otherwise
-# auto send it to the library for processing where it goes.
+# TODO get converter working.
+# TODO Show all discs from the DB that don't have disc data in a list
+# TODO allow editing using the disc data that is in the DB for what the files are and make it detect
+# if the video is there for viewing and if so somehow allow it to be watched in the browser
+# if possible
+# TODO auto send it to the library for processing where it goes. Functions need to be in the library
+# side and be agnostic so upload can accept files too. Do i want to have a DB table to put it in
 
-# TODO need a way of the system checking if it needs to do any secondery convertion (audio stuff
-# mainly)
-
-# TODO at this point it should maybe convert all tracks if no info available but allow you
-# to say what is what for it to then follow the config rules in what to copy and then delete
-# any others. if its not input after the converter then wait in a hold till it knows what is
-# what. so a labeler section now works after the convertor and it's just a holding section
-# if in here then saving the track data will send it to the library
+# hold this information so the library knows what to sort and once the file is copied over it checks
+# if the file was copied correctly (compares them?) it then removes it from source and the DB
 
 # TODO deal with the renamer (this may just be removed and changed to move to library as we can pass
 # the info in for what it is and let the library worry about it's filename)
@@ -164,10 +162,10 @@ class Ripper:
         msg = SQLSelect(VIDEO_CONVERT_DB)
         Database.call(msg)
         if isinstance(msg.return_data, dict):
-            cls.video_converter_add(msg.return_data["id"])
+            cls.video_converter_add_single(msg.return_data["id"])
         else:
             for item in msg.return_data:
-                cls.video_converter_add(item["id"])
+                cls.video_converter_add_single(item["id"])
 
     @classmethod
     def stop(cls):
@@ -199,7 +197,7 @@ class Ripper:
     @classmethod
     def iso_add(cls, filename: str, table: Table) -> bool:
         """Action for other systems to add iso mainly the upload side"""
-        # TODO need to change the DB calls in here to read the other info and add thh full info here
+        # TODO need to change the DB calls in here to read the other info and add the full info here
         if not CONFIG["ripper"]["iso"]["enabled"].value:
             return False
         if filename in cls.__iso_loaded:
@@ -216,8 +214,32 @@ class Ripper:
         cls.__iso_threads = [t for t in cls.__iso_threads if t.thread_run]
 
     @classmethod
-    def video_converter_add(cls, db_id: int) -> bool:
-        """Action for other systems to add a video converter task"""
+    def video_converter_add_disc(cls, db_id: int) -> bool:
+        """Action for other systems to add a full disc video converter task"""
+        if not CONFIG["ripper"]["converter"]["enabled"].value:
+            return False
+
+        msg = SQLSelect(VIDEO_CONVERT_DB, Where("ripper_video_info_id", db_id))
+        Database.call(msg)
+        if isinstance(msg.return_data, dict):
+            if msg.return_data["id"] in cls.__video_converter_loaded:
+                return False
+        else:
+            for item in msg.return_data:
+                if item["id"] in cls.__video_converter_loaded:
+                    return False
+
+        msg = SQLSelect(VIDEO_INFO_DB, Where("id", db_id))
+        Database.call(msg)
+        if not isinstance(msg.return_data, dict):
+            return False
+
+        # TODO need to loop through files in folder and add them to converter DB, check for info in
+        # rip_info and if so set it. then call video_converter_add_single for each file.
+
+    @classmethod
+    def video_converter_add_single(cls, db_id: int) -> bool:
+        """Action for other systems to add a single video converter task"""
         if not CONFIG["ripper"]["converter"]["enabled"].value:
             return False
         if db_id in cls.__video_converter_loaded:

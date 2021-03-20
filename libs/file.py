@@ -31,19 +31,29 @@ class File:
     @classmethod
     def rm(cls, file: str):
         """remove a file"""
-        if os.path.exists(file):
+        if cls.exists(file):
             os.remove(file)
 
     @classmethod
     def rmdir(cls, folder: str, recursive: bool = False):
         """remove a folder"""
         if not recursive:
-            if os.path.exists(folder):
+            if cls.exists(folder):
                 os.rmdir(folder)
             return
-        if os.path.exists(folder):
+        if cls.exists(folder):
             for path in pathlib.Path(folder).rglob("*"):
                 if os.path.isfile(path):
                     cls.rm(path)
                 elif os.path.isdir(path):
                     cls.rmdir(path)
+
+    @classmethod
+    def touch(cls, file: str):
+        """creates an empty file"""
+        pathlib.Path(file).touch()
+
+    @classmethod
+    def exists(cls, file_or_folder: str) -> bool:
+        """checks if a file or folder exists"""
+        return os.path.exists(file_or_folder)

@@ -9,17 +9,18 @@ COPY . /app
 WORKDIR /app
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
- && useradd -m ${USER} --uid=${UID} \
- && mkdir -p /home/$USER \
- && chown ${uid}:${gid} -R /home/$USER \
- && apt-get update \
- && apt-get install -y git python3.7 python3-pip \
- && cd /usr/bin \
- && ln -s python3 python \
- && rm -rf /var/lib/apt/lists/* \
- && python3 -m pip install pip \
- && python3 -m pip install -r /app/requirements.txt
+    && useradd -m ${USER} --uid=${UID} \
+    && mkdir -p /home/$USER \
+    && chown ${uid}:${gid} -R /home/$USER \
+    && apt-get update \
+    && apt-get install -y git python3.7 python3-pip \
+    && cd /usr/bin \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/python3.8 /usr/bin/python \
+    && python3 -m pip install pip \
+    && python3 -m pip install -r /app/requirements.txt
 
+ENV PATH=/home/${USER}/.local/bin:$PATH
 USER $USER
 
 ENTRYPOINT python3 tackem.py

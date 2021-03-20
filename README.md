@@ -1,8 +1,9 @@
 # Tackem
-
 [![Flake8](https://github.com/GaryTheBrown/Tackem/actions/workflows/Checks.yml/badge.svg)](https://github.com/GaryTheBrown/Tackem/actions/workflows/Checks.yml)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+
+
 - An All in one system to manage a library of Movies, TV Shows, Music, Games. (In Progress)
 - It is capable of ripping Discs (if optical drives are present) and converting it or an ISO into a
 selected format before then placing files in the Library. See [Here](##Ripper) for more info
@@ -46,9 +47,9 @@ make
 sudo make install
 ```
 
-#### makemkv settings.conf
+## Development
+This system uses pre-commit for checks.
 ```
-app_DefaultSelectionString = "+sel:all"
-app_DefaultOutputFileName = "{t:N2}"
-app_ccextractor = "/usr/local/bin/ccextractor"
+pip install -r requirements-dev.txt
+python -m pre_commit install
 ```

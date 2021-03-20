@@ -106,7 +106,7 @@ class ConfigListFile(ConfigListBase):
                             self.clone_many_section(key)
                             new_item = self.get(key)
                             new_item.load_configobj(item)
-            # TODO  make this check for a rule and then do the rule magic here.
+                # HERE FOR ADDING IN MORE RULES
 
     def get_spec_part(self, indent: int) -> str:
         """function for recursion of list"""

@@ -1,5 +1,4 @@
 """Start Point Of Program"""
-# https://docs.cherrypy.org/en/latest/tutorials.html
 import platform
 import signal
 

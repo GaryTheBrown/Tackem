@@ -2,7 +2,6 @@
 import datetime
 import json
 from abc import ABCMeta
-from abc import abstractmethod
 from typing import Optional
 from typing import Union
 
@@ -62,7 +61,10 @@ class DiscType(metaclass=ABCMeta):
         if self.__tracks is not None and isinstance(tracks, list):
             self.__tracks = tracks
 
-    @abstractmethod
+    def json(self) -> str:
+        """returns the Disc Type as a Json String"""
+        return json.dumps(self.make_dict())
+
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:

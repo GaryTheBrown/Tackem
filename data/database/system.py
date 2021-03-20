@@ -16,5 +16,6 @@ UPLOAD_DB = Table(
     Column("filename", "text", not_null=True),
     Column("filesize", "bigint", not_null=True),
     Column("system", "text", not_null=True),
+    # TODO system id column so when passing data to the library it knows what is being passed easier
     soft_delete=True,
 )

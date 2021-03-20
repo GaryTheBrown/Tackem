@@ -147,8 +147,6 @@ class ConfigListHtml(ConfigListBase):
                 continue
             html += obj.html(variable_name)
 
-        # TODO MANY SECTION MISSING FROM HERE
-
         return html
 
     def __controls(self, variable_name: str) -> str:

@@ -28,6 +28,3 @@ jobs:
     - name: flake8
       run: |
         python -m flake8 . --count --show-source --statistics
-    #- name: Test with pytest
-    #  run: |
-    #    pytest
