@@ -20,6 +20,7 @@ from libs.ripper.data.disc_type import DiscType
 from libs.ripper.data.disc_type import make_disc_type
 from libs.ripper.data.video_track_type import VideoTrackType
 from libs.ripper.disc_api import DiscAPI
+from libs.ripper.events import RipperEvent
 from libs.ripper.subsystems import RipperSubSystem
 
 ITEM_ATTRIBUTE_ID = [
@@ -124,7 +125,7 @@ class MakeMKV(RipperSubSystem):
                             self.__pass_single_to_converter(
                                 msg.return_data["id"],
                                 idx,
-                                temp_dir + str(idx).zfill(2),
+                                temp_dir + str(idx).zfill(2) + ".mkv",
                                 track.json(),
                             )
                         )
@@ -283,5 +284,7 @@ class MakeMKV(RipperSubSystem):
             Where("filename", filename),
         )
         Database.call(msg)
+
+        RipperEvent.add_event("video_converter_add_single", (msg.return_data["id"]))
 
         return msg.return_data["id"]

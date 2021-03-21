@@ -20,8 +20,7 @@ class RipperRoot(HTMLTEMPLATE):
             HTMLSystem.part(
                 "pages/ripper/index",
                 DRIVES=self.drives_data(),
-                VIDEOUPLOADPARTIAL=PartialsUpload.video_iso(),
-                AUDIOUPLOADPARTIAL=PartialsUpload.audio_iso(),
+                UPLOADPARTIAL=PartialsUpload.iso(),
                 ISOCOUNT=len(Ripper.isos),
                 ISOTHREADLIMIT=CONFIG["ripper"]["iso"]["threadcount"].value,
                 ISOTEMPLATE=HTMLSystem.open("partial/ripper/iso"),

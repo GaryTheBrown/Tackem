@@ -3,8 +3,7 @@ import cherrypy
 
 from api.base import APIBase
 from api.ripper.iso.data import APIRipperISOData
-from api.ripper.iso.upload_audio import APIRipperIsoUploadAudio
-from api.ripper.iso.upload_video import APIRipperIsoUploadVideo
+from api.ripper.iso.upload import APIRipperIsoUpload
 from data.config import CONFIG
 
 
@@ -22,8 +21,6 @@ class APIRipperIsos(APIBase):
 
         if section == "data":
             return APIRipperISOData()
-        if section == "uploadaudio":
-            return APIRipperIsoUploadAudio()
-        if section == "uploadvideo":
-            return APIRipperIsoUploadVideo()
+        if section == "upload":
+            return APIRipperIsoUpload()
         return self

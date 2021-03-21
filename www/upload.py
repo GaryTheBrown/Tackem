@@ -5,8 +5,6 @@ import shutil
 import cherrypy
 
 from data.config import CONFIG
-from data.database.ripper import AUDIO_INFO_DB
-from data.database.ripper import VIDEO_INFO_DB
 from data.database.system import UPLOAD_DB
 from libs.database import Database
 from libs.database.messages.delete import SQLDelete
@@ -47,17 +45,10 @@ class Upload(HTMLTEMPLATE):
     def __call_next_system(self, filename: str, system: str):
         """Sends command to the next system"""
         source_file = File.location(f"{CONFIG['webui']['uploadlocation'].value}{filename}")
-        if system == "RIPPER_ISO_AUDIO":
+        if system == "RIPPER_ISO":
             File.move(
                 source_file,
-                File.location(f"{CONFIG['ripper']['locations']['audioiso'].value}{filename}"),
+                File.location(f"{CONFIG['ripper']['locations']['iso'].value}{filename}"),
             )
-            Ripper.iso_add(filename, AUDIO_INFO_DB)
-            return
-        if system == "RIPPER_ISO_VIDEO":
-            File.move(
-                source_file,
-                File.location(f"{CONFIG['ripper']['locations']['videoiso'].value}{filename}"),
-            )
-            Ripper.iso_add(filename, VIDEO_INFO_DB)
+            Ripper.iso_add(filename)
             return

@@ -1,4 +1,4 @@
-"""Upload Video ISO API"""
+"""Upload ISO API"""
 import random
 import string
 
@@ -13,8 +13,8 @@ from libs.database.where import Where
 
 
 @cherrypy.expose
-class APIRipperIsoUploadVideo(APIBase):
-    """Upload Video ISO API"""
+class APIRipperIsoUpload(APIBase):
+    """Upload ISO API"""
 
     def POST(self, **kwargs) -> str:
         """POST Function"""
@@ -26,19 +26,19 @@ class APIRipperIsoUploadVideo(APIBase):
             return self._return_data(
                 user,
                 "Ripper",
-                "Upload Video ISO",
+                "Upload ISO",
                 False,
                 error="Missing Filename",
-                errorNumber=1,
+                errorNumber=0,
             )
         if "filesize" not in kwargs:
             return self._return_data(
                 user,
                 "Ripper",
-                "Upload Video ISO",
+                "Upload ISO",
                 False,
                 error="Missing Filesize",
-                errorNumber=2,
+                errorNumber=0,
             )
 
         msg = SQLSelect(
@@ -53,11 +53,11 @@ class APIRipperIsoUploadVideo(APIBase):
             return self._return_data(
                 user,
                 "Ripper",
-                "Upload Video ISO",
+                "Upload ISO",
                 True,
+                key=msg.return_data["key"],
                 url=f"{url}/upload/?key={msg.return_data['key']}",
             )
-
         rnd = random.SystemRandom()
         key = "".join(rnd.choices(string.ascii_lowercase + string.digits, k=40))
         Database.call(
@@ -66,10 +66,15 @@ class APIRipperIsoUploadVideo(APIBase):
                 key=key,
                 filename=kwargs["filename"],
                 filesize=kwargs["filesize"],
-                system="RIPPER_ISO_VIDEO",
+                system="RIPPER_ISO",
             )
         )
 
         return self._return_data(
-            user, "Ripper", "Upload Video ISO", True, url=f"{url}/upload/?key={key}"
+            user,
+            "Ripper",
+            "Upload ISO",
+            True,
+            key=key,
+            url=f"{cherrypy.url()}/upload/{key}",
         )

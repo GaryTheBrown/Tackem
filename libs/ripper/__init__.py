@@ -1,6 +1,7 @@
 """Ripper init"""
 from pathlib import Path
 from threading import BoundedSemaphore
+from threading import Thread
 from typing import List
 
 from data import HOMEFOLDER
@@ -12,11 +13,11 @@ from libs.classproperty import classproperty
 from libs.database import Database
 from libs.database.messages.select import SQLSelect
 from libs.database.messages.table import SQLTable
-from libs.database.table import Table
 from libs.database.where import Where
 from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive import Drive
+from libs.ripper.events import RipperEventMaster
 from libs.ripper.iso import ISORipper
 from libs.ripper.video_converter import VideoConverter
 
@@ -49,6 +50,8 @@ class Ripper:
     """Main Class to create an instance of the plugin"""
 
     __running = False
+
+    __event_system: Thread = None
 
     __drives: List[Drive] = []
 
@@ -102,6 +105,9 @@ class Ripper:
         Database.call(SQLTable(VIDEO_INFO_DB))
         Database.call(SQLTable(VIDEO_CONVERT_DB))
 
+        cls.__event_system = Thread(target=cls.__event_system_run, args=())
+        cls.__event_system.start()
+
         cls.__setup_makemkv()
         if CONFIG["ripper"]["drives"]["enabled"].value:
             cls.__start_drives()
@@ -143,17 +149,11 @@ class Ripper:
         """starts the ISO ripper system and checks the upload folders for isos to add"""
         cls.__iso_pool_sema = BoundedSemaphore(value=CONFIG["ripper"]["iso"]["threadcount"].value)
 
-        # Check for Audio ISOs
-        iso_path = File.location(CONFIG["ripper"]["locations"]["audioiso"].value)
+        # Check for ISOs
+        iso_path = File.location(CONFIG["ripper"]["locations"]["iso"].value)
         for path in Path(iso_path).rglob("*.iso"):
             filename = ("/" + "/".join(path.parts[1:])).replace(iso_path, "")
-            cls.iso_add(filename, AUDIO_INFO_DB)
-
-        # Check For Video ISOs
-        iso_path = File.location(CONFIG["ripper"]["locations"]["videoiso"].value)
-        for path in Path(iso_path).rglob("*.iso"):
-            filename = ("/" + "/".join(path.parts[1:])).replace(iso_path, "")
-            cls.iso_add(filename, VIDEO_INFO_DB)
+            cls.iso_add(filename)
 
     @classmethod
     def __start_converters(cls):
@@ -176,6 +176,10 @@ class Ripper:
         if not cls.__running:
             return
 
+        cls.__running = False
+        RipperEventMaster.stop()
+        cls.__event_system.join()
+
         # Stop the drives
         for drive in cls.__drives:
             drive.stop_thread()
@@ -195,17 +199,16 @@ class Ripper:
             cls.__video_converter_pool_sema = None
             cls.__video_converter_threads = []
             cls.__video_converter_loaded = []
-        cls.__running = False
 
     @classmethod
-    def iso_add(cls, filename: str, table: Table) -> bool:
+    def iso_add(cls, filename: str) -> bool:
         """Action for other systems to add iso mainly the upload side"""
         if not CONFIG["ripper"]["iso"]["enabled"].value:
             return False
         if filename in cls.__iso_loaded:
             return False
         cls.__iso_loaded.append(filename)
-        cls.__iso_threads.append(ISORipper(cls.__iso_pool_sema, filename, table == VIDEO_INFO_DB))
+        cls.__iso_threads.append(ISORipper(cls.__iso_pool_sema, filename))
         return True
 
     @classmethod
@@ -236,3 +239,12 @@ class Ripper:
         if not CONFIG["ripper"]["converter"]["enabled"].value:
             return
         cls.__video_converter_threads = [t for t in cls.__video_converter_threads if t.thread_run]
+
+    @classmethod
+    def __event_system_run(cls):
+        """system for allowing messages to be passed to the root of the ripper"""
+        while cls.__running:
+            event = RipperEventMaster.wait_and_get_event()
+            func = getattr(cls, event[0], None)
+            if func and callable(func):
+                func(*event[1])

@@ -13,7 +13,10 @@ class File:
     def location(cls, folder: str, root: str = PROGRAMCONFIGLOCATION) -> str:
         """returns the absolute location"""
         if folder[0] != "/":
-            folder = root + folder
+            if root[0] != "/":
+                folder = cls.location(root) + folder
+            else:
+                folder = root + folder
         return folder
 
     @classmethod
