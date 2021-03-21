@@ -13,9 +13,9 @@ from data.config import CONFIG
 from data.database.library import LIBRARY_FILES_DB
 from libs.config.list import ConfigList
 from libs.database import Database
-from libs.database.messages import SQLInsert
-from libs.database.messages import SQLSelect
-from libs.database.messages import SQLTable
+from libs.database.messages.insert import SQLInsert
+from libs.database.messages.select import SQLSelect
+from libs.database.messages.table import SQLTable
 from libs.database.table import Table
 from libs.database.where import Where
 

@@ -9,12 +9,12 @@ import cherrypy
 from data.config import CONFIG
 from libs.database import Database
 from libs.database.column import Column
-from libs.database.messages import SQLDelete
-from libs.database.messages import SQLInsert
-from libs.database.messages import SQLSelect
-from libs.database.messages import SQLTable
-from libs.database.messages import SQLTableCountWhere
-from libs.database.messages import SQLUpdate
+from libs.database.messages.delete import SQLDelete
+from libs.database.messages.insert import SQLInsert
+from libs.database.messages.select import SQLSelect
+from libs.database.messages.table import SQLTable
+from libs.database.messages.table_count_where import SQLTableCountWhere
+from libs.database.messages.update import SQLUpdate
 from libs.database.table import Table
 from libs.database.where import Where
 from libs.file import File
@@ -177,8 +177,11 @@ class Authentication:
         return_list = ["id", "username", "is_admin"]
         msg = SQLSelect(cls.__db_info, returns=return_list)
         Database.call(msg)
-        for item in msg.return_data:
-            item["is_admin"] = item["is_admin"] == "True"
+        if isinstance(msg.return_data, dict):
+            msg.return_data["is_admin"] = msg.return_data["is_admin"] == "True"
+        elif isinstance(msg.return_data, list):
+            for item in msg.return_data:
+                item["is_admin"] = item["is_admin"] == "True"
         return msg.return_data
 
     @classmethod

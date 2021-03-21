@@ -7,7 +7,7 @@ from api import API
 from data.config import CONFIG
 from data.database.system import UPLOAD_DB
 from libs.database import Database
-from libs.database.messages import SQLTable
+from libs.database.messages.table import SQLTable
 from libs.error_pages import setup_error_pages
 from libs.file import File
 from libs.html_template import HTMLTEMPLATE
@@ -75,13 +75,9 @@ class Webserver:
 
         ripper_cfg = CONFIG["ripper"]
         conf_ripper = {
-            "/tempvideo": {
+            "/tempripper": {
                 "tools.staticdir.on": True,
-                "tools.staticdir.dir": File.location(ripper_cfg["locations"]["videoripping"].value),
-            },
-            "/tempaudio": {
-                "tools.staticdir.on": True,
-                "tools.staticdir.dir": File.location(ripper_cfg["locations"]["audioripping"].value),
+                "tools.staticdir.dir": File.location(ripper_cfg["locations"]["ripping"].value),
             },
         }
 

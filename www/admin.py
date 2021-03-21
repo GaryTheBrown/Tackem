@@ -38,12 +38,19 @@ class Admin(HTMLTEMPLATE):
             raise cherrypy.HTTPError(status=401)
         data = Authentication.get_users()
         users_html = ""
-        for item in data:
-            admin = "checked" if item["is_admin"] else ""
-            admin += " disabled" if item["id"] == 1 else ""
+        if isinstance(data, dict):
+            admin = "checked" if data["is_admin"] else ""
+            admin += " disabled" if data["id"] == 1 else ""
             users_html += HTMLSystem.part(
-                "section/user", USERID=item["id"], NAME=item["username"], ISADMIN=admin
+                "section/user", USERID=data["id"], NAME=data["username"], ISADMIN=admin
             )
+        elif isinstance(data, list):
+            for item in data:
+                admin = "checked" if item["is_admin"] else ""
+                admin += " disabled" if item["id"] == 1 else ""
+                users_html += HTMLSystem.part(
+                    "section/user", USERID=item["id"], NAME=item["username"], ISADMIN=admin
+                )
         return self._template(
             HTMLSystem.part("pages/users", USERSHTML=users_html),
             javascript="js/users.js",

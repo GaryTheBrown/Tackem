@@ -48,7 +48,6 @@
 		"python.linting.pylintPath": "pylint",
 		"python.linting.enabled": true,
 		"python.linting.pylintUseMinimalCheckers": false,
-		"python.formatting.provider": "autopep8",
 		"jshint.options": {
 			"esversion": 6
 		},

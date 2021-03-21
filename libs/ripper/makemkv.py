@@ -1,19 +1,24 @@
 """MakeMKV ripping controller"""
 import json
 import os
+from pathlib import Path
+from typing import List
 from typing import Optional
 
 import pexpect
 
 from data.config import CONFIG
+from data.database.ripper import VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB as DB
 from libs.database import Database
-from libs.database.messages import SQLSelect
+from libs.database.messages.insert import SQLInsert
+from libs.database.messages.select import SQLSelect
 from libs.database.messages.update import SQLUpdate
 from libs.database.where import Where
 from libs.file import File
 from libs.ripper.data.disc_type import DiscType
 from libs.ripper.data.disc_type import make_disc_type
+from libs.ripper.data.video_track_type import VideoTrackType
 from libs.ripper.disc_api import DiscAPI
 from libs.ripper.subsystems import RipperSubSystem
 
@@ -75,14 +80,15 @@ ITEM_ATTRIBUTE_ID = [
 class MakeMKV(RipperSubSystem):
     """MakeMKV ripping controller"""
 
-    def call(self, db_id: int) -> bool:
+    def call(self, db_id: int) -> List[int]:
         """run the makemkv backup function MUST HAVE DATA IN THE DB"""
-        msg = SQLSelect(DB, Where("db_", db_id))
+        ids = []
+        msg = SQLSelect(DB, Where("id", db_id))
         Database.call(msg)
-
         if not isinstance(msg.return_data, dict):
-            return False
+            return ids
 
+        disc_data = None
         disc_rip_info: Optional[DiscType] = None
         if msg.return_data["rip_data"] is None:
             disc_rip_info = DiscAPI.find_disctype(msg.return_data["uuid"], msg.return_data["label"])
@@ -105,25 +111,36 @@ class MakeMKV(RipperSubSystem):
                 CONFIG["ripper"]["locations"]["videoiso"].value,
             )
 
-        temp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripping'].value}{str(id)}/")
+        temp_dir = File.location(f"{CONFIG['ripper']['locations']['ripping'].value}{str(db_id)}/")
         device = msg.return_data["iso_file"] == ""
-        if isinstance(disc_rip_info, list):
+
+        if isinstance(disc_rip_info, DiscType):
             self._track_data = True
-            for idx, track in enumerate(disc_rip_info):
-                if not isinstance(track, bool):
-                    self._makemkv_backup_from_disc(temp_dir, idx)
+            for idx, track in enumerate(disc_rip_info.tracks):
+                if isinstance(track, VideoTrackType):
+                    if track.video_type in CONFIG["ripper"]["videoripping"]["torip"].value:
+                        self._makemkv_backup_from_disc(temp_dir, idx)
+                        ids.append(
+                            self.__pass_single_to_converter(
+                                msg.return_data["id"],
+                                idx,
+                                temp_dir + str(idx).zfill(2),
+                                track.json(),
+                            )
+                        )
         elif disc_rip_info is None:
             self._makemkv_backup_from_disc(temp_dir)
-
-        comp_dir = File.location(f"{CONFIG['ripper']['locations']['videoripped'].value}{str(id)}/")
-        File.move(temp_dir, comp_dir)
-
-        # TODO calls the next system
+            for idx, path in enumerate(Path(temp_dir).rglob("*.mkv")):
+                ids.append(
+                    self.__pass_single_to_converter(
+                        msg.return_data["id"], idx, ("/" + "/".join(path.parts[1:])), "{}"
+                    )
+                )
 
         if not device and CONFIG["ripper"]["iso"]["removeiso"].value:
             File.rm(File.location(self._in_file))
 
-        return True
+        return ids
 
     def _makemkv_backup_from_disc(self, temp_dir: str, index: int = -1):
         """Do the mkv Backup from disc"""
@@ -148,7 +165,6 @@ class MakeMKV(RipperSubSystem):
             str(index),
             temp_dir,
         ]
-
         thread = pexpect.spawn(" ".join(prog_args), encoding="utf-8")
 
         cpl = thread.compile_pattern_list(
@@ -244,3 +260,28 @@ class MakeMKV(RipperSubSystem):
                 tinfo[track_id]["streams"][stream_id][ITEM_ATTRIBUTE_ID[info_id]] = str(value)
 
         return {"track_count": tcount, "disc_info": cinfo, "track_info": tinfo}
+
+    def __pass_single_to_converter(
+        self, info_id: int, track_number: int, filename: str, track_data: str
+    ) -> int:
+        """creates the DB section and then passes it to the converter in the ripper"""
+
+        Database.call(
+            SQLInsert(
+                VIDEO_CONVERT_DB,
+                info_id=info_id,
+                track_number=track_number,
+                filename=filename,
+                track_data=track_data,
+            )
+        )
+
+        msg = SQLSelect(
+            VIDEO_CONVERT_DB,
+            Where("info_id", info_id),
+            Where("track_number", track_number),
+            Where("filename", filename),
+        )
+        Database.call(msg)
+
+        return msg.return_data["id"]

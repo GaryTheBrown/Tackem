@@ -10,8 +10,8 @@ from data.database.ripper import VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB
 from libs.classproperty import classproperty
 from libs.database import Database
-from libs.database.messages import SQLTable
 from libs.database.messages.select import SQLSelect
+from libs.database.messages.table import SQLTable
 from libs.database.table import Table
 from libs.database.where import Where
 from libs.file import File
@@ -60,9 +60,6 @@ class Ripper:
     __video_converter_threads: List[VideoConverter] = []
     __video_converter_loaded: List[int] = []
 
-    # __video_labeler = None
-    # __renamer = None
-
     @classproperty
     def running(cls):
         """Returns if ripper running"""
@@ -81,8 +78,14 @@ class Ripper:
     @classproperty
     def isos(cls) -> List[ISORipper]:
         """returns the iso threads"""
-        cls.cleanup_dead_iso_threads()
+        cls.__cleanup_dead_iso_threads()
         return cls.__iso_threads
+
+    @classproperty
+    def video_converters(cls) -> List[VideoConverter]:
+        """returns the iso threads"""
+        cls.__cleanup_dead_video_converter_threads()
+        return cls.__video_converter_threads
 
     @classmethod
     def start(cls):
@@ -99,7 +102,7 @@ class Ripper:
         Database.call(SQLTable(VIDEO_INFO_DB))
         Database.call(SQLTable(VIDEO_CONVERT_DB))
 
-        cls.setup_makemkv()
+        cls.__setup_makemkv()
         if CONFIG["ripper"]["drives"]["enabled"].value:
             cls.__start_drives()
 
@@ -112,7 +115,7 @@ class Ripper:
         cls.__running = True
 
     @classmethod
-    def setup_makemkv(cls):
+    def __setup_makemkv(cls):
         """sets up the makemkv config (needed due to app key)"""
         folder = f"{HOMEFOLDER}/.MakeMKV/"
         File.mkdir(folder)
@@ -178,7 +181,7 @@ class Ripper:
             drive.stop_thread()
 
         if isinstance(cls.__iso_pool_sema, BoundedSemaphore):
-            cls.cleanup_dead_iso_threads()
+            cls.__cleanup_dead_iso_threads()
             for thread in cls.__iso_threads:
                 thread.stop_thread()
             cls.__iso_pool_sema = None
@@ -186,7 +189,7 @@ class Ripper:
             cls.__iso_loaded = []
 
         if isinstance(cls.__video_converter_pool_sema, BoundedSemaphore):
-
+            cls.__cleanup_dead_video_converter_threads()
             for thread in cls.__video_converter_threads:
                 thread.stop_thread()
             cls.__video_converter_pool_sema = None
@@ -197,7 +200,6 @@ class Ripper:
     @classmethod
     def iso_add(cls, filename: str, table: Table) -> bool:
         """Action for other systems to add iso mainly the upload side"""
-        # TODO need to change the DB calls in here to read the other info and add the full info here
         if not CONFIG["ripper"]["iso"]["enabled"].value:
             return False
         if filename in cls.__iso_loaded:
@@ -207,35 +209,11 @@ class Ripper:
         return True
 
     @classmethod
-    def cleanup_dead_iso_threads(cls):
+    def __cleanup_dead_iso_threads(cls):
         """removes old threads from the list."""
         if not CONFIG["ripper"]["iso"]["enabled"].value:
             return
         cls.__iso_threads = [t for t in cls.__iso_threads if t.thread_run]
-
-    @classmethod
-    def video_converter_add_disc(cls, db_id: int) -> bool:
-        """Action for other systems to add a full disc video converter task"""
-        if not CONFIG["ripper"]["converter"]["enabled"].value:
-            return False
-
-        msg = SQLSelect(VIDEO_CONVERT_DB, Where("ripper_video_info_id", db_id))
-        Database.call(msg)
-        if isinstance(msg.return_data, dict):
-            if msg.return_data["id"] in cls.__video_converter_loaded:
-                return False
-        else:
-            for item in msg.return_data:
-                if item["id"] in cls.__video_converter_loaded:
-                    return False
-
-        msg = SQLSelect(VIDEO_INFO_DB, Where("id", db_id))
-        Database.call(msg)
-        if not isinstance(msg.return_data, dict):
-            return False
-
-        # TODO need to loop through files in folder and add them to converter DB, check for info in
-        # rip_info and if so set it. then call video_converter_add_single for each file.
 
     @classmethod
     def video_converter_add_single(cls, db_id: int) -> bool:
@@ -253,7 +231,7 @@ class Ripper:
         return True
 
     @classmethod
-    def cleanup_dead_video_converter_threads(cls):
+    def __cleanup_dead_video_converter_threads(cls):
         """removes old threads from the list."""
         if not CONFIG["ripper"]["converter"]["enabled"].value:
             return

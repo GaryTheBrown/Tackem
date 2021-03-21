@@ -9,8 +9,8 @@ from data.database.ripper import AUDIO_INFO_DB
 from data.database.ripper import VIDEO_INFO_DB
 from data.database.system import UPLOAD_DB
 from libs.database import Database
-from libs.database.messages import SQLSelect
 from libs.database.messages.delete import SQLDelete
+from libs.database.messages.select import SQLSelect
 from libs.database.where import Where
 from libs.file import File
 from libs.html_template import HTMLTEMPLATE

@@ -47,4 +47,4 @@ class DiscAPI:
             DONTRIPTrackType("Blank"),
         ]
 
-        return MovieDiscType("Aqua Teen Hunger Force Colon Movie", "2007", "tt0455326", tracks)
+        return MovieDiscType("Aqua Teen Hunger Force Colon Movie", "", "2007", "tt0455326", tracks)

@@ -41,7 +41,7 @@ class VideoConverter(
             return
 
         self._filename = msg.return_data["filename"]
-        infile = File.location(CONFIG["ripper"]["locations"]["videoripping"].value + self._filename)
+        infile = File.location(CONFIG["ripper"]["locations"]["ripping"].value + self._filename)
         outfile = infile.replace(".mkv", "") + ".NEW.mkv"
 
         if not File.exists(infile):
@@ -97,7 +97,7 @@ class VideoConverter(
         """creates the conversion command here"""
         probe_info = FFprobe(
             self._conf["ffprobelocation"].value,
-            File.location(CONFIG["ripper"]["locations"]["videoripping"].value + self._filename),
+            File.location(CONFIG["ripper"]["locations"]["ripping"].value + self._filename),
         )
         self._command.append("-map_metadata 0")
         self._command.append("-map_chapters 0")
@@ -108,13 +108,13 @@ class VideoConverter(
 
     def __create_convert_command_with_info(self, db_info: dict):
         """creates the conversion command here"""
-        msg = SQLSelect(VIDEO_INFO_DB, Where("id", db_info["ripper_video_info_id"]))
+        msg = SQLSelect(VIDEO_INFO_DB, Where("id", db_info["info_id"]))
         Database.call(msg)
         disc_info = make_disc_type(msg.return_data["rip_data"])
         track_info = make_track_type(db_info["track_info"])
         probe_info = FFprobe(
             self._conf["ffprobelocation"].value,
-            File.location(CONFIG["ripper"]["locations"]["videoripping"].value + self._filename),
+            File.location(CONFIG["ripper"]["locations"]["ripping"].value + self._filename),
         )
         self._sort_metadata(disc_info, track_info)
         self._sort_chapters(probe_info)

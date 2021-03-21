@@ -10,8 +10,8 @@ from pathlib import Path
 from data.config import CONFIG
 from data.database.library import LIBRARY_FILES_DB
 from libs.database import Database
-from libs.database.messages import SQLSelect
-from libs.database.messages import SQLUpdate
+from libs.database.messages.select import SQLSelect
+from libs.database.messages.update import SQLUpdate
 from libs.database.where import Where
 
 

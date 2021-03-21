@@ -7,8 +7,8 @@ import cherrypy
 from api.base import APIBase
 from data.database.system import UPLOAD_DB
 from libs.database import Database
-from libs.database.messages import SQLInsert
-from libs.database.messages import SQLSelect
+from libs.database.messages.insert import SQLInsert
+from libs.database.messages.select import SQLSelect
 from libs.database.where import Where
 
 
