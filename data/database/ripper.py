@@ -16,7 +16,6 @@ VIDEO_CONVERT_DB = Table(
     "ripper_video_convert_info",
     1,
     Column("info_id", "integer", not_null=True),
-    Column("ripper_video_info_id", "integer", not_null=True),
     Column("track_number", "integer", not_null=True),
     Column("filename", "text", not_null=True),
     Column("track_data", "json"),

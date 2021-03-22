@@ -41,7 +41,7 @@ class VideoConverter(
             return
 
         self._filename = msg.return_data["filename"]
-        infile = File.location(CONFIG["ripper"]["locations"]["ripping"].value + self._filename)
+        infile = File.location(self._filename)
         outfile = infile.replace(".mkv", "") + ".NEW.mkv"
 
         if not File.exists(infile):
@@ -57,19 +57,28 @@ class VideoConverter(
         second_run = msg.return_data["video_converted"]
         auto_mode = False
         if second_run:
-            if msg.return_data["track_info"] == {}:
+            if msg.return_data["track_data"] == {}:
                 self._wait.wait()
                 if not self._thread_run:
                     return
                 Database.call(msg)
 
-        if msg.return_data["track_info"] == {}:
+        if msg.return_data["track_data"] == {}:
             self.__create_convert_command_no_info()
         else:
             self.__create_convert_command_with_info(msg.return_data)
             if not second_run:
                 auto_mode = True
         self._command.append(f'"{outfile}"')
+
+        print(" ".join(self._command))
+
+        if not self._convert:
+            if auto_mode or second_run:
+                pass
+                Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
+                self.__pass_single_to_library()
+            return
 
         if not self._thread_run:
             return
@@ -80,15 +89,15 @@ class VideoConverter(
             if self._do_conversion():
                 File.move(infile, infile + ".OLD")
                 File.move(outfile, infile)
-                if not self._conf["keeporiginalfile"].value:
-                    File.rm(infile + ".OLD")
+                File.rm(infile + ".OLD")
                 if second_run or auto_mode:
-                    Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self.__db_id)))
+                    Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
+                    self.__pass_single_to_library()
                 else:
                     Database.call(
                         SQLUpdate(
                             VIDEO_CONVERT_DB,
-                            Where("id", self.__db_id),
+                            Where("id", self._db_id),
                             video_converted=True,
                         )
                     )
@@ -111,17 +120,19 @@ class VideoConverter(
         msg = SQLSelect(VIDEO_INFO_DB, Where("id", db_info["info_id"]))
         Database.call(msg)
         disc_info = make_disc_type(msg.return_data["rip_data"])
-        track_info = make_track_type(db_info["track_info"])
-        probe_info = FFprobe(
-            self._conf["ffprobelocation"].value,
-            File.location(CONFIG["ripper"]["locations"]["ripping"].value + self._filename),
-        )
-        self._sort_metadata(disc_info, track_info)
+        track_data = make_track_type(db_info["track_data"])
+        probe_info = FFprobe(self._conf["ffprobelocation"].value, self._filename)
+        self._sort_metadata(disc_info, track_data)
         self._sort_chapters(probe_info)
-        self._sort_stream_mapping(track_info, probe_info)
+        self._sort_stream_mapping(track_data, probe_info)
         if db_info["video_converted"]:
             self._command.append("-c:v copy")
         else:
             self._sort_video_data(probe_info)
         self._command.append("-c:a copy")
         self._command.append("-c:s copy")
+
+    def __pass_single_to_library(self):
+        """passes the file to the library with its information"""
+        # TODO write this function to pass the file to the Labrary.
+        pass

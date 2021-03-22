@@ -99,13 +99,6 @@ def ripper_config() -> ConfigList:
                 "How Many Instances of MakeMKV do you want to allow at once?",
                 input_attributes=InputAttributes(min=1, max=5),
             ),
-            ConfigObjBoolean(
-                "removeiso",
-                True,
-                "Remove ISO",
-                "Do you want to delete the ISO after ripping?",
-                input_attributes=YES_NO_IA,
-            ),
         ),
         ConfigList(
             "locations",
@@ -177,13 +170,6 @@ def ripper_config() -> ConfigList:
                 "How Many Threads (Max of 5)",
                 input_attributes=InputAttributes(min=1, max=5),
             ),
-            ConfigObjBoolean(
-                "keeporiginalfile",
-                False,
-                "Keep Original File",
-                "If you want to keep the original file after conversion",
-                input_attributes=YES_NO_IA,
-            ),
             ConfigObjOptionsSelect(
                 "defaultlanguage",
                 Languages().config_option_3t(ConfigObjOption),
@@ -196,13 +182,13 @@ def ripper_config() -> ConfigList:
                 "video",
                 "Video",
                 # VIDEO SECTION
-                # ConfigObjBoolean(
-                #     "videoinserttags",
-                #     True,
-                #     "Insert Tags",
-                #     "Do you want to add in the tags to the Video Files?",
-                #     input_attributes=YES_NO_IA
-                # ),
+                ConfigObjBoolean(
+                    "videoinserttags",
+                    True,
+                    "Insert Tags",
+                    "Do you want to add in the tags to the Video Files?",
+                    input_attributes=YES_NO_IA,
+                ),
                 ConfigObjOptionsSelect(
                     "hdrmode",
                     [
@@ -393,6 +379,11 @@ Use the slowest preset that you have patience for.""",
                     ConfigObjString("x26extra", "", "Extra commands", "Other commands?"),
                     is_section=True,
                 ),
+            ),
+            ConfigList(
+                "audio",
+                "Audio",
+                # AUDIO SECTION
                 ConfigObjOptionsRadio(
                     "originalordub",
                     [
@@ -405,11 +396,6 @@ Use the slowest preset that you have patience for.""",
 Do you want the default stream to be the Original language or dubbed in your language if available?
 """,
                 ),
-            ),
-            ConfigList(
-                "audio",
-                "Audio",
-                # AUDIO SECTION
                 ConfigObjOptionsRadio(
                     "audiolanguage",
                     [

@@ -33,12 +33,13 @@ class FFprobe:
             "-select_streams",
             "v",
             "-print_format",
-            "json" "-show_frames",
+            "json",
+            "-show_frames",
             "-read_intervals",
-            '"%+#1"',
+            "%+#1",
             "-show_entries",
-            '"frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt"',
-            "-i ",
+            "frame=color_space,color_primaries,color_transfer,side_data_list,pix_fmt",
+            "-i",
             infile,
         ]
         process = Popen(prog_args, stdout=PIPE)

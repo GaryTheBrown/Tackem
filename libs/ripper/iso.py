@@ -63,7 +63,7 @@ class ISORipper(FileSubsystem):
             if self.__thread_run is False:
                 return
 
-            if self._disc["disc_type"] == "audiocd":
+            if self._disc["type"] == "audiocd":
                 return
                 # self._ripper = AudioCDLinux(self.get_device(), self._thread.getName(),
                 # self._set_drive_status, self._thread_run)
@@ -75,10 +75,11 @@ class ISORipper(FileSubsystem):
 
             self._ripper.call(self._db_id)
             self._ripper = None
-            if self._disc["disc_type"] == "audiocd":
+            if self._disc["type"] == "audiocd":
                 pass
             else:
                 Database.call(SQLUpdate(VIDEO_INFO_DB, Where("id", self._db_id), iso_file=""))
+            File.rm(self.__filename)
 
     def __wait_for_file_copy_complete(self) -> bool:
         """watches the file size until it stops"""

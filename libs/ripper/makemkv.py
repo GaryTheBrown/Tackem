@@ -109,7 +109,7 @@ class MakeMKV(RipperSubSystem):
         if msg.return_data["iso_file"]:
             self._in_file = File.location(
                 msg.return_data["iso_file"],
-                CONFIG["ripper"]["locations"]["videoiso"].value,
+                CONFIG["ripper"]["locations"]["iso"].value,
             )
 
         temp_dir = File.location(f"{CONFIG['ripper']['locations']['ripping'].value}{str(db_id)}/")
@@ -266,17 +266,6 @@ class MakeMKV(RipperSubSystem):
         self, info_id: int, track_number: int, filename: str, track_data: str
     ) -> int:
         """creates the DB section and then passes it to the converter in the ripper"""
-
-        Database.call(
-            SQLInsert(
-                VIDEO_CONVERT_DB,
-                info_id=info_id,
-                track_number=track_number,
-                filename=filename,
-                track_data=track_data,
-            )
-        )
-
         msg = SQLSelect(
             VIDEO_CONVERT_DB,
             Where("info_id", info_id),
@@ -285,6 +274,19 @@ class MakeMKV(RipperSubSystem):
         )
         Database.call(msg)
 
-        RipperEvent.add_event("video_converter_add_single", (msg.return_data["id"]))
+        if isinstance(msg.return_data, list) and len(msg.return_data) == 0:
+            Database.call(
+                SQLInsert(
+                    VIDEO_CONVERT_DB,
+                    info_id=info_id,
+                    track_number=track_number,
+                    filename=filename,
+                    track_data=track_data,
+                )
+            )
+
+        Database.call(msg)
+
+        RipperEvent.set_event("video_converter_add_single", msg.return_data["id"])
 
         return msg.return_data["id"]

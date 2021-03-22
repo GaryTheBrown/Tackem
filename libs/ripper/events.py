@@ -1,7 +1,6 @@
 """Event to pass mesages to the ripper master from inside"""
 from threading import Event
 from typing import Any
-from typing import Optional
 from typing import Tuple
 
 # TODO sort this and add in use in the main ripper init to allow passing data from inside subsystems
@@ -14,21 +13,11 @@ class RipperEvent:
     _event = Event()
 
     @classmethod
-    def set_event(cls, event: str, data: Optional[str] = None, call: bool = True):
+    def set_event(cls, event: str, data: tuple = None, call: bool = True):
         """Set an event for the ripper system to do"""
         cls._events.append((event, data))
         if call:
             cls._event.set()
-
-    @classmethod
-    def add_event(cls, event: str, data: Optional[Any] = None):
-        """Set an event for the ripper system to do"""
-        cls._events.append((event, data))
-
-    @classmethod
-    def call_event(cls):
-        """Set an event for the ripper system to do"""
-        cls._event.set()
 
 
 class RipperEventMaster(RipperEvent):

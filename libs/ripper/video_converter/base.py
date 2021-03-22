@@ -19,6 +19,7 @@ class VideoConverterBase:
         self._conf = CONFIG["ripper"]["converter"]
         self._filename = ""
         self._command: list = []
+        self._convert = False
         self.__frame_count: int = 0
         self.__frame_process: int = 0
         self.__percent: float = 0.0
@@ -31,7 +32,7 @@ class VideoConverterBase:
     @property
     def thread_run(self) -> bool:
         """return if thread is running"""
-        return self._thread.is_alive()
+        return self.__thread.is_alive()
 
     @property
     def active(self) -> bool:

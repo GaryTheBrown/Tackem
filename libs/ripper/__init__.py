@@ -45,6 +45,8 @@ from libs.ripper.video_converter import VideoConverter
 # TODO a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
 
+# TODO add in Audio CD to this system
+
 
 class Ripper:
     """Main Class to create an instance of the plugin"""
