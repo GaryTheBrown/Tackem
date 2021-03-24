@@ -3,8 +3,6 @@ from threading import Event
 from typing import Any
 from typing import Tuple
 
-# TODO sort this and add in use in the main ripper init to allow passing data from inside subsystems
-
 
 class RipperEvent:
     """Event to pass mesages to the ripper master from inside"""

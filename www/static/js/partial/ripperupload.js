@@ -15,14 +15,14 @@
                         ShowLoader("UPLOADING");
                         $.ajax({
                             type: 'POST',
-                            url: ROOT + $(this).data("url"),
+                            url: $(this).data("url"),
                             data: {
                                 filename: file.name,
                                 filesize: file.size
                             },
                             dataType: 'json',
                             success: function (result) {
-                                fetch(result.url, {method:"POST", body:file})
+                                fetch(ROOT + result.url, {method:"POST", body:file})
                                 .then(response => {
                                     if (response.ok) {
                                         return response;

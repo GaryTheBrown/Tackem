@@ -28,7 +28,7 @@ class RipperRoot(HTMLTEMPLATE):
                 VIDEOCONVERTERTHREADLIMIT=CONFIG["ripper"]["converter"]["threadcount"].value,
                 VIDEOCONVERTERTEMPLATE=HTMLSystem.open("partial/ripper/videoconverter"),
             ),
-            javascript=["js/ripper.js", "js/partial/ripperupload.js"],
+            javascript="js/ripper.js",
         )
 
     def drives_data(self):

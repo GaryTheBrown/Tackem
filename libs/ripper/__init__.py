@@ -21,9 +21,6 @@ from libs.ripper.events import RipperEventMaster
 from libs.ripper.iso import ISORipper
 from libs.ripper.video_converter import VideoConverter
 
-# TODO FIX FIX FIX get converter working. Ripper to converter part is crashing
-
-
 # TODO Show all discs from the DB that don't have disc data in a list
 # TODO allow editing using the disc data that is in the DB for what the files are and make it detect
 # if the video is there for viewing and if so somehow allow it to be watched in the browser

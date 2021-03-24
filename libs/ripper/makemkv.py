@@ -121,7 +121,6 @@ class MakeMKV(RipperSubSystem):
                 if isinstance(track, VideoTrackType):
                     if track.video_type in CONFIG["ripper"]["videoripping"]["torip"].value:
                         self._makemkv_backup_from_disc(temp_dir, idx)
-                        # TODO make a label from the Data Here
                         ids.append(
                             self.__pass_single_to_converter(
                                 msg.return_data["id"],

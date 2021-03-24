@@ -1,78 +1,106 @@
 (function () {
 
     $(() => {
-        new Ripper();
-    });
+        let existingISOs = [];
+        let existingConverters = [];
+        let timer = setInterval(grabData, 1000);
 
-    class Ripper
-    {
-        constructor()
-        {
-            this.existingISOs = [];
-            this.existingConverters = [];
-
-            if (window.location.href.endsWith("/ripper/")){
-                this.timer = setInterval(this.grabData.bind(this), 1000);
+        $('#isoupload').on('change', function() {
+            let file = this.files[0];
+            if (confirm(`upload ${file.name}`)) {
+                clearInterval(timer);
+                ShowLoader("UPLOADING");
+                $.ajax({
+                    type: 'POST',
+                    url: `${APIROOT}ripper/iso/upload`,
+                    data: {
+                        filename: file.name,
+                        filesize: file.size
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        fetch(result.url, {method:"POST", body:file})
+                        .then(response => {
+                            if (response.ok) {
+                                return response;
+                            } else {
+                                throw Error(`Server returned ${response.status}: ${response.statusText}`);
+                            }
+                        })
+                        .then(response => {
+                            HideLoader();
+                            timer = setInterval(grabData, 1000);
+                            $(this).val('');
+                        })
+                        .catch(err => {
+                            alert(err);
+                            HideLoader();
+                            timer = setInterval(grabData, 1000);
+                            $(this).val('');
+                        });
+                    },
+                });
+            } else {
+                $(this).val('');
             }
+        });
 
-            // $('.trackdata').each(function(index, element) {
-            //     $(element).on('click', obj.trackData);
-            // }.bind(obj));
-        }
+        // $('.trackdata').each(function(index, element) {
+        //     $(element).on('click', obj.trackData);
+        // }.bind(obj));
 
-        grabData()
+        function grabData()
         {
-            var ripper = this;
             $.ajax({
                 type: 'GET',
-                url: `${APIROOT}ripper/data/`,
+                url: `${APIROOT}ripper/data`,
                 dataType: 'json',
                 success: function (result) {
                     if (result.drives) {
                         //loop through drives and update them
-                        result.drives.forEach(ripper.updateDrive, ripper);
+                        result.drives.forEach(updateDrive, ripper);
                     }
                     $('#isocount').html(result.isos.length);
                     if (result.isos) {
                         //Grab the existing ISOs shown as a list of names
-                        ripper.existingISOs = [];
+                        existingISOs = [];
                         $('#isosection').find('.isobox').each(function(index, element) {
-                            ripper.existingISOs.push($(element).data('name'));
-                        }.bind(ripper));
+                            existingISOs.push($(element).data('name'));
+                        });
 
                         //loop through isos and update them
-                        result.isos.forEach(ripper.updateISO, ripper);
+                        result.isos.forEach(updateISO, ripper);
 
                         //Remove unlisted isos
-                        ripper.existingISOs.forEach(function(item) {
+                        existingISOs.forEach(function(item) {
                             $('#isosection').find(`.isobox[data-name="${item}"]`).remove();
                         });
                     }
                     $('#videoconvertercount').html(result.converters.length);
                     if (result.converters) {
                         //Grab the existing Converters shown as a list of ids
-                        ripper.existingConverters = [];
+                        existingConverters = [];
                         $('#videoconvertersection').find('.videoconverterbox').each(function(index, element) {
-                            ripper.existingConverters.push($(element).data('id'));
-                        }.bind(ripper));
+                            existingConverters.push($(element).data('id'));
+                        });
 
                         //loop through Converters and update them
-                        result.converters.forEach(ripper.updateConverter, ripper);
+                        result.converters.forEach(updateConverter, ripper);
 
                         //Remove unlisted Converters
-                        ripper.existingConverters.forEach(function(item) {
+                        existingConverters.forEach(function(item) {
                             $('#videoconvertersection').find(`.videoconverterbox[data-id="${item}"]`).remove();
                         });
                     }
                 },
                 error: function () {
-                    clearInterval(ripper.timer);
+                    clearInterval(timer);
                     ShowLoader("CONNECTION LOST");
                 }
             });
         }
 
-        updateDrive(drive, index)
+        function updateDrive(drive, index)
         {
             let $element = $(`.drivebox[data-id='${index}']`);
 
@@ -117,7 +145,7 @@
             }
         }
 
-        updateISO(iso)
+        function updateISO(iso)
         {
             let arrayIndex = this.existingISOs.indexOf(iso.filename);
             if (arrayIndex === -1) {
@@ -159,7 +187,7 @@
             }
         }
 
-        updateConverter(converter)
+        function updateConverter(converter)
         {
             let arrayIndex = this.existingConverters.indexOf(converter.id);
             if (arrayIndex === -1) {
@@ -197,6 +225,6 @@
         //         //TODO Add in popup to create the track info
         //     }
         // }
-    }
 
+    });
 })();
