@@ -21,7 +21,7 @@ class APIRipperDrivesData(APIBase):
 
         drives = Ripper.drives
         if index > len(drives):
-            self._return()
+            raise cherrypy.HTTPError(status=404)
         drive_dict = drives[index].api_data()
         return self._return_data(
             user, "Ripper", f"Drive Info {index}", True, id=index, **drive_dict

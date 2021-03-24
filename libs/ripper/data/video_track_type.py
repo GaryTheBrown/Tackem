@@ -19,15 +19,10 @@ TYPES = {
 class VideoTrackType(metaclass=ABCMeta):
     """Master Type"""
 
-    def __init__(self, video_type: str, streams: Optional[list], hdr: bool):
+    def __init__(self, video_type: str, streams: Optional[list], title: str = "Track"):
         self.__video_type = video_type if video_type in TYPES else ""
         self.__streams = streams if isinstance(streams, list) else []
-        self.__hdr = hdr
-
-    @property
-    def hdr(self) -> bool:
-        """return hdr"""
-        return self.__hdr
+        self.__title = title
 
     @property
     def video_type(self) -> str:
@@ -38,6 +33,11 @@ class VideoTrackType(metaclass=ABCMeta):
     def streams(self) -> list:
         """returns streams"""
         return self.__streams
+
+    @property
+    def title(self) -> list:
+        """returns title"""
+        return self.__title
 
     def _title_html(self, title: str) -> str:
         """title line for sections"""
@@ -60,7 +60,6 @@ class VideoTrackType(metaclass=ABCMeta):
                 else:
                     stream_list.append(stream.make_dict())
             super_dict["streams"] = stream_list
-        super_dict["hdr"] = self.__hdr
         return super_dict
 
     def _change_section_html(self, track: str) -> str:
@@ -69,40 +68,12 @@ class VideoTrackType(metaclass=ABCMeta):
         html += ", 'change');\">(change)</div>"
         return html
 
-    # def _make_stream_sections(self, ffprobe):
-    #     '''creates the stream sections'''
-    #     html = ""
-    #     for stream_index, stream_type_code in enumerate(ffprobe.get_streams_and_types()):
-    #         stream_data = ffprobe.get_stream(stream_index)
-    #         if self._streams:
-    #             html += self._streams[stream_index].get_edit_panel(stream_data)
-    #         else:
-    #             temp_stream = stream_type.make_blank_stream_type(
-    #                 stream_index, stream_type_code)
-    #             html += temp_stream.get_edit_panel(stream_data)
-    #     return html_parts.video_panel("Streams", "", html)
-
-    # @abstractmethod
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-
-    # def _get_edit_panel_bottom(self):
-    #     '''returns the edit panel'''
-    #     html = ""
-    #     html += ghtml_parts.item("track_%%TRACKINDEX%%_hdr", "HDR",
-    #                              "Is the Track HDR?",
-    #                              ghtml_parts.checkbox_single("",
-    #                                                          "track_%%TRACKINDEX%%_hdr",
-    #                                                          self._hdr),
-    #                              True)
-    #     return html
-
 
 class DONTRIPTrackType(VideoTrackType):
     """Other Types"""
 
     def __init__(self, reason: str):
-        super().__init__("dontrip", None, False)
+        super().__init__("dontrip", None, "DON'T RIP ME")
         self.__reason = reason
 
     @property
@@ -117,33 +88,14 @@ class DONTRIPTrackType(VideoTrackType):
         super_dict["reason"] = self.__reason
         return super().make_dict(super_dict, include_streams)
 
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-    #     section_html = self._title_html("Don't Rip")
-    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-    #     section_html += ghtml_parts.hidden(
-    #         "track_%%TRACKINDEX%%_video_type", "dontrip", True)
-    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_reason", "Reason",
-    #                                      "Enter the reason not to rip here",
-    #                                      ghtml_parts.input_box("text",
-    #                                                            "track_%%TRACKINDEX%%_reason",
-    #                                                            self._reason),
-    #                                      True)
-    #     return section_html
-
 
 class MovieTrackType(VideoTrackType):
     """Movie Type"""
 
     def __init__(
-        self,
-        streams: Optional[list] = None,
-        tvshow_link=None,
-        tvshow_special_number=None,
-        hdr: bool = False,
+        self, streams: Optional[list] = None, tvshow_link=None, tvshow_special_number=None
     ):
-        super().__init__("movie", streams, hdr)
-
+        super().__init__("movie", streams, "Movie")
         self.__tvshow_link = tvshow_link
         self.__tvshow_special_number = tvshow_special_number
 
@@ -166,17 +118,6 @@ class MovieTrackType(VideoTrackType):
             super_dict["tv_show_special_number"] = self.__tvshow_special_number
         return super().make_dict(super_dict, include_streams)
 
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-    #     section_html = self._title_html("Movie")
-    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-    #     section_html += ghtml_parts.hidden(
-    #         "track_%%TRACKINDEX%%_video_type", "movie", True)
-    #     section_html += super()._get_edit_panel_bottom()
-    #     if ffprobe:
-    #         section_html += self._make_stream_sections(ffprobe)
-    #     return section_html
-
 
 class TVShowTrackType(VideoTrackType):
     """TV Show Type"""
@@ -186,9 +127,8 @@ class TVShowTrackType(VideoTrackType):
         season: int,
         episode: int,
         streams: Optional[list] = None,
-        hdr: bool = False,
     ):
-        super().__init__("tvshow", streams, hdr)
+        super().__init__("tvshow", streams, f"S{str(season).zfill(2)}E{str(episode).zfill(2)}")
         self.__season = season
         self.__episode = episode
 
@@ -210,35 +150,12 @@ class TVShowTrackType(VideoTrackType):
         super_dict["episode"] = self.__episode
         return super().make_dict(super_dict, include_streams)
 
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-    #     section_html = self._title_html("TV Show Episode")
-    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-    #     section_html += ghtml_parts.hidden(
-    #         "track_%%TRACKINDEX%%_video_type", "tvshow", True)
-    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_season", "Season Number",
-    #                                      "Enter the Season Number here",
-    #                                      ghtml_parts.input_box("number",
-    #                                                            "track_%%TRACKINDEX%%_season",
-    #                                                            self._season, minimum=0),
-    #                                      True)
-    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_episode", "Episode Number",
-    #                                      "Enter the Episode Number here",
-    #                                      ghtml_parts.input_box("number",
-    #                                                            "track_%%TRACKINDEX%%_episode",
-    #                                                            self._episode, minimum=0),
-    #                                      True)
-    #     section_html += super()._get_edit_panel_bottom()
-    #     if ffprobe:
-    #         section_html += self._make_stream_sections(ffprobe)
-    #     return section_html
-
 
 class ExtraTrackType(VideoTrackType):
     """Extra Type"""
 
-    def __init__(self, name: str, streams: Optional[list] = None, hdr: bool = False):
-        super().__init__("extra", streams, hdr)
+    def __init__(self, name: str, streams: Optional[list] = None):
+        super().__init__("extra", streams, f"Extra: {name}")
         self.__name = name
 
     @property
@@ -253,37 +170,12 @@ class ExtraTrackType(VideoTrackType):
         super_dict["name"] = self.__name
         return super().make_dict(super_dict, include_streams)
 
-    # def tvshow_link(self):
-    #     '''return the tv show name for linking'''
-    #     return self._tvshow_link
-
-    # def tvshow_special_number(self):
-    #     '''return the tv show special number'''
-    #     return self._tvshow_special_number
-
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-    #     section_html = self._title_html("Extra")
-    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-    #     section_html += ghtml_parts.hidden(
-    #         "track_%%TRACKINDEX%%_video_type", "extra", True)
-    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_name", "Name",
-    #                                      "Enter the extra name",
-    #                                      ghtml_parts.input_box("text",
-    #                                                            "track_%%TRACKINDEX%%_name",
-    #                                                            self._name),
-    #                                      True)
-    #     section_html += super()._get_edit_panel_bottom()
-    #     if ffprobe:
-    #         section_html += self._make_stream_sections(ffprobe)
-    #     return section_html
-
 
 class TrailerTrackType(VideoTrackType):
     """trailer Type"""
 
-    def __init__(self, info: str, streams: Optional[list] = None, hdr: bool = False):
-        super().__init__("trailer", streams, hdr)
+    def __init__(self, info: str, streams: Optional[list] = None):
+        super().__init__("trailer", streams, f"Trailer: {info}")
         self.__info = info
 
     @property
@@ -298,29 +190,12 @@ class TrailerTrackType(VideoTrackType):
         super_dict["info"] = self.__info
         return super().make_dict(super_dict, include_streams)
 
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-    #     section_html = self._title_html("Trailer")
-    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-    #     section_html += ghtml_parts.hidden(
-    #         "track_%%TRACKINDEX%%_video_type", "trailer", True)
-    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_info", "Information",
-    #                                      "Enter trailer information here",
-    #                                      ghtml_parts.input_box("text",
-    #                                                            "track_%%TRACKINDEX%%_info",
-    #                                                            self._info),
-    #                                      True)
-    #     section_html += super()._get_edit_panel_bottom()
-    #     if ffprobe:
-    #         section_html += self._make_stream_sections(ffprobe)
-    #     return section_html
-
 
 class OtherTrackType(VideoTrackType):
     """Other Types"""
 
-    def __init__(self, other_type: str, streams: Optional[list] = None, hdr: bool = False):
-        super().__init__("other", streams, hdr)
+    def __init__(self, other_type: str, streams: Optional[list] = None):
+        super().__init__("other", streams, f"Other: {other_type}")
         self.__other_type = other_type
 
     @property
@@ -334,23 +209,6 @@ class OtherTrackType(VideoTrackType):
             super_dict = {}
         super_dict["other_type"] = self.__other_type
         return super().make_dict(super_dict, include_streams)
-
-    # def get_edit_panel(self, ffprobe=None):
-    #     '''returns the edit panel'''
-    #     section_html = self._title_html("Other")
-    #     section_html += " " + self._change_section_html("%%TRACKINDEX%%")
-    #     section_html += ghtml_parts.hidden(
-    #         "track_%%TRACKINDEX%%_video_type", "other", True)
-    #     section_html += ghtml_parts.item("track_%%TRACKINDEX%%_othertype", "Other Type",
-    #                                      "What is it?",
-    #                                      ghtml_parts.input_box("text",
-    #                                                            "track_%%TRACKINDEX%%_othertype",
-    #                                                            self._other_type),
-    #                                      True)
-    #     section_html += super()._get_edit_panel_bottom()
-    #     if ffprobe:
-    #         section_html += self._make_stream_sections(ffprobe)
-    #     return section_html
 
 
 def make_track_type(track: Union[str, dict]) -> Optional[VideoTrackType]:
@@ -366,22 +224,15 @@ def make_track_type(track: Union[str, dict]) -> Optional[VideoTrackType]:
     if track["video_type"] == "dontrip":
         return DONTRIPTrackType(track.get("reason", ""))
     elif track["video_type"] == "movie":
-        return MovieTrackType(streams=streams, hdr=track.get("hdr", False))
+        return MovieTrackType(streams=streams)
     elif track["video_type"] == "tvshow":
-        return TVShowTrackType(
-            track.get("season", ""),
-            track.get("episode", ""),
-            streams=streams,
-            hdr=track.get("hdr", False),
-        )
+        return TVShowTrackType(track.get("season", ""), track.get("episode", ""), streams=streams)
     elif track["video_type"] == "trailer":
-        return TrailerTrackType(track.get("info", ""), streams=streams, hdr=track.get("hdr", False))
+        return TrailerTrackType(track.get("info", ""), streams=streams)
     elif track["video_type"] == "extra":
-        return ExtraTrackType(track.get("name", ""), streams=streams, hdr=track.get("hdr", False))
+        return ExtraTrackType(track.get("name", ""), streams=streams)
     elif track["video_type"] == "other":
-        return OtherTrackType(
-            track.get("other_type", ""), streams=streams, hdr=track.get("hdr", False)
-        )
+        return OtherTrackType(track.get("other_type", ""), streams=streams)
     return None
 
 

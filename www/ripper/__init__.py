@@ -24,6 +24,9 @@ class RipperRoot(HTMLTEMPLATE):
                 ISOCOUNT=len(Ripper.isos),
                 ISOTHREADLIMIT=CONFIG["ripper"]["iso"]["threadcount"].value,
                 ISOTEMPLATE=HTMLSystem.open("partial/ripper/iso"),
+                VIDEOCONVERTERCOUNT=len(Ripper.video_converters),
+                VIDEOCONVERTERTHREADLIMIT=CONFIG["ripper"]["converter"]["threadcount"].value,
+                VIDEOCONVERTERTEMPLATE=HTMLSystem.open("partial/ripper/videoconverter"),
             ),
             javascript=["js/ripper.js", "js/partial/ripperupload.js"],
         )

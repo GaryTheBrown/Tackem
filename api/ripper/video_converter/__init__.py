@@ -2,12 +2,12 @@
 import cherrypy
 
 from api.base import APIBase
-from api.ripper.converter.data import APIRipperConverterData
+from api.ripper.video_converter.data import APIRipperVideoConverterData
 from data.config import CONFIG
 
 
 @cherrypy.expose
-class APIRipperConverter(APIBase):
+class APIRipperVideoConverter(APIBase):
     """Ripper Converter API"""
 
     def _cp_dispatch(self, vpath):
@@ -19,5 +19,5 @@ class APIRipperConverter(APIBase):
         section = vpath.pop(0)
 
         if section == "data":
-            return APIRipperConverterData()
+            return APIRipperVideoConverterData()
         return self

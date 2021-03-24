@@ -21,14 +21,15 @@ from libs.ripper.events import RipperEventMaster
 from libs.ripper.iso import ISORipper
 from libs.ripper.video_converter import VideoConverter
 
-# TODO get converter working.
+# TODO FIX FIX FIX get converter working. Ripper to converter part is crashing
+
+
 # TODO Show all discs from the DB that don't have disc data in a list
 # TODO allow editing using the disc data that is in the DB for what the files are and make it detect
 # if the video is there for viewing and if so somehow allow it to be watched in the browser
 # if possible
 # TODO auto send it to the library for processing where it goes. Functions need to be in the library
-# side and be agnostic so upload can accept files too. Do i want to have a DB table to put it in
-
+# side and be agnostic so upload can accept files too. Do i want to have a DB table to put it in to
 # hold this information so the library knows what to sort and once the file is copied over it checks
 # if the file was copied correctly (compares them?) it then removes it from source and the DB
 
@@ -59,11 +60,9 @@ class Ripper:
 
     __iso_pool_sema: BoundedSemaphore = None
     __iso_threads: List[ISORipper] = []
-    __iso_loaded: List[str] = []
 
     __video_converter_pool_sema: BoundedSemaphore = None
     __video_converter_threads: List[VideoConverter] = []
-    __video_converter_loaded: List[int] = []
 
     @classproperty
     def running(cls):
@@ -88,7 +87,7 @@ class Ripper:
 
     @classproperty
     def video_converters(cls) -> List[VideoConverter]:
-        """returns the iso threads"""
+        """returns the Video Converters threads"""
         cls.__cleanup_dead_video_converter_threads()
         return cls.__video_converter_threads
 
@@ -107,6 +106,7 @@ class Ripper:
         Database.call(SQLTable(VIDEO_INFO_DB))
         Database.call(SQLTable(VIDEO_CONVERT_DB))
 
+        cls.__running = True
         cls.__event_system = Thread(target=cls.__event_system_run, args=())
         cls.__event_system.start()
 
@@ -119,8 +119,6 @@ class Ripper:
 
         if CONFIG["ripper"]["converter"]["enabled"].value:
             cls.__start_converters()
-
-        cls.__running = True
 
     @classmethod
     def __setup_makemkv(cls):
@@ -192,7 +190,6 @@ class Ripper:
                 thread.stop_thread()
             cls.__iso_pool_sema = None
             cls.__iso_threads = []
-            cls.__iso_loaded = []
 
         if isinstance(cls.__video_converter_pool_sema, BoundedSemaphore):
             cls.__cleanup_dead_video_converter_threads()
@@ -200,16 +197,18 @@ class Ripper:
                 thread.stop_thread()
             cls.__video_converter_pool_sema = None
             cls.__video_converter_threads = []
-            cls.__video_converter_loaded = []
 
     @classmethod
     def iso_add(cls, filename: str) -> bool:
         """Action for other systems to add iso mainly the upload side"""
         if not CONFIG["ripper"]["iso"]["enabled"].value:
             return False
-        if filename in cls.__iso_loaded:
-            return False
-        cls.__iso_loaded.append(filename)
+
+        cls.__cleanup_dead_iso_threads()
+        for thread in cls.__iso_threads:
+            if thread.filename == filename:
+                return False
+
         cls.__iso_threads.append(ISORipper(cls.__iso_pool_sema, filename))
         return True
 
@@ -225,13 +224,15 @@ class Ripper:
         """Action for other systems to add a single video converter task"""
         if not CONFIG["ripper"]["converter"]["enabled"].value:
             return False
-        if db_id in cls.__video_converter_loaded:
-            return False
+
+        cls.__cleanup_dead_video_converter_threads()
+        for thread in cls.__video_converter_threads:
+            if thread.db_id == db_id:
+                return False
 
         if Database.count(SQLSelect(VIDEO_CONVERT_DB, Where("id", db_id))) != 1:
             return False
 
-        cls.__video_converter_loaded.append(db_id)
         cls.__video_converter_threads.append(VideoConverter(cls.__video_converter_pool_sema, db_id))
         return True
 
@@ -247,6 +248,8 @@ class Ripper:
         """system for allowing messages to be passed to the root of the ripper"""
         while cls.__running:
             event = RipperEventMaster.wait_and_get_event()
+            if not cls.__running:
+                return
             func = getattr(cls, event[0], None)
             if func and callable(func):
                 func(*event[1])

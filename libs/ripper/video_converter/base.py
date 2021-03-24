@@ -17,6 +17,7 @@ class VideoConverterBase:
         self._db_id = db_id
 
         self._conf = CONFIG["ripper"]["converter"]
+        self._label = "EMPTY"
         self._filename = ""
         self._command: list = []
         self._convert = False
@@ -39,6 +40,11 @@ class VideoConverterBase:
         """return if thread is Active"""
         return self.__active
 
+    @property
+    def db_id(self) -> int:
+        """returns the DB ID"""
+        return self._db_id
+
     def stop_thread(self):
         """stop the thread"""
         if self.__thread.is_alive():
@@ -55,10 +61,11 @@ class VideoConverterBase:
         file_name_split = self._filename.replace(".mkv", "").split("/")
         return_dict = {
             "id": self._db_id,
-            "discid": int(file_name_split[0]),
-            "trackid": int(file_name_split[1]),
+            "label": self._label,
+            "discid": int(file_name_split[-2]),
+            "trackid": int(file_name_split[-1]),
             "converting": self.__active,
-            "count": self.__frame_count,
+            "framecount": self.__frame_count,
             "process": self.__frame_process,
             "percent": self.__percent,
         }

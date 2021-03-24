@@ -76,5 +76,5 @@ class APIRipperIsoUpload(APIBase):
             "Upload ISO",
             True,
             key=key,
-            url=f"{cherrypy.url()}/upload/{key}",
+            url=f"upload/{key}",
         )

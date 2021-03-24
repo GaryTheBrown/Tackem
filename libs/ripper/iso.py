@@ -41,6 +41,11 @@ class ISORipper(FileSubsystem):
         """return if thread is Active"""
         return self.__active
 
+    @property
+    def filename(self):
+        """returns the filename"""
+        return self.__filename
+
     def stop_thread(self):
         """stop the thread"""
         if self._thread.is_alive():
@@ -79,7 +84,12 @@ class ISORipper(FileSubsystem):
                 pass
             else:
                 Database.call(SQLUpdate(VIDEO_INFO_DB, Where("id", self._db_id), iso_file=""))
-            File.rm(self.__filename)
+            File.rm(
+                File.location(
+                    self.__filename,
+                    CONFIG["ripper"]["locations"]["iso"].value,
+                )
+            )
 
     def __wait_for_file_copy_complete(self) -> bool:
         """watches the file size until it stops"""

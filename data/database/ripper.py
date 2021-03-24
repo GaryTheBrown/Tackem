@@ -18,6 +18,7 @@ VIDEO_CONVERT_DB = Table(
     Column("info_id", "integer", not_null=True),
     Column("track_number", "integer", not_null=True),
     Column("filename", "text", not_null=True),
+    Column("label", "text", not_null=True),
     Column("track_data", "json"),
     Column("video_converted", "bit", not_null=True, default=False),
     soft_delete=True,

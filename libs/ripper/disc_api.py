@@ -14,8 +14,8 @@ class DiscAPI:
     def find_json(cls, uuid: str, label: str) -> str:
         """will access the api and check if the disc exists
         TEMP FUNCTION BELLOW TO EXPAND WHEN READY TO."""
-        if uuid == "36cc8c4d00000000" and label == "AQUA_TEEN_COLON_MOVIE":
-            return cls.__aqua_teen_movie().json()
+        # if uuid == "36cc8c4d00000000" and label == "AQUA_TEEN_COLON_MOVIE":
+        #     return cls.__aqua_teen_movie().json()
 
         return "{}"
 
@@ -23,8 +23,8 @@ class DiscAPI:
     def find_disctype(cls, uuid: str, label: str) -> Optional[DiscType]:
         """will access the api and check if the disc exists
         TEMP FUNCTION BELLOW TO EXPAND WHEN READY TO."""
-        if uuid == "36cc8c4d00000000" and label == "AQUA_TEEN_COLON_MOVIE":
-            return cls.__aqua_teen_movie()
+        # if uuid == "36cc8c4d00000000" and label == "AQUA_TEEN_COLON_MOVIE":
+        #     return cls.__aqua_teen_movie()
 
         return None
 

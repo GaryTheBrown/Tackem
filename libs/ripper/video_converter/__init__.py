@@ -1,7 +1,6 @@
 """Master Section for the Video Converter controller"""
 from abc import ABCMeta
 
-from data.config import CONFIG
 from data.database.ripper import VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB
 from libs.database import Database
@@ -40,38 +39,33 @@ class VideoConverter(
         if not self._thread_run:
             return
 
-        self._filename = msg.return_data["filename"]
-        infile = File.location(self._filename)
-        outfile = infile.replace(".mkv", "") + ".NEW.mkv"
+        second_run = msg.return_data["video_converted"]
+        if second_run and msg.return_data["track_data"] == "{}":
+            return
 
-        if not File.exists(infile):
-            print("ERROR:" + infile + " missing")
-            return  # PROBLEM HERE AS IN FILE MISSING
+        self._filename = msg.return_data["filename"]
+        outfile = self._filename.replace(".mkv", "") + ".NEW.mkv"
+
+        self._label = msg.return_data["label"]
+
+        if not File.exists(self._filename):
+            Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
+            return
         if File.exists(outfile):
             File.rm(outfile)
 
         self._command.append(self._conf["ffmpeglocation"].value)
         self._command.append("-i")
-        self._command.append(f'"{infile}"')
+        self._command.append(f'"{self._filename}"')
 
-        second_run = msg.return_data["video_converted"]
         auto_mode = False
-        if second_run:
-            if msg.return_data["track_data"] == {}:
-                self._wait.wait()
-                if not self._thread_run:
-                    return
-                Database.call(msg)
-
-        if msg.return_data["track_data"] == {}:
+        if msg.return_data["track_data"] == "{}":
             self.__create_convert_command_no_info()
         else:
             self.__create_convert_command_with_info(msg.return_data)
             if not second_run:
                 auto_mode = True
         self._command.append(f'"{outfile}"')
-
-        print(" ".join(self._command))
 
         if not self._convert:
             if auto_mode or second_run:
@@ -85,11 +79,11 @@ class VideoConverter(
         with self._pool_sema:
             if not self._thread_run:
                 return
-            self._get_frame_count(infile)
+            self._get_frame_count(self._filename)
             if self._do_conversion():
-                File.move(infile, infile + ".OLD")
-                File.move(outfile, infile)
-                File.rm(infile + ".OLD")
+                File.move(self._filename, self._filename + ".OLD")
+                File.move(outfile, self._filename)
+                File.rm(self._filename + ".OLD")
                 if second_run or auto_mode:
                     Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
                     self.__pass_single_to_library()
@@ -104,10 +98,7 @@ class VideoConverter(
 
     def __create_convert_command_no_info(self):
         """creates the conversion command here"""
-        probe_info = FFprobe(
-            self._conf["ffprobelocation"].value,
-            File.location(CONFIG["ripper"]["locations"]["ripping"].value + self._filename),
-        )
+        probe_info = FFprobe(self._conf["ffprobelocation"].value, self._filename)
         self._command.append("-map_metadata 0")
         self._command.append("-map_chapters 0")
         self._command.append("-map 0")

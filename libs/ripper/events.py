@@ -13,11 +13,10 @@ class RipperEvent:
     _event = Event()
 
     @classmethod
-    def set_event(cls, event: str, data: tuple = None, call: bool = True):
+    def do(cls, event: str, *data):
         """Set an event for the ripper system to do"""
         cls._events.append((event, data))
-        if call:
-            cls._event.set()
+        cls._event.set()
 
 
 class RipperEventMaster(RipperEvent):

@@ -15,7 +15,7 @@
                         ShowLoader("UPLOADING");
                         $.ajax({
                             type: 'POST',
-                            url: $(this).data("url"),
+                            url: ROOT + $(this).data("url"),
                             data: {
                                 filename: file.name,
                                 filesize: file.size

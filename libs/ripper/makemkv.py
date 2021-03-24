@@ -86,8 +86,15 @@ class MakeMKV(RipperSubSystem):
         ids = []
         msg = SQLSelect(DB, Where("id", db_id))
         Database.call(msg)
+
         if not isinstance(msg.return_data, dict):
             return ids
+
+        if msg.return_data["iso_file"]:
+            self._in_file = File.location(
+                msg.return_data["iso_file"],
+                CONFIG["ripper"]["locations"]["iso"].value,
+            )
 
         disc_data = None
         disc_rip_info: Optional[DiscType] = None
@@ -106,14 +113,7 @@ class MakeMKV(RipperSubSystem):
         else:
             disc_rip_info = make_disc_type(json.loads(msg.return_data["rip_data"]))
 
-        if msg.return_data["iso_file"]:
-            self._in_file = File.location(
-                msg.return_data["iso_file"],
-                CONFIG["ripper"]["locations"]["iso"].value,
-            )
-
         temp_dir = File.location(f"{CONFIG['ripper']['locations']['ripping'].value}{str(db_id)}/")
-        device = msg.return_data["iso_file"] == ""
 
         if isinstance(disc_rip_info, DiscType):
             self._track_data = True
@@ -121,11 +121,13 @@ class MakeMKV(RipperSubSystem):
                 if isinstance(track, VideoTrackType):
                     if track.video_type in CONFIG["ripper"]["videoripping"]["torip"].value:
                         self._makemkv_backup_from_disc(temp_dir, idx)
+                        # TODO make a label from the Data Here
                         ids.append(
                             self.__pass_single_to_converter(
                                 msg.return_data["id"],
                                 idx,
                                 temp_dir + str(idx).zfill(2) + ".mkv",
+                                disc_rip_info.track_title(idx),
                                 track.json(),
                             )
                         )
@@ -134,12 +136,13 @@ class MakeMKV(RipperSubSystem):
             for idx, path in enumerate(Path(temp_dir).rglob("*.mkv")):
                 ids.append(
                     self.__pass_single_to_converter(
-                        msg.return_data["id"], idx, ("/" + "/".join(path.parts[1:])), "{}"
+                        msg.return_data["id"],
+                        idx,
+                        ("/" + "/".join(path.parts[1:])),
+                        f"{msg.return_data['label']}: Track {idx}",
+                        "{}",
                     )
                 )
-
-        if not device and CONFIG["ripper"]["iso"]["removeiso"].value:
-            File.rm(File.location(self._in_file))
 
         return ids
 
@@ -153,7 +156,9 @@ class MakeMKV(RipperSubSystem):
         if index == -1:
             index = "all"
 
-        inf = self._in_file
+        infile = f"dev:{self._in_file}"
+        if "/dev/sr" not in self._in_file:
+            infile = f"iso:{File.location(self._in_file)}"
         prog_args = [
             "makemkvcon",
             "-r",
@@ -162,10 +167,11 @@ class MakeMKV(RipperSubSystem):
             "--progress=-stdout",
             "--noscan",
             "mkv",
-            f"dev:{inf}" if "/dev/sr" in inf else f"iso:{File.location(inf)}",
+            infile,
             str(index),
             temp_dir,
         ]
+
         thread = pexpect.spawn(" ".join(prog_args), encoding="utf-8")
 
         cpl = thread.compile_pattern_list(
@@ -205,13 +211,14 @@ class MakeMKV(RipperSubSystem):
 
     def makemkv_info_from_disc(self) -> dict:
         """Do the mkv Backup from disc"""
-
-        inf = self._in_file
+        infile = f"dev:{self._in_file}"
+        if "/dev/sr" not in self._in_file:
+            infile = f"iso:{File.location(self._in_file)}"
         prog_args = [
             "makemkvcon",
             "-r",
             "info",
-            f"dev:{inf}" if "/dev/sr" in inf else f"iso:{File.location(inf)}",
+            infile,
         ]
 
         thread = pexpect.spawn(" ".join(prog_args), encoding="utf-8")
@@ -263,30 +270,39 @@ class MakeMKV(RipperSubSystem):
         return {"track_count": tcount, "disc_info": cinfo, "track_info": tinfo}
 
     def __pass_single_to_converter(
-        self, info_id: int, track_number: int, filename: str, track_data: str
+        self, info_id: int, track_number: int, filename: str, label: str, track_data: str
     ) -> int:
         """creates the DB section and then passes it to the converter in the ripper"""
-        msg = SQLSelect(
-            VIDEO_CONVERT_DB,
-            Where("info_id", info_id),
-            Where("track_number", track_number),
-            Where("filename", filename),
-        )
-        Database.call(msg)
-
-        if isinstance(msg.return_data, list) and len(msg.return_data) == 0:
+        if (
+            Database.count(
+                SQLSelect(
+                    VIDEO_CONVERT_DB,
+                    Where("info_id", info_id),
+                    Where("track_number", track_number),
+                    Where("filename", filename),
+                )
+            )
+            == 0
+        ):
             Database.call(
                 SQLInsert(
                     VIDEO_CONVERT_DB,
                     info_id=info_id,
                     track_number=track_number,
                     filename=filename,
+                    label=label,
                     track_data=track_data,
                 )
             )
 
-        Database.call(msg)
+        msg = SQLSelect(
+            VIDEO_CONVERT_DB,
+            Where("info_id", info_id),
+            Where("track_number", track_number),
+            Where("filename", filename),
+        )
 
-        RipperEvent.set_event("video_converter_add_single", msg.return_data["id"])
+        Database.call(msg)
+        RipperEvent.do("video_converter_add_single", msg.return_data["id"])
 
         return msg.return_data["id"]
