@@ -33,4 +33,5 @@ VIDEO_INFO_DB = Table(
     Column("disc_type", "varchar(6)", default=""),
     Column("disc_data", "json"),
     Column("rip_data", "json"),
+    Column("rip_data_downloaded", "bit", not_null=True, default=False),
 )

@@ -6,7 +6,7 @@ from abc import abstractmethod
 from typing import Optional
 from typing import Union
 
-from libs.ripper.data.video_track_type import make_track_type
+from data.video_track_type import make_track_type
 
 TYPES = {"Movie": "film", "TV Show": "tv", "Documentary": "video", "Other": "question"}
 

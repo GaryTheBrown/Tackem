@@ -10,15 +10,15 @@ import pexpect
 from data.config import CONFIG
 from data.database.ripper import VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB as DB
+from data.disc_type import DiscType
+from data.disc_type import make_disc_type
+from data.video_track_type import VideoTrackType
 from libs.database import Database
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.select import SQLSelect
 from libs.database.messages.update import SQLUpdate
 from libs.database.where import Where
 from libs.file import File
-from libs.ripper.data.disc_type import DiscType
-from libs.ripper.data.disc_type import make_disc_type
-from libs.ripper.data.video_track_type import VideoTrackType
 from libs.ripper.disc_api import DiscAPI
 from libs.ripper.events import RipperEvent
 from libs.ripper.subsystems import RipperSubSystem
@@ -103,7 +103,12 @@ class MakeMKV(RipperSubSystem):
 
             if disc_rip_info:
                 Database.call(
-                    SQLUpdate(DB, Where("id", msg.return_data["id"]), rip_data=disc_rip_info.json())
+                    SQLUpdate(
+                        DB,
+                        Where("id", msg.return_data["id"]),
+                        rip_data=disc_rip_info.json(),
+                        rip_data_download=True,
+                    )
                 )
             else:
                 disc_data = json.dumps(self.makemkv_info_from_disc())

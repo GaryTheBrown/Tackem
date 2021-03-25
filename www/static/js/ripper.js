@@ -147,14 +147,14 @@
 
         function updateISO(iso)
         {
-            let arrayIndex = this.existingISOs.indexOf(iso.filename);
+            let arrayIndex = existingISOs.indexOf(iso.filename);
             if (arrayIndex === -1) {
                 let newISOclone = $('#isotemplate').children().clone(true);
                 newISOclone.attr('data-name', iso.filename);
                 newISOclone.find('.title').html(iso.filename);
                 $('#isosection').append(newISOclone);
             } else {
-                this.existingISOs.splice(arrayIndex, 1);
+                existingISOs.splice(arrayIndex, 1);
             }
             let $isoElement = $('#isosection').find(`.isobox[data-name="${iso.filename}"]`);
             $isoElement.find('.info').html(iso.info);
@@ -189,7 +189,7 @@
 
         function updateConverter(converter)
         {
-            let arrayIndex = this.existingConverters.indexOf(converter.id);
+            let arrayIndex = existingConverters.indexOf(converter.id);
             if (arrayIndex === -1) {
                 let newISOclone = $('#videoconvertertemplate').children().clone(true);
                 newISOclone.attr('data-id', converter.id);
@@ -198,7 +198,7 @@
                 newISOclone.find('.title').html(converter.label);
                 $('#videoconvertersection').append(newISOclone);
             } else {
-                this.existingConverters.splice(arrayIndex, 1);
+                existingConverters.splice(arrayIndex, 1);
             }
             let $videoconverterElement = $('#videoconvertersection').find(`.videoconverterbox[data-id="${converter.id}"]`);
 

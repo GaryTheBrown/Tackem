@@ -3,14 +3,14 @@ from abc import ABCMeta
 
 from data.database.ripper import VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB
+from data.disc_type import make_disc_type
+from data.video_track_type import make_track_type
 from libs.database import Database
 from libs.database.messages.delete import SQLDelete
 from libs.database.messages.select import SQLSelect
 from libs.database.messages.update import SQLUpdate
 from libs.database.where import Where
 from libs.file import File
-from libs.ripper.data.disc_type import make_disc_type
-from libs.ripper.data.video_track_type import make_track_type
 from libs.ripper.ffprobe import FFprobe
 from libs.ripper.video_converter.chapters import VideoConverterChapters
 from libs.ripper.video_converter.metadata import VideoConverterMetadata
