@@ -107,7 +107,7 @@ class Drive(FileSubsystem):
         file__device = os.open(self.__device, os.O_RDONLY | os.O_NONBLOCK)
         return_value = fcntl.ioctl(file__device, 0x5326)
         os.close(file__device)
-        if return_value == 1:  # no disk in tray
+        if return_value == 1:  # no disc in tray
             self.__tray_status = "empty"
             self._disc["type"] = "none"
             self.__drive_status = "idle"
@@ -119,7 +119,7 @@ class Drive(FileSubsystem):
             self.__tray_status = "reading"
             self._disc["type"] = "none"
             self.__drive_status = "loading disc"
-        elif return_value == 4:  # disk in tray
+        elif return_value == 4:  # disc in tray
             self.__tray_status = "loaded"
         else:
             self.__tray_status = "unknown"

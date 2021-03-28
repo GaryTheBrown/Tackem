@@ -75,7 +75,7 @@ class Webserver:
 
         ripper_cfg = CONFIG["ripper"]
         conf_ripper = {
-            "/tempripper": {
+            "/files": {
                 "tools.staticdir.on": True,
                 "tools.staticdir.dir": File.location(ripper_cfg["locations"]["ripping"].value),
             },

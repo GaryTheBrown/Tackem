@@ -45,6 +45,16 @@ from libs.ripper.video_converter import VideoConverter
 
 # TODO add in Audio CD to this system
 
+# TODO look at pytranscoder and see if it can be used to "preview" video files as well as replacing
+# the video converter stuff
+# https://github.com/mlsmithjr/transcoder
+# https://pytranscoder.readthedocs.io/en/latest/
+
+# https://stackoverflow.com/questions/3639604/html5-audio-video-and-live-transcoding-with-ffmpeg
+# https://videojs.com/city
+# https://blog.miguelgrinberg.com/post/video-streaming-with-flask/page/3
+# https://docs.cherrypy.org/en/3.3.0/progguide/streaming.html
+
 
 class Ripper:
     """Main Class to create an instance of the plugin"""

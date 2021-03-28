@@ -101,16 +101,7 @@ class MakeMKV(RipperSubSystem):
         if msg.return_data["rip_data"] is None:
             disc_rip_info = DiscAPI.find_disctype(msg.return_data["uuid"], msg.return_data["label"])
 
-            if disc_rip_info:
-                Database.call(
-                    SQLUpdate(
-                        DB,
-                        Where("id", msg.return_data["id"]),
-                        rip_data=disc_rip_info.json(),
-                        rip_data_download=True,
-                    )
-                )
-            else:
+            if disc_rip_info is None:
                 disc_data = json.dumps(self.makemkv_info_from_disc())
                 Database.call(
                     SQLUpdate(DB, Where("id", msg.return_data["id"]), disc_data=disc_data)
