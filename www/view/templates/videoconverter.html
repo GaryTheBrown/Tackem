@@ -1,0 +1,28 @@
+<div class="videoconverterbox text-dark bg-white text-center border-light rounded col-12 p-1 m-2"
+	data-id="{%- if vc -%}{{ vc.id }}{%- else -%}-1{%- endif -%}"
+	data-disc="{%- if vc -%}{{ vc.discid }}{%- else -%}-1{%- endif -%}1"
+	data-track="{%- if vc -%}{{ vc.trackid }}{%- else -%}-1{%- endif -%}">
+	<div class="row">
+		<div class="col-4">
+			<h2 class="title font-weight-bold">{%- if vc -%}{{ vc.label }}{%- endif -%}</h2>
+		</div>
+		<div class="col-4">
+			<div class="info">{%- if vc -%}Converting{%- else -%}Waiting For Free Converter{%- endif
+				-%}
+			</div>
+		</div>
+		<div class="col-4">
+			<div class="inline-block progresstrack p-2">
+				<div class="label text-dark">{%- if vc -%}{{ vc.process }}/{{ vc.framecount }} ({{ vc.percent }}%){%-
+					endif -%}</div>
+				<div class="progress" style="height: 25px;">
+					<div class="progress-bar" role="progressbar"
+						style="width: {%- if vc -%}{{ vc.percent }}{%- else -%}0{%- endif -%}%;"
+						aria-valuenow="{%- if vc -%}{{ vc.process }}{%- else -%}0{%- endif -%}" aria-valuemin="0"
+						aria-valuemax="{%- if vc -%}{{ vc.framecount }}{%- else -%}0{%- endif -%}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

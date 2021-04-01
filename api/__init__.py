@@ -7,7 +7,7 @@ from api.library import APILibrary
 from api.ripper import APIRipper
 from api.scraper import APIScraper
 from data.config import CONFIG
-from libs.authenticator import Authentication
+from libs.authentication import Authentication
 
 
 @cherrypy.expose
@@ -28,7 +28,7 @@ class API(APIBase):
                 return self
             section = vpath.pop(0)
         else:
-            user = self._check_session_id()
+            user = Authentication.check_logged_in()
             section = api_key
 
         cherrypy.request.params["user"] = user
@@ -46,17 +46,9 @@ class API(APIBase):
     def _check_api_key(self, key: str) -> int:
         """checks the api key against the master and user keys and returns the level"""
         if key is None or not isinstance(key, str):
-            return self.GUEST
+            return Authentication.GUEST
         if key == CONFIG["api"]["masterkey"].value:
-            return self.MASTER
+            return Authentication.ADMIN
         if key == CONFIG["api"]["userkey"].value:
-            return self.USER
-        return self.GUEST
-
-    def _check_session_id(self) -> int:
-        """checks the session Id is in the list"""
-        if not Authentication.check_logged_in():
-            return self.GUEST
-        if Authentication.is_admin():
-            return self.MASTER
-        return self.USER
+            return Authentication.USER
+        return Authentication.GUEST

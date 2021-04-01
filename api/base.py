@@ -4,13 +4,11 @@ from typing import Optional
 
 import cherrypy
 
+from libs.authentication import Authentication
+
 
 class APIBase:
     """Base Template For the API"""
-
-    GUEST = 0
-    MASTER = 1
-    USER = 2
 
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
@@ -36,7 +34,7 @@ class APIBase:
 
     def _check_user(self, user: int, is_admin: bool = False):
         """checks that the user is allowed"""
-        if user == self.GUEST or (is_admin and user == self.USER):
+        if user == Authentication.GUEST or (is_admin and user == Authentication.USER):
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
     def _return_data(self, user: int, system: str, action: str, success: bool, **kwargs) -> str:

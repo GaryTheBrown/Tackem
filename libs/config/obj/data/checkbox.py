@@ -2,7 +2,6 @@
 from typing import Optional
 
 from libs.config.obj.data.input_attributes import InputAttributes
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjCheckbox:
@@ -15,7 +14,6 @@ class ConfigObjCheckbox:
         read_only: bool = False,
         hide_on_html: bool = False,
         not_in_config: bool = False,
-        short_label: str = "",
         input_attributes: Optional[InputAttributes] = None,
     ):
         if not isinstance(value, str):
@@ -28,8 +26,6 @@ class ConfigObjCheckbox:
             raise ValueError("hide On HTML is not a bool")
         if not isinstance(not_in_config, bool):
             raise ValueError("not in config is not a bool")
-        if not isinstance(short_label, str):
-            raise ValueError("short label not a string")
         if input_attributes:
             if not isinstance(input_attributes, InputAttributes):
                 raise ValueError("input_attributes not correct type")
@@ -39,7 +35,6 @@ class ConfigObjCheckbox:
         self.__label = label
         self.__hide_on_html = hide_on_html
         self.__not_in_config = not_in_config
-        self.__short_label = short_label
         self.__input_attributes = input_attributes
 
     @property
@@ -56,21 +51,7 @@ class ConfigObjCheckbox:
             string = self.__input_attributes.html()
         if checked:
             string += " checked"
-        if self.__short_label != "":
-            string += ' label="' + self.__short_label + '"'
         return string
-
-    def html(self, checked: bool, variable_name: str) -> str:
-        """Returns the option html for the config"""
-        if self.__hide_on_html:
-            return ""
-        return HTMLSystem.part(
-            "inputs/single/checkbox",
-            VALUE=self.__value,
-            VARIABLENAME=variable_name,
-            LABEL=self.__label,
-            OTHER=self.__attributes(checked),
-        )
 
     @property
     def value(self):
@@ -93,11 +74,18 @@ class ConfigObjCheckbox:
         return self.__not_in_config
 
     @property
-    def short_label(self):
-        """Returns the Shortened Label"""
-        return self.__short_label
-
-    @property
     def input_attributes(self) -> Optional[InputAttributes]:
         """returns the input attributes"""
         return self.__input_attributes
+
+    def html_dict(self) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {
+            "label": self.__label,
+            "value": self.__value,
+        }
+
+        if isinstance(self.input_attributes, InputAttributes):
+            return_dict["input_attributes"] = self.input_attributes.html()
+
+        return return_dict

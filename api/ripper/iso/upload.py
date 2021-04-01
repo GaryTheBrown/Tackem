@@ -6,6 +6,7 @@ import cherrypy
 
 from api.base import APIBase
 from data.database.system import UPLOAD_DB
+from libs.authentication import Authentication
 from libs.database import Database
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.select import SQLSelect
@@ -18,8 +19,8 @@ class APIRipperIsoUpload(APIBase):
 
     def POST(self, **kwargs) -> str:
         """POST Function"""
-        user = kwargs.get("user", self.GUEST)
-        if user == self.GUEST:
+        user = kwargs.get("user", Authentication.GUEST)
+        if user == Authentication.GUEST:
             raise cherrypy.HTTPError(status=403)
 
         if "filename" not in kwargs:

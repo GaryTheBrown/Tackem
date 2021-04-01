@@ -1,0 +1,92 @@
+{%- macro item(obj) -%}
+{%- if obj.type == "input" -%}
+{{ input(obj) }}
+{%- elif obj.type == "select" -%}
+{{ select(obj) }}
+{%- elif obj.type == "singlecheckbox" -%}
+{{ singlecheckbox(obj) }}
+{%- elif obj.type == "checkbox" -%}
+{{ checkbox(obj) }}
+{%- elif obj.type == "radio" -%}
+{{ radio(obj) }}
+{%- else -%}
+NEW:{{ obj }}<br>
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro input(obj) -%}
+<div class="input-group mb-3">
+	<input type="{{ obj.input_type }}" class="form-control" name="{{ obj.var_name }}" id="{{ obj.var_name }}" {%- if
+		obj.data_list -%} list="{{ obj.data_list.var_name }}" {%- endif -%} aria-describedby="{{ obj.var_name }}Help"
+		value="{{ obj.value }}" {{ obj.input_attributes }}>
+	{%- if obj.data_list -%}{{ datalist(obj.data_list) }}{%- endif -%}
+	{%- if obj.button -%}{{ button(obj.button) }}{%- endif -%}
+</div>
+{%- endmacro -%}
+
+{%- macro button(obj) -%}
+{%- if obj.append -%}
+<div class="input-group-append">
+	<input type="button" class="btn btn-success btn-block mb-3" value="{{ obj.label }}" {{ obj.data }}>
+</div>
+{%- else -%}
+<input type="button" class="btn btn-success btn-block" value="{{ obj.label }}" {{ obj.data }}>
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro select(obj) -%}
+<select class="form-control mb-3" name="{{ obj.var_name }}" id="{{ obj.var_name }}"
+	aria-describedby="{{ obj.var_name }}Help" {{ obj.input_attributes }}>
+	{%- for value in obj["values"] -%}
+	<option value="{{ value.value }}" {{ obj.input_attributes }} {% if obj.value==value.value %}selected{% endif %}>{{
+		value.label }}</option>
+	{%- endfor -%}
+</select>
+{%- endmacro -%}
+
+{%- macro singlecheckbox(obj) -%}
+<input class="form-check-input" type="checkbox" name="{{ obj.var_name }}" id="{{ obj.var_name }}" value="1"
+	aria-describedby="{{ obj.var_name }}Help" data-toggle="toggle" {{ obj.input_attributes }} {% if obj.value
+	%}checked="checked" {% endif %}>
+{%- endmacro -%}
+
+{%- macro radio(obj) -%}
+{%- for value in obj["values"] -%}
+<div class="form-check form-check-inline">
+	<input class="form-check-input" type="radio" id="{{ obj.var_name }}_{{ value.value }}" name="{{ obj.var_name }}"
+		value="{{ value.value }}" aria-describedby="{{ obj.var_name }}Help" {{ value.input_attributes }} {% if
+		obj.value==value.value %}checked="checked" {% endif %}>
+	<label class="form-check-label" for="{{ obj.var_name }}_{{ value.value }}">
+		{{ value.label }}
+	</label>
+</div>
+{%- endfor -%}
+{%- endmacro -%}
+
+
+{%- macro checkbox(obj) -%}
+{%- for value in obj["values"] -%}
+<div class="form-check form-check-inline">
+	<input class="form-check-input" type="checkbox" id="{{ obj.var_name }}_{{ value.value }}" name="{{ obj.var_name }}"
+		value="{{ value.value }}" aria-describedby="{{ obj.var_name }}Help" {{ value.input_attributes }} {% if
+		value.value in obj.value %}checked="checked" {% endif %}>
+	<label class="form-check-label" for="{{ obj.var_name }}_{{ value.value }}">
+		{{ value.label }}
+	</label>
+</div>
+{%- endfor -%}
+{%- endmacro -%}
+
+{%- macro textarea(obj) -%}
+<textarea class="form-control" name="{{ obj.var_name }}" id="{{ obj.var_name }}"
+	aria-describedby="{{ obj.var_name }}Help" {{ value.input_attributes }}
+	rows="{%- if obj.rows -%}{{ obj.rows }}{%- endif -%}">{{ obj.value }}</textarea>
+{%- endmacro -%}
+
+{%- macro datalist(obj) -%}
+<datalist id="{{ obj.var_name }}">
+	{%- for value in obj["values"] -%}
+	<option value="%%VALUE%%">
+		{%- endfor -%}
+</datalist>
+{%- endmacro -%}

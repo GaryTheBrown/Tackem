@@ -56,21 +56,6 @@ class VideoConverterBase:
         """releases the wait if the system needs to wait for information"""
         self._wait.set()
 
-    def api_data(self) -> dict:
-        """returns the data as dict for html"""
-        file_name_split = self._filename.replace(".mkv", "").split("/")
-        return_dict = {
-            "id": self._db_id,
-            "label": self._label,
-            "discid": int(file_name_split[-2]),
-            "trackid": int(file_name_split[-1]),
-            "converting": self.__active,
-            "framecount": self.__frame_count,
-            "process": self.__frame_process,
-            "percent": self.__percent,
-        }
-        return return_dict
-
     def _get_frame_count(self, infile: str):
         """gets the frame count of the file"""
         cmd = 'ffmpeg -hide_banner -v quiet -stats -i "'
@@ -101,3 +86,23 @@ class VideoConverterBase:
                 return_string = thread.match.group(0).replace("frame=", "").lstrip()
                 self.__frame_process = int(return_string)
                 self.__percent = round(float(self.__frame_process / self.__frame_count * 100), 2)
+
+    def api_data(self) -> dict:
+        """returns the data as dict for html"""
+        file_name_split = self._filename.replace(".mkv", "").split("/")
+        return_dict = {
+            "id": self._db_id,
+            "label": self._label,
+            "discid": int(file_name_split[-2]),
+            "trackid": int(file_name_split[-1]),
+            "converting": self.__active,
+            "framecount": self.__frame_count,
+            "process": self.__frame_process,
+            "percent": self.__percent,
+        }
+        return return_dict
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        return_dict = self.api_data()
+        return return_dict

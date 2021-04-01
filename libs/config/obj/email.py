@@ -1,6 +1,5 @@
 """Config Obj String"""
 import re
-from typing import Any
 from typing import Optional
 
 from libs.config.obj.data.button import Button
@@ -12,8 +11,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjEmail(ConfigObjString):
     """Config Obj String"""
 
-    __config_type = "email"
-    __html_type = "email"
+    _config_type = "email"
+    _html_type = "email"
 
     def __init__(
         self,
@@ -43,7 +42,7 @@ class ConfigObjEmail(ConfigObjString):
             value_link,
         )
 
-    def _set_value(self, value: Any) -> Optional[str]:
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
         if not isinstance(value, str):
             return self.default_value

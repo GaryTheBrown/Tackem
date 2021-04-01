@@ -10,8 +10,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjIntList(ConfigObjList):
     """Config Item Int List"""
 
-    __config_type = "int_list"
-    __html_type = "text"
+    _config_type = "int_list"
+    _html_type = "text"
 
     def __init__(
         self,

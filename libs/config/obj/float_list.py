@@ -10,8 +10,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjFloatList(ConfigObjList):
     """Config Item Float List"""
 
-    __config_type = "float_list"
-    __html_type = "text"
+    _config_type = "float_list"
+    _html_type = "text"
 
     def __init__(
         self,

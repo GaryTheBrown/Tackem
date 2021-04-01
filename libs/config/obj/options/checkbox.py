@@ -1,4 +1,5 @@
 """Config Object Options Checkbox"""
+from typing import Any
 from typing import List
 from typing import Optional
 from typing import Union
@@ -11,6 +12,8 @@ from libs.config.rules import ConfigRules
 
 class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
     """Config Item Options CheckBox"""
+
+    _html_type = "checkbox"
 
     def __init__(
         self,
@@ -62,3 +65,9 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
         string = f"{self.var_name} = string_list(default={default})\n"
 
         return string
+
+    def _set_value(self, value: Any):
+        """hidden abstract method for setting the value with checking of type in sub classes"""
+        if len(self.values) != len(value):
+            return ConfigObjOptionsBase._set_value(self, value)
+        return [v.value for index, v in enumerate(self.values) if value[index] == "1"]

@@ -6,13 +6,12 @@ from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.button import Button
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjIntegerNumber(ConfigObjBase):
     """Config Item Integer Number"""
 
-    __html_type = "number"
+    _html_type = "number"
 
     def __init__(
         self,
@@ -44,9 +43,9 @@ class ConfigObjIntegerNumber(ConfigObjBase):
             value_link,
         )
 
-        self.__button = button
+        self._button = button
 
-    def _set_value(self, value: Any) -> Optional[int]:
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
         if isinstance(value, int):
             return value
@@ -78,28 +77,22 @@ class ConfigObjIntegerNumber(ConfigObjBase):
 
         return string
 
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        other = ""
-        if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html()
-        button = ""
-        if self.__button and isinstance(self.__button, Button):
-            button = self.__button.html
-        return HTMLSystem.part(
-            "inputs/input",
-            INPUTTYPE=self.__html_type,
-            VARIABLENAME=variable_name,
-            VALUE=self.value,
-            OTHER=other,
-            BUTTON=button,
-        )
-
     def to_type(self, value: Any) -> int:
         """returns the value in the correct format"""
         try:
             return int(value)
         except ValueError:
             return 0
+
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {
+            "type": "input",
+            "input_type": self._html_type,
+        }
+        return_dict.update(ConfigObjBase.html_dict(self, variable_name))
+
+        if self._button and isinstance(self._button, Button):
+            return_dict["button"] = self._button.html_dict()
+
+        return return_dict

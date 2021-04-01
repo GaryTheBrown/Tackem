@@ -51,7 +51,7 @@ def ripper_config() -> ConfigList:
     return ConfigList(
         "ripper",
         "Ripper",
-        ConfigObjEnabled(),
+        ConfigObjEnabled(toggle_panel=True),
         ConfigList(
             "drives",
             "Drives",

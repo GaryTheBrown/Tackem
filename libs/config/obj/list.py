@@ -1,19 +1,17 @@
 """Config Object List"""
-from typing import Any
 from typing import Optional
 
 from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.data_list import DataList
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjList(ConfigObjBase):
     """Config Item List"""
 
-    __config_type = "list"
-    __html_type = "text"
+    _config_type = "list"
+    _html_type = "text"
 
     def __init__(
         self,
@@ -44,12 +42,12 @@ class ConfigObjList(ConfigObjBase):
             value_link,
         )
 
-    def _set_value(self, value: Any) -> Optional[list]:
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
         if isinstance(value, list):
             return value
         if isinstance(value, str):
-            return value.split(",")
+            return value.replace(" ", "").split(",")
         return self.default_value
 
     @property
@@ -58,7 +56,7 @@ class ConfigObjList(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = f"{self.var_name} = {self.__config_type}("
+        string = f"{self.var_name} = {self._config_type}("
         if self.input_attributes:
             i_a = self.input_attributes.spec
             string += i_a
@@ -68,21 +66,6 @@ class ConfigObjList(ConfigObjBase):
         string += f"default=list({self._default_list_to_spec}))\n"
 
         return string
-
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        other = ""
-        if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html()
-        return HTMLSystem.part(
-            "inputs/input",
-            INPUTTYPE=self.__html_type,
-            VARIABLENAME=variable_name,
-            VALUE=self.value,
-            OTHER=other,
-        )
 
     @property
     def _default_list_to_spec(self) -> str:
@@ -94,3 +77,13 @@ class ConfigObjList(ConfigObjBase):
             elif isinstance(value, (int, float)):
                 return_list.append(value)
         return ", ".join(return_list)
+
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {
+            "type": "input",
+            "input_type": self._html_type,
+        }
+        return_dict.update(ConfigObjBase.html_dict(self, variable_name))
+
+        return return_dict

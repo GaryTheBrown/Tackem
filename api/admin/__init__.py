@@ -6,6 +6,7 @@ from api.admin.user_add import APIAdminUserAdd
 from api.admin.user_delete import APIAdminUserDelete
 from api.admin.user_update import APIAdminUserUpdate
 from api.base import APIBase
+from libs.authentication import Authentication
 from libs.events import RootEvent
 
 
@@ -17,8 +18,7 @@ class APIAdmin(APIBase):
         """cp dispatcher overwrite"""
         if len(vpath) == 0:
             return self
-
-        if cherrypy.request.params["user"] != self.MASTER:
+        if cherrypy.request.params["user"] != Authentication.ADMIN:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
         section = vpath.pop(0)
@@ -38,11 +38,10 @@ class APIAdmin(APIBase):
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        user = kwargs.get("user", self.GUEST)
+        user = kwargs.get("user", Authentication.GUEST)
         action = kwargs.get("action", None)
 
         if action == "shutdown":
-            print("SHOULD SHUTDOWN")
             RootEvent.set_event("shutdown")
         elif action == "reboot":
             RootEvent.set_event("reboot")

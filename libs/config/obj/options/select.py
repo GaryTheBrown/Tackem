@@ -7,11 +7,12 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.option import ConfigObjOption
 from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjOptionsSelect(ConfigObjOptionsBase):
     """Config Item Options Select"""
+
+    _html_type = "select"
 
     def __init__(
         self,
@@ -49,18 +50,4 @@ class ConfigObjOptionsSelect(ConfigObjOptionsBase):
             rules,
             input_attributes,
             value_link,
-        )
-
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        other = ""
-        if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html
-        return HTMLSystem.part(
-            "inputs/select",
-            OPTIONS=super().item_html(variable_name),
-            VARIABLENAME=variable_name,
-            OTHER=other,
         )

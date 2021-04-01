@@ -10,8 +10,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjPassword(ConfigObjString):
     """Config Item Password"""
 
-    __config_type = "string"
-    __html_type = "password"
+    _config_type = "string"
+    _html_type = "password"
 
     def __init__(
         self,

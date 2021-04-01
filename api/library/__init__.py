@@ -2,6 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
+from libs.authentication import Authentication
 
 
 @cherrypy.expose
@@ -13,7 +14,7 @@ class APILibrary(APIBase):
         if len(vpath) == 0:
             return self
 
-        if cherrypy.request.params["user"] != self.MASTER:
+        if cherrypy.request.params["user"] != Authentication.ADMIN:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
         if len(vpath) == 1:
@@ -38,7 +39,7 @@ class APILibrary(APIBase):
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        user = kwargs.get("user", self.GUEST)
+        user = kwargs.get("user", Authentication.GUEST)
         action = kwargs.get("action", None)
 
         return self._return_data(user, "admin", action, True)

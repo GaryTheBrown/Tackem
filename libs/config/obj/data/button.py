@@ -1,8 +1,6 @@
 """Button"""
 from typing import Any
 
-from libs.html_system import HTMLSystem
-
 
 class Button:
     """Button"""
@@ -20,14 +18,15 @@ class Button:
         self.__kwargs = kwargs
         self.__append = append
 
-    @property
-    def html(self) -> str:
-        """returns the buttons html"""
-        data = f'data-click-action="{self.__action}"'
+    def html_dict(self) -> dict:
+        """returns the required Data for the html template to use"""
+        data = [f"data-click-action={self.__action}"]
         for key, value in self.__kwargs.items():
-            data += f' data-{key}="{value}"'
-        return HTMLSystem.part(
-            "inputs/buttonappend" if self.__append else "input/button",
-            LABEL=self.__label,
-            DATA=data,
-        )
+            data.append(f"data-{key}={value}")
+        return_dict = {
+            "append": self.__append,
+            "label": self.__label,
+            "data": " ".join(data),
+        }
+
+        return return_dict

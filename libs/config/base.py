@@ -1,4 +1,5 @@
 """CONFIG Base Data Class"""
+from abc import abstractmethod
 from typing import Any
 from typing import Optional
 
@@ -33,7 +34,6 @@ class ConfigBase:
         if value_link and not isinstance(value_link, (list, dict)):
             raise ValueError("value link is not a list or dict")
 
-        self.__objects = []
         self.__var_name = var_name
         self.__label = label
         self.__help_text = help_text
@@ -91,3 +91,14 @@ class ConfigBase:
     def value_link(self):
         """return the value_link"""
         return self.__value_link
+
+    @abstractmethod
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
+        return {
+            "variable": self.__var_name,
+            "var_name": var,
+            "label": self.__label,
+            "help_text": self.__help_text,
+        }

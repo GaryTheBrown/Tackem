@@ -34,7 +34,7 @@
         constructor()
         {
             let obj = this;
-
+            console.log("CALLED CONFIG CONSTRUCTOR");
             $("[data-click-show]").each(function(index, element) {
                 $(element).on('click', Config.show);
                 if (obj.doICallIt(element)) {
@@ -60,7 +60,9 @@
             }.bind(obj));
 
             $("[data-click-action]").each(function(index, element) {
+                console.log($(element).data("click-action"));
                 $(element).on('click', Config[$(element).data("click-action")]);
+                console.log("KIP");
             });
         }
 
@@ -102,6 +104,7 @@
             num += Math.random().toString(36).substring(2, 12);
             num += Math.random().toString(36).substring(2, 12);
             num += Math.random().toString(36).substring(2, 12);
+            console.log(num);
             $('#' + $(this).data("input")).val(num);
         }
 

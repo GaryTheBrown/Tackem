@@ -65,9 +65,11 @@ class Ripper:
 
     __drives: List[Drive] = []
 
+    __iso_pool_sema_count: int = 0
     __iso_pool_sema: BoundedSemaphore = None
     __iso_threads: List[ISORipper] = []
 
+    __video_converter_pool_sema_count: int = 0
     __video_converter_pool_sema: BoundedSemaphore = None
     __video_converter_threads: List[VideoConverter] = []
 
@@ -91,6 +93,16 @@ class Ripper:
         """returns the iso threads"""
         cls.__cleanup_dead_iso_threads()
         return cls.__iso_threads
+
+    @classproperty
+    def maxisos(cls) -> int:
+        """returns the max threads for isos"""
+        return cls.__iso_pool_sema_count
+
+    @classproperty
+    def maxvideoconverters(cls) -> int:
+        """returns the max threads for video converters"""
+        return cls.__video_converter_pool_sema_count
 
     @classproperty
     def video_converters(cls) -> List[VideoConverter]:
@@ -154,7 +166,8 @@ class Ripper:
     @classmethod
     def __start_isos(cls):
         """starts the ISO ripper system and checks the upload folders for isos to add"""
-        cls.__iso_pool_sema = BoundedSemaphore(value=CONFIG["ripper"]["iso"]["threadcount"].value)
+        cls.__iso_pool_sema_count = CONFIG["ripper"]["iso"]["threadcount"].value
+        cls.__iso_pool_sema = BoundedSemaphore(value=cls.__iso_pool_sema_count)
 
         # Check for ISOs
         iso_path = File.location(CONFIG["ripper"]["locations"]["iso"].value)
@@ -165,8 +178,9 @@ class Ripper:
     @classmethod
     def __start_converters(cls):
         """starts the converter system and checks the DB for tasks to do"""
+        cls.__video_converter_pool_sema_count = CONFIG["ripper"]["converter"]["threadcount"].value
         cls.__video_converter_pool_sema = BoundedSemaphore(
-            value=CONFIG["ripper"]["converter"]["threadcount"].value
+            value=cls.__video_converter_pool_sema_count
         )
 
         msg = SQLSelect(VIDEO_CONVERT_DB)

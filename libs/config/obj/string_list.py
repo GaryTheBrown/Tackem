@@ -10,8 +10,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjStringList(ConfigObjList):
     """Config Item String List"""
 
-    __config_type = "string_list"
-    __html_type = "text"
+    _config_type = "string_list"
+    _html_type = "text"
 
     def __init__(
         self,
@@ -45,3 +45,15 @@ class ConfigObjStringList(ConfigObjList):
             data_list,
             value_link,
         )
+
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = ConfigObjList.html_dict(self, variable_name)
+
+        if return_dict["value"] and isinstance(return_dict["value"], list):
+            return_dict["value"] = ", ".join(return_dict["value"])
+
+        if return_dict["default_value"] and isinstance(return_dict["default_value"], list):
+            return_dict["default_value"] = ", ".join(return_dict["default_value"])
+
+        return return_dict

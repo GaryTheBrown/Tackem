@@ -3,11 +3,11 @@ import platform
 import signal
 
 from data.config import CONFIG
-from libs.authenticator import Authentication
+from libs.authentication import Authentication
 from libs.database import Database
 from libs.events import RootEventMaster as RootEvent
 from libs.ripper import Ripper
-from libs.webserver import Webserver
+from www import Webserver
 
 # TODO finish off the Ripper system
 # TODO intergrate Libraries into main program
@@ -17,6 +17,8 @@ from libs.webserver import Webserver
 # TODO LOOK INTO TEMPLATING SYSTEM FOR HTML
 # https://stackoverflow.com/questions/3435972/mako-or-jinja2
 # https://pythonhosted.org/wheezy.template/index.html
+# https://stackoverflow.com/questions/16844182/getting-started-with-cherrypy-and-jinja2
+# https://stackoverflow.com/questions/5824881/python-call-special-method-practical-example
 
 
 class Tackem:
@@ -29,7 +31,7 @@ class Tackem:
         CONFIG.load()
         print("STARTING DATABASE...")
         Database.start()
-        print("STARTING AUTHENTICATOR...")
+        print("STARTING authentication...")
         Authentication.start()
         print("STARTING LIBRARIES... TODO")
         if Ripper.enabled:

@@ -1,0 +1,65 @@
+{% import 'macros/inputs.html' as inputs %}
+{% macro modalnofooter(obj) -%}
+<div class="modal fade" id="{{ obj.var_name }}_modal" tabindex="-1" role="dialog"
+    aria-labelledby="{{ obj.var_name }}_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ obj.modal_name }}_modal_label">{{ obj.title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro modalfooter(obj) -%}
+<div class="modal fade" id="{{ obj.var_name }}_modal" tabindex="-1" role="dialog"
+    aria-labelledby="{{ obj.var_name }}_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ obj.modal_name }}_modal_label">{{ obj.title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
+
+{% macro singleinputmodal(obj) -%}
+<div class="modal fade" id="{{ obj.var_name }}_modal" tabindex="-1" role="dialog"
+    aria-labelledby="{{ obj.var_name }}_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ obj.label }}_modal_label">{{ obj.title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row my-2">
+                    <div class="col-12"><label for="{{ obj.var_name }}">{{ obj.label }}:</label></div>
+                    <div class="col-12">{{ inputs.item(obj) }}</div>
+                    <div class="col-12"><small class="text-danger"></small></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endmacro %}

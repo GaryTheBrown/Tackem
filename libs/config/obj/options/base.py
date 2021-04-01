@@ -62,6 +62,10 @@ class ConfigObjOptionsBase(ConfigObjBase):
                 except ValueError:
                     return self.default_value
             return str(value)
+
+        if isinstance(value, list):
+            return value
+
         return self.default_value
 
     def __set_value_multi(self, value: Any):
@@ -237,15 +241,11 @@ class ConfigObjOptionsBase(ConfigObjBase):
 
         return string
 
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        data = ""
-        if isinstance(self.value, (list, dict)):
-            for value in self.__values:
-                data += value.html(value.value in self.value, variable_name)
-        else:
-            for value in self.__values:
-                data += value.html(self.value == value.value, variable_name)
-        return data
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {
+            "type": self._html_type,
+            "values": [o.html_dict() for o in self.__values if not o.hide_on_html],
+        }
+        return_dict.update(ConfigObjBase.html_dict(self, variable_name))
+        return return_dict

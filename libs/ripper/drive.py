@@ -187,7 +187,7 @@ class Drive(FileSubsystem):
         Popen([which("eject"), "-i0", self.__device]).wait()
 
     def api_data(self) -> dict:
-        """returns the data as json or dict for html"""
+        """returns the data for api"""
         return_dict = {
             "drivestatus": self.__drive_status,
             "traylock": self.__tray_locked,
@@ -196,5 +196,13 @@ class Drive(FileSubsystem):
         }
         if self._ripper:
             return_dict.update(self._ripper.get_ripping_data())
+
+        return return_dict
+
+    def html_data(self, index: int) -> dict:
+        """returns the data for html"""
+        return_dict = self.api_data()
+        return_dict["name"] = self.name
+        return_dict["index"] = index
 
         return return_dict

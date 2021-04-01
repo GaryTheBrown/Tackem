@@ -12,6 +12,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjOptionsRadio(ConfigObjOptionsBase):
     """Config Item Options Radio"""
 
+    _html_type = "radio"
+
     def __init__(
         self,
         var_name: str,
@@ -46,12 +48,3 @@ class ConfigObjOptionsRadio(ConfigObjOptionsBase):
             input_attributes,
             value_link,
         )
-
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        options = ""
-        for value in self.values:
-            options += value.html(value.value == self.value, variable_name)
-        return options

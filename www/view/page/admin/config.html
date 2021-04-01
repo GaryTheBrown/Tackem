@@ -1,0 +1,26 @@
+{% extends 'layout/default.html' %}
+{% import 'macros/config.html' as macros %}
+{% block content %}
+<h1 class="text-center my-4">Config</h1>
+
+<form action="{{ baseurl }}admin/config" method="post">
+    <ul class="px-1 nav nav-tabs">
+        {% for panel in config.objects %}
+        <li class="nav-item">
+            <a class="nav-link {% if loop.index == 1 %}active{% endif %}" data-toggle="tab"
+                href="#{{ panel.var_name }}_tab">{{ panel.label }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content px-4">
+        {% for panel in config.objects %}
+        <div class="tab-pane mt-5 {% if loop.index == 1 %}active{% endif %}" id="{{ panel.var_name }}_tab">
+            {{ macros.panel(panel) }}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="col-sm-2 my-4 ml-auto col-12">
+        <input type="submit" class="btn btn-success btn-block" value="Save">
+    </div>
+</form>
+{% endblock %}

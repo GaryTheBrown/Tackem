@@ -113,3 +113,8 @@ class ISORipper(FileSubsystem):
         if self._ripper:
             return_dict.update(self._ripper.get_ripping_data())
         return return_dict
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        return_dict = self.api_data()
+        return return_dict

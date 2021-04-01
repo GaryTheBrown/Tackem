@@ -7,11 +7,12 @@ from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.obj.data.radio import ConfigObjRadio
 from libs.config.obj.options.base import ConfigObjOptionsBase
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
     """Config Item Options Radio"""
+
+    _html_type = "textarea"
 
     def __init__(
         self,
@@ -46,16 +47,4 @@ class ConfigObjOptionsTextArea(ConfigObjOptionsBase):
             rules,
             input_attributes,
             value_link,
-        )
-
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        return HTMLSystem.part(
-            "inputs/textarea",
-            VARIABLENAME=self.var_name,
-            VALUE=self.value,
-            OTHER=self.input_attributes.html,
-            ROWS=5,
         )

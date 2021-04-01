@@ -1,0 +1,75 @@
+{% extends 'layout/default.html' %}
+{% block content %}
+<div class="container-fluid mt-4 row">
+	<div class="col-12 border border-light">
+		<h1 class="text-center">#{{ db_id }} - {{ disc_name }}</h1>
+	</div>
+	<div class="col-4 p-0 border border-light">
+		<table class="table mb-0 table-dark table-striped">
+			<tr>
+				<th>Type</th>
+				<td>{{ disc_type }}</td>
+			</tr>
+			<tr>
+				<th>Name</th>
+				<td>{{ disc_name }}</td>
+			</tr>
+			<tr>
+				<th>Language</th>
+				<td>{{ disc_language }}</td>
+			</tr>
+			<tr>
+				<th>UUID</th>
+				<td>{{ uuid }}</td>
+			</tr>
+			<tr>
+				<th>Label</th>
+				<td>{{ label }}</td>
+			</tr>
+			<tr>
+				<th>ISO File Name</th>
+				<td>{{ iso_file }}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-8 border border-light">
+		magic here for setting up the disc
+	</div>
+	{%- for track in disc_data.track_info -%}
+	<div class="col-12 border border-light row p-0">
+		<div class="col-4 border-right border-light p-1 row">
+			<div class="col-10 p-0">
+				<h3>{{ loop.index0 }} - {{ track.duration }} - {{ track.chaptercount }} Chapters</h3>
+			</div>
+			<div class="col-2 p-0">
+				<a class="btn btn-link float-right" data-toggle="collapse" href="#track{{ loop.index0 }}" role="button"
+					aria-expanded="false" aria-controls="track{{ loop.index0 }}">
+					Streams
+				</a>
+			</div>
+			<table class="table mb-0 table-dark table-striped collapse" id="track{{ loop.index0 }}">
+				{%- for stream in track.streams -%}
+				<tr>
+					<th>{{ stream.type }}</th>
+					{%- if stream.type == "Video" -%}
+					<td>{{ stream.videosize }}</td>
+					<td>{{ stream.videoaspectratio }}</td>
+					<td>{{ stream.videoframerate}}</td>
+					{%- elif stream.type == "Audio" -%}
+					<td colspan="3">{{ stream.treeinfo }}</td>
+					{%- elif stream.type == "Subtitles" -%}
+					<td colspan="2">{{ stream.langname }}</td>
+					<td colspan="2">{{ stream.codeclong }}</td>
+					{%- endif -%}
+				</tr>
+				{%- endfor -%}
+			</table>
+		</div>
+		<div class="col-8 border-left border-light">
+			magic here for setting up the track
+		</div>
+	</div>
+	{%- endfor -%}
+</div>
+
+{% endblock %}

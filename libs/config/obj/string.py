@@ -7,14 +7,13 @@ from libs.config.obj.data.button import Button
 from libs.config.obj.data.data_list import DataList
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjString(ConfigObjBase):
     """Config Item String"""
 
-    __config_type = "string"
-    __html_type = "text"
+    _config_type = "string"
+    _html_type = "text"
 
     def __init__(
         self,
@@ -47,9 +46,9 @@ class ConfigObjString(ConfigObjBase):
             data_list,
             value_link,
         )
-        self.__button = button
+        self._button = button
 
-    def _set_value(self, value: Any):
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
         return str(value)
 
@@ -59,7 +58,7 @@ class ConfigObjString(ConfigObjBase):
         if self.not_in_config:
             return ""
 
-        string = f"{self.var_name} = {self.__config_type}("
+        string = f"{self.var_name} = {self._config_type}("
         if self.input_attributes:
             i_a = self.input_attributes.spec
             string += i_a
@@ -69,28 +68,23 @@ class ConfigObjString(ConfigObjBase):
 
         return string
 
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        other = ""
-        if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html()
-        button = ""
-        if self.__button and isinstance(self.__button, Button):
-            button = self.__button.html
-        return HTMLSystem.part(
-            "inputs/input",
-            INPUTTYPE=self.__html_type,
-            VARIABLENAME=variable_name,
-            VALUE=self.value,
-            OTHER=other,
-            BUTTON=button,
-        )
-
     def to_type(self, value: Any) -> str:
         """returns the value in the correct format"""
         try:
             return str(value)
         except ValueError:
             return ""
+
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {
+            "type": "input",
+            "input_type": self._html_type,
+        }
+
+        return_dict.update(ConfigObjBase.html_dict(self, variable_name))
+
+        if self._button and isinstance(self._button, Button):
+            return_dict["button"] = self._button.html_dict()
+
+        return return_dict

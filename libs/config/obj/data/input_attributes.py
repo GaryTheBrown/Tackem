@@ -95,7 +95,7 @@ class InputAttributes:
         string = ""
 
         for key, value in self.__dict.items():
-            string += " " + key.replace("_", "-") + '="' + value + '"'
+            string += " " + key.replace("_", "-") + "=" + value
 
         if self.__autofocus:
             string += " autofocus"

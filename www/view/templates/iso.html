@@ -1,0 +1,40 @@
+<div class="isobox text-dark bg-white text-center border-light rounded col-12 p-1 m-2"
+	data-name="{%- if iso -%}{{ iso.filename }}{%- else -%}FILENAME{%- endif -%}">
+	<div class="row">
+		<div class="col-1">
+			<div class="trackdata">
+				<span style="{%- if iso and not iso.trackdata -%}display:none;{%- endif -%}">No</span> Data Available
+			</div>
+		</div>
+		<div class="col-4">
+			<h2 class="title font-weight-bold">{%- if iso -%}{{ iso.filename }}{%- endif -%}</h2>
+		</div>
+		<div class="col-1">
+			<div class="info">{%- if iso -%}{{ iso.info }}{%- else -%}FETCHING INFO{%- endif -%}</div>
+		</div>
+		<div class="col-3">
+			<div class="inline-block progresstrack p-2">
+				<div class="label text-dark"></div>
+				<div class="progress" style="height: 25px;">
+					<div class="progress-bar" role="progressbar"
+						style="width: {%- if iso -%}{{ iso.trackpercent }}{%- else -%}0{%- endif -%}%;"
+						aria-valuenow="{%- if iso -%}{{ iso.trackvalue }}{%- else -%}0{%- endif -%}" aria-valuemin="0"
+						aria-valuemax="{%- if iso -%}{{ iso.max }}{%- else -%}0{%- endif -%}">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-3">
+			<div class="inline-block progresstotal p-2">
+				<div class="label text-dark"></div>
+				<div class="progress" style="height: 25px;">
+					<div class="progress-bar" role="progressbar"
+						style="width: {%- if iso -%}{{ iso.totalpercent }}{%- else -%}0{%- endif -%}%;"
+						aria-valuenow="{%- if iso -%}{{ iso.totalvalue }}{%- else -%}0{%- endif -%}" aria-valuemin="0"
+						aria-valuemax="{%- if iso -%}{{ iso.max }}{%- else -%}0{%- endif -%}">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

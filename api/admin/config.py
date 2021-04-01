@@ -3,6 +3,7 @@ import cherrypy
 
 from api.base import APIBase
 from data.config import CONFIG
+from libs.authentication import Authentication
 
 
 @cherrypy.expose
@@ -19,7 +20,7 @@ class APIAdminConfig(APIBase):
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        user = kwargs.get("user", self.GUEST)
+        user = kwargs.get("user", Authentication.GUEST)
         location = kwargs.get("location", None)
         self._check_user(user)
         self.__check_for_blocked_locations(location)
@@ -31,7 +32,7 @@ class APIAdminConfig(APIBase):
 
     def POST(self, **kwargs) -> str:
         """POST Function"""
-        user = kwargs.get("user", self.GUEST)
+        user = kwargs.get("user", Authentication.GUEST)
         location = kwargs.get("location", None)
         body = self._get_request_body()
         self._check_user(user)

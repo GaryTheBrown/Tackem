@@ -10,8 +10,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjBoolList(ConfigObjList):
     """Config Item Bool List"""
 
-    __config_type = "bool_list"
-    __html_type = "text"
+    _config_type = "bool_list"
+    _html_type = "text"
 
     def __init__(
         self,

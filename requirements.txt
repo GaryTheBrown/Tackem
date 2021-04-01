@@ -1,5 +1,6 @@
 requests
 CherryPy
+jinja2
 configobj
 GitPython
 Markdown

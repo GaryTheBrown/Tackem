@@ -8,104 +8,10 @@ from libs.config.base import ConfigBase
 from libs.config.obj.data.data_list import DataList
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
 
 
 class ConfigObjBase(ABC, ConfigBase):
     """Shared Data for all config Objects"""
-
-    __configobj_types = [
-        "pass",
-        "string",
-        "float",
-        "string_list",
-        "boolean",
-        "option",
-        "integer",
-        "password",
-        "ip_addr",
-        "list",
-        "force_list",
-        "tuple",
-        "int_list",
-        "float_list",
-        "bool_list",
-        "ip_addr_list",
-        "mixed_list",
-    ]
-
-    __input_types = [
-        "button",
-        "checkbox",
-        "color",
-        "date",
-        "datetime-local",
-        "email",
-        "file",
-        "hidden",
-        "image",
-        "month",
-        "number",
-        "password",
-        "radio",
-        "range",
-        "reset",
-        "search",
-        "submit",
-        "tel",
-        "text",
-        "time",
-        "url",
-        "week",
-    ]
-
-    __form_attributes = ["autocomplete", "novalidate"]
-
-    __input_attributes = [
-        "value",
-        "readonly",
-        "disabled",
-        "size",
-        "maxlength",
-        "autocomplete",
-        "autofocus",
-        "form",
-        "formaction",
-        "formenctype",
-        "formmethod",
-        "formnovalidate",
-        "formtarget",
-        "height",
-        "width",
-        "list",
-        "min",
-        "max",
-        "multiple",
-        "pattern",
-        "placeholder",
-        "required",
-        "step",
-        "alt",
-    ]
-
-    __html_types = [
-        "input",
-        "select",
-        "multiselect",
-        "textarea",
-        "button",
-        "datalist",
-    ]
-
-    _special_html = [
-        "fieldset",
-        "legend",
-    ]
-
-    _select_extras = [
-        "option",
-        "optgroup",
-    ]
 
     def __init__(
         self,
@@ -128,8 +34,6 @@ class ConfigObjBase(ABC, ConfigBase):
 
         self.__value = default_value
         self.__default_value = default_value
-        self.__input_attributes = None
-        self.__data_list = None
         self.__input_attributes = input_attributes
         self.__data_list = data_list
 
@@ -144,7 +48,7 @@ class ConfigObjBase(ABC, ConfigBase):
         self.__value = self._set_value(value)
 
     @abstractmethod
-    def _set_value(self, value: Any):
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
 
     @property
@@ -167,28 +71,28 @@ class ConfigObjBase(ABC, ConfigBase):
     def spec(self) -> str:
         """Returns the line for the config option"""
 
-    @abstractmethod
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-
     def to_type(self, value: Any):
         """returns the value in the correct format"""
         return value
 
-    def html(self, variable_name: str) -> str:
-        """returns the full html code including label and help text"""
-        if self.hide_on_html:
-            return ""
-        var = f"{variable_name}_{self.var_name}" if variable_name != "" else self.var_name
-
-        return HTMLSystem.part(
-            "section/item",
-            VARNAME=var,
-            LABEL=self.label,
-            HELP=self.help_text,
-            INPUT=self.item_html(var),
-        )
-
     def reset_value_to_default(self):
         """returns the value back to default"""
         self.__value = self.__default_value
+
+    @abstractmethod
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {
+            "value": self.__value,
+            "default_value": self.__default_value,
+        }
+
+        return_dict.update(ConfigBase.html_dict(self, variable_name))
+
+        if isinstance(self.input_attributes, InputAttributes):
+            return_dict["input_attributes"] = self.input_attributes.html()
+
+        if self.__data_list and isinstance(self.__data_list, DataList):
+            return_dict["data_list"] = self.__data_list.html_dict(variable_name)
+
+        return return_dict

@@ -1,0 +1,37 @@
+<div class="drivebox text-dark bg-white text-center border-light rounded col-3 p-1 m-2" data-id="{{ drive.index }}">
+	<div class="row">
+		<div class="col-2">
+			<div class="trackdata" style="display:none;">
+				<span style="display:none;">No</span> Data Available
+			</div>
+		</div>
+		<div class="col-8">
+			<h2 class="font-weight-bold">{{ drive.name }}</h2>
+		</div>
+		<div class="col-2">
+			<img class="drivelock" src="{{ baseurl }}img/locked.png"
+				style="float:right; {%- if not drive.traylock -%}display:none;{%- endif -%}">
+		</div>
+	</div>
+	<div class="info">{{ drive.drivestatus }} </div>
+	<div class="inline-block progresstrack p-2">
+		<div class="label text-dark"></div>
+		<div class="progress" style="height: 25px;">
+			<div class="progress-bar" role="progressbar"
+				style="width: {%- if drive.trackpercent -%}{{ drive.trackpercent }}{%- else -%}0{%- endif -%}%;"
+				aria-valuenow="{%- if drive.trackvalue -%}{{ drive.trackvalue }}{%- else -%}0{%- endif -%}"
+				aria-valuemin="0" aria-valuemax="{%- if drive.max -%}{{ drive.max }}{%- else -%}0{%- endif -%}">
+			</div>
+		</div>
+	</div>
+	<div class="inline-block progresstotal p-2">
+		<div class="label text-dark"></div>
+		<div class="progress" style="height: 25px;">
+			<div class="progress-bar" role="progressbar"
+				style="width: {%- if drive.totalpercent -%}{{ drive.totalpercent }}{%- else -%}0{%- endif -%}%;"
+				aria-valuenow="{%- if drive.totalvalue -%}{{ drive.totalvalue }}{%- else -%}0{%- endif -%}"
+				aria-valuemin="0" aria-valuemax="{%- if drive.max -%}{{ drive.max }}{%- else -%}0{%- endif -%}">
+			</div>
+		</div>
+	</div>
+</div>

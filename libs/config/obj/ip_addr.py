@@ -1,5 +1,4 @@
 """Config Object String"""
-from typing import Any
 from typing import Optional
 
 from libs.config.obj.data.button import Button
@@ -12,8 +11,8 @@ from libs.config.rules import ConfigRules
 class ConfigObjIpAddr(ConfigObjString):
     """Config Item Ip Address"""
 
-    __config_type = "ip_addr"
-    __html_type = "text"
+    _config_type = "ip_addr"
+    _html_type = "text"
 
     def __init__(
         self,
@@ -52,9 +51,9 @@ class ConfigObjIpAddr(ConfigObjString):
             data_list,
             value_link,
         )
-        self.__button = button
+        self._button = button
 
-    def _set_value(self, value: Any):
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
         if not isinstance(value, str):
             return self.default_value

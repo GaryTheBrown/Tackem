@@ -6,7 +6,7 @@ from libs.config.obj.base import ConfigObjBase
 from libs.config.obj.data.data_list import DataList
 from libs.config.obj.data.input_attributes import InputAttributes
 from libs.config.rules import ConfigRules
-from libs.html_system import HTMLSystem
+
 
 DEFAULT_STYLE = {"data_onstyle": "primary", "data_offstyle": "info"}
 
@@ -47,7 +47,7 @@ class ConfigObjBoolean(ConfigObjBase):
             value_link,
         )
 
-    def _set_value(self, value) -> bool:
+    def _set_value(self, value):
         """hidden abstract method for setting the value with checking of type in sub classes"""
         if isinstance(value, bool):
             return value
@@ -81,25 +81,15 @@ class ConfigObjBoolean(ConfigObjBase):
         string += f"default='{'True' if self.default_value else 'False'}')\n"
         return string
 
-    def item_html(self, variable_name: str) -> str:
-        """Returns the html for the config option"""
-        if self.hide_on_html:
-            return ""
-        other = ""
-        if isinstance(self.input_attributes, InputAttributes):
-            other = self.input_attributes.html()
-        return HTMLSystem.part(
-            "inputs/singlecheckbox",
-            VARIABLENAME=variable_name,
-            VALUE=self.value,
-            CHECKED="checked" if self.value else "",
-            ENABLED=str(self.value),
-            OTHER=other,
-        )
-
     def to_type(self, value: Any) -> bool:
         """returns the value in the correct format"""
         try:
             return bool(value)
         except ValueError:
             return False
+
+    def html_dict(self, variable_name: str) -> dict:
+        """returns the required Data for the html template to use"""
+        return_dict = {"type": "singlecheckbox"}
+        return_dict.update(ConfigObjBase.html_dict(self, variable_name))
+        return return_dict

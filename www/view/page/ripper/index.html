@@ -1,0 +1,63 @@
+{% extends 'layout/default.html' %}
+{% block content %}
+<div class="container-fluid mt-4">
+    <h1 class="text-center">Ripper</h1>
+    <div id="ripper">
+        <div class="row">
+            <div class="col-12 border border-light">
+                <h2 class="text-center"><a class="text-white font-weight-bold">Drives</a></h2>
+            </div>
+            <div class="col-12 border border-light">
+                {%- for drive in drives -%}
+                {%- include "templates/drive.html" -%}
+                {%- endfor -%}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 border border-light">
+                <div class="row">
+                    <div class="col-1"></div>
+                    <div class="col-10">
+                        <h2 class="text-center">
+                            <a class="text-white font-weight-bold">
+                                ISO's (<span id="isocount">{{ isos|length }}</span>/{{ isolimit }})
+                            </a>
+                        </h2>
+                    </div>
+                    <div class="col-1 p-2 float-right">
+                        {%- include "part/uploads/iso.html" -%}
+                    </div>
+                </div>
+            </div>
+            <div id="isosection" class="col-12 border border-light">
+                {%- for iso in isos -%}
+                {%- include "templates/iso.html" -%}
+                {%- endfor -%}
+            </div>
+            <div id="isotemplate" hidden>
+                {%- include "templates/iso.html" -%}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 border border-light">
+                <h2 class="text-center">
+                    <a class="text-white font-weight-bold">
+                        Video Converters (<span id="videoconvertercount">{{ videoconverters|length }}</span>/{{
+                        videoconverterlimit }})
+                    </a>
+                </h2>
+            </div>
+            <div id="videoconvertersection" class="col-12 border border-light">
+                {%- for vc in videoconverters -%}
+                {%- include "templates/videoconverter.html" -%}
+                {%- endfor -%}
+            </div>
+            <div id="videoconvertertemplate" hidden>
+                {%- include "templates/videoconverter.html" -%}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
