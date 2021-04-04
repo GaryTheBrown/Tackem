@@ -99,7 +99,7 @@ class DiscType(metaclass=ABCMeta):
         """generates the title for the track"""
 
     @abstractmethod
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
 
 
@@ -149,7 +149,7 @@ class MovieDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} ({self.year}) - {self.tracks[index].title}"
 
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -179,6 +179,7 @@ class MovieDiscType(DiscType):
         tmdbid.value = self.moviedbid
 
         return {
+            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",
@@ -188,7 +189,7 @@ class MovieDiscType(DiscType):
                 name.html_dict(""),
                 imdbid.html_dict(""),
                 tmdbid.html_dict(""),
-            ]
+            ],
         }
 
 
@@ -222,7 +223,7 @@ class TVShowDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -252,6 +253,7 @@ class TVShowDiscType(DiscType):
         tmdbid.value = self.moviedbid
 
         return {
+            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",
@@ -261,7 +263,7 @@ class TVShowDiscType(DiscType):
                 name.html_dict(""),
                 tvdbid.html_dict(""),
                 tmdbid.html_dict(""),
-            ]
+            ],
         }
 
 
@@ -281,7 +283,7 @@ class DocumentaryDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -299,7 +301,6 @@ class DocumentaryDiscType(DiscType):
             "Enter the IMDB ID here",
             button=Button("Find By IMDB ID", "docSearchIMDBid", True),
         )
-        imdbid.value = self.imdbid
 
         tvdbid = ConfigObjString(
             "tvdbid",
@@ -308,7 +309,6 @@ class DocumentaryDiscType(DiscType):
             "Enter the TVDB ID here",
             button=Button("Find By TVDB ID", "docSearchTVDBid", True),
         )
-        tvdbid.value = self.tvdbid
 
         tmdbid = ConfigObjString(
             "tmbbid",
@@ -317,9 +317,9 @@ class DocumentaryDiscType(DiscType):
             "Enter the TMDB ID here",
             button=Button("Find By TMDB ID", "docSearchTMDBid", True),
         )
-        tmdbid.value = self.moviedbid
 
         return {
+            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",
@@ -330,7 +330,7 @@ class DocumentaryDiscType(DiscType):
                 imdbid.html_dict(""),
                 tvdbid.html_dict(""),
                 tmdbid.html_dict(""),
-            ]
+            ],
         }
 
 
@@ -356,7 +356,7 @@ class OtherDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -364,9 +364,9 @@ class OtherDiscType(DiscType):
             "Disc Name",
             "Enter the name of the Disc here",
         )
-        name.value = self.name
 
         return {
+            "no_search": True,
             "disc_items": [
                 {
                     "type": "hidden",
@@ -374,7 +374,7 @@ class OtherDiscType(DiscType):
                     "value": self.disc_type,
                 },
                 name.html_dict(""),
-            ]
+            ],
         }
 
 
@@ -400,7 +400,7 @@ class MusicVideoDiscType(DiscType):
         """generates the title for the track"""
         return f"PRIVATE {self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -408,9 +408,9 @@ class MusicVideoDiscType(DiscType):
             "Disc Name",
             "Enter the name of the Disc here",
         )
-        name.value = self.name
 
         return {
+            "no_search": True,
             "disc_items": [
                 {
                     "type": "hidden",
@@ -418,7 +418,7 @@ class MusicVideoDiscType(DiscType):
                     "value": self.disc_type,
                 },
                 name.html_dict(""),
-            ]
+            ],
         }
 
 
@@ -444,7 +444,7 @@ class HomeMovieDiscType(DiscType):
         """generates the title for the track"""
         return f"Home Movie {self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_data(self) -> dict:
+    def html_search_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -452,9 +452,9 @@ class HomeMovieDiscType(DiscType):
             "Disc Name",
             "Enter the name of the Disc here",
         )
-        name.value = self.name
 
         return {
+            "no_search": True,
             "disc_items": [
                 {
                     "type": "hidden",
@@ -462,7 +462,7 @@ class HomeMovieDiscType(DiscType):
                     "value": self.disc_type,
                 },
                 name.html_dict(""),
-            ]
+            ],
         }
 
 

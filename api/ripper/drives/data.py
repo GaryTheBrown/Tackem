@@ -2,7 +2,6 @@
 import cherrypy
 
 from api.base import APIBase
-from libs.authentication import Authentication
 from libs.ripper import Ripper
 
 
@@ -12,7 +11,6 @@ class APIRipperDrivesData(APIBase):
 
     def GET(self, id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        user = kwargs.get("user", Authentication.GUEST)
         try:
             index = int(id)
         except ValueError:
@@ -23,5 +21,10 @@ class APIRipperDrivesData(APIBase):
             raise cherrypy.HTTPError(status=404)
         drive_dict = drives[index].api_data()
         return self._return_data(
-            user, "Ripper", f"Drive Info {index}", True, id=index, **drive_dict
+            cherrypy.request.params["user"],
+            "Ripper",
+            f"Drive Info {index}",
+            True,
+            id=index,
+            **drive_dict,
         )

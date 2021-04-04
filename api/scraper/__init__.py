@@ -1,14 +1,9 @@
 """SCRAPER ROOT API"""
 import cherrypy
 
-from .find_movie import APIScraperFindMovie
-from .find_tvshow import APIScraperFindTvshow
-from .get_movie import APIScraperGetMovie
-from .get_tvshow import APIScraperGetTvshow
-from .search_movie import APIScraperSearchMovie
-from .search_tvshow import APIScraperSearchTvshow
 from api.base import APIBase
 from api.e404 import API404
+from api.scraper.movie_search import APIScraperMovieSearch
 
 
 @cherrypy.expose
@@ -22,16 +17,24 @@ class APIScraper(APIBase):
 
         section = vpath.pop(0)
 
-        if section == "findmovie":
-            return APIScraperFindMovie()
-        if section == "findtvshow":
-            return APIScraperFindTvshow()
-        if section == "getmovie":
-            return APIScraperGetMovie()
-        if section == "gettvshow":
-            return APIScraperGetTvshow()
-        if section == "searchmovie":
-            return APIScraperSearchMovie()
-        if section == "searchtvshow":
-            return APIScraperSearchTvshow()
+        if section == "movieSearch":
+            return APIScraperMovieSearch()
+        if section == "movieSearchIMDBid":
+            return APIScraperMovieSearch()
+        if section == "movieSearchTMDBid":
+            return APIScraperMovieSearch()
+        if section == "tvSearch":
+            return APIScraperMovieSearch()
+        if section == "tvSearchTVDBid":
+            return APIScraperMovieSearch()
+        if section == "tvSearchTMDBid":
+            return APIScraperMovieSearch()
+        if section == "docSearch":
+            return APIScraperMovieSearch()
+        if section == "docSearchIMDBid":
+            return APIScraperMovieSearch()
+        if section == "docSearchTVDBid":
+            return APIScraperMovieSearch()
+        if section == "docSearchTMDBid":
+            return APIScraperMovieSearch()
         return API404()

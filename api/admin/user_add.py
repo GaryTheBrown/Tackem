@@ -11,10 +11,9 @@ class APIAdminUserAdd(APIBase):
 
     def POST(self, **kwargs) -> str:
         """POST Function"""
-        user = kwargs.get("user", Authentication.GUEST)
         if "username" not in kwargs:
             return self._return_data(
-                user,
+                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -23,7 +22,7 @@ class APIAdminUserAdd(APIBase):
             )
         if "password" not in kwargs:
             return self._return_data(
-                user,
+                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -32,7 +31,7 @@ class APIAdminUserAdd(APIBase):
             )
         if "isadmin" not in kwargs:
             return self._return_data(
-                user,
+                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -40,4 +39,4 @@ class APIAdminUserAdd(APIBase):
                 errorNumber=2,
             )
         Authentication.add_user(kwargs["username"], kwargs["password"], bool(kwargs["isadmin"]))
-        return self._return_data(user, "User", "Add User", True)
+        return self._return_data(cherrypy.request.params["user"], "User", "Add User", True)

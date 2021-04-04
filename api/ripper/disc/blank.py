@@ -9,11 +9,11 @@ from data.disc_type import make_blank_disc_type
 class APIRipperDiscBlank(APIBase):
     """Base Template For the API"""
 
-    def GET(self, disc_type: str, **kwargs):  # pylint: disable=invalid-name,no-self-use
+    def GET(self, disc_type: str):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
 
         disc = make_blank_disc_type(disc_type)
-        html_data = disc.html_data()
+        html_data = disc.html_search_data()
         html = cherrypy.tools.template.part("part/ripper/disc/disc_info", **html_data)
         return self._return_data(
             cherrypy.request.params["user"],

@@ -2,7 +2,6 @@
 import cherrypy
 
 from api.base import APIBase
-from libs.authentication import Authentication
 from libs.ripper import Ripper
 
 
@@ -12,10 +11,8 @@ class APIRipperVideoConverterData(APIBase):
 
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        user = kwargs.get("user", Authentication.GUEST)
-
         return self._return_data(
-            user,
+            cherrypy.request.params["user"],
             "Ripper",
             "Video Converter Info",
             True,

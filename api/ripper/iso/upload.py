@@ -6,7 +6,6 @@ import cherrypy
 
 from api.base import APIBase
 from data.database.system import UPLOAD_DB
-from libs.authentication import Authentication
 from libs.database import Database
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.select import SQLSelect
@@ -19,11 +18,10 @@ class APIRipperIsoUpload(APIBase):
 
     def POST(self, **kwargs) -> str:
         """POST Function"""
-        user = kwargs.get("user", Authentication.GUEST)
 
         if "filename" not in kwargs:
             return self._return_data(
-                user,
+                cherrypy.request.params["user"],
                 "Ripper",
                 "Upload ISO",
                 False,
@@ -32,7 +30,7 @@ class APIRipperIsoUpload(APIBase):
             )
         if "filesize" not in kwargs:
             return self._return_data(
-                user,
+                cherrypy.request.params["user"],
                 "Ripper",
                 "Upload ISO",
                 False,
@@ -50,7 +48,7 @@ class APIRipperIsoUpload(APIBase):
         url = cherrypy.url().split("/api/")[0]
         if isinstance(msg.return_data, dict):
             return self._return_data(
-                user,
+                cherrypy.request.params["user"],
                 "Ripper",
                 "Upload ISO",
                 True,
@@ -70,7 +68,7 @@ class APIRipperIsoUpload(APIBase):
         )
 
         return self._return_data(
-            user,
+            cherrypy.request.params["user"],
             "Ripper",
             "Upload ISO",
             True,
