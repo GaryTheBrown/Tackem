@@ -12,7 +12,6 @@ class APIScraperMovieSearch(APIBase):
         """POST Function"""
 
         return self._return_data(
-            cherrypy.request.params["user"],
             "Scraper",
             "",
             True,

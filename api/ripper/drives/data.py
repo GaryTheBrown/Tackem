@@ -21,7 +21,6 @@ class APIRipperDrivesData(APIBase):
             raise cherrypy.HTTPError(status=404)
         drive_dict = drives[index].api_data()
         return self._return_data(
-            cherrypy.request.params["user"],
             "Ripper",
             f"Drive Info {index}",
             True,

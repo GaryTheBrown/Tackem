@@ -13,7 +13,6 @@ class APIRipperISOData(APIBase):
         """GET Function"""
 
         return self._return_data(
-            cherrypy.request.params["user"],
             "Ripper",
             "ISO Info",
             True,

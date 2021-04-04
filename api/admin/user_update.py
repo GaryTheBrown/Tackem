@@ -11,10 +11,10 @@ class APIAdminUserUpdate(APIBase):
 
     def POST(self, **kwargs) -> str:
         """POST Function"""
-
+        self._check_user()
+        # TODO need to make this check if you are the user or you are admin
         if "userid" not in kwargs:
             return self._return_data(
-                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -23,7 +23,6 @@ class APIAdminUserUpdate(APIBase):
             )
         if "username" not in kwargs:
             return self._return_data(
-                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -32,7 +31,6 @@ class APIAdminUserUpdate(APIBase):
             )
         if "password" not in kwargs:
             return self._return_data(
-                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -41,7 +39,6 @@ class APIAdminUserUpdate(APIBase):
             )
         if "isadmin" not in kwargs:
             return self._return_data(
-                cherrypy.request.params["user"],
                 "User",
                 "Add User",
                 False,
@@ -54,4 +51,4 @@ class APIAdminUserUpdate(APIBase):
             kwargs["password"],
             bool(kwargs["isadmin"]),
         )
-        return self._return_data(cherrypy.request.params["user"], "User", "Update User", True)
+        return self._return_data("User", "Update User", True)

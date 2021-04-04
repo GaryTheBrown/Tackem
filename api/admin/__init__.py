@@ -19,7 +19,7 @@ class APIAdmin(APIBase):
         if len(vpath) == 0:
             return self
 
-        self._check_user(cherrypy.request.params["user"], True)
+        self._check_user(True)
 
         section = vpath.pop(0)
         if section == "reboot":
@@ -47,4 +47,4 @@ class APIAdmin(APIBase):
         else:
             raise cherrypy.HTTPError(status=404)  # Not Found
 
-        return self._return_data(cherrypy.request.params["user"], "admin", action, True)
+        return self._return_data("admin", action, True)

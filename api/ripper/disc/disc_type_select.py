@@ -17,7 +17,6 @@ class APIRipperDiscDiscTypeSelect(APIBase):
 
         html = cherrypy.tools.template.part("part/ripper/disc/disc_type_select", **html_data)
         return self._return_data(
-            cherrypy.request.params["user"],
             "Ripper",
             "Reset Make Disc",
             True,

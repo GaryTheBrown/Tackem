@@ -29,4 +29,4 @@ class APITVShowsLibrary(APIBase):
         """GET Function"""
         action = kwargs.get("action", None)
 
-        return self._return_data(cherrypy.request.params["user"], "admin", action, True)
+        return self._return_data("admin", action, True)

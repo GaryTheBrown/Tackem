@@ -21,7 +21,6 @@ class APIRipperIsoUpload(APIBase):
 
         if "filename" not in kwargs:
             return self._return_data(
-                cherrypy.request.params["user"],
                 "Ripper",
                 "Upload ISO",
                 False,
@@ -30,7 +29,6 @@ class APIRipperIsoUpload(APIBase):
             )
         if "filesize" not in kwargs:
             return self._return_data(
-                cherrypy.request.params["user"],
                 "Ripper",
                 "Upload ISO",
                 False,
@@ -48,7 +46,6 @@ class APIRipperIsoUpload(APIBase):
         url = cherrypy.url().split("/api/")[0]
         if isinstance(msg.return_data, dict):
             return self._return_data(
-                cherrypy.request.params["user"],
                 "Ripper",
                 "Upload ISO",
                 True,
@@ -68,7 +65,6 @@ class APIRipperIsoUpload(APIBase):
         )
 
         return self._return_data(
-            cherrypy.request.params["user"],
             "Ripper",
             "Upload ISO",
             True,
