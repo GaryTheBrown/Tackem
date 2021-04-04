@@ -1,16 +1,11 @@
-{% import 'macros/inputs.html' as inputs %}
+{%- import 'macros/inputs.html' as inputs -%}
 {%- macro panel(obj) -%}
-{# check for enabled here
-if enabled then need to put in the first block panel
-if not then just loop through with bellow sorted or just macro listloop
-why did I want this sorted by items then lists rather than just
-#}
 {%- if obj.enabled_obj -%}
 {{ enablefirstblock(obj, obj.enabled_obj)}}
 {%- else -%}
 {%- for object in obj.objects -%}
 {%- if object.type != "list" -%}
-{{ item(object) }}
+{{ inputs.itemfull(object) }}
 {%- endif -%}
 {%- endfor -%}
 {%- for object in obj.objects -%}
@@ -29,7 +24,7 @@ why did I want this sorted by items then lists rather than just
 {%- if skip_enabled and object.variable == "enabled" -%}
 {%- continue -%}
 {%- endif -%}
-{{ item(object) }}
+{{ inputs.itemfull(object) }}
 {%- endif -%}
 {%- endfor -%}
 {%- endmacro -%}
@@ -45,7 +40,7 @@ why did I want this sorted by items then lists rather than just
 {%- macro enablefirstblock(obj, enabled_obj) -%}
 
 <section id="{{ obj.var_name }}_panel" class="panel row my-0 mx-4 pt-2 my-4 ">
-    <div class="col-12 d-flex">{{ item(enabled_obj) }}</div>
+    <div class="col-12 d-flex">{{ inputs.itemfull(enabled_obj) }}</div>
     <div class="section col-12 pt-2" id="{{ obj.var_name }}_section">
         {{ listloop(obj.objects, true) }}
     </div>
@@ -62,24 +57,10 @@ why did I want this sorted by items then lists rather than just
         <div class="mr-auto">
             <h2>{{ obj.label }}</h2>
         </div>
-        <div class="pr-1">{%- if obj.enabled_obj -%}{{ iteminput(obj.enabled_obj) }}{%- endif -%}</div>
+        <div class="pr-1">{%- if obj.enabled_obj -%}{{ inputs.item(obj.enabled_obj) }}{%- endif -%}</div>
     </div>
     <div class="section col-12 pt-2" id="{{ obj.var_name }}_section">
         {{ listloop(obj.objects, true) }}
     </div>
 </section>
-{%- endmacro -%}
-
-{%- macro item(obj) -%}
-<div class="col-12 row my-2 item">
-    <div class="col-sm-2 col-12">
-        <label for="{{ obj.var_name }}">{{ obj.label }}:</label>
-    </div>
-    <div class="col-sm-6 col-10">{{ inputs.item(obj) }}</div>
-    <div class="col-sm-4 col-12">
-        <small id="{{ obj.var_name }}Help" class="form-text text-muted">
-            {{ obj.help_text }}
-        </small>
-    </div>
-</div>
 {%- endmacro -%}

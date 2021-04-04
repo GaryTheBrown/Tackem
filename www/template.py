@@ -7,6 +7,7 @@ import jinja2
 
 from data.config import CONFIG
 from libs.authentication import Authentication
+from libs.file import File
 from libs.ripper import Ripper
 
 
@@ -58,6 +59,11 @@ class Template(cherrypy.Tool):
 
     def _render(self, user, handler, *args, **kwargs):
 
+        if user > Authentication.GUEST:
+            Authentication.check_auth()
+        if user == Authentication.ADMIN:
+            Authentication.is_admin()
+
         parts = []
         if hasattr(handler.callable, "__self__"):
             parts.append(handler.callable.__self__.__class__.__name__.lower())
@@ -67,13 +73,13 @@ class Template(cherrypy.Tool):
         data = handler(*args, **kwargs) or {}
 
         data.update(self.__global_vars(data))
-        if user > Authentication.GUEST:
-            Authentication.check_auth()
-        if user == Authentication.ADMIN:
-            Authentication.is_admin()
         renderer = self._engine.get_template(f"page/{template}.html")
         data["loggedin"] = Authentication.check_logged_in() > 0
         data["isadmin"] = Authentication.check_logged_in() == 2
+
+        js = template + ".js"
+        if "javascript" not in data and File.exists(os.getcwd() + "/www/static/js/" + js):
+            data["javascript"] = js
 
         return renderer.render(**data) if template and isinstance(data, dict) else data
 
@@ -87,3 +93,8 @@ class Template(cherrypy.Tool):
             "navbar": {"ripper": Ripper.enabled},
         }
         return return_dict
+
+    def part(self, file: str, **data):
+        """using this system load a page"""
+        renderer = self._engine.get_template(f"{file}.html")
+        return renderer.render(**data)

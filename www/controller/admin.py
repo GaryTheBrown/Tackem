@@ -24,22 +24,20 @@ class Admin:
             except OSError:
                 print("ERROR WRITING Config FILE")
         config_dict = CONFIG.html_dict()
-        return {"config": config_dict, "javascript": "config.js"}
+        return {"config": config_dict}
 
     @cherrypy.tools.template(user=Authentication.ADMIN)
     def users(self) -> dict:
         """Grab the users info"""
-        return {"users": Authentication.get_users(), "javascript": "users.js"}
+        return {"users": Authentication.get_users()}
 
     @cherrypy.tools.template(user=Authentication.ADMIN)
     def shutdown(self) -> dict:
         """shutdown the system page"""
-        return {"javascript": "shutdown.js"}
 
     @cherrypy.tools.template(user=Authentication.ADMIN)
     def reboot(self) -> dict:
         """reboot the system page"""
-        return {"javascript": "reboot.js"}
 
     def __add_val_to_config(self, key: str, config: ConfigList, key_list: list, value: Any):
         """recursive way of adding value into the config"""

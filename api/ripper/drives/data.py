@@ -13,8 +13,6 @@ class APIRipperDrivesData(APIBase):
     def GET(self, id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
         user = kwargs.get("user", Authentication.GUEST)
-        if user == Authentication.GUEST:
-            raise cherrypy.HTTPError(status=403)
         try:
             index = int(id)
         except ValueError:

@@ -27,6 +27,8 @@ class Authentication:
     USER: int = 1
     ADMIN: int = 2
 
+    TYPESTR = ["Guest", "User", "Admin"]
+
     __db_info = Table(
         "authentication_info",
         1,

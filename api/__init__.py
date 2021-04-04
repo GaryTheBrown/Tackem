@@ -3,6 +3,7 @@ import cherrypy
 
 from api.admin import APIAdmin
 from api.base import APIBase
+from api.e404 import API404
 from api.library import APILibrary
 from api.ripper import APIRipper
 from api.scraper import APIScraper
@@ -16,7 +17,7 @@ class API(APIBase):
 
     def _cp_dispatch(self, vpath):
         """cp dispatcher overwrite"""
-        user = None
+        user = 0
         if len(vpath) == 0:
             return self
 
@@ -41,7 +42,7 @@ class API(APIBase):
             return APIRipper()
         if section == "scraper":
             return APIScraper()
-        return self
+        return API404()
 
     def _check_api_key(self, key: str) -> int:
         """checks the api key against the master and user keys and returns the level"""

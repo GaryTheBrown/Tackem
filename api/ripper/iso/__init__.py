@@ -2,6 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
+from api.e404 import API404
 from api.ripper.iso.data import APIRipperISOData
 from api.ripper.iso.upload import APIRipperIsoUpload
 from data.config import CONFIG
@@ -23,4 +24,4 @@ class APIRipperIsos(APIBase):
             return APIRipperISOData()
         if section == "upload":
             return APIRipperIsoUpload()
-        return self
+        return API404()

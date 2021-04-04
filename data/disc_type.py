@@ -3,21 +3,35 @@ import datetime
 import json
 from abc import ABCMeta
 from abc import abstractmethod
+from typing import Dict
 from typing import Optional
 from typing import Union
 
 from data.video_track_type import make_track_type
-
-TYPES = {"Movie": "film", "TV Show": "tv", "Documentary": "video", "Other": "question"}
+from libs.classproperty import classproperty
+from libs.config.obj.data.button import Button
+from libs.config.obj.string import ConfigObjString
 
 
 class DiscType(metaclass=ABCMeta):
     """Master Disc Type"""
 
-    def __init__(self, disc_type, name, info, tracks, language, moviedbid):
-        self.__disc_type = disc_type if disc_type in TYPES else ""
+    @classproperty
+    def TYPESANDICONS(cls) -> Dict[str, str]:
+        """returns a list of types with Font Awsome Free Icons"""
+        # Do we want to add and allow an adult section?
+        return {
+            "Movie": "film",
+            "TV Show": "tv",
+            "Documentary": "info-circle",
+            "Home Movie": "users",
+            "Music Video": "music",
+            "Other": "question",
+        }
+
+    def __init__(self, disc_type: str, name: str, tracks: list, language: str, moviedbid: str):
+        self.__disc_type = disc_type if disc_type in self.TYPESANDICONS else ""
         self.__name = name
-        self.__info = info
         self.__tracks = tracks if isinstance(tracks, list) else []
         self.__language = language if len(language) == 2 and isinstance(language, str) else "en"
         self.__moviedbid = moviedbid
@@ -31,11 +45,6 @@ class DiscType(metaclass=ABCMeta):
     def name(self) -> str:
         """returns the name"""
         return self.__name
-
-    @property
-    def info(self) -> str:
-        """returns the temp info"""
-        return self.__info
 
     @property
     def tracks(self) -> list:
@@ -89,6 +98,10 @@ class DiscType(metaclass=ABCMeta):
     def track_title(self, index: int):
         """generates the title for the track"""
 
+    @abstractmethod
+    def html_data(self) -> dict:
+        """returns the data for html"""
+
 
 class MovieDiscType(DiscType):
     """Movie Disc Type"""
@@ -96,14 +109,13 @@ class MovieDiscType(DiscType):
     def __init__(
         self,
         name: str,
-        info: str,
         year: int,
         imdbid: str,
         tracks: list,
         language: str = "eng",
         moviedbid: str = "",
     ):
-        super().__init__("Movie", name, info, tracks, language, moviedbid)
+        super().__init__("Movie", name, tracks, language, moviedbid)
         current_year = int(datetime.date.today().year)
         if year == 0:
             self.__year = ""
@@ -131,11 +143,53 @@ class MovieDiscType(DiscType):
             super_dict = {}
         super_dict["year"] = self.__year
         super_dict["imdbid"] = self.__imdbid
-        return super().make_dict(super_dict, no_tracks)
+        return DiscType.make_dict(self, super_dict, no_tracks)
 
     def track_title(self, index: int):
         """generates the title for the track"""
         return f"{self.name.capitalize()} ({self.year}) - {self.tracks[index].title}"
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            "name",
+            "",
+            "Movie Title",
+            "Enter the name of the movie here",
+            button=Button("Find By Title", "movieSearch", True),
+        )
+        name.value = self.name
+
+        imdbid = ConfigObjString(
+            "imbbid",
+            "",
+            "IMDB ID",
+            "Enter the IMDB ID here",
+            button=Button("Find By IMDB ID", "movieSearchIMDBid", True),
+        )
+        imdbid.value = self.imdbid
+
+        tmdbid = ConfigObjString(
+            "tmbbid",
+            "",
+            "TMDB ID",
+            "Enter the TMDB ID here",
+            button=Button("Find By TMDB ID", "movieSearchTMDBid", True),
+        )
+        tmdbid.value = self.moviedbid
+
+        return {
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": "disc_type",
+                    "value": self.disc_type,
+                },
+                name.html_dict(""),
+                imdbid.html_dict(""),
+                tmdbid.html_dict(""),
+            ]
+        }
 
 
 class TVShowDiscType(DiscType):
@@ -144,13 +198,12 @@ class TVShowDiscType(DiscType):
     def __init__(
         self,
         name: str,
-        info: str,
         tvdbid: str,
         tracks: list,
         language: str = "eng",
         moviedbid="",
     ):
-        super().__init__("TV Show", name, info, tracks, language, moviedbid)
+        super().__init__("TV Show", name, tracks, language, moviedbid)
         self.__tvdbid = tvdbid
 
     @property
@@ -163,62 +216,254 @@ class TVShowDiscType(DiscType):
         if super_dict is None:
             super_dict = {}
         super_dict["tvdbid"] = self.__tvdbid
-        return super().make_dict(super_dict, no_tracks)
+        return DiscType.make_dict(self, super_dict, no_tracks)
 
     def track_title(self, index: int):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            "name",
+            "",
+            "TV Show Name",
+            "Enter the name of the TV Show here",
+            button=Button("Find By Title", "tvSearch", True),
+        )
+        name.value = self.name
+
+        tvdbid = ConfigObjString(
+            "tvdbid",
+            "",
+            "TVDB ID",
+            "Enter the TVDB ID here",
+            button=Button("Find By TVDB ID", "tvSearchTVDBid", True),
+        )
+        tvdbid.value = self.tvdbid
+
+        tmdbid = ConfigObjString(
+            "tmbbid",
+            "",
+            "TMDB ID",
+            "Enter the TMDB ID here",
+            button=Button("Find By TMDB ID", "tvSearchTMDBid", True),
+        )
+        tmdbid.value = self.moviedbid
+
+        return {
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": "disc_type",
+                    "value": self.disc_type,
+                },
+                name.html_dict(""),
+                tvdbid.html_dict(""),
+                tmdbid.html_dict(""),
+            ]
+        }
 
 
 class DocumentaryDiscType(DiscType):
     """Documentary Disc Type"""
 
-    def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
-        super().__init__("Documentary", name, info, tracks, language, None)
+    def __init__(self, name: str, tracks: list, language: str = "eng"):
+        super().__init__("Documentary", name, tracks, language, None)
 
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        return super().make_dict(super_dict, no_tracks)
+        return DiscType.make_dict(self, super_dict, no_tracks)
 
     def track_title(self, index: int):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            "name",
+            "",
+            "Documentary Name",
+            "Enter the name of the Documentary here",
+            button=Button("Find By Title", "docSearch", True),
+        )
+        name.value = self.name
+
+        imdbid = ConfigObjString(
+            "imbbid",
+            "",
+            "IMDB ID",
+            "Enter the IMDB ID here",
+            button=Button("Find By IMDB ID", "docSearchIMDBid", True),
+        )
+        imdbid.value = self.imdbid
+
+        tvdbid = ConfigObjString(
+            "tvdbid",
+            "",
+            "TVDB ID",
+            "Enter the TVDB ID here",
+            button=Button("Find By TVDB ID", "docSearchTVDBid", True),
+        )
+        tvdbid.value = self.tvdbid
+
+        tmdbid = ConfigObjString(
+            "tmbbid",
+            "",
+            "TMDB ID",
+            "Enter the TMDB ID here",
+            button=Button("Find By TMDB ID", "docSearchTMDBid", True),
+        )
+        tmdbid.value = self.moviedbid
+
+        return {
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": "disc_type",
+                    "value": self.disc_type,
+                },
+                name.html_dict(""),
+                imdbid.html_dict(""),
+                tvdbid.html_dict(""),
+                tmdbid.html_dict(""),
+            ]
+        }
 
 
 class OtherDiscType(DiscType):
     """Other Disc Type"""
 
     def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
-        super().__init__("Other", name, info, tracks, language, None)
+        super().__init__("Other", name, tracks, language, None)
+        self.__info = info
+
+    @property
+    def info(self) -> str:
+        """returns the temp info"""
+        return self.__info
 
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        return super().make_dict(super_dict, no_tracks)
+        return DiscType.make_dict(self, super_dict, no_tracks)
 
     def track_title(self, index: int):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            "name",
+            "",
+            "Disc Name",
+            "Enter the name of the Disc here",
+        )
+        name.value = self.name
 
-class PrivateDiscType(DiscType):
+        return {
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": "disc_type",
+                    "value": self.disc_type,
+                },
+                name.html_dict(""),
+            ]
+        }
+
+
+class MusicVideoDiscType(DiscType):
     """Private Disc Type"""
 
     def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
-        super().__init__("Private", name, info, tracks, language, None)
+        super().__init__("Private", name, tracks, language, None)
+        self.__info = info
+
+    @property
+    def info(self) -> str:
+        """returns the temp info"""
+        return self.__info
 
     def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        return super().make_dict(super_dict, no_tracks)
+        return DiscType.make_dict(self, super_dict, no_tracks)
 
     def track_title(self, index: int):
         """generates the title for the track"""
-        return f"PRIVATE {self.name.capitalize()} ({self.year}) - {self.tracks[index].title}"
+        return f"PRIVATE {self.name.capitalize()} - {self.tracks[index].title}"
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            "name",
+            "",
+            "Disc Name",
+            "Enter the name of the Disc here",
+        )
+        name.value = self.name
+
+        return {
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": "disc_type",
+                    "value": self.disc_type,
+                },
+                name.html_dict(""),
+            ]
+        }
+
+
+class HomeMovieDiscType(DiscType):
+    """HomeMovie Disc Type"""
+
+    def __init__(self, name: str, info: str, tracks: list, language: str = "eng"):
+        super().__init__("HomeMovie", name, tracks, language, None)
+        self.__info = info
+
+    @property
+    def info(self) -> str:
+        """returns the temp info"""
+        return self.__info
+
+    def make_dict(self, super_dict: Optional[dict] = None, no_tracks: bool = False) -> dict:
+        """returns the tracks"""
+        if super_dict is None:
+            super_dict = {}
+        return DiscType.make_dict(self, super_dict, no_tracks)
+
+    def track_title(self, index: int):
+        """generates the title for the track"""
+        return f"Home Movie {self.name.capitalize()} - {self.tracks[index].title}"
+
+    def html_data(self) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            "name",
+            "",
+            "Disc Name",
+            "Enter the name of the Disc here",
+        )
+        name.value = self.name
+
+        return {
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": "disc_type",
+                    "value": self.disc_type,
+                },
+                name.html_dict(""),
+            ]
+        }
 
 
 def make_disc_type(data: Union[str, dict]) -> DiscType:
@@ -255,15 +500,22 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
             tracks,
             data.get("language", "en"),
         )
-    if data["disc_type"].replace(" ", "").lower() == "other":
-        return OtherDiscType(
+    if data["disc_type"].replace(" ", "").lower() == "musicvideo":
+        return MusicVideoDiscType(
             data.get("name", ""),
             data.get("info", ""),
             tracks,
             data.get("language", "en"),
         )
-    if data["disc_type"].replace(" ", "").lower() == "private":
-        return PrivateDiscType(
+    if data["disc_type"].replace(" ", "").lower() == "homemovie":
+        return HomeMovieDiscType(
+            data.get("name", ""),
+            data.get("info", ""),
+            tracks,
+            data.get("language", "en"),
+        )
+    if data["disc_type"].replace(" ", "").lower() == "other":
+        return OtherDiscType(
             data.get("name", ""),
             data.get("info", ""),
             tracks,
@@ -275,11 +527,15 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
 def make_blank_disc_type(disc_type_code: str) -> DiscType:
     """make the blank disc type"""
     if disc_type_code.replace(" ", "").lower() == "movie":
-        return MovieDiscType("", "", 0, "", None, "en", "")
+        return MovieDiscType("", 0, "", None, "en", "")
     if disc_type_code.replace(" ", "").lower() == "tvshow":
-        return TVShowDiscType("", "", "", None, "en", "")
+        return TVShowDiscType("", "", None, "en", "")
     if disc_type_code.replace(" ", "").lower() == "documentary":
-        return DocumentaryDiscType("", "", None, "en")
+        return DocumentaryDiscType("", None, "en")
+    if disc_type_code.replace(" ", "").lower() == "musicvideo":
+        return MusicVideoDiscType("", "", None, "en")
+    if disc_type_code.replace(" ", "").lower() == "homemovie":
+        return HomeMovieDiscType("", "", None, "en")
     if disc_type_code.replace(" ", "").lower() == "other":
         return OtherDiscType("", "", None, "en")
     return None

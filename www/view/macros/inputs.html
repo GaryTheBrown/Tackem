@@ -1,5 +1,7 @@
 {%- macro item(obj) -%}
-{%- if obj.type == "input" -%}
+{%- if obj.type == "hidden" -%}
+{{ hidden(obj) }}
+{%- elif obj.type == "input" -%}
 {{ input(obj) }}
 {%- elif obj.type == "select" -%}
 {{ select(obj) }}
@@ -9,9 +11,29 @@
 {{ checkbox(obj) }}
 {%- elif obj.type == "radio" -%}
 {{ radio(obj) }}
+{%- elif obj.type == "textarea" -%}
+{{ textarea(obj) }}
 {%- else -%}
 NEW:{{ obj }}<br>
 {%- endif -%}
+{%- endmacro -%}
+
+{%- macro itemfull(obj) -%}
+<div class="col-12 row my-2 item">
+	<div class="col-sm-2 col-12">
+		<label for="{{ obj.var_name }}">{{ obj.label }}:</label>
+	</div>
+	<div class="col-sm-6 col-10">{{ item(obj) }}</div>
+	<div class="col-sm-4 col-12">
+		<small id="{{ obj.var_name }}Help" class="form-text text-muted">
+			{{ obj.help_text }}
+		</small>
+	</div>
+</div>
+{%- endmacro -%}
+
+{%- macro hidden(obj) -%}
+<input type="hidden" name="{{ obj.var_name }}" id="{{ obj.var_name }}" value="{{ obj.value }}">
 {%- endmacro -%}
 
 {%- macro input(obj) -%}

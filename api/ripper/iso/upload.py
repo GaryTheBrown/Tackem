@@ -20,8 +20,6 @@ class APIRipperIsoUpload(APIBase):
     def POST(self, **kwargs) -> str:
         """POST Function"""
         user = kwargs.get("user", Authentication.GUEST)
-        if user == Authentication.GUEST:
-            raise cherrypy.HTTPError(status=403)
 
         if "filename" not in kwargs:
             return self._return_data(

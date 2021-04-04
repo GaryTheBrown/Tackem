@@ -2,6 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
+from api.e404 import API404
 from libs.authentication import Authentication
 
 
@@ -13,9 +14,6 @@ class APILibrary(APIBase):
         """cp dispatcher overwrite"""
         if len(vpath) == 0:
             return self
-
-        if cherrypy.request.params["user"] != Authentication.ADMIN:
-            raise cherrypy.HTTPError(status=401)  # Unauthorized
 
         if len(vpath) == 1:
             section = vpath.pop(0)
@@ -35,7 +33,7 @@ class APILibrary(APIBase):
         if section == "music":
             return self
 
-        return self
+        return API404()
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         """GET Function"""

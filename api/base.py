@@ -12,19 +12,19 @@ class APIBase:
 
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        raise cherrypy.HTTPError(status=404)
+        raise cherrypy.HTTPError(status=405)
 
     def POST(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """POST Function"""
-        raise cherrypy.HTTPError(status=404)
+        raise cherrypy.HTTPError(status=405)
 
     def PUT(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """PUT Function"""
-        raise cherrypy.HTTPError(status=404)
+        raise cherrypy.HTTPError(status=405)
 
     def DELETE(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """DELETE Function"""
-        raise cherrypy.HTTPError(status=404)
+        raise cherrypy.HTTPError(status=405)
 
     def _get_request_body(self) -> str:
         """gets the requests body and returns dict"""

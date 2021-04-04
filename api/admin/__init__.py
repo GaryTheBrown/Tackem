@@ -6,6 +6,7 @@ from api.admin.user_add import APIAdminUserAdd
 from api.admin.user_delete import APIAdminUserDelete
 from api.admin.user_update import APIAdminUserUpdate
 from api.base import APIBase
+from api.e404 import API404
 from libs.authentication import Authentication
 from libs.events import RootEvent
 
@@ -34,7 +35,7 @@ class APIAdmin(APIBase):
             return APIAdminUserDelete()
         elif section == "userUpdate":
             return APIAdminUserUpdate()
-        return self
+        return API404()
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         """GET Function"""

@@ -13,8 +13,7 @@ class APIScraperSearchTvshow(APIBase):
     def POST(self, **kwargs) -> str:
         """POST Function"""
         user = kwargs.get("user", Authentication.GUEST)
-        if user == Authentication.GUEST:
-            raise cherrypy.HTTPError(status=403)
+
         required = []
         if (plugin_type := kwargs.get("plugin_type", "")) == "":
             required.append("plugin_type")

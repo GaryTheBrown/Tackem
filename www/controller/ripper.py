@@ -4,6 +4,8 @@ import json
 import cherrypy
 
 from data.database.ripper import VIDEO_INFO_DB
+from data.disc_type import DiscType
+from data.disc_type import make_disc_type
 from libs import lower_keys
 from libs.authentication import Authentication
 from libs.database import Database
@@ -24,7 +26,6 @@ class Ripper:
             "isolimit": RipperSYS.maxisos,
             "videoconverters": [con.api_data() for con in RipperSYS.video_converters],
             "videoconverterlimit": RipperSYS.maxvideoconverters,
-            "javascript": "ripper.js",
         }
 
     @cherrypy.tools.template(user=Authentication.USER)
@@ -35,10 +36,10 @@ class Ripper:
         if isinstance(msg.return_data, list):
             raise cherrypy.HTTPError(status=404)
 
-        clean = msg.return_data["disc_data"].replace('\\"', "")
-        disc_data = lower_keys(json.loads(clean))
+        clean_disc_data = msg.return_data["disc_data"].replace('\\"', "")
+        disc_data = lower_keys(json.loads(clean_disc_data))
 
-        return {
+        return_dict = {
             "db_id": db_id,
             "disc_name": disc_data["disc_info"]["name"],
             "disc_language": disc_data["disc_info"]["metadatalanguagename"],
@@ -47,4 +48,11 @@ class Ripper:
             "label": msg.return_data["label"],
             "disc_type": msg.return_data["disc_type"].upper(),
             "disc_data": disc_data,
+            "rip_data_downloaded": bool(msg.return_data["rip_data_downloaded"]),
+            "data_disc_types_and_icons": DiscType.TYPESANDICONS,
         }
+        if not msg.return_data["rip_data"]:
+            return return_dict
+
+        rip_data = make_disc_type(msg.return_data["rip_data"].replace('\\"', ""))
+        return_dict["rip_data"] = json.loads(rip_data.html_data())

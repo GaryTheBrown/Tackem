@@ -13,8 +13,6 @@ class APIRipperISOData(APIBase):
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
         user = kwargs.get("user", Authentication.GUEST)
-        if user == Authentication.GUEST:
-            raise cherrypy.HTTPError(status=403)
 
         return self._return_data(
             user,

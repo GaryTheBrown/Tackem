@@ -1,11 +1,11 @@
 """The CONFIG Options for the system"""
-from .api import api_config
-from .database import database_config
-from .libraries import libraries_config
-from .musicbrainz import musicbrainz_config
-from .ripper import ripper_config
-from .scraper import scraper_config
-from .webui import webui_config
+from data.config.api import api_config
+from data.config.database import database_config
+from data.config.libraries import libraries_config
+from data.config.musicbrainz import musicbrainz_config
+from data.config.ripper import ripper_config
+from data.config.scraper import scraper_config
+from data.config.webui import webui_config
 from libs.config.list import ConfigList
 
 CONFIG = ConfigList("root", "Root")

@@ -7,6 +7,7 @@ def setup_error_pages(
     e401: bool = True,
     e403: bool = True,
     e404: bool = True,
+    e405: bool = True,
     e500: bool = True,
 ):
     """Changes the Error Pages For The System"""
@@ -21,6 +22,9 @@ def setup_error_pages(
 
     if e404:
         cherrypy.config.update({"error_page.404": error_page_404})
+
+    if e405:
+        cherrypy.config.update({"error_page.405": error_page_405})
 
     if e500:
         cherrypy.config.update({"error_page.500": error_page_500})
@@ -47,6 +51,11 @@ def error_page_403(status, message, traceback, version) -> str:
 def error_page_404(status, message, traceback, version) -> str:
     """404 error page"""
     return "Error 404 Page not found"
+
+
+def error_page_405(status, message, traceback, version) -> str:
+    """405 error page"""
+    return "Error 405 Method Not Allowed"
 
 
 def error_page_500(status, message, traceback, version) -> str:

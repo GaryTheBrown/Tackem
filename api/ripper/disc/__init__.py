@@ -3,22 +3,19 @@ import cherrypy
 
 from api.base import APIBase
 from api.e404 import API404
-from api.ripper.drives.data import APIRipperDrivesData
-from data.config import CONFIG
+from api.ripper.disc.blank import APIRipperDiscBlank
 
 
 @cherrypy.expose
-class APIRipperDrives(APIBase):
+class APIRipperDisc(APIBase):
     """Ripper Drives API"""
 
     def _cp_dispatch(self, vpath):
         """cp dispatcher overwrite"""
 
-        if not CONFIG["ripper"]["drives"]["enabled"].value or len(vpath) == 0:
+        if len(vpath) == 0:
             return self
-
         section = vpath.pop(0)
-
-        if section == "data":
-            return APIRipperDrivesData()
+        if section == "blank":
+            return APIRipperDiscBlank()
         return API404()

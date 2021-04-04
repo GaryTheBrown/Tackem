@@ -1,4 +1,5 @@
 {% extends 'layout/default.html' %}
+{%- import 'macros/disc_build.html' as disc_build -%}
 {% block content %}
 <div class="container-fluid mt-4 row">
 	<div class="col-12 border border-light">
@@ -28,12 +29,16 @@
 			</tr>
 			<tr>
 				<th>ISO File Name</th>
-				<td>{{ iso_file }}</td>
+				<td>{{ iso_file|default('NO ISO', true) }}</td>
 			</tr>
 		</table>
 	</div>
 	<div class="col-8 border border-light">
-		magic here for setting up the disc
+		{%- if rip_data -%}
+		{{ disc.build.discinfo(rip_data.disc_items) }}
+		{%- else -%}
+		{{ disc_build.disctype(data_disc_types_and_icons) }}
+		{%- endif -%}
 	</div>
 	{%- for track in disc_data.track_info -%}
 	<div class="col-12 border border-light row p-0">
@@ -66,7 +71,9 @@
 			</table>
 		</div>
 		<div class="col-8 border-left border-light">
-			magic here for setting up the track
+			{%- if rip_data -%}
+			SOMETHING HERE
+			{%- endif -%}
 		</div>
 	</div>
 	{%- endfor -%}

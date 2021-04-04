@@ -2,6 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
+from api.e404 import API404
 from libs.authentication import Authentication
 
 
@@ -14,9 +15,6 @@ class APIMoviesLibrary(APIBase):
         if len(vpath) == 0:
             return self
 
-        if cherrypy.request.params["user"] != Authentication.ADMIN:
-            raise cherrypy.HTTPError(status=401)  # Unauthorized
-
         if len(vpath) == 1:
             section = vpath.pop(0)
             if section == "scan":
@@ -26,7 +24,7 @@ class APIMoviesLibrary(APIBase):
             if section == "list":
                 return self
 
-        return self
+        return API404()
 
     def GET(self, **kwargs) -> str:  # pylint: disable=invalid-name,no-self-use
         """GET Function"""

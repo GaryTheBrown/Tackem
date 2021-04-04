@@ -8,6 +8,7 @@ from .get_tvshow import APIScraperGetTvshow
 from .search_movie import APIScraperSearchMovie
 from .search_tvshow import APIScraperSearchTvshow
 from api.base import APIBase
+from api.e404 import API404
 
 
 @cherrypy.expose
@@ -33,4 +34,4 @@ class APIScraper(APIBase):
             return APIScraperSearchMovie()
         if section == "searchtvshow":
             return APIScraperSearchTvshow()
-        return self
+        return API404()
