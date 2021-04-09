@@ -11,19 +11,10 @@ from libs.scraper import Scraper
 from www import Webserver
 
 # TODO finish off the Ripper system
-
-# Working on the scraper intergration in HTML tracks appear but need to be sorted from there then
-# continue with giving th user all fields needed for each track like with the dixc info section
-
 # TODO intergrate Libraries into main program
 # TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
 # TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
-# TODO LOOK INTO TEMPLATING SYSTEM FOR HTML
-# https://stackoverflow.com/questions/3435972/mako-or-jinja2
-# https://pythonhosted.org/wheezy.template/index.html
-# https://stackoverflow.com/questions/16844182/getting-started-with-cherrypy-and-jinja2
-# https://stackoverflow.com/questions/5824881/python-call-special-method-practical-example
 
 
 class Tackem:

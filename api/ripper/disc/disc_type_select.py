@@ -2,7 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
-from data.disc_type import DiscType
+from data.disc_type.base import DiscType
 
 
 @cherrypy.expose

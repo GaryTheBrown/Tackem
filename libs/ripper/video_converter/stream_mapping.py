@@ -1,6 +1,6 @@
 """Video Controller Stream Mapping code"""
-from data.stream_type import StreamType
-from data.video_track_type import VideoTrackType
+from data.stream_type.base import StreamType
+from data.video_track_type.base import VideoTrackType
 from libs.ripper.ffprobe import FFprobe
 from libs.ripper.video_converter.base import VideoConverterBase
 

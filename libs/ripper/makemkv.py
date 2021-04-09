@@ -10,9 +10,9 @@ import pexpect
 from data.config import CONFIG
 from data.database.ripper import VIDEO_CONVERT_DB
 from data.database.ripper import VIDEO_INFO_DB as DB
-from data.disc_type import DiscType
 from data.disc_type import make_disc_type
-from data.video_track_type import VideoTrackType
+from data.disc_type.base import DiscType
+from data.video_track_type.base import VideoTrackType
 from libs.database import Database
 from libs.database.messages.insert import SQLInsert
 from libs.database.messages.select import SQLSelect

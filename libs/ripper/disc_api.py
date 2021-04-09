@@ -2,12 +2,12 @@
 from typing import Optional
 
 from data.database.ripper import VIDEO_INFO_DB
-from data.disc_type import DiscType
-from data.disc_type import MovieDiscType
-from data.video_track_type import DONTRIPTrackType
-from data.video_track_type import ExtraTrackType
-from data.video_track_type import MovieTrackType
-from data.video_track_type import TrailerTrackType
+from data.disc_type.base import DiscType
+from data.disc_type.movie import MovieDiscType
+from data.video_track_type.dontrip import DONTRIPTrackType
+from data.video_track_type.extra import ExtraTrackType
+from data.video_track_type.feature import FeatureTrackType
+from data.video_track_type.trailer import TrailerTrackType
 from libs.database import Database
 from libs.database.messages.update import SQLUpdate
 from libs.database.where import Where
@@ -62,7 +62,7 @@ class DiscAPI:
     def __aqua_teen_movie(cls):
         """TEMP RETURN OF THE DATA FOR Aqua Teen Hunger Force Colon Movie"""
         tracks = [
-            MovieTrackType(),
+            FeatureTrackType(),
             DONTRIPTrackType("Blank"),
             DONTRIPTrackType("Legal Warning"),
             TrailerTrackType("Theatrical Trailer 4:3 version"),

@@ -3,7 +3,6 @@ import cherrypy
 
 from api.base import APIBase
 from data.disc_type import make_blank_disc_type
-from data.video_track_type import VideoTrackType
 
 
 @cherrypy.expose
@@ -18,7 +17,7 @@ class APIRipperDiscBlank(APIBase):
         disc_html = cherrypy.tools.template.part("part/ripper/disc/disc_info", **disc_data)
 
         track_data = {
-            "data_track_types_and_icons": VideoTrackType.TYPESANDICONS,
+            "data_track_types_and_icons": disc.track_types_and_icons,
         }
         track_html = cherrypy.tools.template.part(
             "part/ripper/disc/track_type_select", **track_data

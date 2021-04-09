@@ -4,8 +4,8 @@ import json
 import cherrypy
 
 from data.database.ripper import VIDEO_INFO_DB
-from data.disc_type import DiscType
 from data.disc_type import make_disc_type
+from data.disc_type.base import DiscType
 from libs import lower_keys
 from libs.authentication import Authentication
 from libs.database import Database
