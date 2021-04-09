@@ -17,7 +17,7 @@ class APIRipperDrives(APIBase):
         if not CONFIG["ripper"]["drives"]["enabled"].value or len(vpath) == 0:
             return self
 
-        section = vpath.pop(0)
+        section = vpath.pop(0).lower()
 
         if section == "data":
             return APIRipperDrivesData()

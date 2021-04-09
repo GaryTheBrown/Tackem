@@ -28,6 +28,7 @@ class InputAttributes:
         self.__selected = False
         self.__hidden = False
         self.__dict = {}
+        self.__width = ""
         self.add_if_missing(*args, **kwargs)
 
     def needed(self, *args: str):
@@ -111,7 +112,7 @@ class InputAttributes:
             string += " selected"
         if self.__hidden:
             string += " hidden"
-
+        string += self.__width
         return string
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -187,6 +188,9 @@ class InputAttributes:
                 self.__hidden = True
 
         for key, value in kwargs.items():
+            if key == "item_width":
+                self.__width = f' style="width:{value}px"'
+                continue
             if key in self.__dict:
                 continue
             if key[0:5] == "data_" or key in self.__kwargs:

@@ -1,15 +1,22 @@
 """Functions to call an http based API"""
-import json
-
 import requests
 
+HEADERS = {
+    "Accept": "application/json",
+    "Content-Type": "application/json;charset=utf-8",
+    "User-Agent": "tackem/0.0.1",
+}
 
-def restful_call(url: str, data: bool = False):  # data = 'json'
-    """make a request to a restful api"""
-    # url = 'https://url'
 
-    if isinstance(data, bool):
-        return requests.post(url, headers={"Content-Type": "application/json"}).json()
+def get(url: str, **params: dict) -> dict:
+    """get with url creation"""
+    r = requests.get(url, params=params, headers=HEADERS)
+    r.raise_for_status()
+    return r.json()
 
-    data_json = json.dumps(data, ensure_ascii=False)
-    return requests.post(url, data=data_json, headers={"Content-Type": "application/json"}).json()
+
+def post(url: str, **data: dict) -> dict:
+    """get with url creation"""
+    r = requests.post(url, data=data, headers=HEADERS)
+    r.raise_for_status()
+    return r.json()

@@ -1,26 +1,31 @@
 """video track type information"""
 import json
 from abc import ABCMeta
+from typing import Dict
 from typing import Optional
 from typing import Union
 
 from . import stream_type
-
-TYPES = {
-    "dontrip": "ban",
-    "movie": "film",
-    "tvshow": "tv",
-    "trailer": "film",
-    "extra": "plus",
-    "other": "plus",
-}
+from libs.classproperty import classproperty
 
 
 class VideoTrackType(metaclass=ABCMeta):
     """Master Type"""
 
+    @classproperty
+    def TYPESANDICONS(cls) -> Dict[str, str]:
+        """returns a list of types with Font Awsome Free Icons"""
+        return {
+            "dontrip": "ban",
+            "movie": "film",
+            "tvshow": "tv",
+            "trailer": "film",
+            "extra": "plus",
+            "other": "plus",
+        }
+
     def __init__(self, video_type: str, streams: Optional[list], title: str = "Track"):
-        self.__video_type = video_type if video_type in TYPES else ""
+        self.__video_type = video_type if video_type in self.TYPESANDICONS else ""
         self.__streams = streams if isinstance(streams, list) else []
         self.__title = title
 

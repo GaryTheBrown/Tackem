@@ -33,11 +33,11 @@
 			</tr>
 		</table>
 	</div>
-	<div class="col-8 border border-light">
+	<div id="disctypesection" class="col-8 border border-light row pt-2">
 		{%- if rip_data -%}
 		{{ disc.build.discinfo(rip_data.disc_items) }}
 		{%- else -%}
-		{{ disc_build.disctype(data_disc_types_and_icons) }}
+		{{ disc_build.discType(data_disc_types_and_icons) }}
 		{%- endif -%}
 	</div>
 	{%- for track in disc_data.track_info -%}
@@ -70,11 +70,12 @@
 				{%- endfor -%}
 			</table>
 		</div>
-		<div class="col-8 border-left border-light trackripdata" id="trackripdata{{ loop.index0 }}">
+		<section class="col-8 border-left border-light trackripdata" id="trackripdata{{ loop.index0 }}"
+			data-track-id="{{ loop.index0 }}">
 			{%- if rip_data -%}
 			SOMETHING HERE
 			{%- endif -%}
-		</div>
+		</section data-track-id="">
 	</div>
 	{%- endfor -%}
 </div>

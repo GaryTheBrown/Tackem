@@ -34,15 +34,16 @@ class APIBase:
 
     def _check_user(self, is_admin: bool = False):
         """checks that the user is allowed"""
-        if cherrypy.request.params["user"] == Authentication.GUEST + int(is_admin):
+        if is_admin and cherrypy.request.params["user"] < Authentication.ADMIN:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
-        # if is_admin and cherrypy.request.params["user"] == Authentication.USER:
-        #     raise cherrypy.HTTPError(status=401)  # Unauthorized
+        if cherrypy.request.params["user"] == Authentication.GUEST:
+            raise cherrypy.HTTPError(status=401)  # Unauthorized
 
     def _return_data(self, system: str, action: str, success: bool, **kwargs) -> str:
         """creates the json for returning requiring some data but allowing more"""
         base = {
             "user": cherrypy.request.params["user"],
+            "class": self.__class__.__name__,
             "system": system,
             "action": action,
             "success": success,

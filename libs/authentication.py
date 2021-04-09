@@ -122,6 +122,13 @@ class Authentication:
         return cls.GUEST
 
     @classmethod
+    def get_logged_in_userid(cls) -> int:
+        """Check if logged in"""
+        if "sessionid" in cherrypy.request.cookie.keys():
+            if cherrypy.request.cookie["sessionid"].value in cls.__temp_sessions:
+                return cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value]["id"]
+
+    @classmethod
     def check_auth(cls):
         """Check authentication"""
         if not cls.check_logged_in():
@@ -158,7 +165,7 @@ class Authentication:
         return True
 
     @classmethod
-    def add_user(cls, username: str, password: str, is_admin: bool):
+    def add_user(cls, username: str, password: str, is_admin: bool) -> bool:
         """Add user to system"""
         user = {
             "username": username,
@@ -170,6 +177,8 @@ class Authentication:
         if msg1.return_data["COUNT(*)"] == 0:
             msg2 = SQLInsert(cls.__db_info, **user)
             Database.call(msg2)
+            return True
+        return False
 
     @classmethod
     def delete_user(cls, user_id: int):
@@ -197,8 +206,11 @@ class Authentication:
         username: Union[str, None] = None,
         password: Union[str, None] = None,
         is_admin: bool = None,
-    ):
+    ) -> bool:
         """update the user info"""
+        if cls.check_logged_in() != cls.ADMIN and cls.get_logged_in_userid() != user_id:
+            return False
+
         data = {}
         if isinstance(username, str) and len(username) > 0:
             data["username"] = username
@@ -208,6 +220,7 @@ class Authentication:
             data["is_admin"] = is_admin
 
         Database.call(SQLUpdate(cls.__db_info, Where("id", user_id), **data))
+        return True
 
     @classmethod
     def clear_sessions(cls):

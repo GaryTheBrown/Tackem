@@ -27,10 +27,10 @@ class API(APIBase):
             user = self._check_api_key(api_key)
             if len(vpath) == 0:
                 return self
-            section = vpath.pop(0)
+            section = vpath.pop(0).lower()
         else:
             user = Authentication.check_logged_in()
-            section = api_key
+            section = api_key.lower()
 
         cherrypy.request.params["user"] = user
 

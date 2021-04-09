@@ -5,3 +5,27 @@
         data-click-action="reselectDisc">
 </div>
 {{ disc_build.discinfo(disc_items)}}
+{%- if not no_search -%}
+<ul class="list-unstyled col-12 mt-4" id="discResults"></ul>
+<ul id="discResultTemplate" class="col-12" hidden>
+    <li class="media border border-light">
+        <img src="">
+        <div class="media-body row">
+            <div class="bg-secondary text-center p-1 col-2 font-weight-bold">Title</div>
+            <h5 class="my-0 bg-secondary p-1 col-10 discTitle"></h5>
+            <div class="bg-dark text-center p-1 col-2 font-weight-bold">Original Title</div>
+            <div class="bg-dark p-1 col-10 discOriginalTitle"></div>
+            <div class="bg-secondary text-center p-1 col-2 font-weight-bold">Original Language</div>
+            <div class="bg-secondary p-1 col-10 discOriginalLanguage"></div>
+            <div class="bg-dark text-center p-1 col-2 font-weight-bold">Release Date</div>
+            <div class="bg-dark p-1 col-10 discReleaseDate"></div>
+            <div class="bg-dark text-center p-1 col-2 font-weight-bold">Overview</div>
+            <div class="bg-dark p-1 col-10 discOverview"></div>
+            <div class="col-1"></div>
+            <input type="button" class="btn btn-success btn-block col-10 mt-3 selectMovie" value="Select"
+                data-tmdbid="">
+            <div class="col-1"></div>
+        </div>
+    </li>
+</ul>
+{%- endif -%}

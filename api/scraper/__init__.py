@@ -15,26 +15,26 @@ class APIScraper(APIBase):
         if len(vpath) == 0:
             return self
 
-        section = vpath.pop(0)
+        section = vpath.pop(0).lower()
 
-        if section == "movieSearch":
+        if section == "moviesearch":
             return APIScraperMovieSearch()
-        if section == "movieSearchIMDBid":
+        if section == "moviesearchimdbid":
             return APIScraperMovieSearch()
-        if section == "movieSearchTMDBid":
+        if section == "moviesearchtmdbid":
             return APIScraperMovieSearch()
-        if section == "tvSearch":
+        if section == "tvsearch":
             return APIScraperMovieSearch()
-        if section == "tvSearchTVDBid":
+        if section == "tvsearchtvdbid":
             return APIScraperMovieSearch()
-        if section == "tvSearchTMDBid":
+        if section == "tvsearchtmdbid":
             return APIScraperMovieSearch()
-        if section == "docSearch":
+        if section == "docsearch":
             return APIScraperMovieSearch()
-        if section == "docSearchIMDBid":
+        if section == "docsearchimdbid":
             return APIScraperMovieSearch()
-        if section == "docSearchTVDBid":
+        if section == "docsearchtvdbid":
             return APIScraperMovieSearch()
-        if section == "docSearchTMDBid":
+        if section == "docsearchtmdbid":
             return APIScraperMovieSearch()
         return API404()

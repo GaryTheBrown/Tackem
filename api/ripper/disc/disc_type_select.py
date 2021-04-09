@@ -11,14 +11,9 @@ class APIRipperDiscDiscTypeSelect(APIBase):
 
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
-        html_data = {
+        disc_data = {
             "data_disc_types_and_icons": DiscType.TYPESANDICONS,
         }
+        disc_html = cherrypy.tools.template.part("part/ripper/disc/disc_type_select", **disc_data)
 
-        html = cherrypy.tools.template.part("part/ripper/disc/disc_type_select", **html_data)
-        return self._return_data(
-            "Ripper",
-            "Reset Make Disc",
-            True,
-            disc_html=html,
-        )
+        return self._return_data("Ripper", "Reset Make Disc", True, disc_html=disc_html)

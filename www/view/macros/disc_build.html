@@ -1,16 +1,13 @@
 {%- import 'macros/inputs.html' as inputs -%}
 
-{%- macro disctype(types) -%}
-
-<div id="disctypesection" class="row p-4">
-    <h1 class="col-12 text-center">What Type of disc is it?</h1>
-    {%- for key in types -%}
-    {{ startIcon(key, types[key]) }}
-    {%- endfor -%}
-</div>
+{%- macro discType(types) -%}
+<h1 class="col-12 text-center">What Type of disc is it?</h1>
+{%- for key in types -%}
+{{ startDiscIcon(key, types[key]) }}
+{%- endfor -%}
 {%- endmacro -%}
 
-{%- macro startIcon(label, icon) -%}
+{%- macro startDiscIcon(label, icon) -%}
 <div class="col-2 mb-4">
     <button class="btn btn-light btn-block" data-click-action="chooseDiscType"
         data-disc-type="{{ label|replace(" ", "")|lower }}">
@@ -28,4 +25,21 @@
 {{ inputs.itemfull(item) }}
 {%- endif -%}
 {%- endfor -%}
+{%- endmacro -%}
+
+{%- macro trackType(types) -%}
+<h1 class="col-12 text-center">What Type of track is it?</h1>
+{%- for key in types -%}
+{{ startTrackIcon(key, types[key]) }}
+{%- endfor -%}
+{%- endmacro -%}
+
+{%- macro startTrackIcon(label, icon) -%}
+<div class="col-2 mb-4">
+    <button class="btn btn-light btn-block" data-click-action="chooseTrackType"
+        data-disc-type="{{ label|replace(" ", "")|lower }}">
+        <i class="fas fa-{{ icon }} h2"></i>
+        <div class="font-weight-bold">{{ label }}</div>
+    </button>
+</div>
 {%- endmacro -%}

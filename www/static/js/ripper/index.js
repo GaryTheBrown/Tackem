@@ -149,10 +149,10 @@
         {
             let arrayIndex = existingISOs.indexOf(iso.filename);
             if (arrayIndex === -1) {
-                let newISOclone = $('#isotemplate').children().clone(true);
-                newISOclone.attr('data-name', iso.filename);
-                newISOclone.find('.title').html(iso.filename);
-                $('#isosection').append(newISOclone);
+                let $newClone = $('#isotemplate').children().clone(true);
+                $newClone.attr('data-name', iso.filename);
+                $newClone.find('.title').html(iso.filename);
+                $('#isosection').append($newClone);
             } else {
                 existingISOs.splice(arrayIndex, 1);
             }
@@ -191,12 +191,12 @@
         {
             let arrayIndex = existingConverters.indexOf(converter.id);
             if (arrayIndex === -1) {
-                let newISOclone = $('#videoconvertertemplate').children().clone(true);
-                newISOclone.attr('data-id', converter.id);
-                newISOclone.attr('data-disc', converter.discid);
-                newISOclone.attr('data-track', converter.trackid);
-                newISOclone.find('.title').html(converter.label);
-                $('#videoconvertersection').append(newISOclone);
+                let $newClone = $('#videoconvertertemplate').children().clone(true);
+                $newClone.attr('data-id', converter.id);
+                $newClone.attr('data-disc', converter.discid);
+                $newClone.attr('data-track', converter.trackid);
+                $newClone.find('.title').html(converter.label);
+                $('#videoconvertersection').append($newClone);
             } else {
                 existingConverters.splice(arrayIndex, 1);
             }

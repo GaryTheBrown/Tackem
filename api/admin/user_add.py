@@ -36,5 +36,14 @@ class APIAdminUserAdd(APIBase):
                 error="Missing is admin Setting",
                 errorNumber=2,
             )
-        Authentication.add_user(kwargs["username"], kwargs["password"], bool(kwargs["isadmin"]))
-        return self._return_data(cherrypy.request.params["user"], "User", "Add User", True)
+        if Authentication.add_user(
+            kwargs["username"], kwargs["password"], kwargs["isadmin"] == "true"
+        ):
+            return self._return_data("User", "Add User", True)
+        return self._return_data(
+            "User",
+            "Add User",
+            False,
+            error="Failed User Name Taken",
+            errorNumber=3,
+        )

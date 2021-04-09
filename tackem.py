@@ -7,9 +7,14 @@ from libs.authentication import Authentication
 from libs.database import Database
 from libs.events import RootEventMaster as RootEvent
 from libs.ripper import Ripper
+from libs.scraper import Scraper
 from www import Webserver
 
 # TODO finish off the Ripper system
+
+# Working on the scraper intergration in HTML tracks appear but need to be sorted from there then
+# continue with giving th user all fields needed for each track like with the dixc info section
+
 # TODO intergrate Libraries into main program
 # TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
@@ -27,38 +32,52 @@ class Tackem:
     @classmethod
     def start(cls):
         """Start of the program"""
-        print("LOADING Config...")
+        print("LOADING Config...", end=" ")
         CONFIG.load()
-        print("STARTING DATABASE...")
+        print("DONE")
+        print("STARTING DATABASE...", end=" ")
         Database.start()
-        print("STARTING authentication...")
+        print("DONE")
+        print("STARTING AUTHENTICATION...", end=" ")
         Authentication.start()
-        print("STARTING LIBRARIES... TODO")
+        print("DONE")
+        print("STARTING SCRAPER...", end=" ")
+        Scraper.start()
+        print("DONE")
+        print("STARTING LIBRARIES...", end=" ")
+        print("TODO")
         if Ripper.enabled:
-            print("STARTING RIPPER...")
+            print("STARTING RIPPER...", end=" ")
             Ripper.start()
-        print("STARTING WEBSERVICES...")
+            print("DONE")
+        print("STARTING WEBSERVICES...", end=" ")
         Webserver.start()
+        print("DONE")
         print("TACKEM HAS STARTED")
 
     @classmethod
     def stop(cls):
         """Stop commands"""
-        print("STOPPING WEB SERVICES...")
+        print("STOPPING WEB SERVICES...", end=" ")
         Webserver.stop()
+        print("DONE")
         if Ripper.running:
-            print("STOPPING RIPPER...")
+            print("STOPPING RIPPER...", end=" ")
             Ripper.stop()
-        print("STOPPING LIBRARIES... TODO")
-        print("STOPPING DATABASE...")
+            print("DONE")
+        print("STOPPING LIBRARIES...", end=" ")
+        print("TODO")
+        print("STOPPING DATABASE...", end=" ")
         Database.stop()
+        print("DONE")
 
     @classmethod
     def shutdown(cls):
         """Shutdown commands"""
         cls.stop()
-        print("SAVING Config FILE...")
+        print("SAVING Config FILE...", end=" ")
         CONFIG.save()
+        print("DONE")
         print("SHUTDOWN COMPLETED")
 
     @classmethod

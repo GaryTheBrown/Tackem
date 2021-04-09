@@ -1,3 +1,7 @@
+* {
+  border-radius: 0 !important;
+}
+
 body {
   background-color: black;
 }
@@ -27,7 +31,6 @@ footer {
 /* NAVBAR */
 .navbar {
   background-color: #222222;
-  border-radius: 0px;
   border: 0;
   margin: 0;
   padding: 0;
@@ -82,7 +85,6 @@ footer {
 }
 
 .navbar .dropdown-menu {
-  border-radius: 0;
   border: 0;
   margin: 0;
   border: 0;
@@ -191,7 +193,6 @@ a.nav-link {
   background-color: #ffffff;
   color: #000000;
   cursor: pointer;
-  border-radius: 5px;
   padding: 1px 15px;
 }
 
@@ -221,7 +222,7 @@ a.nav-link {
   /* Light grey */
   border-top: 16px solid #3498db;
   /* Blue */
-  border-radius: 50%;
+  border-radius: 50% !important;
   width: 120px;
   height: 120px;
   position: relative;

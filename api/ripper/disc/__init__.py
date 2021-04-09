@@ -16,7 +16,7 @@ class APIRipperDisc(APIBase):
 
         if len(vpath) == 0:
             return self
-        section = vpath.pop(0)
+        section = vpath.pop(0).lower()
         if section == "blank":
             return APIRipperDiscBlank()
         if section == "disctypeselect":

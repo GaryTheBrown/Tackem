@@ -10,6 +10,8 @@ from typing import Union
 from data.video_track_type import make_track_type
 from libs.classproperty import classproperty
 from libs.config.obj.data.button import Button
+from libs.config.obj.data.input_attributes import InputAttributes
+from libs.config.obj.integer_number import ConfigObjIntegerNumber
 from libs.config.obj.string import ConfigObjString
 
 
@@ -19,7 +21,6 @@ class DiscType(metaclass=ABCMeta):
     @classproperty
     def TYPESANDICONS(cls) -> Dict[str, str]:
         """returns a list of types with Font Awsome Free Icons"""
-        # Do we want to add and allow an adult section?
         return {
             "Movie": "film",
             "TV Show": "tv",
@@ -156,16 +157,25 @@ class MovieDiscType(DiscType):
             "",
             "Movie Title",
             "Enter the name of the movie here",
-            button=Button("Find By Title", "movieSearch", True),
+            button=Button("Search By Title", "movieSearch", True, item_width=175),
         )
         name.value = self.name
+
+        year = ConfigObjIntegerNumber(
+            "year",
+            0,
+            "Year",
+            "Enter the year here to help the search by title",
+            input_attributes=InputAttributes(min=1888, max=int(datetime.date.today().year)),
+        )
+        year.value = self.year
 
         imdbid = ConfigObjString(
             "imbbid",
             "",
             "IMDB ID",
             "Enter the IMDB ID here",
-            button=Button("Find By IMDB ID", "movieSearchIMDBid", True),
+            button=Button("Search By IMDB ID", "movieSearchIMDBid", True, item_width=175),
         )
         imdbid.value = self.imdbid
 
@@ -174,10 +184,12 @@ class MovieDiscType(DiscType):
             "",
             "TMDB ID",
             "Enter the TMDB ID here",
-            button=Button("Find By TMDB ID", "movieSearchTMDBid", True),
+            button=Button("Search By TMDB ID", "movieSearchTMDBid", True, item_width=175),
         )
         tmdbid.value = self.moviedbid
 
+        year_html = year.html_dict("")
+        year_html["value"] = ""
         return {
             "no_search": False,
             "disc_items": [
@@ -187,6 +199,7 @@ class MovieDiscType(DiscType):
                     "value": self.disc_type,
                 },
                 name.html_dict(""),
+                year_html,
                 imdbid.html_dict(""),
                 tmdbid.html_dict(""),
             ],
@@ -230,7 +243,7 @@ class TVShowDiscType(DiscType):
             "",
             "TV Show Name",
             "Enter the name of the TV Show here",
-            button=Button("Find By Title", "tvSearch", True),
+            button=Button("Search By Title", "tvSearch", True, item_width=175),
         )
         name.value = self.name
 
@@ -239,7 +252,7 @@ class TVShowDiscType(DiscType):
             "",
             "TVDB ID",
             "Enter the TVDB ID here",
-            button=Button("Find By TVDB ID", "tvSearchTVDBid", True),
+            button=Button("Search By TVDB ID", "tvSearchTVDBid", True, item_width=175),
         )
         tvdbid.value = self.tvdbid
 
@@ -248,7 +261,7 @@ class TVShowDiscType(DiscType):
             "",
             "TMDB ID",
             "Enter the TMDB ID here",
-            button=Button("Find By TMDB ID", "tvSearchTMDBid", True),
+            button=Button("Search By TMDB ID", "tvSearchTMDBid", True, item_width=175),
         )
         tmdbid.value = self.moviedbid
 
@@ -290,7 +303,7 @@ class DocumentaryDiscType(DiscType):
             "",
             "Documentary Name",
             "Enter the name of the Documentary here",
-            button=Button("Find By Title", "docSearch", True),
+            button=Button("Search By Title", "docSearch", True, item_width=175),
         )
         name.value = self.name
 
@@ -299,7 +312,7 @@ class DocumentaryDiscType(DiscType):
             "",
             "IMDB ID",
             "Enter the IMDB ID here",
-            button=Button("Find By IMDB ID", "docSearchIMDBid", True),
+            button=Button("Search By IMDB ID", "docSearchIMDBid", True, item_width=175),
         )
 
         tvdbid = ConfigObjString(
@@ -307,7 +320,7 @@ class DocumentaryDiscType(DiscType):
             "",
             "TVDB ID",
             "Enter the TVDB ID here",
-            button=Button("Find By TVDB ID", "docSearchTVDBid", True),
+            button=Button("Search By TVDB ID", "docSearchTVDBid", True, item_width=175),
         )
 
         tmdbid = ConfigObjString(
@@ -315,7 +328,7 @@ class DocumentaryDiscType(DiscType):
             "",
             "TMDB ID",
             "Enter the TMDB ID here",
-            button=Button("Find By TMDB ID", "docSearchTMDBid", True),
+            button=Button("Search By TMDB ID", "docSearchTMDBid", True, item_width=175),
         )
 
         return {

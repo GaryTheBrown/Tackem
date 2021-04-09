@@ -218,5 +218,5 @@ class Column:
             elif isinstance(self.__default, int):
                 return_string += str(self.__default)
             elif isinstance(self.__default, bool):
-                return_string += '"True"' if self.__default else '"False"'
+                return_string += "1" if self.__default else "0"
         return return_string

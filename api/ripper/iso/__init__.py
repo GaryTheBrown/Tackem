@@ -18,7 +18,7 @@ class APIRipperIsos(APIBase):
         if not CONFIG["ripper"]["iso"]["enabled"].value or len(vpath) == 0:
             return self
 
-        section = vpath.pop(0)
+        section = vpath.pop(0).lower()
 
         if section == "data":
             return APIRipperISOData()

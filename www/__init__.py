@@ -8,7 +8,6 @@ from data.config import CONFIG
 from data.database.system import UPLOAD_DB
 from libs.database import Database
 from libs.database.messages.table import SQLTable
-from libs.error_pages import setup_error_pages
 from libs.file import File
 from www.template import Template
 
@@ -29,8 +28,18 @@ class Webserver:
 
         Database.call(SQLTable(UPLOAD_DB))
 
+        def error_page(status, message, traceback, version) -> str:
+            """error page"""
+            return f"Error {status}"
+
         cherrypy.config.update(
             {
+                "error_page.400": error_page,
+                "error_page.401": error_page,
+                "error_page.403": error_page,
+                "error_page.404": error_page,
+                "error_page.405": error_page,
+                # "error_page.500": error_page,
                 "server.socket_host": CONFIG["webui"]["socket"].value,
                 "server.socket_port": CONFIG["webui"]["port"].value,
                 "server.threadPool": 10,
@@ -42,8 +51,6 @@ class Webserver:
                 "log.error_file": "",
             }
         )
-
-        setup_error_pages(e500=False)
 
         conf_www = {
             "/img": {

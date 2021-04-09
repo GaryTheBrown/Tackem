@@ -22,7 +22,10 @@ class Button:
         """returns the required Data for the html template to use"""
         data = [f"data-click-action={self.__action}"]
         for key, value in self.__kwargs.items():
-            data.append(f"data-{key}={value}")
+            if key == "item_width":
+                data.append(f"style=width:{value}px")
+            else:
+                data.append(f"data-{key}={value}")
         return_dict = {
             "append": self.__append,
             "label": self.__label,

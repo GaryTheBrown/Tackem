@@ -19,7 +19,7 @@ NEW:{{ obj }}<br>
 {%- endmacro -%}
 
 {%- macro itemfull(obj) -%}
-<div class="col-12 row my-2 item">
+<div class="col-12 row item pb-1">
 	<div class="col-sm-2 col-12">
 		<label for="{{ obj.var_name }}">{{ obj.label }}:</label>
 	</div>
@@ -37,7 +37,7 @@ NEW:{{ obj }}<br>
 {%- endmacro -%}
 
 {%- macro input(obj) -%}
-<div class="input-group mb-3">
+<div class="input-group">
 	<input type="{{ obj.input_type }}" class="form-control" name="{{ obj.var_name }}" id="{{ obj.var_name }}" {%- if
 		obj.data_list -%} list="{{ obj.data_list.var_name }}" {%- endif -%} aria-describedby="{{ obj.var_name }}Help"
 		value="{{ obj.value }}" {{ obj.input_attributes }}>
@@ -49,7 +49,7 @@ NEW:{{ obj }}<br>
 {%- macro button(obj) -%}
 {%- if obj.append -%}
 <div class="input-group-append">
-	<input type="button" class="btn btn-success btn-block mb-3" value="{{ obj.label }}" {{ obj.data }}>
+	<input type="button" class="btn btn-success btn-block" value="{{ obj.label }}" {{ obj.data }}>
 </div>
 {%- else -%}
 <input type="button" class="btn btn-success btn-block" value="{{ obj.label }}" {{ obj.data }}>
@@ -57,8 +57,8 @@ NEW:{{ obj }}<br>
 {%- endmacro -%}
 
 {%- macro select(obj) -%}
-<select class="form-control mb-3" name="{{ obj.var_name }}" id="{{ obj.var_name }}"
-	aria-describedby="{{ obj.var_name }}Help" {{ obj.input_attributes }}>
+<select class="form-control" name="{{ obj.var_name }}" id="{{ obj.var_name }}" aria-describedby="{{ obj.var_name }}Help"
+	{{ obj.input_attributes }}>
 	{%- for value in obj["values"] -%}
 	<option value="{{ value.value }}" {{ obj.input_attributes }} {% if obj.value==value.value %}selected{% endif %}>{{
 		value.label }}</option>

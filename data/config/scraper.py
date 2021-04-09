@@ -12,14 +12,14 @@ def scraper_config() -> ConfigList:
         "scraper",
         "Video Scraper (The Movie DB)",
         ConfigObjString(
-            "apikey",
+            "v4apikey",
             "",
-            "API Key",
+            "V4 API Key",
             "The API key for TMDB API access goto http://www.themoviedb.org/ to grab your key",
         ),
         ConfigObjString(
             "url",
-            "api.themoviedb.org",
+            "https://api.themoviedb.org",
             "Base Url",
             "The API base url for TMDB API access Leave alone unless you need to move this",
         ),
