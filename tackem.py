@@ -11,6 +11,9 @@ from libs.scraper import Scraper
 from www import Webserver
 
 # TODO finish off the Ripper system
+# working on the disc info html pages. need to figure out what is allowed for music videos and other
+# need to make the buttons better (adaptive so they get equal distance and size on the line)
+# if cannot find a safe way then just switch it to a select box that you could customize
 # TODO intergrate Libraries into main program
 # TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.

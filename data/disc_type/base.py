@@ -24,12 +24,12 @@ class DiscType(metaclass=ABCMeta):
             "Other": "question",
         }
 
-    def __init__(self, disc_type: str, name: str, tracks: list, language: str, moviedbid: str):
+    def __init__(self, disc_type: str, name: str, tracks: list, language: str, tmdb_id: str):
         self.__disc_type = disc_type if disc_type in self.TYPESANDICONS else ""
         self.__name = name
         self.__tracks = tracks if isinstance(tracks, list) else []
         self.__language = language if len(language) == 2 and isinstance(language, str) else "en"
-        self.__moviedbid = moviedbid
+        self.__tmdb_id = tmdb_id
 
     @property
     def disc_type(self) -> str:
@@ -52,9 +52,9 @@ class DiscType(metaclass=ABCMeta):
         return self.__language
 
     @property
-    def moviedbid(self) -> str:
-        """returns the moviedbid"""
-        return self.__moviedbid
+    def tmdb_id(self) -> str:
+        """returns the tmdb_id"""
+        return self.__tmdb_id
 
     @property
     def track_types_and_icons(self):
@@ -72,7 +72,7 @@ class DiscType(metaclass=ABCMeta):
         if self.__tracks is not None:
             self.__tracks[track_id] = track
 
-    def set_tracks(self, tracks) -> Optional[list]:
+    def set_tracks(self, tracks: list):
         """sets the tracks"""
         if self.__tracks is not None and isinstance(tracks, list):
             self.__tracks = tracks
@@ -89,7 +89,7 @@ class DiscType(metaclass=ABCMeta):
         super_dict["name"] = self.__name
         super_dict["info"] = self.__info
         super_dict["language"] = self.__language
-        super_dict["moviedbid"] = self.__moviedbid
+        super_dict["tmdb_id"] = self.__tmdb_id
         if not no_tracks:
             track_list = []
             for track in self.__tracks:
@@ -105,5 +105,5 @@ class DiscType(metaclass=ABCMeta):
         """generates the title for the track"""
 
     @abstractmethod
-    def html_search_data(self) -> dict:
+    def html_create_data(self) -> dict:
         """returns the data for html"""

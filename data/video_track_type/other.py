@@ -2,23 +2,41 @@
 from typing import Optional
 
 from data.video_track_type.base import VideoTrackType
+from libs.config.obj.string import ConfigObjString
 
 
 class OtherTrackType(VideoTrackType):
     """Other Types"""
 
-    def __init__(self, other_type: str, streams: Optional[list] = None):
-        super().__init__("other", streams, f"Other: {other_type}")
-        self.__other_type = other_type
+    def __init__(self, name: str):
+        super().__init__("Other", f"Other: {name}")
+        self.__name = name
 
     @property
-    def other_type(self) -> str:
+    def name(self) -> str:
         """returns other type"""
-        return self.__other_type
+        return self.__name
 
-    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        super_dict["other_type"] = self.__other_type
-        return super().make_dict(super_dict, include_streams)
+        super_dict["name"] = self.__name
+        return super().make_dict(super_dict)
+
+    def html_create_data(self, track_id: int) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(f"track_{track_id}_name", "", "Name", "Enter the name")
+        name.value = self.name
+
+        return {
+            "no_search": False,
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": f"track_{track_id}_type",
+                    "value": self.track_type,
+                },
+                name.html_dict(""),
+            ],
+        }

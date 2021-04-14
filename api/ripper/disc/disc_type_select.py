@@ -11,6 +11,7 @@ class APIRipperDiscDiscTypeSelect(APIBase):
 
     def GET(self, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
+
         disc_data = {
             "data_disc_types_and_icons": DiscType.TYPESANDICONS,
         }

@@ -25,19 +25,17 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
             data.get("name", ""),
             data.get("info", ""),
             data.get("year", ""),
-            data.get("imdbid", ""),
             tracks,
             data.get("language", "en"),
-            data.get("moviedbid", ""),
+            data.get("tmdb_id", ""),
         )
     if data["disc_type"].replace(" ", "").lower() == "tvshow":
         return TVShowDiscType(
             data.get("name", ""),
             data.get("info", ""),
-            data.get("tvdbid", ""),
             tracks,
             data.get("language", "en"),
-            data.get("moviedbid", ""),
+            data.get("tmdb_id", ""),
         )
     if data["disc_type"].replace(" ", "").lower() == "documentary":
         return DocumentaryDiscType(
@@ -73,9 +71,9 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
 def make_blank_disc_type(disc_type_code: str) -> DiscType:
     """make the blank disc type"""
     if disc_type_code.replace(" ", "").lower() == "movie":
-        return MovieDiscType("", 0, "", None, "en", "")
+        return MovieDiscType("", 0, None, "en", "")
     if disc_type_code.replace(" ", "").lower() == "tvshow":
-        return TVShowDiscType("", "", None, "en", "")
+        return TVShowDiscType("", None, "en", "")
     if disc_type_code.replace(" ", "").lower() == "documentary":
         return DocumentaryDiscType("", None, "en")
     if disc_type_code.replace(" ", "").lower() == "musicvideo":

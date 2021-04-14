@@ -2,6 +2,9 @@
 from typing import Optional
 
 from data.disc_type.base import DiscType
+from data.languages import Languages
+from libs.config.obj.data.option import ConfigObjOption
+from libs.config.obj.options.select import ConfigObjOptionsSelect
 from libs.config.obj.string import ConfigObjString
 
 
@@ -27,13 +30,28 @@ class OtherDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_search_data(self) -> dict:
+    def html_create_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
-            "name",
+            "disc_name",
             "",
             "Disc Name",
             "Enter the name of the Disc here",
+        )
+
+        info = ConfigObjString(
+            "disc_info",
+            "",
+            "Disc Info",
+            "Enter some information for the disc here",
+        )
+
+        language = ConfigObjOptionsSelect(
+            "disc_language",
+            Languages.config_option_2(ConfigObjOption),
+            "en",
+            "Disc Language",
+            "Enter the language of the Disc here",
         )
 
         return {
@@ -45,5 +63,7 @@ class OtherDiscType(DiscType):
                     "value": self.disc_type,
                 },
                 name.html_dict(""),
+                info.html_dict(""),
+                language.html_dict(""),
             ],
         }

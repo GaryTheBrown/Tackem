@@ -3,7 +3,9 @@ import cherrypy
 
 from api.base import APIBase
 from api.e404 import API404
+from api.scraper.movie_imdbid import APIScraperMovieIMDBID
 from api.scraper.movie_search import APIScraperMovieSearch
+from api.scraper.movie_tmdbid import APIScraperMovieTMDBID
 
 
 @cherrypy.expose
@@ -20,9 +22,9 @@ class APIScraper(APIBase):
         if section == "moviesearch":
             return APIScraperMovieSearch()
         if section == "moviesearchimdbid":
-            return APIScraperMovieSearch()
+            return APIScraperMovieIMDBID()
         if section == "moviesearchtmdbid":
-            return APIScraperMovieSearch()
+            return APIScraperMovieTMDBID()
         if section == "tvsearch":
             return APIScraperMovieSearch()
         if section == "tvsearchtvdbid":

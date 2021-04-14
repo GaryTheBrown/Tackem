@@ -2,43 +2,43 @@
 from typing import Optional
 
 from data.video_track_type.base import VideoTrackType
+from libs.config.obj.string import ConfigObjString
 
 
 class TrailerTrackType(VideoTrackType):
     """trailer Type"""
 
-    def __init__(self, info: str, streams: Optional[list] = None):
-        super().__init__("trailer", streams, f"Trailer: {info}")
-        self.__info = info
+    def __init__(self, name: str):
+        super().__init__("Trailer", f"Trailer: {name}")
+        self.__name = name
 
     @property
-    def info(self) -> str:
-        """returns trailers movie info"""
-        return self.__info
+    def name(self) -> str:
+        """returns trailers movie name"""
+        return self.__name
 
-    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        super_dict["info"] = self.__info
-        return super().make_dict(super_dict, include_streams)
+        super_dict["name"] = self.__name
+        return super().make_dict(super_dict)
 
+    def html_create_data(self, track_id: int) -> dict:
+        """returns the data for html"""
+        name = ConfigObjString(
+            f"track_{track_id}_name", "", "Trailer Name", "Enter the trailer name"
+        )
+        name.value = self.name
 
-class OtherTrackType(VideoTrackType):
-    """Other Types"""
-
-    def __init__(self, other_type: str, streams: Optional[list] = None):
-        super().__init__("other", streams, f"Other: {other_type}")
-        self.__other_type = other_type
-
-    @property
-    def other_type(self) -> str:
-        """returns other type"""
-        return self.__other_type
-
-    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
-        """returns the tracks"""
-        if super_dict is None:
-            super_dict = {}
-        super_dict["other_type"] = self.__other_type
-        return super().make_dict(super_dict, include_streams)
+        return {
+            "no_search": False,
+            "disc_items": [
+                {
+                    "type": "hidden",
+                    "var_name": f"track_{track_id}_type",
+                    "value": self.track_type,
+                },
+                name.html_dict(""),
+            ],
+        }

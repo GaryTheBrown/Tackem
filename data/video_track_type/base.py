@@ -1,6 +1,7 @@
 """video track type information"""
 import json
 from abc import ABCMeta
+from abc import abstractmethod
 from typing import Dict
 from typing import Optional
 
@@ -14,28 +15,24 @@ class VideoTrackType(metaclass=ABCMeta):
     def TYPESANDICONS(cls) -> Dict[str, str]:
         """returns a list of types with Font Awsome Free Icons"""
         return {
-            "dontrip": "ban",
-            "feature": "film",
-            "episode": "tv",
-            "trailer": "film",
-            "extra": "plus",
-            "other": "plus",
+            "Dont Rip": "ban",
+            "Feature": "film",
+            "Episode": "tv",
+            "Trailer": "film",
+            "Extra": "plus",
+            "Music": "music",
+            "Home Movie": "users",
+            "Other": "plus",
         }
 
-    def __init__(self, video_type: str, streams: Optional[list], title: str = "Track"):
-        self.__video_type = video_type if video_type in self.TYPESANDICONS else ""
-        self.__streams = streams if isinstance(streams, list) else []
+    def __init__(self, track_type: str, title: str = "Track"):
+        self.__track_type = track_type if track_type in self.TYPESANDICONS else ""
         self.__title = title
 
     @property
-    def video_type(self) -> str:
+    def track_type(self) -> str:
         """returns the type"""
-        return self.__video_type
-
-    @property
-    def streams(self) -> list:
-        """returns streams"""
-        return self.__streams
+        return self.__track_type
 
     @property
     def title(self) -> list:
@@ -50,23 +47,13 @@ class VideoTrackType(metaclass=ABCMeta):
         """returns the Disc Type as a Json String"""
         return json.dumps(self.make_dict())
 
-    def make_dict(self, super_dict: Optional[dict] = None, include_streams: bool = True) -> dict:
+    def make_dict(self, super_dict: Optional[dict] = None) -> dict:
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        super_dict["video_type"] = self.__video_type
-        stream_list = []
-        if include_streams:
-            for stream in self.__streams:
-                if stream is None:
-                    stream_list.append(None)
-                else:
-                    stream_list.append(stream.make_dict())
-            super_dict["streams"] = stream_list
+        super_dict["track_type"] = self.__track_type
         return super_dict
 
-    def _change_section_html(self, track: str) -> str:
-        """change section code"""
-        html = '<div class="onclick topright" onclick="tracktype(' + str(track)
-        html += ", 'change');\">(change)</div>"
-        return html
+    @abstractmethod
+    def html_create_data(self, track_id: int) -> dict:
+        """returns the data for html"""

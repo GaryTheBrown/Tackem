@@ -5,16 +5,16 @@ from data.video_track_type.base import VideoTrackType
 from libs.config.obj.string import ConfigObjString
 
 
-class ExtraTrackType(VideoTrackType):
-    """Extra Type"""
+class HomeMovieTrackType(VideoTrackType):
+    """Home Movie Types"""
 
     def __init__(self, name: str):
-        super().__init__("Extra", f"Extra: {name}")
+        super().__init__("Home Movie", f"Home Movie: {name}")
         self.__name = name
 
     @property
     def name(self) -> str:
-        """returns extra name"""
+        """returns other type"""
         return self.__name
 
     def make_dict(self, super_dict: Optional[dict] = None) -> dict:
@@ -26,7 +26,7 @@ class ExtraTrackType(VideoTrackType):
 
     def html_create_data(self, track_id: int) -> dict:
         """returns the data for html"""
-        name = ConfigObjString(f"track_{track_id}_name", "", "Extra Name", "Enter the name")
+        name = ConfigObjString(f"track_{track_id}_name", "", "Track Name", "Enter the track name")
         name.value = self.name
 
         return {

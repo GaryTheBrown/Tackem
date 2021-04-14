@@ -10,7 +10,7 @@ from libs.config.obj.string import ConfigObjString
 class DocumentaryDiscType(DiscType):
     """Documentary Disc Type"""
 
-    _track_types: List[str] = ["dontrip", "feature", "episode", "trailer", "extra"]
+    _track_types: List[str] = ["Dont Rip", "Feature", "Episode", "Trailer", "Extra"]
 
     def __init__(self, name: str, tracks: list, language: str = "eng"):
         super().__init__("Documentary", name, tracks, language, None)
@@ -25,7 +25,7 @@ class DocumentaryDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_search_data(self) -> dict:
+    def html_create_data(self) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -62,12 +62,29 @@ class DocumentaryDiscType(DiscType):
 
         return {
             "no_search": False,
-            "disc_items": [
+            "disc_data_items": [
                 {
                     "type": "hidden",
                     "var_name": "disc_type",
                     "value": self.disc_type,
                 },
+                {
+                    "type": "hidden",
+                    "var_name": "disc_tmdbid",
+                    "value": self.tmdb_id,
+                },
+                {
+                    "type": "hidden",
+                    "var_name": "disc_name",
+                    "value": self.name,
+                },
+                {
+                    "type": "hidden",
+                    "var_name": "disc_language",
+                    "value": self.language,
+                },
+            ],
+            "disc_items": [
                 name.html_dict(""),
                 imdbid.html_dict(""),
                 tvdbid.html_dict(""),

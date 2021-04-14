@@ -1,0 +1,10 @@
+{%- import 'macros/disc_build.html' as disc_build -%}
+<div class="col-5">
+    <h3>{{ disc_items[0].value }}</h3>
+</div>
+<div class="col-5"></div>
+<div class="col-2">
+    <input type="button" class="btn btn-success btn-block pull-right" value="Reselect Track"
+        data-click-action="reselectTrack">
+</div>
+{{ disc_build.items(disc_items)}}

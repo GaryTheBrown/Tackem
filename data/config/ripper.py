@@ -494,13 +494,6 @@ Do you want the default stream to be the Original language or dubbed in your lan
                     ),
                     is_section=True,
                 ),
-                ConfigObjBoolean(
-                    "keepcommentary",
-                    True,
-                    "Keep Commentary",
-                    "Do you want to keep the commentary track(s)?",
-                    input_attributes=YES_NO_IA,
-                ),
             ),
             ConfigList(
                 "chapters",

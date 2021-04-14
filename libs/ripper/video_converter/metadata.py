@@ -14,12 +14,12 @@ class VideoConverterMetadata(VideoConverterBase):
             return
 
         disc_type = disc_info.disc_type
-        track_type = track_info.video_type
+        track_type = track_info.track_type
         tags = []
         if Scraper.working:
             scraper_data = None
             if disc_type == "Movie":
-                scraper_info = Scraper.get_movie_details(disc_info.moviedbid)
+                scraper_info = Scraper.get_movie_details(disc_info.tmdb_id)
                 if scraper_info["success"]:
                     scraper_data = scraper_info["response"]
                 if track_type == "movie":
@@ -41,7 +41,7 @@ class VideoConverterMetadata(VideoConverterBase):
                 tags.append('show="' + disc_info.name + '"')
                 if track_type == "tvshow":
                     scraper_info = Scraper.get_tvshow_episode_details(
-                        disc_info.moviedbid, track_info.season, track_info.episode
+                        disc_info.tmdb_id, track_info.season, track_info.episode
                     )
                     scraper_data = scraper_info["response"]
                     tags.append("season=" + str(track_info.season))

@@ -13,7 +13,7 @@ class APIRipperDiscBlank(APIBase):
         """GET Function"""
 
         disc = make_blank_disc_type(disc_type)
-        disc_data = disc.html_search_data()
+        disc_data = disc.html_create_data()
         disc_html = cherrypy.tools.template.part("part/ripper/disc/disc_info", **disc_data)
 
         track_data = {

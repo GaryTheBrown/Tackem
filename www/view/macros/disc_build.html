@@ -8,8 +8,8 @@
 {%- endmacro -%}
 
 {%- macro startDiscIcon(label, icon) -%}
-<div class="col-2 mb-4">
-    <button class="btn btn-light btn-block" data-click-action="chooseDiscType"
+<div class="col mb-4">
+    <button type="button" class="btn btn-light btn-block" data-click-action="chooseDiscType"
         data-disc-type="{{ label|replace(" ", "")|lower }}">
         <i class="fas fa-{{ icon }} h2"></i>
         <div class="font-weight-bold">{{ label }}</div>
@@ -17,7 +17,7 @@
 </div>
 {%- endmacro -%}
 
-{%- macro discinfo(items) -%}
+{%- macro items(items) -%}
 {%- for item in items -%}
 {%- if item.type == "hidden" -%}
 {{ inputs.hidden(item) }}
@@ -35,9 +35,9 @@
 {%- endmacro -%}
 
 {%- macro startTrackIcon(label, icon) -%}
-<div class="col-2 mb-4">
-    <button class="btn btn-light btn-block" data-click-action="chooseTrackType"
-        data-disc-type="{{ label|replace(" ", "")|lower }}">
+<div class="col mb-4">
+    <button type="button" class="btn btn-light btn-block" data-click-action="chooseTrackType"
+        data-track-type="{{ label|replace(" ", "")|lower }}">
         <i class="fas fa-{{ icon }} h2"></i>
         <div class="font-weight-bold">{{ label }}</div>
     </button>
