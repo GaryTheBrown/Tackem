@@ -1,21 +1,32 @@
 {%- import 'macros/disc_build.html' as disc_build -%}
 <div class="col-5">
-    <h3>{{ disc_items[0].value }}</h3>
+    <h3>{{ disc_type }}</h3>
 </div>
 <div class="col-5"></div>
 <div class="col-2">
     <input type="button" class="btn btn-success btn-block pull-right" value="Reselect Disc"
         data-click-action="reselectDisc">
 </div>
-<div id="discData">
-    {%- if not no_search -%}
+{%- if search -%}
+<div class="media col-12" id="discData" style="display:none;">
     {{ disc_build.items(disc_data_items)}}
+    <img src="">
+    <div class="media-body row">
+        <div class="bg-secondary text-center p-1 col-2 font-weight-bold">Title</div>
+        <h5 class="my-0 bg-secondary p-1 col-10 discTitle"></h5>
+        <div class="bg-dark text-center p-1 col-2 font-weight-bold">Original Title</div>
+        <div class="bg-dark p-1 col-10 discOriginalTitle"></div>
+        <div class="bg-secondary text-center p-1 col-2 font-weight-bold">Original Language</div>
+        <div class="bg-secondary p-1 col-10 discOriginalLanguage"></div>
+        <div class="bg-dark text-center p-1 col-2 font-weight-bold">Release Date</div>
+        <div class="bg-dark p-1 col-10 discReleaseDate"></div>
+        <div class="bg-dark text-center p-1 col-2 font-weight-bold">Overview</div>
+        <div class="bg-dark p-1 col-10 discOverview"></div>
+    </div>
 </div>
 <div id="discSearch" class="row">
-    {%- endif -%}
     {{ disc_build.items(disc_items)}}
 </div>
-{%- if not no_search -%}
 <ul class="list-unstyled col-12 mt-4" id="discResults"></ul>
 <ul id="discResultTemplate" class="col-12" hidden>
     <li class="media border border-light">
@@ -38,4 +49,8 @@
         </div>
     </li>
 </ul>
+{%- else -%}
+<div class="media col-12" id="discData">
+    {{ disc_build.items(disc_items)}}
+</div>
 {%- endif -%}

@@ -58,7 +58,8 @@ class HomeMovieDiscType(DiscType):
         )
 
         return {
-            "no_search": True,
+            "search": False,
+            "disc_type": self.disc_type,
             "disc_items": [
                 {
                     "type": "hidden",

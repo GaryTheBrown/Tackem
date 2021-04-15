@@ -30,7 +30,6 @@ class ExtraTrackType(VideoTrackType):
         name.value = self.name
 
         return {
-            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",

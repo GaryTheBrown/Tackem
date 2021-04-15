@@ -3,7 +3,6 @@ import json
 from typing import Union
 
 from data.disc_type.base import DiscType
-from data.disc_type.documentary import DocumentaryDiscType
 from data.disc_type.home_movie import HomeMovieDiscType
 from data.disc_type.movie import MovieDiscType
 from data.disc_type.music_video import MusicVideoDiscType
@@ -27,7 +26,7 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
             data.get("year", ""),
             tracks,
             data.get("language", "en"),
-            data.get("tmdb_id", ""),
+            data.get("tmdbid", ""),
         )
     if data["disc_type"].replace(" ", "").lower() == "tvshow":
         return TVShowDiscType(
@@ -35,14 +34,7 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
             data.get("info", ""),
             tracks,
             data.get("language", "en"),
-            data.get("tmdb_id", ""),
-        )
-    if data["disc_type"].replace(" ", "").lower() == "documentary":
-        return DocumentaryDiscType(
-            data.get("name", ""),
-            data.get("info", ""),
-            tracks,
-            data.get("language", "en"),
+            data.get("tmdbid", ""),
         )
     if data["disc_type"].replace(" ", "").lower() == "musicvideo":
         return MusicVideoDiscType(
@@ -74,8 +66,6 @@ def make_blank_disc_type(disc_type_code: str) -> DiscType:
         return MovieDiscType("", 0, None, "en", "")
     if disc_type_code.replace(" ", "").lower() == "tvshow":
         return TVShowDiscType("", None, "en", "")
-    if disc_type_code.replace(" ", "").lower() == "documentary":
-        return DocumentaryDiscType("", None, "en")
     if disc_type_code.replace(" ", "").lower() == "musicvideo":
         return MusicVideoDiscType("", "", None, "en")
     if disc_type_code.replace(" ", "").lower() == "homemovie":

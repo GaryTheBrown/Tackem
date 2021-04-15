@@ -6,6 +6,10 @@ from api.e404 import API404
 from api.scraper.movie_imdbid import APIScraperMovieIMDBID
 from api.scraper.movie_search import APIScraperMovieSearch
 from api.scraper.movie_tmdbid import APIScraperMovieTMDBID
+from api.scraper.tv_imdbid import APIScraperTVIMDBID
+from api.scraper.tv_search import APIScraperTVSearch
+from api.scraper.tv_tmdbid import APIScraperTVTMDBID
+from api.scraper.tv_tvdbid import APIScraperTVTVDBID
 
 
 @cherrypy.expose
@@ -26,11 +30,13 @@ class APIScraper(APIBase):
         if section == "moviesearchtmdbid":
             return APIScraperMovieTMDBID()
         if section == "tvsearch":
-            return APIScraperMovieSearch()
+            return APIScraperTVSearch()
         if section == "tvsearchtvdbid":
-            return APIScraperMovieSearch()
+            return APIScraperTVTVDBID()
+        if section == "tvsearchimdbid":
+            return APIScraperTVIMDBID()
         if section == "tvsearchtmdbid":
-            return APIScraperMovieSearch()
+            return APIScraperTVTMDBID()
         if section == "docsearch":
             return APIScraperMovieSearch()
         if section == "docsearchimdbid":

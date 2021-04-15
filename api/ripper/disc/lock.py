@@ -11,4 +11,4 @@ class APIRipperDiscLock(APIBase):
     def POST(self, disc_id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """POST Function"""
 
-        return self._return_data("Ripper", f"Lock Disc - {disc_id}", True)
+        return self._return_data("Ripper", f"Lock Disc - {disc_id}", True, recieved=kwargs)

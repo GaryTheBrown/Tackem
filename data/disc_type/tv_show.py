@@ -50,8 +50,16 @@ class TVShowDiscType(DiscType):
             button=Button("Search By TVDB ID", "tvSearchTVDBid", True, item_width=175),
         )
 
+        imdbid = ConfigObjString(
+            "imdbid",
+            "",
+            "IMDB ID",
+            "Enter the IMDB ID here",
+            button=Button("Search By IMDB ID", "tvSearchIMDBid", True, item_width=175),
+        )
+
         tmdbid = ConfigObjString(
-            "tmbbid",
+            "tmdbid",
             "",
             "TMDB ID",
             "Enter the TMDB ID here",
@@ -60,7 +68,8 @@ class TVShowDiscType(DiscType):
         tmdbid.value = self.tmdb_id
 
         return {
-            "no_search": False,
+            "search": True,
+            "disc_type": self.disc_type,
             "disc_data_items": [
                 {
                     "type": "hidden",
@@ -86,6 +95,7 @@ class TVShowDiscType(DiscType):
             "disc_items": [
                 name.html_dict(""),
                 tvdbid.html_dict(""),
+                imdbid.html_dict(""),
                 tmdbid.html_dict(""),
             ],
         }

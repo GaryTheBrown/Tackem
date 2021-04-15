@@ -32,7 +32,6 @@ class DONTRIPTrackType(VideoTrackType):
         reason.value = self.reason
 
         return {
-            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",

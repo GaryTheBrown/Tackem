@@ -91,6 +91,11 @@ class Scraper:
         return cls.__get(f"/3/find/{tvdb_id}", external_source="tvdb_id")
 
     @classmethod
+    def tvshow_by_imdb_id(cls, imdb_id) -> dict:
+        """searches by the TVDB ID"""
+        return cls.__get(f"/3/find/{imdb_id}", external_source="imdb_id")
+
+    @classmethod
     def get_tvshow_details(cls, tvshow_id) -> dict:
         """returns the full tv show details"""
         return cls.__get(f"/3/tv/{tvshow_id}", append_to_response="external_ids")

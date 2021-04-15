@@ -90,7 +90,8 @@ class MovieDiscType(DiscType):
         year_html = year.html_dict("")
         year_html["value"] = ""
         return {
-            "no_search": False,
+            "search": True,
+            "disc_type": self.disc_type,
             "disc_data_items": [
                 {
                     "type": "hidden",

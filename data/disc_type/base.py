@@ -18,7 +18,6 @@ class DiscType(metaclass=ABCMeta):
         return {
             "Movie": "film",
             "TV Show": "tv",
-            "Documentary": "info-circle",
             "Home Movie": "users",
             "Music Video": "music",
             "Other": "question",

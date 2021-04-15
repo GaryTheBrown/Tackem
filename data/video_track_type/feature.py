@@ -19,7 +19,6 @@ class FeatureTrackType(VideoTrackType):
     def html_create_data(self, track_id: int) -> dict:
         """returns the data for html"""
         return {
-            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",

@@ -43,7 +43,6 @@ class EpisodeTrackType(VideoTrackType):
         )
         episode.value = self.episode
         return {
-            "no_search": False,
             "disc_items": [
                 {
                     "type": "hidden",
