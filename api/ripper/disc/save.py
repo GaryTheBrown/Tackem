@@ -2,6 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
+from data.disc_type import make_disc_type
 
 
 @cherrypy.expose
@@ -29,4 +30,13 @@ class APIRipperDiscSave(APIBase):
                 else:
                     data["tracks"][int(s[1]) - 1][s[2]] = value
 
-        return self._return_data("Ripper", f"Save Disc - {disc_id}", True, lockable=True, data=data)
+            disc = make_disc_type(data)
+
+        return self._return_data(
+            "Ripper",
+            f"Save Disc - {disc_id}",
+            True,
+            lockable=True,
+            data=data,
+            disc=disc.make_dict(),
+        )

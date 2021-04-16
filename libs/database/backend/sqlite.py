@@ -96,17 +96,11 @@ class SQLite(BackendBase):
 
         cursor = BackendBase._conn.execute(f"SELECT * FROM {table.name()}_old;")
         old_dict = cursor.fetchall()
-
-        if old_dict:
-            keys = old_dict.keys()
-            items = [(*single_dict.items(),) for single_dict in old_dict]
-            qmarks = ["'?'"] * len(keys)
-            BackendBase._conn.executemany(
-                f"INSERT INTO {table.name()} ({', '.join(keys)}) Values ({', '.join(qmarks)})",
-                (items,),
-            )
-
-        BackendBase._conn.commit()
+        for old in old_dict:
+            keys = ", ".join(old.keys())
+            items = ", ".join([str(x) for x in old.values()])
+            BackendBase._conn.execute(f"INSERT INTO {table.name()} ({keys}) Values ({items})")
+            BackendBase._conn.commit()
 
         # delete old table
         BackendBase._conn.execute(f"DROP TABLE {table.name()}_old;")

@@ -22,7 +22,6 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
     if data["disc_type"].replace(" ", "").lower() == "movie":
         return MovieDiscType(
             data.get("name", ""),
-            data.get("info", ""),
             data.get("year", ""),
             tracks,
             data.get("language", "en"),
@@ -31,7 +30,6 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
     if data["disc_type"].replace(" ", "").lower() == "tvshow":
         return TVShowDiscType(
             data.get("name", ""),
-            data.get("info", ""),
             tracks,
             data.get("language", "en"),
             data.get("tmdbid", ""),

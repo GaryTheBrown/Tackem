@@ -19,21 +19,21 @@ def make_track_type(track: Union[str, dict]) -> Optional[VideoTrackType]:
     if isinstance(track, str):
         track = json.loads(track)
 
-    if track["video_type"] == "dontrip":
+    if track["type"].replace(" ", "").lower() == "dontrip":
         return DONTRIPTrackType(track.get("reason", ""))
-    if track["video_type"] == "feature":
+    if track["type"].replace(" ", "").lower() == "feature":
         return FeatureTrackType()
-    if track["video_type"] == "episode":
+    if track["type"].replace(" ", "").lower() == "episode":
         return EpisodeTrackType(track.get("season", ""), track.get("episode", ""))
-    if track["video_type"] == "trailer":
+    if track["type"].replace(" ", "").lower() == "trailer":
         return TrailerTrackType(track.get("info", ""))
-    if track["video_type"] == "extra":
+    if track["type"].replace(" ", "").lower() == "extra":
         return ExtraTrackType(track.get("name", ""))
-    if track["video_type"] == "music":
+    if track["type"].replace(" ", "").lower() == "music":
         return MusicTrackType(track.get("name", ""))
-    if track["video_type"] == "other":
+    if track["type"].replace(" ", "").lower() == "other":
         return OtherTrackType(track.get("name", ""))
-    if track["video_type"] == "homemovie":
+    if track["type"].replace(" ", "").lower() == "homemovie":
         return HomeMovieTrackType(track.get("name", ""))
     return None
 

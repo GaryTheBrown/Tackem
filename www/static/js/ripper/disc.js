@@ -187,7 +187,9 @@
             $resultslist.html("");
             $("#discData").attr('data-images', JSON.stringify(images));
 
-            if (results.length == 1) {
+            if (results.length == 0) {
+                alert("No Movie Results Found");
+            } else if (results.length == 1) {
                 DiscType.movieSelectDiscDo(results[0]);
             } else if (results.length > 1) {
                 results.forEach(function(result) {
@@ -339,7 +341,9 @@
             let $resultTemplate = $("#discResultTemplate");
             $resultslist.html("");
             $("#discData").attr('data-images', JSON.stringify(images));
-            if (results.length == 1) {
+            if (results.length == 0) {
+                alert("No TV Show Results Found");
+            } else if (results.length == 1) {
                 DiscType.tvSelectDiscDo(results[0]);
             } else if (results.length > 1) {
                 results.forEach(function(result) {

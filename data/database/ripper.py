@@ -26,12 +26,13 @@ VIDEO_CONVERT_DB = Table(
 
 VIDEO_INFO_DB = Table(
     "ripper_video_info",
-    1,
+    2,
     Column("iso_file", "text", default=""),
     Column("uuid", "varchar(16)", default=""),
     Column("label", "text", default=""),
     Column("disc_type", "varchar(6)", default=""),
     Column("disc_data", "json"),
     Column("rip_data", "json"),
+    Column("rip_data_locked", "bit", not_null=True, default=False),
     Column("rip_data_downloaded", "bit", not_null=True, default=False),
 )

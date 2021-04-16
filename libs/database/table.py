@@ -15,15 +15,15 @@ class Table:
 
         self.__main_data = [
             Column("id", "integer", primary_key=True, auto_increment=True),
-            Column("created_at", "timestamp", default="CURRENT_TIMESTAMP", default_raw=True),
+            Column("created_at", "bigint", default="CURRENT_TIMESTAMP", default_raw=True),
             Column(
                 "updated_at",
-                "timestamp",
+                "bigint",
                 default=0,
             ),
         ]
         if self.__soft_delete:
-            self.__main_data.append(Column("deleted_at", "timestamp", default=0))
+            self.__main_data.append(Column("deleted_at", "bigint", default=0))
 
     def name(self, *values: Any) -> str:
         """returns the name"""

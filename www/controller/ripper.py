@@ -48,7 +48,7 @@ class Ripper:
             "label": msg.return_data["label"],
             "disc_type": msg.return_data["disc_type"].upper(),
             "disc_data": disc_data,
-            "rip_data_downloaded": bool(msg.return_data["rip_data_downloaded"]),
+            "rip_data_locked": bool(msg.return_data["rip_data_locked"]),
             "data_disc_types_and_icons": DiscType.TYPESANDICONS,
         }
         if not msg.return_data["rip_data"]:
