@@ -5,8 +5,8 @@ from threading import BoundedSemaphore
 from threading import Thread
 from typing import Union
 
-from data.config import CONFIG
-from data.database.ripper_video_info import VideoInfo
+from config import CONFIG
+from database.ripper_video_info import VideoInfo
 from libs.file import File
 from libs.ripper.makemkv import MakeMKV
 from libs.ripper.subsystems import FileSubsystem

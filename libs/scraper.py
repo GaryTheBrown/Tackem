@@ -1,7 +1,7 @@
 """Scraper System"""
 import requests
 
-from data.config import CONFIG
+from config import CONFIG
 from libs import classproperty
 
 

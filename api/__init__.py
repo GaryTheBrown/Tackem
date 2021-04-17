@@ -7,7 +7,7 @@ from api.e404 import API404
 from api.library import APILibrary
 from api.ripper import APIRipper
 from api.scraper import APIScraper
-from data.config import CONFIG
+from config import CONFIG
 from libs.auth import Auth
 
 

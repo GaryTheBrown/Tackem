@@ -3,7 +3,7 @@ from typing import Any
 
 import cherrypy
 
-from data.config import CONFIG
+from config import CONFIG
 from libs.auth import Auth
 from libs.config.list import ConfigList
 

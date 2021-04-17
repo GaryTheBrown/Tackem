@@ -8,7 +8,7 @@ from api.ripper.disc import APIRipperDisc
 from api.ripper.drives import APIRipperDrives
 from api.ripper.iso import APIRipperIsos
 from api.ripper.video_converter import APIRipperVideoConverter
-from data.config import CONFIG
+from config import CONFIG
 
 
 @cherrypy.expose

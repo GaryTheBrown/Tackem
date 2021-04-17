@@ -3,7 +3,7 @@ import threading
 
 import pexpect
 
-from data.config import CONFIG
+from config import CONFIG
 
 
 class VideoConverterBase:

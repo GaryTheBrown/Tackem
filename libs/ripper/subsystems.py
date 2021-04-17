@@ -3,7 +3,7 @@ from shutil import which
 from subprocess import PIPE
 from subprocess import Popen
 
-from data.database.ripper_video_info import VideoInfo
+from database.ripper_video_info import VideoInfo
 from libs.file import File
 
 

@@ -1,10 +1,10 @@
 """Audio Ripping Feature"""
 import musicbrainzngs
 
+from config import CONFIG
 from data import PROGRAMGITADDRESS
 from data import PROGRAMNAME
 from data import PROGRAMVERSION
-from data.config import CONFIG
 
 
 class MusicBrainz:

@@ -4,11 +4,11 @@ from threading import BoundedSemaphore
 from threading import Thread
 from typing import List
 
+from config import CONFIG
 from data import HOMEFOLDER
-from data.config import CONFIG
-from data.database.ripper_audio_info import AudioInfo
-from data.database.ripper_video_convert import VideoConvertInfo
-from data.database.ripper_video_info import VideoInfo
+from database.ripper_audio_info import AudioInfo
+from database.ripper_video_convert import VideoConvertInfo
+from database.ripper_video_info import VideoInfo
 from libs import classproperty
 from libs.file import File
 from libs.hardware import Hardware

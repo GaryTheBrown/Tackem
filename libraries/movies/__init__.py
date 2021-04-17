@@ -1,5 +1,5 @@
 """Library Movies Controller"""
-from data.database.library import LIBRARY_MOVIES_DB
+from database.library import LIBRARY_MOVIES_DB
 from libraries.library_base import LibraryBase
 from libs.config.list import ConfigList
 

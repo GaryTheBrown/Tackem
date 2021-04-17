@@ -7,12 +7,12 @@ import hashlib
 import threading
 from pathlib import Path
 
-from data.config import CONFIG
-from data.database.library import LIBRARY_FILES_DB
-from libs.database import Database
-from libs.database.messages.select import SQLSelect
-from libs.database.messages.update import SQLUpdate
-from libs.database.where import Where
+from config import CONFIG
+from database import Database
+from database.library import LIBRARY_FILES_DB
+from database.messages.select import SQLSelect
+from database.messages.update import SQLUpdate
+from database.where import Where
 
 
 class FileChecker:

@@ -2,16 +2,14 @@
 import platform
 import signal
 
-from data.config import CONFIG
+from config import CONFIG
+from database import Database
 from libs.auth import Auth
-from libs.database import Database
 from libs.events import RootEventMaster as RootEvent
 from libs.ripper import Ripper
 from libs.scraper import Scraper
 from www import Webserver
 
-# TODO FIX SQL NOT WORKING> POSSABLY TIMESTAMP SHOULD BE INTEGER INSTEAD WOULD NEED TO CHANGE ALL
-# TABLES AND DATA TO USE INTEGERS INSTEAD.
 # TODO finish off the Ripper system
 # working on the disc info html pages. need to figure out what is allowed for music videos and other
 # need to make the buttons better (adaptive so they get equal distance and size on the line)

@@ -2,10 +2,10 @@
 from peewee import CharField
 from peewee import ForeignKeyField
 
-from data.database.library_files import LibraryFiles
-from libs.database import Database
-from libs.database import SoftTableBase
-from libs.database import ThreadSafeDatabaseMetadata
+from database import Database
+from database import SoftTableBase
+from database import ThreadSafeDatabaseMetadata
+from database.library_files import LibraryFiles
 
 
 class LibraryMovies(SoftTableBase):

@@ -9,15 +9,15 @@ from watchdog.events import FileSystemEvent
 from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
 
-from data.config import CONFIG
-from data.database.library import LIBRARY_FILES_DB
+from config import CONFIG
+from database import Database
+from database.library import LIBRARY_FILES_DB
+from database.messages.insert import SQLInsert
+from database.messages.select import SQLSelect
+from database.messages.table import SQLTable
+from database.table import Table
+from database.where import Where
 from libs.config.list import ConfigList
-from libs.database import Database
-from libs.database.messages.insert import SQLInsert
-from libs.database.messages.select import SQLSelect
-from libs.database.messages.table import SQLTable
-from libs.database.table import Table
-from libs.database.where import Where
 
 
 class LibraryBase(metaclass=ABCMeta):

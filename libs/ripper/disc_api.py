@@ -1,13 +1,13 @@
 """System to grab the info needed from the api for makemkv and the converter"""
 from typing import Optional
 
-from data.database.ripper_video_info import VideoInfo
 from data.disc_type.base import DiscType
 from data.disc_type.movie import MovieDiscType
 from data.video_track_type.dontrip import DONTRIPTrackType
 from data.video_track_type.extra import ExtraTrackType
 from data.video_track_type.feature import FeatureTrackType
 from data.video_track_type.trailer import TrailerTrackType
+from database.ripper_video_info import VideoInfo
 
 
 class DiscAPI:

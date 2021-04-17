@@ -2,9 +2,9 @@
 from peewee import BigIntegerField
 from peewee import TextField
 
-from libs.database import Database
-from libs.database import SoftTableBase
-from libs.database import ThreadSafeDatabaseMetadata
+from database import Database
+from database import SoftTableBase
+from database import ThreadSafeDatabaseMetadata
 
 
 class PostUpload(SoftTableBase):

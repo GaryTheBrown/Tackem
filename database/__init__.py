@@ -10,8 +10,8 @@ from peewee import TimestampField
 from playhouse.pool import PooledMySQLDatabase
 from playhouse.pool import PooledSqliteDatabase
 
+from config import CONFIG
 from data import PROGRAMCONFIGLOCATION
-from data.config import CONFIG
 from libs import classproperty
 
 

@@ -7,8 +7,8 @@ from typing import Union
 import cherrypy
 from peewee import DoesNotExist
 
-from data.config import CONFIG
-from data.database.user import User
+from config import CONFIG
+from database.user import User
 from libs.file import File
 
 

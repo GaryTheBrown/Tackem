@@ -5,7 +5,7 @@ import types
 import cherrypy
 import jinja2
 
-from data.config import CONFIG
+from config import CONFIG
 from libs.auth import Auth
 from libs.file import File
 from libs.ripper import Ripper

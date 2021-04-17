@@ -5,8 +5,8 @@ import shutil
 import cherrypy
 from peewee import DoesNotExist
 
-from data.config import CONFIG
-from data.database.post_upload import PostUpload
+from config import CONFIG
+from database.post_upload import PostUpload
 from libs.file import File
 from libs.ripper import Ripper
 

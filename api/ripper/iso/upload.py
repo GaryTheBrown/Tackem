@@ -5,7 +5,7 @@ import string
 import cherrypy
 
 from api.base import APIBase
-from data.database.post_upload import PostUpload
+from database.post_upload import PostUpload
 
 
 @cherrypy.expose

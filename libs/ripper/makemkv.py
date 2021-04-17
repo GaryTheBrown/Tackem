@@ -7,12 +7,12 @@ from typing import Optional
 
 import pexpect
 
-from data.config import CONFIG
-from data.database.ripper_video_convert import VideoConvertInfo
-from data.database.ripper_video_info import VideoInfo
+from config import CONFIG
 from data.disc_type import make_disc_type
 from data.disc_type.base import DiscType
 from data.video_track_type.base import VideoTrackType
+from database.ripper_video_convert import VideoConvertInfo
+from database.ripper_video_info import VideoInfo
 from libs.file import File
 from libs.ripper.disc_api import DiscAPI
 from libs.ripper.events import RipperEvent

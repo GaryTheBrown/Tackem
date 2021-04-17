@@ -3,7 +3,7 @@ from typing import Any
 
 import cherrypy
 
-from data.config import CONFIG
+from config import CONFIG
 from libs.auth import Auth
 from libs.ripper import Ripper as RipperSYS
 from www.controller.admin import Admin

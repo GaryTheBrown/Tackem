@@ -4,7 +4,7 @@ import cherrypy
 from api.base import APIBase
 from api.e404 import API404
 from api.ripper.video_converter.data import APIRipperVideoConverterData
-from data.config import CONFIG
+from config import CONFIG
 
 
 @cherrypy.expose

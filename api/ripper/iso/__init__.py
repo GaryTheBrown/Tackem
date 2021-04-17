@@ -5,7 +5,7 @@ from api.base import APIBase
 from api.e404 import API404
 from api.ripper.iso.data import APIRipperISOData
 from api.ripper.iso.upload import APIRipperIsoUpload
-from data.config import CONFIG
+from config import CONFIG
 
 
 @cherrypy.expose

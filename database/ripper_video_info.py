@@ -4,9 +4,9 @@ from peewee import CharField
 from peewee import TextField
 from playhouse.sqlite_ext import JSONField
 
-from libs.database import Database
-from libs.database import TableBase
-from libs.database import ThreadSafeDatabaseMetadata
+from database import Database
+from database import TableBase
+from database import ThreadSafeDatabaseMetadata
 
 
 class VideoInfo(TableBase):

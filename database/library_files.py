@@ -6,9 +6,9 @@ from peewee import IntegerField
 from peewee import TextField
 from peewee import TimestampField
 
-from libs.database import Database
-from libs.database import SoftTableBase
-from libs.database import ThreadSafeDatabaseMetadata
+from database import Database
+from database import SoftTableBase
+from database import ThreadSafeDatabaseMetadata
 
 
 class LibraryFiles(SoftTableBase):
