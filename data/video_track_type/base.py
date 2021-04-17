@@ -5,7 +5,7 @@ from abc import abstractmethod
 from typing import Dict
 from typing import Optional
 
-from libs.classproperty import classproperty
+from libs import classproperty
 
 
 class VideoTrackType(metaclass=ABCMeta):

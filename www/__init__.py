@@ -5,9 +5,7 @@ import cherrypy
 
 from api import API
 from data.config import CONFIG
-from data.database.system import UPLOAD_DB
-from libs.database import Database
-from libs.database.messages.table import SQLTable
+from data.database.post_upload import PostUpload
 from libs.file import File
 from www.template import Template
 
@@ -26,7 +24,7 @@ class Webserver:
         if cls.__running:
             return
 
-        Database.call(SQLTable(UPLOAD_DB))
+        PostUpload.create_table()
 
         def error_page(status, message, traceback, version) -> str:
             """error page"""

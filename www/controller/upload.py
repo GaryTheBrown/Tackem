@@ -3,13 +3,10 @@ import os
 import shutil
 
 import cherrypy
+from peewee import DoesNotExist
 
 from data.config import CONFIG
-from data.database.system import UPLOAD_DB
-from libs.database import Database
-from libs.database.messages.delete import SQLDelete
-from libs.database.messages.select import SQLSelect
-from libs.database.where import Where
+from data.database.post_upload import PostUpload
 from libs.file import File
 from libs.ripper import Ripper
 
@@ -23,21 +20,21 @@ class Upload:
         if key is None:
             raise cherrypy.HTTPError(status=403)
 
-        msg = SQLSelect(UPLOAD_DB, Where("key", key))
-        Database.call(msg)
-
-        if isinstance(msg.return_data, list):
+        try:
+            info = PostUpload.do_select().where(PostUpload.key == key).get()
+        except DoesNotExist:
             raise cherrypy.HTTPError(status=403)
 
-        filename = msg.return_data["filename"]
+        filename = info.filename
         upload_name = File.location(f"{CONFIG['webui']['uploadlocation'].value}{filename}")
 
         with open(upload_name, "wb") as file:
             shutil.copyfileobj(cherrypy.request.body, file)
 
-        if os.path.getsize(upload_name) == msg.return_data["filesize"]:
-            Database.call(SQLDelete(UPLOAD_DB, Where("id", msg.return_data["id"])))
-            self.__call_next_system(filename, msg.return_data["system"])
+        if os.path.getsize(upload_name) == info.filesize:
+            system = info.system
+            info.delete_instance()
+            self.__call_next_system(filename, system)
             return "OK"
         return "FAILED"
 

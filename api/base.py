@@ -4,7 +4,7 @@ from typing import Optional
 
 import cherrypy
 
-from libs.authentication import Authentication
+from libs.auth import Auth
 
 
 class APIBase:
@@ -34,9 +34,9 @@ class APIBase:
 
     def _check_user(self, is_admin: bool = False):
         """checks that the user is allowed"""
-        if is_admin and cherrypy.request.params["user"] < Authentication.ADMIN:
+        if is_admin and cherrypy.request.params["user"] < Auth.ADMIN:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
-        if cherrypy.request.params["user"] == Authentication.GUEST:
+        if cherrypy.request.params["user"] == Auth.GUEST:
             raise cherrypy.HTTPError(status=401)  # Unauthorized
 
     def _return_data(self, system: str, action: str, success: bool, **kwargs) -> str:

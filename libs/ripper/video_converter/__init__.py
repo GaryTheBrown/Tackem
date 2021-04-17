@@ -1,15 +1,12 @@
 """Master Section for the Video Converter controller"""
 from abc import ABCMeta
 
-from data.database.ripper import VIDEO_CONVERT_DB
-from data.database.ripper import VIDEO_INFO_DB
+from peewee import DoesNotExist
+
+from data.database.ripper_video_convert import VideoConvertInfo
+from data.database.ripper_video_info import VideoInfo
 from data.disc_type import make_disc_type
 from data.video_track_type import make_track_type
-from libs.database import Database
-from libs.database.messages.delete import SQLDelete
-from libs.database.messages.select import SQLSelect
-from libs.database.messages.update import SQLUpdate
-from libs.database.where import Where
 from libs.file import File
 from libs.ripper.ffprobe import FFprobe
 from libs.ripper.video_converter.chapters import VideoConverterChapters
@@ -29,27 +26,30 @@ class VideoConverter(
 
     def run(self):
         """ Loops through the standard converter function"""
-
-        msg = SQLSelect(VIDEO_CONVERT_DB, Where("id", self._db_id))
-        Database.call(msg)
-
-        if not isinstance(msg.return_data, dict):
+        try:
+            data = (
+                VideoConvertInfo.do_select()
+                .join(VideoInfo)
+                .where(VideoConvertInfo.id == self._db_id)
+                .get()
+            )
+        except DoesNotExist:
             return
 
         if not self._thread_run:
             return
 
-        second_run = msg.return_data["video_converted"]
-        if second_run and msg.return_data["track_data"] == "{}":
+        second_run = data.video_converted
+        if second_run and data.track_data == {}:
             return
 
-        self._filename = msg.return_data["filename"]
+        self._filename = data.filename
         outfile = self._filename.replace(".mkv", "") + ".NEW.mkv"
 
-        self._label = msg.return_data["label"]
+        self._label = data.label
 
         if not File.exists(self._filename):
-            Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
+            data.do_delete().execute()
             return
         if File.exists(outfile):
             File.rm(outfile)
@@ -59,18 +59,18 @@ class VideoConverter(
         self._command.append(f'"{self._filename}"')
 
         auto_mode = False
-        if msg.return_data["track_data"] == "{}":
+        if data.track_data == {}:
             self.__create_convert_command_no_info()
         else:
-            self.__create_convert_command_with_info(msg.return_data)
+            self.__create_convert_command_with_info(data)
             if not second_run:
                 auto_mode = True
         self._command.append(f'"{outfile}"')
-
+        exit(1)
         if not self._convert:
             if auto_mode or second_run:
                 pass
-                Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
+                data.do_delete().execute()
                 self.__pass_single_to_library()
             return
 
@@ -85,16 +85,11 @@ class VideoConverter(
                 File.move(outfile, self._filename)
                 File.rm(self._filename + ".OLD")
                 if second_run or auto_mode:
-                    Database.call(SQLDelete(VIDEO_CONVERT_DB, Where("id", self._db_id)))
+                    data.do_delete().execute()
                     self.__pass_single_to_library()
                 else:
-                    Database.call(
-                        SQLUpdate(
-                            VIDEO_CONVERT_DB,
-                            Where("id", self._db_id),
-                            video_converted=True,
-                        )
-                    )
+                    data.video_converted = True
+                    data.save()
 
     def __create_convert_command_no_info(self):
         """creates the conversion command here"""
@@ -106,17 +101,15 @@ class VideoConverter(
         self._command.append("-c:a copy")
         self._command.append("-c:s copy")
 
-    def __create_convert_command_with_info(self, db_info: dict):
+    def __create_convert_command_with_info(self, data: VideoConvertInfo):
         """creates the conversion command here"""
-        msg = SQLSelect(VIDEO_INFO_DB, Where("id", db_info["info_id"]))
-        Database.call(msg)
-        disc_info = make_disc_type(msg.return_data["rip_data"])
-        track_data = make_track_type(db_info["track_data"])
+        disc_info = make_disc_type(data.disc_info.rip_data)
+        track_data = make_track_type(data.track_data)
         probe_info = FFprobe(self._conf["ffprobelocation"].value, self._filename)
         self._sort_metadata(disc_info, track_data)
         self._sort_chapters(probe_info)
         self._sort_stream_mapping(track_data, probe_info)
-        if db_info["video_converted"]:
+        if data.video_converted:
             self._command.append("-c:v copy")
         else:
             self._sort_video_data(probe_info)

@@ -1,16 +1,13 @@
 """System to grab the info needed from the api for makemkv and the converter"""
 from typing import Optional
 
-from data.database.ripper import VIDEO_INFO_DB
+from data.database.ripper_video_info import VideoInfo
 from data.disc_type.base import DiscType
 from data.disc_type.movie import MovieDiscType
 from data.video_track_type.dontrip import DONTRIPTrackType
 from data.video_track_type.extra import ExtraTrackType
 from data.video_track_type.feature import FeatureTrackType
 from data.video_track_type.trailer import TrailerTrackType
-from libs.database import Database
-from libs.database.messages.update import SQLUpdate
-from libs.database.where import Where
 
 
 class DiscAPI:
@@ -23,15 +20,12 @@ class DiscAPI:
         #     info = cls.__aqua_teen_movie().json()
 
         if info:
-            Database.call(
-                SQLUpdate(
-                    VIDEO_INFO_DB,
-                    Where("uuid", uuid),
-                    Where("label", label),
-                    rip_data=info.json(),
-                    rip_data_download=True,
-                )
+            db_info = (
+                VideoInfo.do_select().where(VideoInfo.uuid == uuid, VideoInfo.label == label).get()
             )
+            db_info.rip_data = info.json()
+            db_info.rip_data_download = True
+            db_info.save()
             return info.json()
 
         return "{}"
@@ -45,15 +39,12 @@ class DiscAPI:
         #     return cls.__aqua_teen_movie()
 
         if info:
-            Database.call(
-                SQLUpdate(
-                    VIDEO_INFO_DB,
-                    Where("uuid", uuid),
-                    Where("label", label),
-                    rip_data=info.json(),
-                    rip_data_download=True,
-                )
+            db_info = (
+                VideoInfo.do_select().where(VideoInfo.uuid == uuid, VideoInfo.label == label).get()
             )
+            db_info.rip_data = info.json()
+            db_info.rip_data_download = True
+            db_info.save()
             return info
 
         return None
@@ -77,4 +68,4 @@ class DiscAPI:
             DONTRIPTrackType("Blank"),
         ]
 
-        return MovieDiscType("Aqua Teen Hunger Force Colon Movie", "", "2007", "tt0455326", tracks)
+        return MovieDiscType("Aqua Teen Hunger Force Colon Movie", "", 2007, 275, tracks)

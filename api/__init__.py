@@ -8,7 +8,7 @@ from api.library import APILibrary
 from api.ripper import APIRipper
 from api.scraper import APIScraper
 from data.config import CONFIG
-from libs.authentication import Authentication
+from libs.auth import Auth
 
 
 @cherrypy.expose
@@ -29,7 +29,7 @@ class API(APIBase):
                 return self
             section = vpath.pop(0).lower()
         else:
-            user = Authentication.check_logged_in()
+            user = Auth.check_logged_in()
             section = api_key.lower()
 
         cherrypy.request.params["user"] = user
@@ -47,9 +47,9 @@ class API(APIBase):
     def _check_api_key(self, key: str) -> int:
         """checks the api key against the master and user keys and returns the level"""
         if key is None or not isinstance(key, str):
-            return Authentication.GUEST
+            return Auth.GUEST
         if key == CONFIG["api"]["masterkey"].value:
-            return Authentication.ADMIN
+            return Auth.ADMIN
         if key == CONFIG["api"]["userkey"].value:
-            return Authentication.USER
-        return Authentication.GUEST
+            return Auth.USER
+        return Auth.GUEST

@@ -10,3 +10,4 @@ watchdog
 mysql-connector-python
 discid
 pexpect
+peewee

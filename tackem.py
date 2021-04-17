@@ -3,7 +3,7 @@ import platform
 import signal
 
 from data.config import CONFIG
-from libs.authentication import Authentication
+from libs.auth import Auth
 from libs.database import Database
 from libs.events import RootEventMaster as RootEvent
 from libs.ripper import Ripper
@@ -31,16 +31,16 @@ class Tackem:
         print("LOADING Config...", end=" ")
         CONFIG.load()
         print("DONE")
-        print("STARTING DATABASE...", end=" ")
-        Database.start()
+        print("SETTING UP DATABASE...", end=" ")
+        Database.setup()
         print("DONE")
-        print("STARTING AUTHENTICATION...", end=" ")
-        Authentication.start()
+        print("LOADING AUTHENTICATION...", end=" ")
+        Auth.start()
         print("DONE")
-        print("STARTING SCRAPER...", end=" ")
+        print("LOADING SCRAPER...", end=" ")
         Scraper.start()
         print("DONE")
-        print("STARTING LIBRARIES...", end=" ")
+        print("LOADING LIBRARIES...", end=" ")
         print("TODO")
         if Ripper.enabled:
             print("STARTING RIPPER...", end=" ")
@@ -63,8 +63,6 @@ class Tackem:
             print("DONE")
         print("STOPPING LIBRARIES...", end=" ")
         print("TODO")
-        print("STOPPING DATABASE...", end=" ")
-        Database.stop()
         print("DONE")
 
     @classmethod

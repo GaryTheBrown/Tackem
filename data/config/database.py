@@ -33,6 +33,13 @@ def database_config() -> ConfigList:
             "Database Mode",
             "What system do you want to use for data?",
         ),
+        ConfigObjIntegerNumber(
+            "maxconnetions",
+            20,
+            "Max Connections",
+            "Maximum connections to the Database",
+            input_attributes=InputAttributes(min=1),
+        ),
         ConfigList(
             "mysql",
             "MYSQL",

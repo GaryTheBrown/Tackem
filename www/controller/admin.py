@@ -4,14 +4,14 @@ from typing import Any
 import cherrypy
 
 from data.config import CONFIG
-from libs.authentication import Authentication
+from libs.auth import Auth
 from libs.config.list import ConfigList
 
 
 class Admin:
     """Admin"""
 
-    @cherrypy.tools.template(user=Authentication.ADMIN)
+    @cherrypy.tools.template(user=Auth.ADMIN)
     def config(self, **kwargs: Any) -> dict:
         """CONFIG System"""
         if kwargs:
@@ -26,16 +26,16 @@ class Admin:
         config_dict = CONFIG.html_dict()
         return {"config": config_dict}
 
-    @cherrypy.tools.template(user=Authentication.ADMIN)
+    @cherrypy.tools.template(user=Auth.ADMIN)
     def users(self) -> dict:
         """Grab the users info"""
-        return {"users": Authentication.get_users()}
+        return {"users": Auth.get_users()}
 
-    @cherrypy.tools.template(user=Authentication.ADMIN)
+    @cherrypy.tools.template(user=Auth.ADMIN)
     def shutdown(self) -> dict:
         """shutdown the system page"""
 
-    @cherrypy.tools.template(user=Authentication.ADMIN)
+    @cherrypy.tools.template(user=Auth.ADMIN)
     def reboot(self) -> dict:
         """reboot the system page"""
 

@@ -3,12 +3,7 @@ from shutil import which
 from subprocess import PIPE
 from subprocess import Popen
 
-from data.database.ripper import VIDEO_INFO_DB
-from libs.database import Database
-from libs.database.messages.insert import SQLInsert
-from libs.database.messages.select import SQLSelect
-from libs.database.messages.update import SQLUpdate
-from libs.database.where import Where
+from data.database.ripper_video_info import VideoInfo
 from libs.file import File
 
 
@@ -23,39 +18,30 @@ class FileSubsystem:
 
     def _add_video_disc_to_database(self, filename: str = ""):
         """sets up the DB stuff for disc"""
-        msg = SQLSelect(
-            VIDEO_INFO_DB,
-            Where("uuid", self._disc["uuid"]),
-            Where("label", self._disc["label"]),
-            Where("disc_type", self._disc["type"]),
+        info = (
+            VideoInfo.do_select()
+            .where(
+                VideoInfo.uuid == self._disc["uuid"],
+                VideoInfo.label == self._disc["label"],
+                VideoInfo.disc_type == self._disc["type"],
+            )
+            .get()
         )
-        Database.call(msg)
-        if isinstance(msg.return_data, dict):
+        if isinstance(VideoInfo, info):
             if isinstance(filename, str) and filename != "":
-                Database.call(
-                    SQLUpdate(VIDEO_INFO_DB, Where("id", msg.return_data["id"]), iso_file=filename)
-                )
-            self._db_id = msg.return_data["id"]
+                info.filename = filename
+                info.save()
+            self._db_id = info.id
             return
 
-        Database.call(
-            SQLInsert(
-                VIDEO_INFO_DB,
-                iso_file=filename,
-                uuid=self._disc["uuid"],
-                label=self._disc["label"],
-                disc_type=self._disc["type"],
-            )
-        )
-
-        msg = SQLSelect(
-            VIDEO_INFO_DB,
-            Where("uuid", self._disc["uuid"]),
-            Where("label", self._disc["label"]),
-            Where("disc_type", self._disc["type"]),
-        )
-        Database.call(msg)
-        self._db_id = msg.return_data["id"]
+        info = VideoInfo()
+        info.uuid == self._disc["uuid"],
+        info.label == self._disc["label"],
+        info.disc_type == self._disc["type"],
+        info.filename == filename
+        info.save()
+        self._db_id = info.id
+        return
 
     def _get_udfInfo(self, in_file: str):
         """Grabs the relevent Data from UDF images"""

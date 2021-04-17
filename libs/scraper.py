@@ -2,7 +2,7 @@
 import requests
 
 from data.config import CONFIG
-from libs.classproperty import classproperty
+from libs import classproperty
 
 
 class Scraper:

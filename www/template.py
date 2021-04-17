@@ -6,7 +6,7 @@ import cherrypy
 import jinja2
 
 from data.config import CONFIG
-from libs.authentication import Authentication
+from libs.auth import Auth
 from libs.file import File
 from libs.ripper import Ripper
 
@@ -47,7 +47,7 @@ class Template(cherrypy.Tool):
 
             return wrap
 
-    def render(self, user: int = Authentication.GUEST):
+    def render(self, user: int = Auth.GUEST):
 
         handler = cherrypy.serving.request.handler
 
@@ -59,10 +59,10 @@ class Template(cherrypy.Tool):
 
     def _render(self, user, handler, *args, **kwargs):
 
-        if user > Authentication.GUEST:
-            Authentication.check_auth()
-        if user == Authentication.ADMIN:
-            Authentication.is_admin()
+        if user > Auth.GUEST:
+            Auth.check_auth()
+        if user == Auth.ADMIN:
+            Auth.is_admin()
 
         parts = []
         if hasattr(handler.callable, "__self__"):
@@ -74,8 +74,8 @@ class Template(cherrypy.Tool):
 
         data.update(self.__global_vars(data))
         renderer = self._engine.get_template(f"page/{template}.html")
-        data["loggedin"] = Authentication.check_logged_in() > 0
-        data["isadmin"] = Authentication.check_logged_in() == 2
+        data["loggedin"] = Auth.check_logged_in() > 0
+        data["isadmin"] = Auth.check_logged_in() == 2
 
         js = template + ".js"
         if "javascript" not in data and File.exists(os.getcwd() + "/www/static/js/" + js):

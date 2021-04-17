@@ -6,14 +6,10 @@ from typing import List
 
 from data import HOMEFOLDER
 from data.config import CONFIG
-from data.database.ripper import AUDIO_INFO_DB
-from data.database.ripper import VIDEO_CONVERT_DB
-from data.database.ripper import VIDEO_INFO_DB
-from libs.classproperty import classproperty
-from libs.database import Database
-from libs.database.messages.select import SQLSelect
-from libs.database.messages.table import SQLTable
-from libs.database.where import Where
+from data.database.ripper_audio_info import AudioInfo
+from data.database.ripper_video_convert import VideoConvertInfo
+from data.database.ripper_video_info import VideoInfo
+from libs import classproperty
 from libs.file import File
 from libs.hardware import Hardware
 from libs.ripper.drive import Drive
@@ -121,9 +117,9 @@ class Ripper:
             File.mkdir(location.value)
 
         # Check/Create Database Tables
-        Database.call(SQLTable(AUDIO_INFO_DB))
-        Database.call(SQLTable(VIDEO_INFO_DB))
-        Database.call(SQLTable(VIDEO_CONVERT_DB))
+        AudioInfo.create_table()
+        VideoConvertInfo.create_table()
+        VideoInfo.create_table()
 
         cls.__running = True
         cls.__event_system = Thread(target=cls.__event_system_run, args=())
@@ -182,14 +178,8 @@ class Ripper:
         cls.__video_converter_pool_sema = BoundedSemaphore(
             value=cls.__video_converter_pool_sema_count
         )
-
-        msg = SQLSelect(VIDEO_CONVERT_DB)
-        Database.call(msg)
-        if isinstance(msg.return_data, dict):
-            cls.video_converter_add_single(msg.return_data["id"])
-        else:
-            for item in msg.return_data:
-                cls.video_converter_add_single(item["id"])
+        for item in VideoConvertInfo.do_select():
+            cls.video_converter_add_single(item.id)
 
     @classmethod
     def stop(cls):
@@ -251,7 +241,7 @@ class Ripper:
             if thread.db_id == db_id:
                 return False
 
-        if Database.count(SQLSelect(VIDEO_CONVERT_DB, Where("id", db_id))) != 1:
+        if VideoConvertInfo.do_select().where(VideoConvertInfo.id == db_id).count() != 1:
             return False
 
         cls.__video_converter_threads.append(VideoConverter(cls.__video_converter_pool_sema, db_id))

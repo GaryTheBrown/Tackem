@@ -1,27 +1,19 @@
-"""Authentication system for all html pages listed"""
+"""Auth system for all html pages listed"""
 import hashlib
 import random
 import uuid
 from typing import Union
 
 import cherrypy
+from peewee import DoesNotExist
 
 from data.config import CONFIG
-from libs.database import Database
-from libs.database.column import Column
-from libs.database.messages.delete import SQLDelete
-from libs.database.messages.insert import SQLInsert
-from libs.database.messages.select import SQLSelect
-from libs.database.messages.table import SQLTable
-from libs.database.messages.table_count_where import SQLTableCountWhere
-from libs.database.messages.update import SQLUpdate
-from libs.database.table import Table
-from libs.database.where import Where
+from data.database.user import User
 from libs.file import File
 
 
-class Authentication:
-    """Authentication system for all html pages listed"""
+class Auth:
+    """Auth system for all html pages listed"""
 
     GUEST: int = 0
     USER: int = 1
@@ -29,41 +21,21 @@ class Authentication:
 
     TYPESTR = ["Guest", "User", "Admin"]
 
-    __db_info = Table(
-        "authentication_info",
-        1,
-        Column("username", "text", not_null=True),
-        Column("password", "text", not_null=True),
-        Column("is_admin", "bit", not_null=True, default=False),
-    )
-
     __login_url = CONFIG["webui"]["baseurl"].value + "login?return_url="
     __temp_sessions = {}
 
     @classmethod
     def start(cls):
         """Run starting commands need sql to run"""
-        Database.call(SQLTable(cls.__db_info))
+        User.create_table()
 
-        msg = SQLTableCountWhere(cls.__db_info, Where("is_admin", True))
-        Database.call(msg)
-        if msg.return_data["COUNT(*)"] == 0:
-            cls.__add_admin_account()
-
-    @classmethod
-    def __add_admin_account(cls):
-        """adds an admin account"""
-        password = cls.generate_password()
-        with open(File.location("adminpasssword"), "w") as f:
-            f.write(password)
-
-        msg = SQLInsert(
-            cls.__db_info,
-            username="admin",
-            password=cls.__password_encryption(password),
-            is_admin=True,
-        )
-        Database.call(msg)
+        if User.do_select().where(User.is_admin == True).count() == 0:  # noqa E712
+            password = cls.generate_password()
+            with open(File.location("adminpasssword"), "w") as f:
+                f.write(password)
+            User.insert(
+                username="admin", password=cls.__password_encryption(password), is_admin=True
+            ).execute()
 
     @classmethod
     def __password_encryption(cls, password: str) -> str:
@@ -88,16 +60,16 @@ class Authentication:
         """Login Script"""
         if not username or not password:
             return False
-        msg = SQLSelect(cls.__db_info, Where("username", username))
-        Database.call(msg)
-        if isinstance(msg.return_data, list):
+        enc_pass = cls.__password_encryption(password)
+        try:
+            user = (
+                User.do_select().where(User.username == username, User.password == enc_pass).get()
+            )
+        except DoesNotExist:
             return False
-        if msg.return_data["password"] != cls.__password_encryption(password):
-            return False
+
         session_id = str(uuid.uuid1()).replace("-", "")
-        del msg.return_data["password"]
-        msg.return_data["is_admin"] = msg.return_data["is_admin"] == "True"
-        cls.__temp_sessions[session_id] = msg.return_data
+        cls.__temp_sessions[session_id] = user
         cherrypy.response.cookie["sessionid"] = session_id
         cherrypy.response.cookie["sessionid"]["max-age"] = int(timeout) * 60
         raise cherrypy.HTTPRedirect(cherrypy.url().replace("/login", returnurl))
@@ -116,7 +88,7 @@ class Authentication:
         """Check if logged in"""
         if "sessionid" in cherrypy.request.cookie.keys():
             if cherrypy.request.cookie["sessionid"].value in cls.__temp_sessions:
-                if cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value]["is_admin"]:
+                if cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value].is_admin:
                     return cls.ADMIN
                 return cls.USER
         return cls.GUEST
@@ -126,11 +98,11 @@ class Authentication:
         """Check if logged in"""
         if "sessionid" in cherrypy.request.cookie.keys():
             if cherrypy.request.cookie["sessionid"].value in cls.__temp_sessions:
-                return cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value]["id"]
+                return cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value].id
 
     @classmethod
     def check_auth(cls):
-        """Check authentication"""
+        """Check auth"""
         if not cls.check_logged_in():
             raise cherrypy.HTTPRedirect(cls.__login_url + cherrypy.url(relative="server"))
 
@@ -138,7 +110,7 @@ class Authentication:
     def is_admin(cls):
         """Returns if user is admin if logged in returns false if not logged in"""
         cls.check_auth()
-        if not cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value]["is_admin"]:
+        if not cls.__temp_sessions[cherrypy.request.cookie["sessionid"].value].is_admin:
             raise cherrypy.HTTPError(status=401)
 
     @classmethod
@@ -148,56 +120,31 @@ class Authentication:
             return False
         if "sessionid" not in cherrypy.request.cookie.keys():
             return False
-        session_id = cherrypy.request.cookie["sessionid"].value
-        user_id = cls.__temp_sessions[session_id]["id"]
-        msg1 = SQLSelect(cls.__db_info, Where("id", user_id))
-        Database.call(msg1)
-        if msg1.return_data["password"] != cls.__password_encryption(password):
-            return False
 
-        Database.call(
-            SQLUpdate(
-                cls.__db_info,
-                Where("id", msg1.return_data["id"]),
-                password=cls.__password_encryption(new_password),
-            )
-        )
+        session_id = cherrypy.request.cookie["sessionid"].value
+        user = cls.__temp_sessions[session_id]
+        user.password = cls.__password_encryption(new_password)
+        user.save()
         return True
 
     @classmethod
     def add_user(cls, username: str, password: str, is_admin: bool) -> bool:
         """Add user to system"""
-        user = {
-            "username": username,
-            "password": cls.__password_encryption(password),
-            "is_admin": is_admin,
-        }
-        msg1 = SQLTableCountWhere(cls.__db_info, Where("username", username))
-        Database.call(msg1)
-        if msg1.return_data["COUNT(*)"] == 0:
-            msg2 = SQLInsert(cls.__db_info, **user)
-            Database.call(msg2)
-            return True
-        return False
+
+        user = User(
+            username=username, password=cls.__password_encryption(password), is_admin=is_admin
+        )
+        return user.save() == 1
 
     @classmethod
-    def delete_user(cls, user_id: int):
+    def delete_user(cls, user_id: int) -> bool:
         """Delete user from system"""
-        Database.call(SQLDelete(cls.__db_info, Where("id", user_id)))
+        return User.do_delete().where(User.id == user_id).execute() == 1
 
     @classmethod
     def get_users(cls) -> list:
         """Grab the users info"""
-        return_list = ["id", "username", "is_admin"]
-        msg = SQLSelect(cls.__db_info, returns=return_list)
-        Database.call(msg)
-        if isinstance(msg.return_data, dict):
-            msg.return_data["is_admin"] = msg.return_data["is_admin"] == "True"
-            return [msg.return_data]
-
-        for item in msg.return_data:
-            item["is_admin"] = item["is_admin"] == "True"
-        return msg.return_data
+        return User.do_select(User.id, User.username, User.is_admin)
 
     @classmethod
     def update_user(
@@ -211,16 +158,19 @@ class Authentication:
         if cls.check_logged_in() != cls.ADMIN and cls.get_logged_in_userid() != user_id:
             return False
 
-        data = {}
-        if isinstance(username, str) and len(username) > 0:
-            data["username"] = username
-        if isinstance(password, str) and len(password) > 0:
-            data["password"] = cls.__password_encryption(password)
-        if isinstance(is_admin, bool):
-            data["is_admin"] = is_admin
+        user = None
+        for session_user in cls.__temp_sessions:
+            if session_user.id == user_id:
+                user = session_user
+                break
 
-        Database.call(SQLUpdate(cls.__db_info, Where("id", user_id), **data))
-        return True
+        if isinstance(username, str) and len(username) > 0:
+            user.username = username
+        if isinstance(password, str) and len(password) > 0:
+            user.password = cls.__password_encryption(password)
+        if isinstance(is_admin, bool):
+            user.is_admin = is_admin
+        return user.save() == 1
 
     @classmethod
     def clear_sessions(cls):

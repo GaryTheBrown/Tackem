@@ -5,11 +5,7 @@ import string
 import cherrypy
 
 from api.base import APIBase
-from data.database.system import UPLOAD_DB
-from libs.database import Database
-from libs.database.messages.insert import SQLInsert
-from libs.database.messages.select import SQLSelect
-from libs.database.where import Where
+from data.database.post_upload import PostUpload
 
 
 @cherrypy.expose
@@ -36,33 +32,32 @@ class APIRipperIsoUpload(APIBase):
                 errorNumber=0,
             )
 
-        msg = SQLSelect(
-            UPLOAD_DB,
-            Where("filename", kwargs["filename"]),
-            Where("filesize", kwargs["filesize"]),
+        existing = (
+            PostUpload.do_select()
+            .where(
+                PostUpload.filename == kwargs["filename"], PostUpload.filesize == kwargs["filesize"]
+            )
+            .get()
         )
-
-        Database.call(msg)
         url = cherrypy.url().split("/api/")[0]
-        if isinstance(msg.return_data, dict):
+
+        if existing:
             return self._return_data(
                 "Ripper",
                 "Upload ISO",
                 True,
-                key=msg.return_data["key"],
-                url=f"{url}/upload/?key={msg.return_data['key']}",
+                key=existing.key,
+                url=f"{url}/upload/?key={existing.key}",
             )
+
         rnd = random.SystemRandom()
         key = "".join(rnd.choices(string.ascii_lowercase + string.digits, k=40))
-        Database.call(
-            SQLInsert(
-                UPLOAD_DB,
-                key=key,
-                filename=kwargs["filename"],
-                filesize=kwargs["filesize"],
-                system="RIPPER_ISO",
-            )
-        )
+        upload = PostUpload()
+        upload.key = key
+        upload.filename = kwargs["filename"]
+        upload.filesize = kwargs["filesize"]
+        upload.system = "RIPPER_ISO"
+        upload.save()
 
         return self._return_data(
             "Ripper",

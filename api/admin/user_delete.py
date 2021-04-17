@@ -2,7 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
-from libs.authentication import Authentication
+from libs.auth import Auth
 
 
 @cherrypy.expose
@@ -12,5 +12,5 @@ class APIAdminUserDelete(APIBase):
     def DELETE(self, userid: int, **kwargs) -> str:
         """DELETE Function"""
         self._check_user(True)
-        Authentication.delete_user(userid)
+        Auth.delete_user(userid)
         return self._return_data("User", "Update User", True)

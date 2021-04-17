@@ -2,7 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
-from libs.authentication import Authentication
+from libs.auth import Auth
 
 
 @cherrypy.expose
@@ -36,9 +36,7 @@ class APIAdminUserAdd(APIBase):
                 error="Missing is admin Setting",
                 errorNumber=2,
             )
-        if Authentication.add_user(
-            kwargs["username"], kwargs["password"], kwargs["isadmin"] == "true"
-        ):
+        if Auth.add_user(kwargs["username"], kwargs["password"], kwargs["isadmin"] == "true"):
             return self._return_data("User", "Add User", True)
         return self._return_data(
             "User",

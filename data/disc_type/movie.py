@@ -21,7 +21,7 @@ class MovieDiscType(DiscType):
         year: int,
         tracks: list,
         language: str = "eng",
-        tmdb_id: str = "",
+        tmdb_id: int = 0,
     ):
         super().__init__("Movie", name, tracks, language, tmdb_id)
         current_year = int(datetime.date.today().year)

@@ -6,7 +6,7 @@ from typing import Dict
 from typing import Optional
 
 from data.video_track_type.base import VideoTrackType
-from libs.classproperty import classproperty
+from libs import classproperty
 
 
 class DiscType(metaclass=ABCMeta):

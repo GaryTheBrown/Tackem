@@ -6,10 +6,7 @@ from threading import Thread
 from typing import Union
 
 from data.config import CONFIG
-from data.database.ripper import VIDEO_INFO_DB
-from libs.database import Database
-from libs.database.messages.update import SQLUpdate
-from libs.database.where import Where
+from data.database.ripper_video_info import VideoInfo
 from libs.file import File
 from libs.ripper.makemkv import MakeMKV
 from libs.ripper.subsystems import FileSubsystem
@@ -83,7 +80,7 @@ class ISORipper(FileSubsystem):
             if self._disc["type"] == "audiocd":
                 pass
             else:
-                Database.call(SQLUpdate(VIDEO_INFO_DB, Where("id", self._db_id), iso_file=""))
+                VideoInfo.do_update(iso_file="").where(VideoInfo.id == self._db_id).execute()
             File.rm(
                 File.location(
                     self.__filename,
