@@ -66,7 +66,7 @@ class VideoConverter(
             if not second_run:
                 auto_mode = True
         self._command.append(f'"{outfile}"')
-        exit(1)
+
         if not self._convert:
             if auto_mode or second_run:
                 pass
