@@ -2,7 +2,7 @@
 import cherrypy
 
 from api.base import APIBase
-from libs.ripper import Ripper
+from ripper import Ripper
 
 
 @cherrypy.expose

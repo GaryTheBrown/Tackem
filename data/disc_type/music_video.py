@@ -2,11 +2,11 @@
 from typing import List
 from typing import Optional
 
+from config.backend.obj.data.option import ConfigObjOption
+from config.backend.obj.options.select import ConfigObjOptionsSelect
+from config.backend.obj.string import ConfigObjString
 from data.disc_type.base import DiscType
 from data.languages import Languages
-from libs.config.obj.data.option import ConfigObjOption
-from libs.config.obj.options.select import ConfigObjOptionsSelect
-from libs.config.obj.string import ConfigObjString
 
 
 class MusicVideoDiscType(DiscType):

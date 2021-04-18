@@ -4,8 +4,8 @@ from typing import Any
 import cherrypy
 
 from config import CONFIG
+from config.backend.list import ConfigList
 from libs.auth import Auth
-from libs.config.list import ConfigList
 
 
 class Admin:

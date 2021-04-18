@@ -3,13 +3,11 @@ import cherrypy
 
 from api.base import APIBase
 from api.e404 import API404
-from api.scraper.movie_imdbid import APIScraperMovieIMDBID
-from api.scraper.movie_search import APIScraperMovieSearch
-from api.scraper.movie_tmdbid import APIScraperMovieTMDBID
-from api.scraper.tv_imdbid import APIScraperTVIMDBID
-from api.scraper.tv_search import APIScraperTVSearch
-from api.scraper.tv_tmdbid import APIScraperTVTMDBID
-from api.scraper.tv_tvdbid import APIScraperTVTVDBID
+from api.scraper.search_imdbid import APIScraperIMDBID
+from api.scraper.search_movie import APIScraperSearchMovie
+from api.scraper.search_tmdbid import APIScraperTMDBID
+from api.scraper.search_tv import APIScraperSearchTV
+from api.scraper.search_tvdbid import APIScraperTVDBID
 
 
 @cherrypy.expose
@@ -23,26 +21,14 @@ class APIScraper(APIBase):
 
         section = vpath.pop(0).lower()
 
-        if section == "moviesearch":
-            return APIScraperMovieSearch()
-        if section == "moviesearchimdbid":
-            return APIScraperMovieIMDBID()
-        if section == "moviesearchtmdbid":
-            return APIScraperMovieTMDBID()
-        if section == "tvsearch":
-            return APIScraperTVSearch()
-        if section == "tvsearchtvdbid":
-            return APIScraperTVTVDBID()
-        if section == "tvsearchimdbid":
-            return APIScraperTVIMDBID()
-        if section == "tvsearchtmdbid":
-            return APIScraperTVTMDBID()
-        if section == "docsearch":
-            return APIScraperMovieSearch()
-        if section == "docsearchimdbid":
-            return APIScraperMovieSearch()
-        if section == "docsearchtvdbid":
-            return APIScraperMovieSearch()
-        if section == "docsearchtmdbid":
-            return APIScraperMovieSearch()
+        if section == "searchmovie":
+            return APIScraperSearchMovie()
+        if section == "searchtv":
+            return APIScraperSearchTV()
+        if section == "imdbid":
+            return APIScraperIMDBID()
+        if section == "tmdbid":
+            return APIScraperTMDBID()
+        if section == "tvdbid":
+            return APIScraperTVDBID()
         return API404()

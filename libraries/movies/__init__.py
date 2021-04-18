@@ -1,7 +1,7 @@
 """Library Movies Controller"""
+from config.backend.list import ConfigList
 from database.library import LIBRARY_MOVIES_DB
 from libraries.library_base import LibraryBase
-from libs.config.list import ConfigList
 
 
 class MoviesLibrary(LibraryBase):

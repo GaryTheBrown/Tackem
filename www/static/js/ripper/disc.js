@@ -115,7 +115,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/moviesearch`,
+                url: `${APIROOT}scraper/searchmovie`,
                 data: {
                     name: name,
                     year: year
@@ -140,7 +140,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/moviesearchimdbid`,
+                url: `${APIROOT}scraper/imdbid`,
                 data: {
                     imdbid: imdbid
                 },
@@ -163,7 +163,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/moviesearchtmdbid`,
+                url: `${APIROOT}scraper/tmdbid`,
                 data: {
                     tmdbid: tmdbid
                 },
@@ -247,7 +247,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/tvsearch`,
+                url: `${APIROOT}scraper/searchtv`,
                 data: {
                     name: name,
                 },
@@ -271,7 +271,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/tvsearchtvdbid`,
+                url: `${APIROOT}scraper/tvdbid`,
                 data: {
                     tvdbid: tvdbid
                 },
@@ -294,7 +294,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/tvsearchimdbid`,
+                url: `${APIROOT}scraper/imdbid`,
                 data: {
                     imdbid: imdbid
                 },
@@ -317,7 +317,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/tvsearchtmdbid`,
+                url: `${APIROOT}scraper/tmdbid`,
                 data: {
                     tmdbid: tmdbid
                 },

@@ -3,11 +3,11 @@ import datetime
 from typing import List
 from typing import Optional
 
+from config.backend.obj.data.button import Button
+from config.backend.obj.data.input_attributes import InputAttributes
+from config.backend.obj.integer_number import ConfigObjIntegerNumber
+from config.backend.obj.string import ConfigObjString
 from data.disc_type.base import DiscType
-from libs.config.obj.data.button import Button
-from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.integer_number import ConfigObjIntegerNumber
-from libs.config.obj.string import ConfigObjString
 
 
 class MovieDiscType(DiscType):

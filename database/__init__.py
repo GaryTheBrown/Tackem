@@ -1,7 +1,6 @@
 """SQL System"""
 from threading import local
 from time import time
-from typing import Union
 
 from peewee import BigAutoField
 from peewee import CharField
@@ -13,6 +12,7 @@ from peewee import Model
 from peewee import TimestampField
 from playhouse.migrate import migrate
 from playhouse.migrate import MySQLMigrator
+from playhouse.migrate import SchemaMigrator
 from playhouse.migrate import SqliteMigrator
 from playhouse.pool import PooledMySQLDatabase
 from playhouse.pool import PooledSqliteDatabase
@@ -23,6 +23,9 @@ from libs import classproperty
 
 
 # http://docs.peewee-orm.com/en/latest/peewee/installation.html
+# To Do Schema Updates you need to create a list of operations and a that list to the tables
+# migration function as a new list in the main list
+# http://docs.peewee-orm.com/en/latest/peewee/playhouse.html#schema-migrations
 
 
 class Database:
@@ -71,7 +74,7 @@ class Database:
         return cls.__db
 
     @classproperty
-    def migrator(cls) -> Union[MySQLMigrator, SqliteMigrator]:
+    def migrator(cls) -> SchemaMigrator:
         """returns the migrator"""
         return cls.__migrator
 
@@ -144,7 +147,7 @@ class TableBase(Model):
         return []
 
     @classmethod
-    def table_setup(cls):  # , migrations: Optional[list] = None):
+    def table_setup(cls):
         """Magic to create the table"""
         try:
             tv = TableVersion.get(TableVersion.name == cls._meta.table_name)
@@ -152,12 +155,10 @@ class TableBase(Model):
             tv = TableVersion()
             tv.name = cls._meta.table_name
 
-        migrations = cls.migrations()
-
         if not cls.table_exists():
             cls.create_table()
         else:
-            # migrations = cls._migrations()
+            migrations = cls.migrations()
             if migrations == []:
                 tv.version = 0
             else:

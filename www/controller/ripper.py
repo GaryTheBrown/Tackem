@@ -9,7 +9,7 @@ from data.disc_type.base import DiscType
 from database.ripper.video_info import VideoInfo
 from libs import lower_keys
 from libs.auth import Auth
-from libs.ripper import Ripper as RipperSYS
+from ripper import Ripper as RipperSYS
 
 
 class Ripper:

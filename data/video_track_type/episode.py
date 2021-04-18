@@ -1,8 +1,8 @@
 """video track type information"""
 from typing import Optional
 
+from config.backend.obj.integer_number import ConfigObjIntegerNumber
 from data.video_track_type.base import VideoTrackType
-from libs.config.obj.integer_number import ConfigObjIntegerNumber
 
 
 class EpisodeTrackType(VideoTrackType):

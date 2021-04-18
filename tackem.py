@@ -6,8 +6,8 @@ from config import CONFIG
 from database import Database
 from libs.auth import Auth
 from libs.events import RootEventMaster as RootEvent
-from libs.ripper import Ripper
 from libs.scraper import Scraper
+from ripper import Ripper
 from www import Webserver
 
 # TODO finish off the Ripper system

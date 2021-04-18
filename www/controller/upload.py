@@ -8,7 +8,7 @@ from peewee import DoesNotExist
 from config import CONFIG
 from database.post_upload import PostUpload
 from libs.file import File
-from libs.ripper import Ripper
+from ripper import Ripper
 
 
 class Upload:

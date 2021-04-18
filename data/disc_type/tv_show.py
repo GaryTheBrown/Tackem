@@ -2,9 +2,9 @@
 from typing import List
 from typing import Optional
 
+from config.backend.obj.data.button import Button
+from config.backend.obj.string import ConfigObjString
 from data.disc_type.base import DiscType
-from libs.config.obj.data.button import Button
-from libs.config.obj.string import ConfigObjString
 
 
 class TVShowDiscType(DiscType):

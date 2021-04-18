@@ -8,7 +8,7 @@ import jinja2
 from config import CONFIG
 from libs.auth import Auth
 from libs.file import File
-from libs.ripper import Ripper
+from ripper import Ripper
 
 
 class Template(cherrypy.Tool):

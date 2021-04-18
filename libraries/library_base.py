@@ -10,6 +10,7 @@ from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
 
 from config import CONFIG
+from config.backend.list import ConfigList
 from database import Database
 from database.library import LIBRARY_FILES_DB
 from database.messages.insert import SQLInsert
@@ -17,7 +18,6 @@ from database.messages.select import SQLSelect
 from database.messages.table import SQLTable
 from database.table import Table
 from database.where import Where
-from libs.config.list import ConfigList
 
 
 class LibraryBase(metaclass=ABCMeta):

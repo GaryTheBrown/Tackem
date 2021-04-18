@@ -1,9 +1,9 @@
 """Scraper Config"""
+from config.backend.list import ConfigList
+from config.backend.obj.boolean import ConfigObjBoolean
+from config.backend.obj.options.select import ConfigObjOptionsSelect
+from config.backend.obj.string import ConfigObjString
 from data.locale_options import OPTIONS as locale_options
-from libs.config.list import ConfigList
-from libs.config.obj.boolean import ConfigObjBoolean
-from libs.config.obj.options.select import ConfigObjOptionsSelect
-from libs.config.obj.string import ConfigObjString
 
 
 def scraper_config() -> ConfigList:

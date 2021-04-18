@@ -1,11 +1,11 @@
 """Database Config"""
-from libs.config.list import ConfigList
-from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.data.radio import ConfigObjRadio
-from libs.config.obj.integer_number import ConfigObjIntegerNumber
-from libs.config.obj.options.radio import ConfigObjOptionsRadio
-from libs.config.obj.password import ConfigObjPassword
-from libs.config.obj.string import ConfigObjString
+from config.backend.list import ConfigList
+from config.backend.obj.data.input_attributes import InputAttributes
+from config.backend.obj.data.radio import ConfigObjRadio
+from config.backend.obj.integer_number import ConfigObjIntegerNumber
+from config.backend.obj.options.radio import ConfigObjOptionsRadio
+from config.backend.obj.password import ConfigObjPassword
+from config.backend.obj.string import ConfigObjString
 
 
 def database_config() -> ConfigList:

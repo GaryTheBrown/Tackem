@@ -1,8 +1,8 @@
 """video track type information"""
 from typing import Optional
 
+from config.backend.obj.string import ConfigObjString
 from data.video_track_type.base import VideoTrackType
-from libs.config.obj.string import ConfigObjString
 
 
 class MusicTrackType(VideoTrackType):

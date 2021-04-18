@@ -1,8 +1,8 @@
 """API Config"""
-from libs.config.list import ConfigList
-from libs.config.obj.data.button import Button
-from libs.config.obj.data.input_attributes import InputAttributes
-from libs.config.obj.string import ConfigObjString
+from config.backend.list import ConfigList
+from config.backend.obj.data.button import Button
+from config.backend.obj.data.input_attributes import InputAttributes
+from config.backend.obj.string import ConfigObjString
 
 
 def api_config() -> ConfigList:

@@ -1,7 +1,7 @@
 """Musicbrainz Config"""
-from libs.config.list import ConfigList
-from libs.config.obj.password import ConfigObjPassword
-from libs.config.obj.string import ConfigObjString
+from config.backend.list import ConfigList
+from config.backend.obj.password import ConfigObjPassword
+from config.backend.obj.string import ConfigObjString
 
 
 def musicbrainz_config() -> ConfigList:
