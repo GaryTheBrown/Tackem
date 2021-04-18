@@ -5,7 +5,7 @@ from peewee import ForeignKeyField
 from database import Database
 from database import SoftTableBase
 from database import ThreadSafeDatabaseMetadata
-from database.library_files import LibraryFiles
+from database.library.files import LibraryFiles
 
 
 class LibraryMovies(SoftTableBase):

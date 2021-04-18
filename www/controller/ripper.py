@@ -6,7 +6,7 @@ from peewee import DoesNotExist
 
 from data.disc_type import make_disc_type
 from data.disc_type.base import DiscType
-from database.ripper_video_info import VideoInfo
+from database.ripper.video_info import VideoInfo
 from libs import lower_keys
 from libs.auth import Auth
 from libs.ripper import Ripper as RipperSYS

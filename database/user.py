@@ -1,5 +1,5 @@
 """User Table"""
-from peewee import BitField
+from peewee import BooleanField
 from peewee import TextField
 
 from database import Database
@@ -12,7 +12,7 @@ class User(TableBase):
 
     username = TextField(unique=True)
     password = TextField()
-    is_admin = BitField(default=False)
+    is_admin = BooleanField(default=0)
 
     class Meta:
         table_name = "users"

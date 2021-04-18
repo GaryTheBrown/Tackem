@@ -6,20 +6,18 @@ import datetime
 import hashlib
 import threading
 from pathlib import Path
+from time import time
+from typing import List
 
 from config import CONFIG
-from database import Database
-from database.library import LIBRARY_FILES_DB
-from database.messages.select import SQLSelect
-from database.messages.update import SQLUpdate
-from database.where import Where
+from database.library.files import LibraryFiles
 
 
 class FileChecker:
     """system to check the files are not damaged"""
 
     __BLOCKSIZE = 65536
-    __list = []
+    __list: List[LibraryFiles] = []
     __event = threading.Event()
     __lock = threading.Lock()
     __config = CONFIG["libraries"]["global"]["autofilecheck"]
@@ -84,12 +82,9 @@ class FileChecker:
         if regularity == "year":
             now = now + datetime.timedelta(years=-1)
 
-        timestamp = int(now.timestamp())
-        msg = SQLSelect(LIBRARY_FILES_DB, Where("last_check", timestamp, ">"))
+        files = LibraryFiles.do_select().where(LibraryFiles.last_check > time)
 
-        Database.call(msg)
-
-        self.extend(msg.return_data)
+        self.extend(files)
 
     def run(self):
         """Threadded Script For running"""
@@ -109,21 +104,16 @@ class FileChecker:
                 return
 
             with self.__lock:
-                item = self.__list.pop()
+                file = self.__list.pop()
 
-            full_path = item["folder"] + item["file"]
+            full_path = file.folder + file.filename
             if Path(full_path).is_file():
                 checksum = self.get_file_checksum(full_path)
-
-                update_data = {"checksum": checksum}
-
-                if checksum != item["checksum"]:
+                if checksum != file.checksum:
                     print(f"FILE HAS GONE BAD {full_path}")
-                    update_data["bad_file"] = 1
-
-                msg = SQLUpdate(LIBRARY_FILES_DB, Where("id", item["id"]), checksum=checksum)
-
+                    file.bad_file = True
+                    file.checksum = checksum
+                    file.save()
             else:
-                msg = SQLUpdate(LIBRARY_FILES_DB, Where("id", item["id"]), missing_file=1)
-
-            Database.call(msg)
+                file.missing_file = True
+                file.save()

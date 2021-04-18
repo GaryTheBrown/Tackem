@@ -5,8 +5,8 @@ from peewee import DoesNotExist
 
 from data.disc_type import make_disc_type
 from data.video_track_type import make_track_type
-from database.ripper_video_convert import VideoConvertInfo
-from database.ripper_video_info import VideoInfo
+from database.ripper.video_convert import VideoConvertInfo
+from database.ripper.video_info import VideoInfo
 from libs.file import File
 from libs.ripper.ffprobe import FFprobe
 from libs.ripper.video_converter.chapters import VideoConverterChapters

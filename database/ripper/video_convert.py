@@ -1,5 +1,5 @@
 """Ripper Video Convert Info Table"""
-from peewee import BitField
+from peewee import BooleanField
 from peewee import ForeignKeyField
 from peewee import IntegerField
 from peewee import TextField
@@ -8,7 +8,7 @@ from playhouse.sqlite_ext import JSONField
 from database import Database
 from database import SoftTableBase
 from database import ThreadSafeDatabaseMetadata
-from database.ripper_video_info import VideoInfo
+from database.ripper.video_info import VideoInfo
 
 
 class VideoConvertInfo(SoftTableBase):
@@ -19,7 +19,7 @@ class VideoConvertInfo(SoftTableBase):
     filename = TextField()
     label = TextField()
     track_data = JSONField()
-    video_converted = BitField(default=False)
+    video_converted = BooleanField(default=0)
 
     class Meta:
         table_name = "ripper_video_convert_info"

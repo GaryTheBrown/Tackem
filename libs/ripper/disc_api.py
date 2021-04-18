@@ -7,7 +7,7 @@ from data.video_track_type.dontrip import DONTRIPTrackType
 from data.video_track_type.extra import ExtraTrackType
 from data.video_track_type.feature import FeatureTrackType
 from data.video_track_type.trailer import TrailerTrackType
-from database.ripper_video_info import VideoInfo
+from database.ripper.video_info import VideoInfo
 
 
 class DiscAPI:

@@ -6,7 +6,7 @@ from threading import Thread
 from typing import Union
 
 from config import CONFIG
-from database.ripper_video_info import VideoInfo
+from database.ripper.video_info import VideoInfo
 from libs.file import File
 from libs.ripper.makemkv import MakeMKV
 from libs.ripper.subsystems import FileSubsystem

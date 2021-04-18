@@ -27,7 +27,7 @@ class Auth:
     @classmethod
     def start(cls):
         """Run starting commands need sql to run"""
-        User.create_table()
+        User.table_setup()
 
         if User.do_select().where(User.is_admin == True).count() == 0:  # noqa E712
             password = cls.generate_password()
@@ -122,7 +122,7 @@ class Auth:
             return False
 
         session_id = cherrypy.request.cookie["sessionid"].value
-        user = cls.__temp_sessions[session_id]
+        user: User = cls.__temp_sessions[session_id]
         user.password = cls.__password_encryption(new_password)
         user.save()
         return True

@@ -1,5 +1,5 @@
 """Ripper Video Info Table"""
-from peewee import BitField
+from peewee import BooleanField
 from peewee import CharField
 from peewee import TextField
 from playhouse.sqlite_ext import JSONField
@@ -18,7 +18,8 @@ class VideoInfo(TableBase):
     disc_type = CharField(max_length=6)
     disc_data = JSONField()
     rip_data = JSONField()
-    rip_data_locked = BitField(default=False)
+    rip_data_locked = BooleanField(default=0)
+    rip_data_downloaded = BooleanField(default=0)
 
     class Meta:
         table_name = "ripper_video_info"

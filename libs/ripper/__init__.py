@@ -6,9 +6,9 @@ from typing import List
 
 from config import CONFIG
 from data import HOMEFOLDER
-from database.ripper_audio_info import AudioInfo
-from database.ripper_video_convert import VideoConvertInfo
-from database.ripper_video_info import VideoInfo
+from database.ripper.audio_info import AudioInfo
+from database.ripper.video_convert import VideoConvertInfo
+from database.ripper.video_info import VideoInfo
 from libs import classproperty
 from libs.file import File
 from libs.hardware import Hardware
@@ -16,6 +16,8 @@ from libs.ripper.drive import Drive
 from libs.ripper.events import RipperEventMaster
 from libs.ripper.iso import ISORipper
 from libs.ripper.video_converter import VideoConverter
+
+# TODO find a way to allow automatic database updating. (migration tools)
 
 # TODO Show all discs from the DB that don't have disc data in a list
 # TODO allow editing using the disc data that is in the DB for what the files are and make it detect
@@ -117,9 +119,9 @@ class Ripper:
             File.mkdir(location.value)
 
         # Check/Create Database Tables
-        AudioInfo.create_table()
-        VideoConvertInfo.create_table()
-        VideoInfo.create_table()
+        AudioInfo.table_setup()
+        VideoConvertInfo.table_setup()
+        VideoInfo.table_setup()
 
         cls.__running = True
         cls.__event_system = Thread(target=cls.__event_system_run, args=())

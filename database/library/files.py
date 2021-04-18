@@ -1,6 +1,6 @@
 """Library Files Table"""
-from peewee import BitField
 from peewee import BlobField
+from peewee import BooleanField
 from peewee import CharField
 from peewee import IntegerField
 from peewee import TextField
@@ -19,8 +19,8 @@ class LibraryFiles(SoftTableBase):
     type = CharField(max_length=16)
     checksum = BlobField()
     last_check = TimestampField()
-    bad_file = BitField(default=False)
-    missing_file = BitField(default=False)
+    bad_file = BooleanField(default=False)
+    missing_file = BooleanField(default=False)
     from_system = TextField()
     from_id = IntegerField()
 

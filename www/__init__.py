@@ -24,7 +24,7 @@ class Webserver:
         if cls.__running:
             return
 
-        PostUpload.create_table()
+        PostUpload.table_setup()
 
         def error_page(status, message, traceback, version) -> str:
             """error page"""
