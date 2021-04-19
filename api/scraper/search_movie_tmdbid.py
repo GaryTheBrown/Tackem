@@ -6,7 +6,7 @@ from libs.scraper import Scraper
 
 
 @cherrypy.expose
-class APIScraperTMDBID(APIBase):
+class APIScraperMovieTMDBID(APIBase):
     """Base Template For the API"""
 
     def GET(self, **kwargs) -> str:
@@ -21,7 +21,7 @@ class APIScraperTMDBID(APIBase):
                 errorNumber=0,
             )
 
-        data = Scraper.get_tvshow_details(kwargs["tmdbid"])
+        data = Scraper.get_movie_details(kwargs["tmdbid"])
 
         return self._return_data(
             "Scraper", "Grab By TMDBID", True, data=data, images=Scraper.image_config

@@ -5,8 +5,9 @@ from api.base import APIBase
 from api.e404 import API404
 from api.scraper.search_imdbid import APIScraperIMDBID
 from api.scraper.search_movie import APIScraperSearchMovie
-from api.scraper.search_tmdbid import APIScraperTMDBID
+from api.scraper.search_movie_tmdbid import APIScraperMovieTMDBID
 from api.scraper.search_tv import APIScraperSearchTV
+from api.scraper.search_tv_tmdbid import APIScraperTVTMDBID
 from api.scraper.search_tvdbid import APIScraperTVDBID
 
 
@@ -27,8 +28,10 @@ class APIScraper(APIBase):
             return APIScraperSearchTV()
         if section == "imdbid":
             return APIScraperIMDBID()
-        if section == "tmdbid":
-            return APIScraperTMDBID()
         if section == "tvdbid":
             return APIScraperTVDBID()
+        if section == "movietmdbid":
+            return APIScraperMovieTMDBID()
+        if section == "tvtmdbid":
+            return APIScraperTVTMDBID()
         return API404()

@@ -84,10 +84,10 @@ class DiscType(metaclass=ABCMeta):
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        super_dict["disc_type"] = self.__disc_type
+        super_dict["type"] = self.__disc_type
         super_dict["name"] = self.__name
         super_dict["language"] = self.__language
-        super_dict["tmdb_id"] = self.__tmdb_id
+        super_dict["tmdbid"] = self.__tmdb_id
         if not no_tracks:
             track_list = []
             for track in self.__tracks:
@@ -103,5 +103,9 @@ class DiscType(metaclass=ABCMeta):
         """generates the title for the track"""
 
     @abstractmethod
-    def html_create_data(self) -> dict:
+    def html_create_data(self, read_only: bool = False) -> dict:
+        """returns the data for html"""
+
+    @abstractmethod
+    def html_show_data(self, read_only: bool = False) -> dict:
         """returns the data for html"""

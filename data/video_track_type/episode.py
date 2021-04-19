@@ -1,6 +1,7 @@
 """video track type information"""
 from typing import Optional
 
+from config.backend.obj.data.input_attributes import InputAttributes
 from config.backend.obj.integer_number import ConfigObjIntegerNumber
 from data.video_track_type.base import VideoTrackType
 
@@ -31,16 +32,20 @@ class EpisodeTrackType(VideoTrackType):
         super_dict["episode"] = self.__episode
         return super().make_dict(super_dict)
 
-    def html_create_data(self, track_id: int) -> dict:
+    def html_create_data(self, track_id: int, read_only: bool = False) -> dict:
         """returns the data for html"""
         season = ConfigObjIntegerNumber(
             f"track_{track_id}_season", 1, "Season", "Enter the season Number (0 for specials)"
         )
+        if read_only:
+            season.input_attributes = InputAttributes("readonly")
         season.value = self.season
 
         episode = ConfigObjIntegerNumber(
             f"track_{track_id}_episode", 1, "Episode", "Enter the episode Number"
         )
+        if read_only:
+            episode.input_attributes = InputAttributes("readonly")
         episode.value = self.episode
         return {
             "disc_items": [

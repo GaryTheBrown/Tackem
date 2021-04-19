@@ -26,7 +26,7 @@ def make_track_type(track: Union[str, dict]) -> Optional[VideoTrackType]:
     if track["type"].replace(" ", "").lower() == "episode":
         return EpisodeTrackType(track.get("season", ""), track.get("episode", ""))
     if track["type"].replace(" ", "").lower() == "trailer":
-        return TrailerTrackType(track.get("info", ""))
+        return TrailerTrackType(track.get("name", ""))
     if track["type"].replace(" ", "").lower() == "extra":
         return ExtraTrackType(track.get("name", ""))
     if track["type"].replace(" ", "").lower() == "music":

@@ -21,7 +21,7 @@ class APIScraperIMDBID(APIBase):
                 errorNumber=0,
             )
 
-        data = Scraper.tvshow_by_imdb_id(kwargs["imdbid"])
+        data = Scraper.imdb_id(kwargs["imdbid"])
 
         return self._return_data(
             "Scraper", "Grab By IMDBID", True, data=data, images=Scraper.image_config

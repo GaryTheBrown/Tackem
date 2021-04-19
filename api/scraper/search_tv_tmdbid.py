@@ -6,23 +6,23 @@ from libs.scraper import Scraper
 
 
 @cherrypy.expose
-class APIScraperTVDBID(APIBase):
+class APIScraperTVTMDBID(APIBase):
     """Base Template For the API"""
 
     def GET(self, **kwargs) -> str:
         """GET Function"""
 
-        if "tvdbid" not in kwargs:
+        if "tmdbid" not in kwargs:
             return self._return_data(
                 "Scraper",
-                "Grab TVDBID",
+                "Grab By TMDBID",
                 False,
-                error="Missing TVDBID",
+                error="Missing TMDBID",
                 errorNumber=0,
             )
 
-        data = Scraper.tvdb_id(kwargs["tvdbid"])
+        data = Scraper.get_tvshow_details(kwargs["tmdbid"])
 
         return self._return_data(
-            "Scraper", "Grab TVDBID", True, data=data, images=Scraper.image_config
+            "Scraper", "Grab By TMDBID", True, data=data, images=Scraper.image_config
         )

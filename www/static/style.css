@@ -1,15 +1,6 @@
 * {
+  /* GLOBALS */
   border-radius: 0 !important;
-}
-
-body {
-  background-color: black;
-}
-
-code {
-  display: block;
-  white-space: pre-wrap;
-  color: inherit !important;
 }
 
 /* FOOTER */
@@ -113,70 +104,86 @@ footer {
 }
 
 /* BODY HERE */
-#body {
-  padding-top: 50px;
+body {
   background-color: black;
+  padding-top: 50px;
   color: white;
+  /* RIPPER */
 }
 
-#body .homepagelogo {
+body .onclick {
+  cursor: pointer;
+}
+
+body .clickable {
+  cursor: pointer;
+}
+
+body .clickable-row:hover {
+  cursor: pointer;
+  background: #aaaaaa;
+}
+
+body .homepagelogo {
   width: 90%;
   height: 90%;
   margin: 5%;
 }
 
-a {
+body code {
+  display: block;
+  white-space: pre-wrap;
+  color: inherit !important;
+}
+
+body a {
   text-decoration: none !important;
 }
 
-.row {
+body .row {
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
 
-.w45 {
+body .w45 {
   min-width: 45px !important;
   width: 45px !important;
 }
 
-.toggle-off.btn {
+body .toggle-off.btn {
   padding-left: 11px !important;
 }
 
-.modal-content {
+body .modal-content {
   color: black;
 }
 
-a.nav-link {
+body a.nav-link {
   color: lightgray;
 }
 
-.form-check-input {
+body .form-check-input {
   margin-left: 0 !important;
 }
 
-.onclick {
-  cursor: pointer;
-}
-
-.topright {
+body .topright {
   position: absolute;
   top: 10px;
   right: 10px;
 }
 
-#search_modal .modal-dialog {
+body #search_modal .modal-dialog {
   width: 98% !important;
   height: 98% !important;
   margin: 1% !important;
   max-width: 100% !important;
 }
 
-#search_modal .modal-footer {
+body #search_modal .modal-footer {
   display: block !important;
 }
 
-#dim_screen {
+body #dim_screen {
   position: absolute;
   top: 0;
   left: 0;
@@ -189,18 +196,18 @@ a.nav-link {
   display: none;
 }
 
-.custom-file-upload {
+body .custom-file-upload {
   background-color: #ffffff;
   color: #000000;
   cursor: pointer;
   padding: 1px 15px;
 }
 
-#loading-popup {
+body #loading-popup {
   display: none;
 }
 
-#loading-popup .popup-background {
+body #loading-popup .popup-background {
   position: absolute;
   top: 0;
   left: 0;
@@ -209,7 +216,7 @@ a.nav-link {
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-#loading-popup .popup-background .popup {
+body #loading-popup .popup-background .popup {
   width: 200px;
   height: 200px;
   position: fixed;
@@ -217,7 +224,7 @@ a.nav-link {
   left: calc(50% - 100px);
 }
 
-#loading-popup .popup-background .popup .loader {
+body #loading-popup .popup-background .popup .loader {
   border: 16px solid #f3f3f3;
   /* Light grey */
   border-top: 16px solid #3498db;
@@ -239,8 +246,7 @@ a.nav-link {
   }
 }
 
-/* RIPPER */
-#ripper .trackdata {
+body #ripper .trackdata {
   cursor: pointer;
   font-size: 1.1rem;
 }

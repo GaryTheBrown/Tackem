@@ -7,7 +7,6 @@ from data.video_track_type.dontrip import DONTRIPTrackType
 from data.video_track_type.extra import ExtraTrackType
 from data.video_track_type.feature import FeatureTrackType
 from data.video_track_type.trailer import TrailerTrackType
-from database.ripper.video_info import VideoInfo
 
 
 class DiscAPI:
@@ -15,20 +14,8 @@ class DiscAPI:
     def find_json(cls, uuid: str, label: str) -> str:
         """will access the api and check if the disc exists
         TEMP FUNCTION BELLOW TO EXPAND WHEN READY TO."""
-        info = None
-        # if uuid == "36cc8c4d00000000" and label == "AQUA_TEEN_COLON_MOVIE":
-        #     info = cls.__aqua_teen_movie().json()
-
-        if info:
-            db_info = (
-                VideoInfo.do_select().where(VideoInfo.uuid == uuid, VideoInfo.label == label).get()
-            )
-            db_info.rip_data = info.json()
-            db_info.rip_data_download = True
-            db_info.save()
-            return info.json()
-
-        return "{}"
+        info = cls.find_disctype(uuid, label)
+        return info.json() if info else "{}"
 
     @classmethod
     def find_disctype(cls, uuid: str, label: str) -> Optional[DiscType]:
@@ -37,17 +24,7 @@ class DiscAPI:
         info = None
         # if uuid == "36cc8c4d00000000" and label == "AQUA_TEEN_COLON_MOVIE":
         #     return cls.__aqua_teen_movie()
-
-        if info:
-            db_info = (
-                VideoInfo.do_select().where(VideoInfo.uuid == uuid, VideoInfo.label == label).get()
-            )
-            db_info.rip_data = info.json()
-            db_info.rip_data_download = True
-            db_info.save()
-            return info
-
-        return None
+        return info
 
     @classmethod
     def __aqua_teen_movie(cls):

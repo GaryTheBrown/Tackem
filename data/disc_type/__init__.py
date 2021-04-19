@@ -19,7 +19,7 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
     if "tracks" in data:
         for track in data["tracks"]:
             tracks.append(make_track_type(track))
-    if data["disc_type"].replace(" ", "").lower() == "movie":
+    if data["type"].replace(" ", "").lower() == "movie":
         return MovieDiscType(
             data.get("name", ""),
             data.get("year", ""),
@@ -27,28 +27,28 @@ def make_disc_type(data: Union[str, dict]) -> DiscType:
             data.get("language", "en"),
             data.get("tmdbid", ""),
         )
-    if data["disc_type"].replace(" ", "").lower() == "tvshow":
+    if data["type"].replace(" ", "").lower() == "tvshow":
         return TVShowDiscType(
             data.get("name", ""),
             tracks,
             data.get("language", "en"),
             data.get("tmdbid", ""),
         )
-    if data["disc_type"].replace(" ", "").lower() == "musicvideo":
+    if data["type"].replace(" ", "").lower() == "musicvideo":
         return MusicVideoDiscType(
             data.get("name", ""),
             data.get("info", ""),
             tracks,
             data.get("language", "en"),
         )
-    if data["disc_type"].replace(" ", "").lower() == "homemovie":
+    if data["type"].replace(" ", "").lower() == "homemovie":
         return HomeMovieDiscType(
             data.get("name", ""),
             data.get("info", ""),
             tracks,
             data.get("language", "en"),
         )
-    if data["disc_type"].replace(" ", "").lower() == "other":
+    if data["type"].replace(" ", "").lower() == "other":
         return OtherDiscType(
             data.get("name", ""),
             data.get("info", ""),

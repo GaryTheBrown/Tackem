@@ -16,7 +16,7 @@ class FeatureTrackType(VideoTrackType):
             super_dict = {}
         return super().make_dict(super_dict)
 
-    def html_create_data(self, track_id: int) -> dict:
+    def html_create_data(self, track_id: int, read_only: bool = False) -> dict:
         """returns the data for html"""
         return {
             "disc_items": [

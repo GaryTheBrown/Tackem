@@ -51,9 +51,9 @@ class VideoTrackType(metaclass=ABCMeta):
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
-        super_dict["track_type"] = self.__track_type
+        super_dict["type"] = self.__track_type
         return super_dict
 
     @abstractmethod
-    def html_create_data(self, track_id: int) -> dict:
+    def html_create_data(self, track_id: int, read_only: bool = False) -> dict:
         """returns the data for html"""

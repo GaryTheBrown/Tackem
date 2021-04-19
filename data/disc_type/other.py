@@ -1,6 +1,7 @@
 """disc type information"""
 from typing import Optional
 
+from config.backend.obj.data.input_attributes import InputAttributes
 from config.backend.obj.data.option import ConfigObjOption
 from config.backend.obj.options.select import ConfigObjOptionsSelect
 from config.backend.obj.string import ConfigObjString
@@ -24,13 +25,14 @@ class OtherDiscType(DiscType):
         """returns the tracks"""
         if super_dict is None:
             super_dict = {}
+        super_dict["info"] = self.info
         return DiscType.make_dict(self, super_dict, no_tracks)
 
     def track_title(self, index: int):
         """generates the title for the track"""
         return f"{self.name.capitalize()} - {self.tracks[index].title}"
 
-    def html_create_data(self) -> dict:
+    def html_create_data(self, read_only: bool = False) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "disc_name",
@@ -38,6 +40,9 @@ class OtherDiscType(DiscType):
             "Disc Name",
             "Enter the name of the Disc here",
         )
+        name.value = self.name
+        if read_only:
+            name.input_attributes = InputAttributes("readonly")
 
         info = ConfigObjString(
             "disc_info",
@@ -45,6 +50,9 @@ class OtherDiscType(DiscType):
             "Disc Info",
             "Enter some information for the disc here",
         )
+        info.value = self.info
+        if read_only:
+            info.input_attributes = InputAttributes("readonly")
 
         language = ConfigObjOptionsSelect(
             "disc_language",
@@ -53,6 +61,9 @@ class OtherDiscType(DiscType):
             "Disc Language",
             "Enter the language of the Disc here",
         )
+        language.value = self.language
+        if read_only:
+            language.input_attributes = InputAttributes("readonly")
 
         return {
             "search": False,
@@ -68,3 +79,7 @@ class OtherDiscType(DiscType):
                 language.html_dict(""),
             ],
         }
+
+    def html_show_data(self, read_only: bool = False) -> dict:
+        """returns the data for html"""
+        return {"tracks": [x.html_create_data(i + 1, read_only) for i, x in enumerate(self.tracks)]}

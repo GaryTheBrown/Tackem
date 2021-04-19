@@ -8,6 +8,7 @@ from config.backend.obj.data.input_attributes import InputAttributes
 from config.backend.obj.integer_number import ConfigObjIntegerNumber
 from config.backend.obj.string import ConfigObjString
 from data.disc_type.base import DiscType
+from libs.scraper import Scraper
 
 
 class MovieDiscType(DiscType):
@@ -50,7 +51,7 @@ class MovieDiscType(DiscType):
         """generates the title for the track"""
         return f"{self.name.capitalize()} ({self.year}) - {self.tracks[index].title}"
 
-    def html_create_data(self) -> dict:
+    def html_create_data(self, read_only: bool = False) -> dict:
         """returns the data for html"""
         name = ConfigObjString(
             "name",
@@ -126,3 +127,20 @@ class MovieDiscType(DiscType):
                 tmdbid.html_dict(""),
             ],
         }
+
+    def html_show_data(self, read_only: bool = False) -> dict:
+        """returns the data for html"""
+        data = Scraper.get_movie_details(self.tmdb_id)
+        return_dict = {
+            "poster_url": Scraper.image_base
+            + Scraper.image_config["poster_sizes"][2]
+            + data["poster_path"],
+            "title": data["title"],
+            "original_title": data["original_title"],
+            "original_language": data["original_language"],
+            "release_date": data["release_date"],
+            "overview": data["overview"],
+            "tracks": [x.html_create_data(i + 1, read_only) for i, x in enumerate(self.tracks)],
+        }
+
+        return return_dict

@@ -2,13 +2,12 @@
 <html lang="en">
 {% include 'part/template/head.html' %}
 
+<nav class="navbar navbar-expand-lg fixed-top">
+	<div class="navbar-brand" href="{{ baseurl }}"><img src="{{ baseurl }}img/logo64x64.png" />ackem</div>
+</nav>
+
 <body>
-	<nav class="navbar navbar-expand-lg fixed-top">
-		<div class="navbar-brand" href="{{ baseurl }}"><img src="{{ baseurl }}img/logo64x64.png" />ackem</div>
-	</nav>
-	<div id="body">
-		{% block content %}{% endblock %}
-	</div>
+	{% block content %}{% endblock %}
 	{% include 'part/template/popups.html' %}
 </body>
 

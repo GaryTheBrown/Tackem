@@ -1,6 +1,7 @@
 """video track type information"""
 from typing import Optional
 
+from config.backend.obj.data.input_attributes import InputAttributes
 from config.backend.obj.string import ConfigObjString
 from data.video_track_type.base import VideoTrackType
 
@@ -24,11 +25,14 @@ class DONTRIPTrackType(VideoTrackType):
         super_dict["reason"] = self.__reason
         return super().make_dict(super_dict)
 
-    def html_create_data(self, track_id: int) -> dict:
+    def html_create_data(self, track_id: int, read_only: bool = False) -> dict:
         """returns the data for html"""
         reason = ConfigObjString(
             f"track_{track_id}_reason", "", "Reason", "Enter the reason to not rip this at all here"
         )
+        if read_only:
+            reason.input_attributes = InputAttributes("readonly")
+
         reason.value = self.reason
 
         return {

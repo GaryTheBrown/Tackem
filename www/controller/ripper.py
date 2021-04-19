@@ -1,6 +1,4 @@
 """Ripper Root pages"""
-import json
-
 import cherrypy
 from peewee import DoesNotExist
 
@@ -28,7 +26,7 @@ class Ripper:
 
     @cherrypy.tools.template(user=Auth.USER)
     def disc(self, db_id: int) -> dict:
-        """Index Page"""
+        """Disc Edit Page"""
         try:
             info = VideoInfo.do_select().where(VideoInfo.id == db_id).get()
         except DoesNotExist:
@@ -48,8 +46,34 @@ class Ripper:
             "rip_data_locked": bool(info.rip_data_locked),
             "data_disc_types_and_icons": DiscType.TYPESANDICONS,
         }
-        if not info.rip_data:
+
+        if not info.rip_data or info.rip_data == {}:
             return return_dict
 
         rip_data = make_disc_type(info.rip_data)
-        return_dict["rip_data"] = json.loads(rip_data.html_data())
+        return_dict["disc_items"] = rip_data.html_create_data(bool(info.rip_data_locked))
+        return_dict["rip_data"] = rip_data.html_show_data(bool(info.rip_data_locked))
+
+        return return_dict
+
+    @cherrypy.tools.template(user=Auth.USER)
+    def discs(self) -> dict:
+        """Disc list Page"""
+        data = []
+
+        for item in VideoInfo.do_select():
+
+            data.append(
+                {
+                    "id": item.id,
+                    "name": item.rip_data.get("name", item.label),
+                    "disc_type": item.disc_type.upper(),
+                    "type": item.rip_data.get("type", ""),
+                    "rip_data": bool(item.rip_data),
+                    "locked": bool(item.rip_data_locked),
+                    "downloaded": bool(item.rip_data_downloaded),
+                    "track_count": len(item.disc_data.get("track_info", [])),
+                }
+            )
+
+        return {"data": data}

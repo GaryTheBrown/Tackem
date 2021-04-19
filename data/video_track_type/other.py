@@ -1,6 +1,7 @@
 """video track type information"""
 from typing import Optional
 
+from config.backend.obj.data.input_attributes import InputAttributes
 from config.backend.obj.string import ConfigObjString
 from data.video_track_type.base import VideoTrackType
 
@@ -24,9 +25,11 @@ class OtherTrackType(VideoTrackType):
         super_dict["name"] = self.__name
         return super().make_dict(super_dict)
 
-    def html_create_data(self, track_id: int) -> dict:
+    def html_create_data(self, track_id: int, read_only: bool = False) -> dict:
         """returns the data for html"""
         name = ConfigObjString(f"track_{track_id}_name", "", "Name", "Enter the name")
+        if read_only:
+            name.input_attributes = InputAttributes("readonly")
         name.value = self.name
 
         return {

@@ -80,7 +80,7 @@ class ISORipper(FileSubsystem):
             if self._disc["type"] == "audiocd":
                 pass
             else:
-                VideoInfo.do_update(iso_file="").where(VideoInfo.id == self._db_id).execute()
+                VideoInfo.do_update({"iso_file": ""}).where(VideoInfo.id == self._db_id).execute()
             File.rm(
                 File.location(
                     self.__filename,

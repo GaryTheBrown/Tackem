@@ -1,17 +1,13 @@
+$mainBackgroundColour: black;
+
+$clickHoverColour: #aaaaaa;
+
 * {
+    /* GLOBALS */
     border-radius: 0 !important;
 }
 
-body {
-    background-color: black;
 
-}
-
-code {
-    display: block;
-    white-space: pre-wrap;
-    color: inherit !important;
-}
 
 /* FOOTER */
 
@@ -20,7 +16,7 @@ footer {
     bottom: 0;
     left: 0;
     color: white;
-    background-color: black;
+    background-color: $mainBackgroundColour;
     border-top-color: white;
     border-top-width: 2px;
     border-top-style: solid;
@@ -117,139 +113,155 @@ footer {
 
 /* BODY HERE */
 
-#body {
+body {
+    background-color: $mainBackgroundColour;
     padding-top: 50px;
-    background-color: black;
     color: white;
+
+    .onclick {
+        cursor: pointer;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .clickable-row:hover {
+        cursor: pointer;
+        background: $clickHoverColour;
+    }
 
     .homepagelogo {
         width: 90%;
         height: 90%;
         margin: 5%;
     }
-}
 
-a {
-    text-decoration: none !important;
-}
 
-.row {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-}
-
-.w45 {
-    min-width: 45px !important;
-    width: 45px !important;
-}
-
-.toggle-off.btn {
-    padding-left: 11px !important;
-}
-
-.modal-content {
-    color: black;
-}
-
-a.nav-link {
-    color: lightgray;
-}
-
-.form-check-input {
-    margin-left: 0 !important;
-}
-
-.onclick {
-    cursor: pointer;
-}
-
-.topright {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
-
-#search_modal {
-    .modal-dialog {
-        width: 98% !important;
-        height: 98% !important;
-        margin: 1% !important;
-        max-width: 100% !important;
+    code {
+        display: block;
+        white-space: pre-wrap;
+        color: inherit !important;
     }
 
-    .modal-footer {
-        display: block !important;
+    a {
+        text-decoration: none !important;
     }
-}
 
-#dim_screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    opacity: 0.6;
-    filter: alpha(opacity=60);
-    z-index: 5000;
-    display: none;
-}
+    .row {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
 
-.custom-file-upload {
-    background-color: #ffffff;
-    color: #000000;
-    cursor: pointer;
-    padding: 1px 15px;
-}
+    .w45 {
+        min-width: 45px !important;
+        width: 45px !important;
+    }
 
-#loading-popup {
-    display: none;
+    .toggle-off.btn {
+        padding-left: 11px !important;
+    }
 
-    .popup-background {
+    .modal-content {
+        color: black;
+    }
+
+    a.nav-link {
+        color: lightgray;
+    }
+
+    .form-check-input {
+        margin-left: 0 !important;
+    }
+
+    .topright {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    #search_modal {
+        .modal-dialog {
+            width: 98% !important;
+            height: 98% !important;
+            margin: 1% !important;
+            max-width: 100% !important;
+        }
+
+        .modal-footer {
+            display: block !important;
+        }
+    }
+
+    #dim_screen {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.75);
+        background: #000;
+        opacity: 0.6;
+        filter: alpha(opacity=60);
+        z-index: 5000;
+        display: none;
+    }
 
-        .popup {
-            width: 200px;
-            height: 200px;
-            position: fixed;
-            top: calc(50% - 100px);
-            left: calc(50% - 100px);
+    .custom-file-upload {
+        background-color: #ffffff;
+        color: #000000;
+        cursor: pointer;
+        padding: 1px 15px;
+    }
 
-            .loader {
-                border: 16px solid #f3f3f3;
-                /* Light grey */
-                border-top: 16px solid #3498db;
-                /* Blue */
-                border-radius: 50% !important;
-                width: 120px;
-                height: 120px;
-                position: relative;
-                left: calc(50% - 60px);
-                animation: spin 2s linear infinite;
-            }
+    #loading-popup {
+        display: none;
 
-            @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
+        .popup-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+
+            .popup {
+                width: 200px;
+                height: 200px;
+                position: fixed;
+                top: calc(50% - 100px);
+                left: calc(50% - 100px);
+
+                .loader {
+                    border: 16px solid #f3f3f3;
+                    /* Light grey */
+                    border-top: 16px solid #3498db;
+                    /* Blue */
+                    border-radius: 50% !important;
+                    width: 120px;
+                    height: 120px;
+                    position: relative;
+                    left: calc(50% - 60px);
+                    animation: spin 2s linear infinite;
                 }
 
-                100% {
-                    transform: rotate(360deg);
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+
+                    100% {
+                        transform: rotate(360deg);
+                    }
                 }
             }
         }
     }
-}
 
-/* RIPPER */
-#ripper {
-    .trackdata {
-        cursor: pointer;
-        font-size: 1.1rem;
+    /* RIPPER */
+    #ripper {
+        .trackdata {
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
     }
 }

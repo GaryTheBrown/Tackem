@@ -14,8 +14,9 @@ from ripper.video_converter.base import VideoConverterBase
 class VideoConverterVideo(VideoConverterBase):
     """Video Controller Video code"""
 
-    def _sort_video_data(self, probe_info: FFprobe):
+    def _sort_video_data(self):
         """sorts out the video info"""
+        probe_info = FFprobe(self._conf["ffprobelocation"].value, self._filename)
         video_info = probe_info.video_info()[0]
         # Detection of 3d here
         if "stereo_mode" in video_info.get("tags", {}):

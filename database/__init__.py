@@ -1,6 +1,6 @@
 """SQL System"""
+import time
 from threading import local
-from time import time
 
 from peewee import BigAutoField
 from peewee import CharField
@@ -43,6 +43,7 @@ class Database:
                 PROGRAMCONFIGLOCATION + "/Tackem.db",
                 max_connections=20,
                 timeout=0,
+                stale_timeout=60,
                 pragmas={"journal_mode": "wal", "foreign_keys": 0},
             )
 
@@ -51,6 +52,7 @@ class Database:
                 CONFIG["database"]["database"].value,
                 max_connections=20,
                 timeout=0,
+                stale_timeout=60,
                 user=CONFIG["database"]["username"].value,
                 password=CONFIG["database"]["password"].value,
                 host=CONFIG["database"]["host"].value,
@@ -111,8 +113,11 @@ class TableVersion(Model):
 class TableBase(Model):
     """Base Table with Hard Delete"""
 
+    def inttime():
+        return int(time.time())
+
     id = BigAutoField()
-    created_at = TimestampField(default=time)
+    created_at = TimestampField(default=inttime)
     updated_at = TimestampField(default=0)
 
     class Meta:
@@ -127,7 +132,11 @@ class TableBase(Model):
 
     @classmethod
     def do_update(cls, __data=None, **update):
-        return cls.update(__data=__data, **update)
+        if isinstance(__data, dict):
+            __data["updated_at"] = time
+            return cls.update(__data=__data, **update)
+        else:
+            return cls.update(__data=__data, updated_at=int(time.time()), **update)
 
     @classmethod
     def do_delete(cls):
@@ -138,7 +147,7 @@ class TableBase(Model):
         return cls.select(*fields)
 
     def save(self, force_insert=False, only=None):
-        self.updated_at = time
+        self.updated_at = int(time.time())
         return super().save(force_insert, only)
 
     @classmethod
@@ -184,11 +193,17 @@ class SoftTableBase(TableBase):
 
     @classmethod
     def do_update(cls, __data=None, **update):
-        return cls.update(__data=__data, updated_at=time, **update).where(cls.deleted_at == 0)
+        if isinstance(__data, dict):
+            __data["updated_at"] = int(time.time())
+            return cls.update(__data=__data, **update).where(cls.deleted_at == 0)
+        else:
+            return cls.update(__data=__data, updated_at=int(time.time()), **update).where(
+                cls.deleted_at == 0
+            )
 
     @classmethod
     def do_delete(cls):
-        return cls.update(deleted_at=time)
+        return cls.update({"deleted_at": int(time.time())})
 
     @classmethod
     def do_select(cls, *fields):

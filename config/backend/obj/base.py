@@ -61,6 +61,11 @@ class ConfigObjBase(ABC, ConfigBase):
         """returns the input attributes"""
         return self.__input_attributes
 
+    @input_attributes.setter
+    def input_attributes(self, input_attributes: Any):
+        """sets the input_attributes"""
+        self.__input_attributes = input_attributes
+
     @property
     def data_list(self) -> Optional[DataList]:
         """returns the data list"""

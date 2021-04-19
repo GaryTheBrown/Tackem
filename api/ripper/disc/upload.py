@@ -7,7 +7,7 @@ from database.ripper.video_info import VideoInfo
 
 
 @cherrypy.expose
-class APIRipperDiscLock(APIBase):
+class APIRipperDiscUpload(APIBase):
     """Base Template For the API"""
 
     def POST(self, disc_id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
@@ -17,25 +17,32 @@ class APIRipperDiscLock(APIBase):
         except DoesNotExist:
             return self._return_data(
                 "Ripper",
-                f"Lock Disc - {disc_id}",
+                f"Upload Disc - {disc_id}",
                 False,
                 error="Disc ID not in DB",
                 errorNumber=0,
-                lockable=False,
             )
         info: VideoInfo = VideoInfo.get_by_id(disc_id)
 
         if not info.rip_data or info.rip_data == {}:
             return self._return_data(
                 "Ripper",
-                f"Lock Disc - {disc_id}",
+                f"Upload Disc - {disc_id}",
                 False,
                 error="Disc Rip data not Complete",
                 errorNumber=1,
-                lockable=False,
             )
 
-        info.rip_data_locked = 1
-        info.save()
+        if not info.rip_data_locked:
+            return self._return_data(
+                "Ripper",
+                f"Upload Disc - {disc_id}",
+                False,
+                error="Disc Rip data not Locked",
+                errorNumber=2,
+            )
 
-        return self._return_data("Ripper", f"Lock Disc - {disc_id}", True, lockable=True)
+        # TODO send data to API
+        uploaded = False
+
+        return self._return_data("Ripper", f"Upload Disc - {disc_id}", True, uploaded=uploaded)

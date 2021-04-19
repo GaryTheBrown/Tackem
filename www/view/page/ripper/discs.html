@@ -1,0 +1,54 @@
+{% extends 'layout/default.html' %}
+{%- macro TrueFalse(value) -%}
+{%- if value -%}<i class="fas fa-check"></i>{%- else -%}<i class="fas fa-times"></i>{%- endif -%}
+{%- endmacro -%}
+{% block content %}
+<h1 class="text-center">Ripper - Discs</h1>
+<div class="container-fluid mt-4 row">
+	<table class="table mb-0 table-dark table-striped">
+		<tr>
+			<th class="h2 text-center">Name</th>
+			<th class="h2 text-center">Type</th>
+			<th class="h2 text-center">Track Count</th>
+			<th class="h2 text-center">Data</th>
+			<th class="h2 text-center">Locked</th>
+			<th class="h2 text-center">Online</th>
+			<th></th>
+		</tr>
+		{%- for disc in data -%}
+		<tr>
+			<td class="h2 text-center">{{ disc.name }}</td>
+			<td class="h2 text-center">{{ disc.disc_type }}{%- if disc.type != "" %} - {{ disc.type }}{% endif -%}</td>
+			<td class="h2 text-center">{{ disc.track_count }}</td>
+			<td class="h1 text-center">
+				{%- if disc.rip_data -%}
+				<i class="fas fa-check"></i>
+				{%- else -%}
+				<i class="fas fa-search clickable" data-click-action="searchData" data-disc-id="{{ disc.id }}"></i>
+				{%- endif -%}
+			</td>
+			<td class="h1 text-center">{{ TrueFalse(disc.locked) }}</td>
+			<td class="h1 text-center">
+				{%- if disc.rip_data -%}
+				{%- if disc.downloaded -%}
+				<i class="fas fa-check"></i>
+				{%- else -%}
+				<i class="fas fa-cloud-upload-alt clickable" data-click-action="uploadData"
+					data-disc-id="{{ disc.id }}"></i>
+				{%- endif -%}
+				{%- else -%}
+				<i class="fas fa-question"></i>
+				{%- endif -%}
+			</td>
+			<td><a href="{{ baseurl }}ripper/disc/{{ disc.id }}" class="btn btn-info btn-lg btn-block">{%- if
+					disc.locked -%}View{%- else -%}Edit{%- endif -%}</a></td>
+		</tr>
+		{%- endfor -%}
+	</table>
+
+</div>
+<style>
+
+
+</style>
+{% endblock %}

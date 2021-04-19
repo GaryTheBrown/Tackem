@@ -70,11 +70,6 @@ class Scraper:
         return cls.__get("/3/search/movie", page=page, query=query_to_go, year=year)
 
     @classmethod
-    def movie_by_imdb_id(cls, imdb_id) -> dict:
-        """searches by the IMDB ID"""
-        return cls.__get(f"/3/find/{imdb_id}", external_source="imdb_id")
-
-    @classmethod
     def get_movie_details(cls, tmdb_id) -> dict:
         """returns the full movie details"""
         return cls.__get(f"/3/movie/{tmdb_id}")
@@ -86,12 +81,12 @@ class Scraper:
         return cls.__get("/3/search/tv", page=page, query=query_to_go)
 
     @classmethod
-    def tvshow_by_tvdb_id(cls, tvdb_id) -> dict:
+    def tvdb_id(cls, tvdb_id) -> dict:
         """searches by the TVDB ID"""
         return cls.__get(f"/3/find/{tvdb_id}", external_source="tvdb_id")
 
     @classmethod
-    def tvshow_by_imdb_id(cls, imdb_id) -> dict:
+    def imdb_id(cls, imdb_id) -> dict:
         """searches by the TVDB ID"""
         return cls.__get(f"/3/find/{imdb_id}", external_source="imdb_id")
 

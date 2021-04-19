@@ -1,67 +1,31 @@
 """Video Controller Stream Mapping code"""
-from data.video_track_type.base import VideoTrackType
-from ripper.ffprobe import FFprobe
 from ripper.video_converter.base import VideoConverterBase
 
 
 class VideoConverterStreamMapping(VideoConverterBase):
     """Video Controller Stream Mapping code"""
 
-    def _sort_stream_mapping(self, track_info: VideoTrackType, probe_info: FFprobe):
+    def _sort_stream_mapping(self, track_data: dict):
         """sorts out the stream mapping"""
 
         # Deal with mapping streams here
-        map_links = [None] * len(track_info.streams)
+        map_links = [None] * len(track_data["streams"])
         new_count = 0
-        for index, stream in enumerate(track_info.streams):
-            if self.__map_stream(probe_info, index, stream):
+        for index, stream in enumerate(track_data["streams"]):
+            if self.__map_stream(stream):
                 self._command.append("-map 0:" + str(index))
                 map_links[index] = new_count
                 new_count += 1
 
-        # Add metadata and dispositions for each track here
-        video_count = 0
-        audio_count = 0
-        subtitle_count = 0
-        for index, stream in enumerate(track_info.streams):
-            if map_links[index] is not None:
-                deposition = self.__make_deposition(
-                    stream, probe_info.get_stream(index)["disposition"]
-                )
-                if stream.stream_type() == "video":
-                    if stream.label != "":
-                        self._command.append("-metadata:s:v:" + str(video_count))
-                        self._command.append(f'title="[{stream.label}]"')
-                        # self._command.append('handler="[' + stream.label + ']"')
-                    self._command.append("-disposition:v:" + str(video_count))
-                    self._command.append(str(deposition))
-                    video_count += 1
-                elif stream.stream_type() == "audio":
-                    if stream.label != "":
-                        self._command.append("-metadata:s:a:" + str(audio_count))
-                        self._command.append(f'title="[{stream.label}]"')
-                        # self._command.append('handler="[' + stream.label + ']"')
-                    self._command.append("-disposition:a:" + str(audio_count))
-                    self._command.append(str(deposition))
-                    audio_count += 1
-                elif stream.stream_type() == "subtitle":
-                    if stream.label != "":
-                        self._command.append("-metadata:s:s:" + str(subtitle_count))
-                        self._command.append(f'title="[{stream.label}]"')
-                        # self._command.append('handler="[' + stream.label + ']"')
-                    self._command.append("-disposition:s:" + str(subtitle_count))
-                    self._command.append(str(deposition))
-                    subtitle_count += 1
-
-    def __map_stream(self, probe_info: FFprobe, index: int):
+    # TODO Fix this with the new data possably find the correct codec ID for them tracks and put
+    # them in data.audio_format_options
+    def __map_stream(self, stream_data: dict):
         """system to return if to map the stream"""
-        stream_info = probe_info.get_stream(index)
-        stream_type = stream_info.get("codec_type")
-        stream_language = stream_info.get("tags", {}).get("language", "eng")
-        stream_format = stream_info.get("codec_name", "")
-        if stream_type == "video":
+        stream_language = stream_data["LangCode"]
+        stream_format = ""  # todo get from stream_data
+        if stream_data["Type"] == "Video":
             return True
-        if stream_type == "audio":
+        if stream_data["Type"] == "Audio":
             if self._conf["audio"]["audiolanguage"].value == "all":
                 if self._conf["audio"]["audioformat"].value == "all":
                     return True
@@ -103,7 +67,7 @@ class VideoConverterStreamMapping(VideoConverterBase):
                     elif self._conf["audio"]["audioformat"].value == "selected":
                         if stream_format in self._conf["audio"]["audioformats"].value:
                             return True
-        elif stream_type == "subtitle":
+        elif stream_data["Type"] == "Subtitles":
             if self._conf["subtitles"]["subtitle"].value == "all":
                 return True
             if self._conf["subtitles"]["subtitle"].value == "selected":

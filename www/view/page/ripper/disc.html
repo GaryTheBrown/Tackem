@@ -35,7 +35,66 @@
 	</div>
 	<div id="disctypesection" class="col-8 border border-light row pt-2">
 		{%- if rip_data -%}
-		{{ disc_build.items(rip_data.disc_items) }}
+		<div class="col-5">
+			<h3>{{ disc_items.disc_type }}</h3>
+		</div>
+		<div class="col-5"></div>
+		<div class="col-2">
+			{%- if not rip_data_locked -%}
+			<input type="button" class="btn btn-success btn-block pull-right" value="Reselect Disc"
+				data-click-action="reselectDisc">
+			{%- endif -%}
+		</div>
+		{%- if disc_items.search -%}
+		<div class="media col-12 row" id="discData">
+			{{ disc_build.items(disc_items.disc_data_items)}}
+			<img src="{{ rip_data.poster_url }}">
+			<div class="media-body row">
+				<div class="bg-secondary text-center p-1 col-2 font-weight-bold">Title</div>
+				<h5 class="my-0 bg-secondary p-1 col-10 discTitle">{{ rip_data.title }}</h5>
+				<div class="bg-dark text-center p-1 col-2 font-weight-bold">Original Title</div>
+				<div class="bg-dark p-1 col-10 discOriginalTitle">{{ rip_data.original_title }}</div>
+				<div class="bg-secondary text-center p-1 col-2 font-weight-bold">Original Language</div>
+				<div class="bg-secondary p-1 col-10 discOriginalLanguage">{{ rip_data.original_language }}</div>
+				<div class="bg-dark text-center p-1 col-2 font-weight-bold">Release Date</div>
+				<div class="bg-dark p-1 col-10 discReleaseDate">{{ rip_data.release_date }}</div>
+				<div class="bg-dark text-center p-1 col-2 font-weight-bold">Overview</div>
+				<div class="bg-dark p-1 col-10 discOverview">{{ rip_data.overview }}</div>
+			</div>
+		</div>
+		{%- if not rip_data_locked -%}
+		<div id="discSearch" class="row" style="display:none;">
+			{{ disc_build.items(disc_items.disc_items)}}
+		</div>
+		<ul class="list-unstyled col-12 mt-4" id="discResults" style="display:none;"></ul>
+		<ul id="discResultTemplate" class="col-12" hidden>
+			<li class="media border border-light">
+				<img src="">
+				<div class="media-body row">
+					<div class="bg-secondary text-center p-1 col-2 font-weight-bold">Title</div>
+					<h5 class="my-0 bg-secondary p-1 col-10 discTitle"></h5>
+					<div class="bg-dark text-center p-1 col-2 font-weight-bold">Original Title</div>
+					<div class="bg-dark p-1 col-10 discOriginalTitle"></div>
+					<div class="bg-secondary text-center p-1 col-2 font-weight-bold">Original Language</div>
+					<div class="bg-secondary p-1 col-10 discOriginalLanguage"></div>
+					<div class="bg-dark text-center p-1 col-2 font-weight-bold">Release Date</div>
+					<div class="bg-dark p-1 col-10 discReleaseDate"></div>
+					<div class="bg-dark text-center p-1 col-2 font-weight-bold">Overview</div>
+					<div class="bg-dark p-1 col-10 discOverview"></div>
+					<div class="col-1"></div>
+					<button type="button" class="btn btn-success btn-block col-10 mt-3" data-click-action="selectDisc"
+						data-tmdbid="">Select</button>
+					<div class="col-1"></div>
+				</div>
+			</li>
+		</ul>
+		{%- endif -%}
+		{%- else -%}
+		<div class="media col-12 row" id="discData">
+			{{ disc_build.items(disc_items.disc_items)}}
+		</div>
+		{%- endif -%}
+
 		{%- else -%}
 		{{ disc_build.discType(data_disc_types_and_icons) }}
 		{%- endif -%}
@@ -72,19 +131,34 @@
 		</div>
 		<section class="col-8 border-left border-light row trackripdata pb-4" data-track-id="{{ loop.index }}">
 			{%- if rip_data -%}
-			SOMETHING HERE
+			<div class="col-5">
+				<h3>{{ rip_data.tracks[loop.index0].disc_items[0].value }}</h3>
+			</div>
+			<div class="col-5"></div>
+			<div class="col-2">
+				{%- if not rip_data_locked -%}
+				<input type="button" class="btn btn-success btn-block pull-right" value="Reselect Track"
+					data-click-action="reselectTrack">
+				{%- endif -%}
+			</div>
+			{{ disc_build.items(rip_data.tracks[loop.index0].disc_items)}}
+
 			{%- endif -%}
 		</section data-track-id="">
 	</div>
 	{%- endfor -%}
-	<div class="col-12 border border-light row p-0" id="completeSection" style="display:none;">
+	{%- if not rip_data_locked -%}
+	<div class="col-12 border border-light row p-0" id="completeSection" {%- if not rip_data -%} style="display:none;"
+		{%- endif -%}>
 		<input type="button" class="btn btn-success btn-block pull-right" value="Save Disc" data-click-action="saveDisc"
 			data-disc-id="{{ db_id }}">
 	</div>
-	<div class="col-12 border border-light row p-0" id="lockSection" style="display:none;">
+	<div class="col-12 border border-light row p-0" id="lockSection" {%- if not rip_data -%} style="display:none;" {%-
+		endif -%}>
 		<input type="button" class="btn btn-success btn-block pull-right" value="Lock Disc" data-click-action="lockDisc"
 			data-disc-id="{{ db_id }}">
 	</div>
+	{%- endif -%}
 </form>
 
 {% endblock %}

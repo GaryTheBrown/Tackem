@@ -8,7 +8,9 @@ from api.ripper.disc.blank_track import APIRipperTrackBlank
 from api.ripper.disc.disc_type_select import APIRipperDiscDiscTypeSelect
 from api.ripper.disc.lock import APIRipperDiscLock
 from api.ripper.disc.save import APIRipperDiscSave
+from api.ripper.disc.search_data import APIRipperDiscSearchData
 from api.ripper.disc.track_type_select import APIRipperDiscTrackTypeSelect
+from api.ripper.disc.upload import APIRipperDiscUpload
 
 
 @cherrypy.expose
@@ -33,4 +35,8 @@ class APIRipperDisc(APIBase):
             return APIRipperDiscSave()
         if section == "lock":
             return APIRipperDiscLock()
+        if section == "upload":
+            return APIRipperDiscUpload()
+        if section == "searchapi":
+            return APIRipperDiscSearchData()
         return API404()

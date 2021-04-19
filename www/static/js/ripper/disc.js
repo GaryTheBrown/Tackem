@@ -163,7 +163,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/tmdbid`,
+                url: `${APIROOT}scraper/movietmdbid`,
                 data: {
                     tmdbid: tmdbid
                 },
@@ -317,7 +317,7 @@
 
             $.ajax({
                 type: "GET",
-                url: `${APIROOT}scraper/tmdbid`,
+                url: `${APIROOT}scraper/tvtmdbid`,
                 data: {
                     tmdbid: tmdbid
                 },
@@ -463,14 +463,16 @@
                     url: `${APIROOT}ripper/disc/lock/${disc_id}`,
                     dataType: "json",
                     success: function (result) {
-                        $("input[type=button]").each(function(index, element){
-                            element.remove();
-                        });
-                        $("input").each(function(index, element){
-                            $(element).prop("readonly", true);
-                        });
-                        $("#lockSection").hide();
-                        $("#saveSection").hide();
+                        if (result.success) {
+                            $("input[type=button]").each(function(index, element){
+                                element.remove();
+                            });
+                            $("input").each(function(index, element){
+                                $(element).prop("readonly", true);
+                            });
+                            $("#lockSection").hide();
+                            $("#saveSection").hide();
+                        }
                     },
                 });
             } else {
