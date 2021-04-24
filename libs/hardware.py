@@ -20,8 +20,8 @@ class Hardware:
             cls.DRIVES = cls.__disc_drive_linux()
             return {}
 
-    @classmethod
-    def __disc_drive_linux(cls) -> dict:
+    @staticmethod
+    def __disc_drive_linux() -> dict:
         """issues the hwinfo command and passes the info back in a dict"""
         process = Popen([which("hwinfo"), "--cdrom"], stdout=PIPE)
         returned_message = process.communicate()[0]

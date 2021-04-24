@@ -1,16 +1,13 @@
 """Master Section for the Video Converter controller"""
 from abc import ABCMeta
 
-from peewee import DoesNotExist
-
-from database.ripper.video_convert import VideoConvertInfo
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_convert import RipperVideoConvertInfo
+from database.ripper.video_info import RipperVideoInfo
 from libs.file import File
+from ripper.ffprobe import FFprobe
 from ripper.video_converter.chapters import VideoConverterChapters
 from ripper.video_converter.stream_mapping import VideoConverterStreamMapping
 from ripper.video_converter.video import VideoConverterVideo
-
-# TODO Fix this system crashing when data is rip_data is passed in due to "needing Stream Data"
 
 
 class VideoConverter(
@@ -23,14 +20,14 @@ class VideoConverter(
 
     def run(self):
         """ Loops through the standard converter function"""
-        try:
-            data = (
-                VideoConvertInfo.do_select()
-                .join(VideoInfo)
-                .where(VideoConvertInfo.id == self._db_id)
-                .get()
-            )
-        except DoesNotExist:
+
+        data = (
+            RipperVideoConvertInfo.do_select()
+            .join(RipperVideoInfo)
+            .where(RipperVideoConvertInfo.id == self._db_id)
+            .get_or_none()
+        )
+        if data is None:
             return
 
         if not self._thread_run:
@@ -47,12 +44,14 @@ class VideoConverter(
         if File.exists(outfile):
             File.rm(outfile)
         track_data = data.disc_info.disc_data["track_info"][data.track_number]
+        probe_info = FFprobe(self._conf["ffprobelocation"].value, self._filename)
+
         self._command.append(self._conf["ffmpeglocation"].value)
         self._command.append("-i")
         self._command.append(f'"{self._filename}"')
-        self._sort_chapters(track_data["ChapterCount"] > 0)
-        self._sort_stream_mapping(track_data)
-        self._sort_video_data()
+        self._sort_chapters(int(track_data["ChapterCount"]) > 0)
+        self._sort_stream_mapping(track_data, probe_info)
+        self._sort_video_data(probe_info)
         self._command.append("-c:a copy")
         self._command.append("-c:s copy")
         self._command.append(f'"{outfile}"')

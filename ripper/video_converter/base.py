@@ -20,7 +20,6 @@ class VideoConverterBase:
         self._label = "EMPTY"
         self._filename = ""
         self._command: list = []
-        self._convert = False
         self.__frame_count: int = 0
         self.__frame_process: int = 0
         self.__percent: float = 0.0

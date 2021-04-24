@@ -10,6 +10,7 @@ class FFprobe:
     """ffprobe system"""
 
     def __init__(self, ffprob_location, infile):
+        self.__infile = infile
         prog_args = [
             which(ffprob_location),
             "-v",
@@ -17,12 +18,10 @@ class FFprobe:
             "-print_format",
             "json",
             "-show_streams",
-            "-show_chapters",
-            "-show_format",
             infile,
         ]
         process = Popen(prog_args, stdout=PIPE)
-        self._info = json.loads(process.communicate()[0].decode("utf-8"))
+        self.__streams = json.loads(process.communicate()[0].decode("utf-8"))["streams"]
         process.wait()
 
         prog_args = [
@@ -62,76 +61,33 @@ class FFprobe:
     #                R(35400,14600)
     #                WP(15635,16450)L(40000000,50):max-cll=0,0
 
-    def has_chapters(self) -> bool:
-        """returns true if file has chapters"""
-        return "chapters" in self._info and self._info["chapters"]
-
-    def stream_count(self) -> int:
-        """returns the stream count"""
-        if "streams" in self._info and self._info["streams"]:
-            return len(self._info["streams"])
-        return 0
-
     @property
     def streams(self) -> list:
         """returns all the streams"""
-        return self._info.get("streams", [])
+        return self.__streams
 
-    def stream(self, index) -> Optional[dict]:
+    def stream(self, index: int) -> Optional[dict]:
         """return a stream"""
-        if "streams" in self._info and self._info["streams"]:
-            return self._info["streams"][int(index)]
-        return None
+        if index <= len(self.__streams):
+            return self.__streams[index]
+        print(f"{index} <= {len(self.__streams)}")
+        return {}
 
-    def stream_type_count(self) -> Optional[dict]:
-        """returns the stream types and how many"""
-        if "streams" in self._info and self._info["streams"]:
-            s_types = {}
-            for stream in self._info["streams"]:
-                _type = stream["codec_type"]
-                if _type in s_types:
-                    s_types[_type] += 1
-                else:
-                    s_types[_type] = 1
-            return s_types
-        return None
-
-    def streams_and_types(self) -> list:
-        """returns a list of streams and there types"""
-        if "streams" in self._info and self._info["streams"]:
-            streams = []
-            for stream in self._info["streams"]:
-                streams.append(stream["codec_type"])
-            return streams
+    @property
+    def default_language(self) -> str:
+        """returns the default language of the track"""
+        for stream in self.__streams:
+            if stream["codec_type"] == "audio":
+                if stream["disposition"]["default"]:
+                    return stream["tags"]["language"]
+        print(f"Failed to find default Language in file {self.__infile}")
+        return "eng"
 
     def video_info(self) -> list:
         """returns the video stream information"""
         videos = []
-        if "streams" in self._info and self._info["streams"]:
-            for stream in self._info["streams"]:
-                if stream["codec_type"] == "video":
-                    videos.append(stream)
+        for stream in self.__streams:
+            if stream["codec_type"] == "video":
+                videos.append(stream)
 
         return videos
-
-    def audio_info(self) -> list:
-        """returns the audio stream information"""
-        audios = []
-        if "streams" in self._info and self._info["streams"]:
-            for stream in self._info["streams"]:
-                if stream["codec_type"] == "audio":
-                    audios.append(stream)
-        return audios
-
-    def subtitle_info(self) -> list:
-        """returns the subtitle stream information"""
-        subtitles = []
-        if "streams" in self._info and self._info["streams"]:
-            for stream in self._info["streams"]:
-                if stream["codec_type"] == "subtitle":
-                    subtitles.append(stream)
-        return subtitles
-
-    def format_info(self) -> dict:
-        """returns the format information"""
-        return self._info["format"]

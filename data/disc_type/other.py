@@ -56,7 +56,7 @@ class OtherDiscType(DiscType):
 
         language = ConfigObjOptionsSelect(
             "disc_language",
-            Languages.config_option_2(ConfigObjOption),
+            Languages.config_option(ConfigObjOption),
             "en",
             "Disc Language",
             "Enter the language of the Disc here",

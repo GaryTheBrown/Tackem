@@ -6,9 +6,9 @@ from typing import List
 
 from config import CONFIG
 from data import HOMEFOLDER
-from database.ripper.audio_info import AudioInfo
-from database.ripper.video_convert import VideoConvertInfo
-from database.ripper.video_info import VideoInfo
+from database.ripper.audio_info import RipperAudioInfo
+from database.ripper.video_convert import RipperVideoConvertInfo
+from database.ripper.video_info import RipperVideoInfo
 from libs import classproperty
 from libs.file import File
 from libs.hardware import Hardware
@@ -17,12 +17,9 @@ from ripper.events import RipperEventMaster
 from ripper.iso import ISORipper
 from ripper.video_converter import VideoConverter
 
-# TODO find a way to allow automatic database updating. (migration tools)
+# TODO make it detect if the video is there for viewing and if so somehow allow it to be watched in
+# the browser if possible
 
-# TODO Show all discs from the DB that don't have disc data in a list
-# TODO allow editing using the disc data that is in the DB for what the files are and make it detect
-# if the video is there for viewing and if so somehow allow it to be watched in the browser
-# if possible
 # TODO auto send it to the library for processing where it goes. Functions need to be in the library
 # side and be agnostic so upload can accept files too. Do i want to have a DB table to put it in to
 # hold this information so the library knows what to sort and once the file is copied over it checks
@@ -30,13 +27,6 @@ from ripper.video_converter import VideoConverter
 
 # TODO deal with the renamer (this may just be removed and changed to move to library as we can pass
 # the info in for what it is and let the library worry about it's filename)
-
-# TODO WWW all the systems back to life
-# TODO Add in the video Labeler and renamer as well, then look at adding the Audio stuff
-
-# TODO get the ripper html stuff moved into the www folder in a single file removing the html part
-# functions for the new way. POSSABLY NEED TO CHANGE HOW THIS SHOWS SO POSSABLY NEEDS TO BE
-# REWRITTEN BUT USE IT FOR REFERENCE AND TAKE THE LAYOUT ACROSS
 
 # TODO a seperate system for ripping drives should be created as another app.
 # https://askubuntu.com/questions/147800/ripping-dvd-to-iso-accurately
@@ -119,9 +109,9 @@ class Ripper:
             File.mkdir(location.value)
 
         # Check/Create Database Tables
-        AudioInfo.table_setup()
-        VideoConvertInfo.table_setup()
-        VideoInfo.table_setup()
+        RipperAudioInfo.table_setup()
+        RipperVideoConvertInfo.table_setup()
+        RipperVideoInfo.table_setup()
 
         cls.__running = True
         cls.__event_system = Thread(target=cls.__event_system_run, args=())
@@ -137,8 +127,8 @@ class Ripper:
         if CONFIG["ripper"]["converter"]["enabled"].value:
             cls.__start_converters()
 
-    @classmethod
-    def __setup_makemkv(cls):
+    @staticmethod
+    def __setup_makemkv():
         """sets up the makemkv config (needed due to app key)"""
         folder = f"{HOMEFOLDER}/.MakeMKV/"
         File.mkdir(folder)
@@ -180,7 +170,7 @@ class Ripper:
         cls.__video_converter_pool_sema = BoundedSemaphore(
             value=cls.__video_converter_pool_sema_count
         )
-        for item in VideoConvertInfo.do_select():
+        for item in RipperVideoConvertInfo.do_select():
             cls.video_converter_add_single(item.id)
 
     @classmethod
@@ -243,7 +233,10 @@ class Ripper:
             if thread.db_id == db_id:
                 return False
 
-        if VideoConvertInfo.do_select().where(VideoConvertInfo.id == db_id).count() != 1:
+        if (
+            RipperVideoConvertInfo.do_select().where(RipperVideoConvertInfo.id == db_id).count()
+            != 1
+        ):
             return False
 
         cls.__video_converter_threads.append(VideoConverter(cls.__video_converter_pool_sema, db_id))

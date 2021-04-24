@@ -10,8 +10,8 @@ from libs.scraper import Scraper
 from ripper import Ripper
 from www import Webserver
 
-# TODO finish off the Ripper system
 # TODO intergrate Libraries into main program
+# TODO finish off the Ripper system
 # TODO NEED A TOOL FOR AUDIO ISO TO {MUSIC FILE}
 # TODO UNIT TEST WHOLE SYSTEM, SELENIUM ON THE PAGES TOO.
 # TODO SETUP GITHUB ACTIONS TO DO ALL THIS TESTING
@@ -20,8 +20,8 @@ from www import Webserver
 class Tackem:
     """main program entrance"""
 
-    @classmethod
-    def start(cls):
+    @staticmethod
+    def start():
         """Start of the program"""
         print("LOADING Config...", end=" ")
         CONFIG.load()
@@ -46,9 +46,9 @@ class Tackem:
         print("DONE")
         print("TACKEM HAS STARTED")
 
-    @classmethod
-    def stop(cls):
-        """Stop commands"""
+    @staticmethod
+    def shutdown():
+        """Shutdown commands"""
         print("STOPPING WEB SERVICES...", end=" ")
         Webserver.stop()
         print("DONE")
@@ -59,11 +59,6 @@ class Tackem:
         print("STOPPING LIBRARIES...", end=" ")
         print("TODO")
         print("DONE")
-
-    @classmethod
-    def shutdown(cls):
-        """Shutdown commands"""
-        cls.stop()
         print("SAVING Config FILE...", end=" ")
         CONFIG.save()
         print("DONE")

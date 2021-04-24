@@ -1,6 +1,5 @@
 """Video Controller Video code"""
 from presets import get_video_preset_command
-from ripper.ffprobe import FFprobe
 from ripper.video_converter.base import VideoConverterBase
 
 # TODO HDR Support need to use bellow info to check the file for HDR and if it is then make sure the
@@ -14,14 +13,12 @@ from ripper.video_converter.base import VideoConverterBase
 class VideoConverterVideo(VideoConverterBase):
     """Video Controller Video code"""
 
-    def _sort_video_data(self):
+    def _sort_video_data(self, probe_info: dict):
         """sorts out the video info"""
-        probe_info = FFprobe(self._conf["ffprobelocation"].value, self._filename)
         video_info = probe_info.video_info()[0]
         # Detection of 3d here
         if "stereo_mode" in video_info.get("tags", {}):
             if self._conf["video"]["video3dtype"].value != "keep":
-                self._convert = True
                 # 4:3 or 16:9
                 aspect_ratio = video_info["display_aspect_ratio"]
                 type_3d_in = None
@@ -77,7 +74,6 @@ class VideoConverterVideo(VideoConverterBase):
                     if type_3d_out == "ml" or type_3d_out == "mr":
                         self._command.append('-metadata:s:v:0 stereo_mode="mono"')
         if self._conf["video"]["videoresolution"].value != "keep":
-            self._convert = True
             if self._conf["video"]["videoresolution"].value == "sd":  # 576 or 480
                 if video_info["height"] > 576:  # PAL spec resolution
                     self._command.append("-vf scale=-2:480")
@@ -93,7 +89,6 @@ class VideoConverterVideo(VideoConverterBase):
                 self._command.append("-c:v copy")
                 return
 
-            self._convert = True
             if self._conf["video"]["hdrmode"].value == "x265default":
                 self._command.append("-c:v libx265")
                 # TODO need to DEAL with HDR Magic here
@@ -101,7 +96,6 @@ class VideoConverterVideo(VideoConverterBase):
             if self._conf["video"]["videocodec"].value == "keep":
                 self._command.append("-c:v copy")
                 return
-            self._convert = True
             if self._conf["video"]["videocodec"].value == "x264default":
                 self._command.append("-c:v libx264")
             elif self._conf["video"]["videocodec"].value == "x265default":

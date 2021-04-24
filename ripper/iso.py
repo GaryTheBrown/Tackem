@@ -1,12 +1,10 @@
 """Master Section for the Drive controller"""
-import os
-import time
 from threading import BoundedSemaphore
 from threading import Thread
 from typing import Union
 
 from config import CONFIG
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_info import RipperVideoInfo
 from libs.file import File
 from ripper.makemkv import MakeMKV
 from ripper.subsystems import FileSubsystem
@@ -53,14 +51,9 @@ class ISORipper(FileSubsystem):
         """ Loops through the standard ripper function"""
         with self._pool_sema:
             self.__active = True
-            if self.__wait_for_file_copy_complete() is False:
-                return
 
             self._get_udfInfo(
-                File.location(
-                    self.__filename,
-                    CONFIG["ripper"]["locations"]["iso"].value,
-                )
+                File.location(self.__filename, CONFIG["webui"]["uploadlocation"].value)
             )
             if self.__thread_run is False:
                 return
@@ -80,25 +73,10 @@ class ISORipper(FileSubsystem):
             if self._disc["type"] == "audiocd":
                 pass
             else:
-                VideoInfo.do_update({"iso_file": ""}).where(VideoInfo.id == self._db_id).execute()
-            File.rm(
-                File.location(
-                    self.__filename,
-                    CONFIG["ripper"]["locations"]["iso"].value,
-                )
-            )
-
-    def __wait_for_file_copy_complete(self) -> bool:
-        """watches the file size until it stops"""
-        path = CONFIG["ripper"]["locations"]["iso"].value
-        filename = File.location(f"{path}{self.__filename}")
-        historicalSize = -1
-        while historicalSize != os.path.getsize(filename):
-            if self.__thread_run is False:
-                return False
-            historicalSize = os.path.getsize(filename)
-            time.sleep(4)
-        return True
+                RipperVideoInfo.do_update({"iso_file": ""}).where(
+                    RipperVideoInfo.id == self._db_id
+                ).execute()
+            File.rm(File.location(self.__filename, CONFIG["webui"]["uploadlocation"].value))
 
     def api_data(self):
         """returns the data as json or dict for html"""

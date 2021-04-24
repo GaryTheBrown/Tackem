@@ -9,7 +9,7 @@ from libs.auth import Auth
 class APIAdminUserUpdate(APIBase):
     """User Update API"""
 
-    def POST(self, userid: str, **kwargs) -> str:
+    def POST(self, userid: int, **kwargs) -> str:
         """POST Function"""
         self._check_user(True)
         if "username" not in kwargs:

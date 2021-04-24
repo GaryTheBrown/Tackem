@@ -1,10 +1,9 @@
 """Ripper Root pages"""
 import cherrypy
-from peewee import DoesNotExist
 
 from data.disc_type import make_disc_type
 from data.disc_type.base import DiscType
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_info import RipperVideoInfo
 from libs import lower_keys
 from libs.auth import Auth
 from ripper import Ripper as RipperSYS
@@ -27,9 +26,8 @@ class Ripper:
     @cherrypy.tools.template(user=Auth.USER)
     def disc(self, db_id: int) -> dict:
         """Disc Edit Page"""
-        try:
-            info = VideoInfo.do_select().where(VideoInfo.id == db_id).get()
-        except DoesNotExist:
+        info = RipperVideoInfo.do_select().where(RipperVideoInfo.id == db_id).get_or_none()
+        if info is None:
             raise cherrypy.HTTPError(status=404)
 
         disc_data = lower_keys(info.disc_data)
@@ -61,7 +59,7 @@ class Ripper:
         """Disc list Page"""
         data = []
 
-        for item in VideoInfo.do_select():
+        for item in RipperVideoInfo.do_select():
 
             data.append(
                 {

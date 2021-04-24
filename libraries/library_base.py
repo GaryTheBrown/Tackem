@@ -1,23 +1,15 @@
 """Base Library Controller"""
-import threading
 from abc import ABCMeta
 from abc import abstractmethod
-from pathlib import Path
-from typing import Generator
 
 from watchdog.events import FileSystemEvent
 from watchdog.events import PatternMatchingEventHandler
 from watchdog.observers import Observer
 
-from config import CONFIG
-from config.backend.list import ConfigList
-from database import Database
-from database.library import LIBRARY_FILES_DB
-from database.messages.insert import SQLInsert
-from database.messages.select import SQLSelect
-from database.messages.table import SQLTable
-from database.table import Table
-from database.where import Where
+# from config import CONFIG
+
+# from pathlib import Path
+# from typing import Generator
 
 
 class LibraryBase(metaclass=ABCMeta):
@@ -41,25 +33,25 @@ class LibraryBase(metaclass=ABCMeta):
             return "Games"
         return "UNKNOWN"
 
-    def __init__(self, library_type: int, config: ConfigList, table: Table):
-        self._name = config.var_name
-        self._library_type = library_type
-        self._config = config
-        self._file_types = "video"
-        if self._library_type == self.TYPE_MUSIC:
-            self._file_types = "audio"
-        elif self._library_type == self.TYPE_GAMES:
-            self._file_types = "game"
+    # def __init__(self, library_type: int, config: ConfigList, table: Table):
+    #     self._name = config.var_name
+    #     self._library_type = library_type
+    #     self._config = config
+    #     self._file_types = "video"
+    #     if self._library_type == self.TYPE_MUSIC:
+    #         self._file_types = "audio"
+    #     elif self._library_type == self.TYPE_GAMES:
+    #         self._file_types = "game"
 
-        self._thread_run = False
-        self._thread = threading.Thread(target=self.run, args=())
-        self._thread.setName(f"{LibraryBase.type_to_string(library_type)} Library: {self._name}")
+    #     self._thread_run = False
+    #     self._thread = threading.Thread(target=self.run, args=())
+    #     self._thread.setName(f"{LibraryBase.type_to_string(library_type)} Library: {self._name}")
 
-        self.__folder_watcher = None
-        self.__folder_observer = None
+    #     self.__folder_watcher = None
+    #     self.__folder_observer = None
 
-        Database.call(SQLTable(table))
-        self.folder_watcher_setup()
+    #     # Database.call(SQLTable(table))
+    #     self.folder_watcher_setup()
 
     def folder_watcher_setup(self):
         """Sections for setting up the folder watcher watchdog"""
@@ -99,46 +91,46 @@ class LibraryBase(metaclass=ABCMeta):
     def run(self):
         """abstract Run Method"""
 
-    def _scan_folder_base(self) -> Generator:
-        """Scans the folder for new files"""
+    # def _scan_folder_base(self) -> Generator:
+    #     """Scans the folder for new files"""
 
-        for path in Path(self._config["location"].value).rglob("*"):
-            extension = path.parts[-1].split(".")[-1]
-            if extension not in CONFIG["libraries"]["global"]["extensions"][self._file_types].value:
-                continue
+    #     for path in Path(self._config["location"].value).rglob("*"):
+    #         ext = path.parts[-1].split(".")[-1]
+    #         if ext not in CONFIG["libraries"]["global"]["extensions"][self._file_types].value:
+    #             continue
 
-            msg1 = SQLSelect(
-                LIBRARY_FILES_DB,
-                Where("folder", path.joinpath().replace(path.name, "")),
-                Where("filename", path.name),
-            )
-            Database.call(msg1)
+    #         msg1 = SQLSelect(
+    #             LIBRARY_FILES_DB,
+    #             Where("folder", path.joinpath().replace(path.name, "")),
+    #             Where("filename", path.name),
+    #         )
+    #         Database.call(msg1)
 
-            if isinstance(msg1.return_data, dict):
-                continue
+    #         if isinstance(msg1.return_data, dict):
+    #             continue
 
-            msg2 = SQLInsert(
-                LIBRARY_FILES_DB,
-                folder=path.joinpath().replace(path.name, ""),
-                filename=path.name,
-                type=self._library_type.lower(),
-                checksum=None,
-                last_check=0,
-                from_system=None,
-                from_id=None,
-            )
+    #         msg2 = SQLInsert(
+    #             LIBRARY_FILES_DB,
+    #             folder=path.joinpath().replace(path.name, ""),
+    #             filename=path.name,
+    #             type=self._library_type.lower(),
+    #             checksum=None,
+    #             last_check=0,
+    #             from_system=None,
+    #             from_id=None,
+    #         )
 
-            Database.call(msg2)
+    #         Database.call(msg2)
 
-            msg3 = SQLSelect(
-                LIBRARY_FILES_DB,
-                Where("folder", path.joinpath().replace(path.name, "")),
-                Where("filename", path.name),
-            )
+    #         msg3 = SQLSelect(
+    #             LIBRARY_FILES_DB,
+    #             Where("folder", path.joinpath().replace(path.name, "")),
+    #             Where("filename", path.name),
+    #         )
 
-            Database.call(msg3)
+    #         Database.call(msg3)
 
-            yield msg3.return_data
+    #         yield msg3.return_data
 
     def _folder_on_created(self, event: FileSystemEvent):
         """New file added to folder"""

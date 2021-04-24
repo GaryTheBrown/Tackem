@@ -4,7 +4,7 @@ from peewee import DoesNotExist
 
 from api.base import APIBase
 from data.disc_type import make_disc_type
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_info import RipperVideoInfo
 
 
 @cherrypy.expose
@@ -33,7 +33,7 @@ class APIRipperDiscSave(APIBase):
         disc = make_disc_type(data)
 
         try:
-            info = VideoInfo.get_by_id(disc_id)
+            info = RipperVideoInfo.get_by_id(disc_id)
         except DoesNotExist:
             return self._return_data(
                 "Ripper",

@@ -3,7 +3,7 @@ import cherrypy
 from peewee import DoesNotExist
 
 from api.base import APIBase
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_info import RipperVideoInfo
 
 
 @cherrypy.expose
@@ -13,7 +13,7 @@ class APIRipperDiscLock(APIBase):
     def POST(self, disc_id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """POST Function"""
         try:
-            info = VideoInfo.get_by_id(disc_id)
+            info = RipperVideoInfo.get_by_id(disc_id)
         except DoesNotExist:
             return self._return_data(
                 "Ripper",
@@ -23,7 +23,7 @@ class APIRipperDiscLock(APIBase):
                 errorNumber=0,
                 lockable=False,
             )
-        info: VideoInfo = VideoInfo.get_by_id(disc_id)
+        info: RipperVideoInfo = RipperVideoInfo.get_by_id(disc_id)
 
         if not info.rip_data or info.rip_data == {}:
             return self._return_data(

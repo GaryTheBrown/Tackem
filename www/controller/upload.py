@@ -3,7 +3,6 @@ import os
 import shutil
 
 import cherrypy
-from peewee import DoesNotExist
 
 from config import CONFIG
 from database.post_upload import PostUpload
@@ -20,9 +19,8 @@ class Upload:
         if key is None:
             raise cherrypy.HTTPError(status=403)
 
-        try:
-            info = PostUpload.do_select().where(PostUpload.key == key).get()
-        except DoesNotExist:
+        info = PostUpload.do_select().where(PostUpload.key == key).get_or_none()
+        if info is None:
             raise cherrypy.HTTPError(status=403)
 
         filename = info.filename
@@ -40,11 +38,6 @@ class Upload:
 
     def __call_next_system(self, filename: str, system: str):
         """Sends command to the next system"""
-        source_file = File.location(f"{CONFIG['webui']['uploadlocation'].value}{filename}")
         if system == "RIPPER_ISO":
-            File.move(
-                source_file,
-                File.location(f"{CONFIG['ripper']['locations']['iso'].value}{filename}"),
-            )
             Ripper.iso_add(filename)
             return

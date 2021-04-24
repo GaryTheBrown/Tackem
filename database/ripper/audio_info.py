@@ -4,12 +4,10 @@ from peewee import SmallIntegerField
 from peewee import TextField
 from playhouse.sqlite_ext import JSONField
 
-from database import Database
 from database import TableBase
-from database import ThreadSafeDatabaseMetadata
 
 
-class AudioInfo(TableBase):
+class RipperAudioInfo(TableBase):
     """Ripper Audio Info Table"""
 
     iso_file = TextField(null=True, default="")
@@ -17,8 +15,3 @@ class AudioInfo(TableBase):
     track_count = SmallIntegerField()
     release_id = CharField(max_length=36)
     disc_data = JSONField()
-
-    class Meta:
-        table_name = "ripper_audio_info"
-        database = Database.db
-        model_metadata_class = ThreadSafeDatabaseMetadata

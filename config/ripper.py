@@ -172,8 +172,8 @@ def ripper_config() -> ConfigList:
             ),
             ConfigObjOptionsSelect(
                 "defaultlanguage",
-                Languages().config_option_3t(ConfigObjOption),
-                "eng",
+                Languages.config_option(ConfigObjOption),
+                "en",
                 "Default Language",
                 "What is your main language?",
             ),
@@ -414,6 +414,20 @@ Do you want the default stream to be the Original language or dubbed in your lan
                             ),
                         ),
                         ConfigObjRadio(
+                            "default",
+                            "Default Language Only",
+                            input_attributes=InputAttributes(
+                                data_click_hide="ripper_converter_audio_audiolanglist_section"
+                            ),
+                        ),
+                        ConfigObjRadio(
+                            "deaultandoriginal",
+                            "Original Language + Default Language",
+                            input_attributes=InputAttributes(
+                                data_click_hide="ripper_converter_audio_audiolanglist_section"
+                            ),
+                        ),
+                        ConfigObjRadio(
                             "selectedandoriginal",
                             "Original Language + Selected Languages",
                             input_attributes=InputAttributes(
@@ -437,8 +451,8 @@ Do you want the default stream to be the Original language or dubbed in your lan
                     "Audio Language List",
                     ConfigObjOptionsCheckBox(
                         "audiolanguages",
-                        Languages().config_option_3t(ConfigObjCheckbox),
-                        "eng",
+                        Languages.config_option(ConfigObjCheckbox),
+                        "en",
                         "Audio Languages",
                         "",
                     ),
@@ -467,14 +481,6 @@ Do you want the default stream to be the Original language or dubbed in your lan
                             "Selected Formats",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_audio_audioformatlist_section"
-                            ),
-                        ),
-                        ConfigObjRadio(
-                            "convert",
-                            "Convert to Selected Formats",
-                            input_attributes=InputAttributes(
-                                "disabled",
-                                data_click_show="ripper_converter_audio_audioformatlist_section",
                             ),
                         ),
                     ],
@@ -529,8 +535,36 @@ Do you want the default stream to be the Original language or dubbed in your lan
                             ),
                         ),
                         ConfigObjRadio(
+                            "original",
+                            "Original Language Only",
+                            input_attributes=InputAttributes(
+                                data_click_hide="ripper_converter_subtitles_subtitleslist_section"
+                            ),
+                        ),
+                        ConfigObjRadio(
+                            "default",
+                            "Default Language Only",
+                            input_attributes=InputAttributes(
+                                data_click_hide="ripper_converter_subtitles_subtitleslist_section"
+                            ),
+                        ),
+                        ConfigObjRadio(
+                            "deaultandoriginal",
+                            "Original Language + Default Language",
+                            input_attributes=InputAttributes(
+                                data_click_hide="ripper_converter_subtitles_subtitleslist_section"
+                            ),
+                        ),
+                        ConfigObjRadio(
+                            "selectedandoriginal",
+                            "Original Language + Selected Languages",
+                            input_attributes=InputAttributes(
+                                data_click_show="ripper_converter_subtitles_subtitleslist_section"
+                            ),
+                        ),
+                        ConfigObjRadio(
                             "selected",
-                            "Selected Subtitles",
+                            "Selected Languages",
                             input_attributes=InputAttributes(
                                 data_click_show="ripper_converter_subtitles_subtitleslist_section"
                             ),
@@ -545,7 +579,7 @@ Do you want the default stream to be the Original language or dubbed in your lan
                     "Subtitle List",
                     ConfigObjOptionsCheckBox(
                         "subtitlelanguages",
-                        Languages().config_option_3t(ConfigObjCheckbox),
+                        Languages.config_option(ConfigObjCheckbox),
                         "",
                         "Subtitle Languages",
                         "",

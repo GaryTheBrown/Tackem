@@ -3,7 +3,7 @@ import cherrypy
 from peewee import DoesNotExist
 
 from api.base import APIBase
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_info import RipperVideoInfo
 from ripper.disc_api import DiscAPI
 
 
@@ -14,7 +14,7 @@ class APIRipperDiscSearchData(APIBase):
     def GET(self, disc_id: int, **kwargs):  # pylint: disable=invalid-name,no-self-use
         """GET Function"""
         try:
-            info = VideoInfo.get_by_id(disc_id)
+            info = RipperVideoInfo.get_by_id(disc_id)
         except DoesNotExist:
             return self._return_data(
                 "Ripper",
@@ -23,7 +23,7 @@ class APIRipperDiscSearchData(APIBase):
                 error="Disc ID not in DB",
                 errorNumber=0,
             )
-        info: VideoInfo = VideoInfo.get_by_id(disc_id)
+        info: RipperVideoInfo = RipperVideoInfo.get_by_id(disc_id)
 
         if info.rip_data and info.rip_data != {}:
             return self._return_data(

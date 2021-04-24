@@ -2,26 +2,21 @@
 import json
 from abc import ABCMeta
 from abc import abstractmethod
-from typing import Dict
 from typing import Optional
 
 from data.video_track_type.base import VideoTrackType
-from libs import classproperty
 
 
 class DiscType(metaclass=ABCMeta):
     """Master Disc Type"""
 
-    @classproperty
-    def TYPESANDICONS(cls) -> Dict[str, str]:
-        """returns a list of types with Font Awsome Free Icons"""
-        return {
-            "Movie": "film",
-            "TV Show": "tv",
-            "Home Movie": "users",
-            "Music Video": "music",
-            "Other": "question",
-        }
+    TYPESANDICONS = {
+        "Movie": "film",
+        "TV Show": "tv",
+        "Home Movie": "users",
+        "Music Video": "music",
+        "Other": "question",
+    }
 
     def __init__(self, disc_type: str, name: str, tracks: list, language: str, tmdb_id: str):
         self.__disc_type = disc_type if disc_type in self.TYPESANDICONS else ""

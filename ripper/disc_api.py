@@ -26,8 +26,8 @@ class DiscAPI:
         #     return cls.__aqua_teen_movie()
         return info
 
-    @classmethod
-    def __aqua_teen_movie(cls):
+    @staticmethod
+    def __aqua_teen_movie():
         """TEMP RETURN OF THE DATA FOR Aqua Teen Hunger Force Colon Movie"""
         tracks = [
             FeatureTrackType(),

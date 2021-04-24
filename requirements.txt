@@ -1,13 +1,11 @@
-requests
-CherryPy
-jinja2
 configobj
-GitPython
+CherryPy
+peewee
+jinja2
 Markdown
+requests
 musicbrainzngs
 guessit
 watchdog
-mysql-connector-python
 discid
 pexpect
-peewee

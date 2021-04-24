@@ -11,8 +11,8 @@ from config import CONFIG
 from data.disc_type import make_disc_type
 from data.disc_type.base import DiscType
 from data.video_track_type.base import VideoTrackType
-from database.ripper.video_convert import VideoConvertInfo
-from database.ripper.video_info import VideoInfo
+from database.ripper.video_convert import RipperVideoConvertInfo
+from database.ripper.video_info import RipperVideoInfo
 from libs.file import File
 from ripper.disc_api import DiscAPI
 from ripper.events import RipperEvent
@@ -79,7 +79,7 @@ class MakeMKV(RipperSubSystem):
     def call(self, db_id: int) -> List[int]:
         """run the makemkv backup function MUST HAVE DATA IN THE DB"""
         ids = []
-        info = VideoInfo.do_select().where(VideoInfo.id == db_id)
+        info = RipperVideoInfo.do_select().where(RipperVideoInfo.id == db_id)
         if info is None:
             return ids
 
@@ -260,12 +260,12 @@ class MakeMKV(RipperSubSystem):
     ) -> int:
         """creates the DB section and then passes it to the converter in the ripper"""
         info = (
-            VideoConvertInfo.do_select()
+            RipperVideoConvertInfo.do_select()
             .where(info_id == info_id, track_number == track_number, filename == filename)
             .get()
         )
         if info is None:
-            info = VideoConvertInfo()
+            info = RipperVideoConvertInfo()
             info.info_id = info_id
             info.track_number = track_number
             info.filename = filename

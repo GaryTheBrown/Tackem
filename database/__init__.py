@@ -1,21 +1,18 @@
 """SQL System"""
 import time
-from threading import local
 
 from peewee import BigAutoField
 from peewee import CharField
 from peewee import DatabaseProxy
-from peewee import DoesNotExist
 from peewee import IntegerField
-from peewee import Metadata
 from peewee import Model
+from peewee import MySQLDatabase
 from peewee import TimestampField
 from playhouse.migrate import migrate
 from playhouse.migrate import MySQLMigrator
 from playhouse.migrate import SchemaMigrator
 from playhouse.migrate import SqliteMigrator
-from playhouse.pool import PooledMySQLDatabase
-from playhouse.pool import PooledSqliteDatabase
+from playhouse.sqlite_ext import SqliteExtDatabase
 
 from config import CONFIG
 from data import PROGRAMCONFIGLOCATION
@@ -39,20 +36,14 @@ class Database:
         """sets up the SQL System"""
         mode = CONFIG["database"]["mode"].value.lower()
         if mode == "sqlite3":
-            database = PooledSqliteDatabase(
+            database = SqliteExtDatabase(
                 PROGRAMCONFIGLOCATION + "/Tackem.db",
-                max_connections=20,
-                timeout=0,
-                stale_timeout=60,
                 pragmas={"journal_mode": "wal", "foreign_keys": 0},
             )
 
         elif mode == "mysql":
-            database = PooledMySQLDatabase(
+            database = MySQLDatabase(
                 CONFIG["database"]["database"].value,
-                max_connections=20,
-                timeout=0,
-                stale_timeout=60,
                 user=CONFIG["database"]["username"].value,
                 password=CONFIG["database"]["password"].value,
                 host=CONFIG["database"]["host"].value,
@@ -67,7 +58,7 @@ class Database:
             cls.__migrator = SqliteMigrator(cls.__db)
         elif mode == "mysql":
             cls.__migrator = MySQLMigrator(cls.__db)
-
+        # with Database.db.connection_context():
         TableVersion.create_table()
 
     @classproperty
@@ -81,36 +72,20 @@ class Database:
         return cls.__migrator
 
 
-class ThreadSafeDatabaseMetadata(Metadata):
-    def __init__(self, *args, **kwargs):
-        # database attribute is stored in a thread-local.
-        self._local = local()
-        super(ThreadSafeDatabaseMetadata, self).__init__(*args, **kwargs)
-
-    def _get_db(self):
-        return getattr(self._local, "database", self._database)
-
-    def _set_db(self, db):
-        self._local.database = self._database = db
-
-    database = property(_get_db, _set_db)
+class BaseModel(Model):
+    class Meta:
+        database = Database.db
+        legacy_table_names = False
 
 
-class TableVersion(Model):
+class TableVersion(BaseModel):
     """table to keep track of table versions"""
 
     name = CharField(max_length=60, index=True)
     version = IntegerField(default=0)
 
-    class Meta:
-        """Base Meta Data"""
 
-        table_name = "table_versions"
-        database = Database.db
-        model_metadata_class = ThreadSafeDatabaseMetadata
-
-
-class TableBase(Model):
+class TableBase(BaseModel):
     """Base Table with Hard Delete"""
 
     def inttime():
@@ -119,12 +94,6 @@ class TableBase(Model):
     id = BigAutoField()
     created_at = TimestampField(default=inttime)
     updated_at = TimestampField(default=0)
-
-    class Meta:
-        """Base Meta Data"""
-
-        database = Database.db
-        model_metadata_class = ThreadSafeDatabaseMetadata
 
     @classmethod
     def do_create(cls):
@@ -156,16 +125,16 @@ class TableBase(Model):
         return []
 
     @classmethod
-    def table_setup(cls):
-        """Magic to create the table"""
-        try:
-            tv = TableVersion.get(TableVersion.name == cls._meta.table_name)
-        except DoesNotExist:
-            tv = TableVersion()
-            tv.name = cls._meta.table_name
-
+    def table_setup(cls) -> bool:
+        """Magic to create the table returns true if a table is created"""
+        tv = TableVersion.get_or_none(name=cls._meta.table_name)
         if not cls.table_exists():
             cls.create_table()
+            tv = TableVersion()
+            tv.name = cls._meta.table_name
+            tv.version = 0
+            tv.save()
+            return True
         else:
             migrations = cls.migrations()
             if migrations == []:
@@ -178,18 +147,13 @@ class TableBase(Model):
 
             tv.version = len(migrations) if isinstance(migrations, list) else 0
             tv.save()
+            return False
 
 
 class SoftTableBase(TableBase):
     """Base Table with Soft Delete"""
 
     deleted_at = TimestampField(default=0)
-
-    class Meta:
-        """Base Meta Data"""
-
-        database = Database.db
-        model_metadata_class = ThreadSafeDatabaseMetadata
 
     @classmethod
     def do_update(cls, __data=None, **update):
