@@ -107,12 +107,12 @@ class TVShowDiscType(DiscType):
         return_dict = {
             "poster_url": Scraper.image_base
             + Scraper.image_config["poster_sizes"][2]
-            + data["poster_path"],
-            "title": data["title"],
-            "original_title": data["original_title"],
-            "original_language": data["original_language"],
-            "release_date": data["release_date"],
-            "overview": data["overview"],
+            + data.poster_path,
+            "title": data.title,
+            "original_title": data.original_title,
+            "original_language": data.original_language,
+            "release_date": data.release_date,
+            "overview": data.overview,
             "tracks": [x.html_create_data(i + 1, read_only) for i, x in enumerate(self.tracks)],
         }
 

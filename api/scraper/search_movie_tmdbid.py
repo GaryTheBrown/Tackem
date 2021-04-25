@@ -1,5 +1,6 @@
 """Base Template For the API"""
 import cherrypy
+from playhouse.shortcuts import model_to_dict
 
 from api.base import APIBase
 from libs.scraper import Scraper
@@ -21,8 +22,8 @@ class APIScraperMovieTMDBID(APIBase):
                 errorNumber=0,
             )
 
-        data = Scraper.get_movie_details(kwargs["tmdbid"])
-
+        movie = Scraper.get_movie_details(kwargs["tmdbid"])
+        data = model_to_dict(movie, backrefs=True)
         return self._return_data(
             "Scraper", "Grab By TMDBID", True, data=data, images=Scraper.image_config
         )

@@ -1,8 +1,11 @@
 """Libraries Root"""
-from config import CONFIG
-from database.library.files import LibraryFiles
-from libraries.file_checker import FileChecker
-from libraries.movies import MoviesLibrary
+from database.library.file import LibraryFile
+
+# TODO Working on TVShow Data
+# TODO Adding Cast Members Data for TV Shows and Movies
+# TODO Add Scraper function to write data to the Library DB
+# TODO possably move said function and the movie one to the library area
+# TODO Get all tables loaded
 
 
 class Libraries:
@@ -15,30 +18,41 @@ class Libraries:
     __games = {}
     __loaded = False
 
-    def __init__(self):
-        if self.__loaded:
-            return
-
-        LibraryFiles.table_setup()
-
-        self.__checksum = FileChecker()
-
-        config = CONFIG["libraries"]
-
-        for movie_library in config["movies"]:
-            self.__movies[movie_library.var_name] = MoviesLibrary(movie_library)
-
-        # for tvshows_library in config['tvshows']:
-        # for music_library in config['music']:
-        # for games_library in config['games']:
-
-    def start(self):
+    @classmethod
+    def start(cls):
         """Start the library systems"""
-        self.__checksum.start()
+        cls.__setup_tables()
 
-    def stop(self):
+    @classmethod
+    def __setup_tables(cls):
+        """function to deal with the database tables"""
+        LibraryFile.table_setup()
+
+    @classmethod
+    def stop(cls):
         """Stop the library systems"""
-        self.__checksum.stop()
 
+    # def __init__(self):
+    #     if self.__loaded:
+    #         return
 
-LIBRARIES = Libraries()
+    #     LibraryFiles.table_setup()
+
+    #     self.__checksum = FileChecker()
+
+    #     config = CONFIG["libraries"]
+
+    #     for movie_library in config["movies"]:
+    #         self.__movies[movie_library.var_name] = MoviesLibrary(movie_library)
+
+    #     # for tvshows_library in config['tvshows']:
+    #     # for music_library in config['music']:
+    #     # for games_library in config['games']:
+
+    # def start(self):
+    #     """Start the library systems"""
+    #     self.__checksum.start()
+
+    # def stop(self):
+    #     """Stop the library systems"""
+    #     self.__checksum.stop()

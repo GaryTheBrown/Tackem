@@ -4,7 +4,6 @@ import pathlib
 import shutil
 import time
 
-from config import CONFIG
 from data import PROGRAMCONFIGLOCATION
 
 
@@ -66,7 +65,7 @@ class File:
     @staticmethod
     def wait_for_file_copy_complete(file):
         """watches the file size until it stops"""
-        filename = File.location(file, CONFIG["webui"]["uploadlocation"].value)
+        filename = File.location(file)
         historicalSize = -1
         while historicalSize != os.path.getsize(filename):
             historicalSize = os.path.getsize(filename)
