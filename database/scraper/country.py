@@ -5,7 +5,7 @@ from peewee import TextField
 from database import TableBase
 
 
-class ScraperCountries(TableBase):
+class ScraperCountry(TableBase):
     """Library Base Countries"""
 
     iso_3166_1 = CharField(max_length=2)

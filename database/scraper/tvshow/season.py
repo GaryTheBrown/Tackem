@@ -1,4 +1,6 @@
 """Library Base Table"""
+from __future__ import annotations  # TODO drop this when we hit python 3.10
+
 from peewee import DateField
 from peewee import ForeignKeyField
 from peewee import IntegerField
@@ -18,3 +20,16 @@ class ScraperTVShowSeason(ScraperBaseTable):
     overview = TextField()
     poster_path = TextField(null=True)
     season_number = IntegerField()
+
+    @classmethod
+    def from_data_dict(cls, data: dict, tvshow: ScraperTVShow) -> ScraperTVShowSeason:
+        """Generates the model from a dict"""
+        season = cls.get_or_create(id=data["id"])
+        season.air_date = data["air_date"]
+        season.episode_count = data["episode_count"]
+        season.name = data["name"]
+        season.overview = data["overview"]
+        season.poster_path = data["poster_path"]
+        season.season_number = data["season_number"]
+        season.save()
+        return season
