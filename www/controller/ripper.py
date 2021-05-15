@@ -26,7 +26,7 @@ class Ripper:
     @cherrypy.tools.template(user=Auth.USER)
     def disc(self, db_id: int) -> dict:
         """Disc Edit Page"""
-        info = RipperVideoInfo.do_select().where(RipperVideoInfo.id == db_id).get_or_none()
+        info = RipperVideoInfo.get_or_none(RipperVideoInfo.id == db_id)
         if info is None:
             raise cherrypy.HTTPError(status=404)
 

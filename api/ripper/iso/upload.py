@@ -32,12 +32,8 @@ class APIRipperIsoUpload(APIBase):
                 errorNumber=0,
             )
 
-        existing = (
-            PostUpload.do_select()
-            .where(
-                PostUpload.filename == kwargs["filename"], PostUpload.filesize == kwargs["filesize"]
-            )
-            .get()
+        existing = PostUpload.get_or_none(
+            PostUpload.filename == kwargs["filename"], PostUpload.filesize == kwargs["filesize"]
         )
         url = cherrypy.url().split("/api/")[0]
 

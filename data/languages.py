@@ -217,7 +217,7 @@ class Languages:
         return [obj(x.iso_639_1, x.name) for x in cls.__LANGUAGES]
 
     @classmethod
-    def get_name_from_2(cls, code: str):
+    def name(cls, code: str):
         """gets the name from the 2 letter code"""
         for language in cls.__LANGUAGES:
             if language.iso_639_1 == code:

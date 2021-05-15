@@ -1,10 +1,13 @@
 """Libraries Config"""
 from config.backend.list import ConfigList
 from config.backend.obj.boolean import ConfigObjBoolean
+from config.backend.obj.data.checkbox import ConfigObjCheckbox
 from config.backend.obj.data.option import ConfigObjOption
+from config.backend.obj.options.checkbox import ConfigObjOptionsCheckBox
 from config.backend.obj.options.select import ConfigObjOptionsSelect
 from config.backend.obj.string import ConfigObjString
 from config.backend.obj.string_list import ConfigObjStringList
+from data.qualities import Qualities
 
 
 def libraries_config() -> ConfigList:
@@ -34,40 +37,78 @@ def libraries_config() -> ConfigList:
             ConfigObjBoolean("log", True, "Log", "should I log all runs of the filechecker?"),
         ),
         ConfigList(
-            "extensions",
-            "Extensions",
+            "movies",
+            "Movie Options",
             ConfigObjStringList(
-                "video",
+                "extensions",
                 ["mkv", "avi", "mp4", "m2ts"],
                 "Video File Extensions",
                 "what extensions are linked to video files",
             ),
+            ConfigObjString(
+                "location",
+                "Library/Movies/",
+                "Location",
+                "Where is the library stored?",
+            ),
+            ConfigObjOptionsCheckBox(
+                "allowed",
+                Qualities.config_option(ConfigObjCheckbox),
+                Qualities.config_values(),
+                "Allowed Qualities",
+                "What Qualities are allowed in the Library",
+            ),
+            ConfigObjOptionsCheckBox(
+                "last",
+                Qualities.config_option(ConfigObjCheckbox),
+                [],
+                "Saved Qualities",
+                "What Quality/Qualities are saved in the Library",
+            ),
+        ),
+        ConfigList(
+            "tvshows",
+            "TV Show Options",
             ConfigObjStringList(
-                "audio",
+                "extensions",
+                ["mkv", "avi", "mp4", "m2ts"],
+                "Video File Extensions",
+                "what extensions are linked to video files",
+            ),
+            ConfigObjString(
+                "location",
+                "Library/TVShows/",
+                "Location",
+                "Where is the library stored?",
+            ),
+            ConfigObjOptionsCheckBox(
+                "allowed",
+                Qualities.config_option(ConfigObjCheckbox),
+                Qualities.config_values(),
+                "Allowed Qualities",
+                "What Qualities are allowed in the Library",
+            ),
+            ConfigObjOptionsCheckBox(
+                "last",
+                Qualities.config_option(ConfigObjCheckbox),
+                [],
+                "Saved Qualities",
+                "What Quality/Qualities are saved in the Library",
+            ),
+        ),
+        ConfigList(
+            "music",
+            "Music Options",
+            ConfigObjStringList(
+                "extensions",
                 ["mp3", "ogg", "flac"],
                 "Audio File Extensions",
                 "what extensions are linked to audio files",
             ),
-        ),
-        ConfigList(
-            "locations",
-            "Base Locations",
             ConfigObjString(
-                "movies",
-                "Library/Movies/",
-                "Movies Location",
-                "Where is the library stored?",
-            ),
-            ConfigObjString(
-                "tvshows",
-                "Library/TVShows/",
-                "TV Show Location",
-                "Where is the library stored?",
-            ),
-            ConfigObjString(
-                "music",
+                "location",
                 "Library/Music/",
-                "Music Location",
+                "Location",
                 "Where is the library stored?",
             ),
         ),

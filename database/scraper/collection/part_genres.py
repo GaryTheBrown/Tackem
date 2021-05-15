@@ -1,9 +1,9 @@
 """Library Base Table"""
 from peewee import ForeignKeyField
 
-from database.scraper import ScraperGenreMovies
 from database.scraper.base import ScraperBaseTable
 from database.scraper.collection.part import ScraperCollectionPart
+from database.scraper.genre.movies import ScraperGenreMovies
 
 
 class ScraperCollectionPartGenres(ScraperBaseTable):

@@ -58,7 +58,6 @@ class Database:
             cls.__migrator = SqliteMigrator(cls.__db)
         elif mode == "mysql":
             cls.__migrator = MySQLMigrator(cls.__db)
-        # with Database.db.connection_context():
         TableVersion.create_table()
 
     @classproperty

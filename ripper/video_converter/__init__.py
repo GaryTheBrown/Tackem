@@ -2,7 +2,6 @@
 from abc import ABCMeta
 
 from database.ripper.video_convert import RipperVideoConvertInfo
-from database.ripper.video_info import RipperVideoInfo
 from libs.file import File
 from ripper.ffprobe import FFprobe
 from ripper.video_converter.chapters import VideoConverterChapters
@@ -21,12 +20,7 @@ class VideoConverter(
     def run(self):
         """ Loops through the standard converter function"""
 
-        data = (
-            RipperVideoConvertInfo.do_select()
-            .join(RipperVideoInfo)
-            .where(RipperVideoConvertInfo.id == self._db_id)
-            .get_or_none()
-        )
+        data = RipperVideoConvertInfo.get_or_none(RipperVideoConvertInfo.id == self._db_id)
         if data is None:
             return
 

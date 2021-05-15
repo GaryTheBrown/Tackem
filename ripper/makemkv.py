@@ -259,10 +259,8 @@ class MakeMKV(RipperSubSystem):
         self, info_id: int, track_number: int, filename: str, label: str, track_data: str
     ) -> int:
         """creates the DB section and then passes it to the converter in the ripper"""
-        info = (
-            RipperVideoConvertInfo.do_select()
-            .where(info_id == info_id, track_number == track_number, filename == filename)
-            .get()
+        info = RipperVideoConvertInfo.get_or_none(
+            info_id == info_id, track_number == track_number, filename == filename
         )
         if info is None:
             info = RipperVideoConvertInfo()

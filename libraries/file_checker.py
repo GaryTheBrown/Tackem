@@ -2,118 +2,59 @@
 Creates checksum hash for a file in Binary from SHA256
 If storing in the DB you need a BINARY(32)
 """
-import datetime
-import hashlib
 import threading
-from pathlib import Path
-from time import time
-from typing import List
 
-from config import CONFIG
-from database.library.files import LibraryFiles
+from database.library.file import LibraryFile
 
 
 class FileChecker:
     """system to check the files are not damaged"""
 
-    __BLOCKSIZE = 65536
-    __list: List[LibraryFiles] = []
     __event = threading.Event()
-    __lock = threading.Lock()
-    __config = CONFIG["libraries"]["global"]["autofilecheck"]
+    __thread = None
+    __thread_run = False
+    __active = False
 
-    def __init__(self):
-
-        self.__thread_name = "Library File Checker"
-        self.__thread = threading.Thread(target=self.run, args=())
-        self.__thread.setName(self.__thread_name)
-
-        self._thread_run = False
-
-    def start(self):
+    @classmethod
+    def start(cls):
         """starts the file checker"""
-        if self._thread_run is False:
-            self._thread_run = True
-            self.__thread.start()
+        cls.__thread = threading.Thread(target=cls.__run, args=())
+        cls.__thread.setName("Library File Checker")
+        if cls.__thread_run is False:
+            cls.__thread_run = True
+            cls.__thread.start()
 
-    def stop(self):
+    @classmethod
+    def stop(cls):
         """stops the Library"""
-        if self._thread_run is True:
-            self._thread_run = False
-            self.__event.set()
+        if cls.__thread_run is True:
+            cls.__thread_run = False
+            cls.__event.set()
 
-    def extend(self, data: list):
-        """Extend the list of files to check"""
-        with self.__lock:
-            self.__list.extend(data)
-        self.__event.set()
+    @classmethod
+    def run(cls) -> bool:
+        """set the File checker to run"""
+        if cls.__active is False:
+            cls.__event.set()
+            return True
+        return False
 
-    def get_file_checksum(self, file: str) -> str:
-        """Creates checksum hash for a file in Binary from SHA256"""
-
-        hasher = hashlib.sha256()
-        with open(file, "rb") as open_file:
-            buffer = open_file.read(self.__BLOCKSIZE)
-            while len(buffer) > 0:
-                hasher.update(buffer)
-                buffer = open_file.read(self.__BLOCKSIZE)
-        return hasher.digest()
-
-    def check_for_files(self):
+    @classmethod
+    def __run(cls):
         """Threadded Script For running"""
-        regularity = self.__config["regularity"].value
-
-        if regularity == "disabled":
-            return
-
-        now = datetime.datetime.now()
-        if regularity == "hourly":
-            now = now + datetime.timedelta(hours=-1)
-        if regularity == "daily":
-            now = now + datetime.timedelta(days=-1)
-        if regularity == "weekly":
-            now = now + datetime.timedelta(weeks=-1)
-        if regularity == "monthly":
-            now = now + datetime.timedelta(months=-1)
-        if regularity == "quaterly":
-            now = now + datetime.timedelta(months=-3)
-        if regularity == "halfyear":
-            now = now + datetime.timedelta(months=-6)
-        if regularity == "year":
-            now = now + datetime.timedelta(years=-1)
-
-        files = LibraryFiles.do_select().where(LibraryFiles.last_check > time)
-
-        self.extend(files)
-
-    def run(self):
-        """Threadded Script For running"""
-        while self._thread_run:
-            self.__event.wait()
-            if not self._thread_run:
+        while cls.__thread_run:
+            cls.__event.wait()
+            cls.__active = True
+            if not cls.__thread_run:
                 return
 
-            self.__check_list()
-            self.__event.clear()
-            if not self._thread_run:
+            files = LibraryFile.files_to_check()
+            while file := files.pop():
+                if not cls.__thread_run:
+                    return
+                file.check_file()
+
+            cls.__active = False
+            cls.__event.clear()
+            if not cls.__thread_run:
                 return
-
-    def __check_list(self):
-        while self.__list:
-            if not self._thread_run:
-                return
-
-            with self.__lock:
-                file = self.__list.pop()
-
-            full_path = file.folder + file.filename
-            if Path(full_path).is_file():
-                checksum = self.get_file_checksum(full_path)
-                if checksum != file.checksum:
-                    print(f"FILE HAS GONE BAD {full_path}")
-                    file.bad_file = True
-                    file.checksum = checksum
-                    file.save()
-            else:
-                file.missing_file = True
-                file.save()

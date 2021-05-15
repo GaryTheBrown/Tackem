@@ -45,10 +45,6 @@
             }
         });
 
-        // $('.trackdata').each(function(index, element) {
-        //     $(element).on('click', obj.trackData);
-        // }.bind(obj));
-
         function grabData()
         {
             $.ajax({
@@ -57,37 +53,26 @@
                 dataType: 'json',
                 success: function (result) {
                     if (result.drives) {
-                        //loop through drives and update them
                         result.drives.forEach(updateDrive, ripper);
                     }
                     $('#isocount').html(result.isos.length);
                     if (result.isos) {
-                        //Grab the existing ISOs shown as a list of names
                         existingISOs = [];
                         $('#isosection').find('.isobox').each(function(index, element) {
                             existingISOs.push($(element).data('name'));
                         });
-
-                        //loop through isos and update them
                         result.isos.forEach(updateISO, ripper);
-
-                        //Remove unlisted isos
                         existingISOs.forEach(function(item) {
                             $('#isosection').find(`.isobox[data-name="${item}"]`).remove();
                         });
                     }
                     $('#videoconvertercount').html(result.converters.length);
                     if (result.converters) {
-                        //Grab the existing Converters shown as a list of ids
                         existingConverters = [];
                         $('#videoconvertersection').find('.videoconverterbox').each(function(index, element) {
                             existingConverters.push($(element).data('id'));
                         });
-
-                        //loop through Converters and update them
                         result.converters.forEach(updateConverter, ripper);
-
-                        //Remove unlisted Converters
                         existingConverters.forEach(function(item) {
                             $('#videoconvertersection').find(`.videoconverterbox[data-id="${item}"]`).remove();
                         });
@@ -217,14 +202,6 @@
                 $videoconverterElement.find('.label').html('');
             }
         }
-
-        // trackData() {
-        //     if ($(this).find("span").is(":hidden")) {
-        //         //TODO Add in popup to show the track info
-        //     } else {
-        //         //TODO Add in popup to create the track info
-        //     }
-        // }
 
     });
 })();

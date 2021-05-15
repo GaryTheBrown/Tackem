@@ -6,6 +6,5 @@ Markdown
 requests
 musicbrainzngs
 guessit
-watchdog
 discid
 pexpect

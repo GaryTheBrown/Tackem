@@ -62,11 +62,7 @@ class Auth:
         if not username or not password:
             return False
         enc_pass = cls.__password_encryption(password)
-        user = (
-            User.do_select()
-            .where(User.username == username, User.password == enc_pass)
-            .get_or_none()
-        )
+        user = User.get_or_none(User.username == username, User.password == enc_pass)
         if user is None:
             return False
         session_id = str(uuid.uuid1()).replace("-", "")

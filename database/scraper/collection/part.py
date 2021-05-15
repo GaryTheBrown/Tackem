@@ -7,7 +7,7 @@ from peewee import IntegerField
 from peewee import TextField
 
 from database.scraper.base import ScraperBaseTable
-from database.scraper.collection.part_genres import ScraperCollection
+from database.scraper.collection import ScraperCollection
 
 
 class ScraperCollectionPart(ScraperBaseTable):

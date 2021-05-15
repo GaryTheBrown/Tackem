@@ -18,14 +18,10 @@ class FileSubsystem:
 
     def _add_video_disc_to_database(self, filename: str = ""):
         """sets up the DB stuff for disc"""
-        info = (
-            RipperVideoInfo.do_select()
-            .where(
-                RipperVideoInfo.uuid == self._disc["uuid"],
-                RipperVideoInfo.label == self._disc["label"],
-                RipperVideoInfo.disc_type == self._disc["type"],
-            )
-            .get()
+        info = RipperVideoInfo.get_or_none(
+            RipperVideoInfo.uuid == self._disc["uuid"],
+            RipperVideoInfo.label == self._disc["label"],
+            RipperVideoInfo.disc_type == self._disc["type"],
         )
         if isinstance(RipperVideoInfo, info):
             if isinstance(filename, str) and filename != "":

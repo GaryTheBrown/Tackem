@@ -4,6 +4,7 @@ import signal
 
 from config import CONFIG
 from database import Database
+from libraries import Library
 from libs.auth import Auth
 from libs.events import RootEventMaster as RootEvent
 from libs.scraper import Scraper
@@ -36,7 +37,8 @@ class Tackem:
         Scraper.start()
         print("DONE")
         print("LOADING LIBRARIES...", end=" ")
-        print("TODO")
+        Library.start()
+        print("DONE")
         if Ripper.enabled:
             print("STARTING RIPPER...", end=" ")
             Ripper.start()
@@ -57,7 +59,7 @@ class Tackem:
             Ripper.stop()
             print("DONE")
         print("STOPPING LIBRARIES...", end=" ")
-        print("TODO")
+        Library.stop()
         print("DONE")
         print("SAVING Config FILE...", end=" ")
         CONFIG.save()

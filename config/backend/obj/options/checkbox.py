@@ -32,7 +32,7 @@ class ConfigObjOptionsCheckBox(ConfigObjOptionsBase):
             raise ValueError("values is not a value")
         if not isinstance(default_value, (str, int, list)):
             raise ValueError("default value is not a string, int or list")
-        if isinstance(default_value, list):
+        if isinstance(default_value, list) and default_value:
             if all(not isinstance(x, (str, int)) for x in default_value):
                 raise ValueError("default values list is not full of strings or ints")
         if all(not isinstance(x, ConfigObjCheckbox) for x in values):

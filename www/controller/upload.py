@@ -19,7 +19,7 @@ class Upload:
         if key is None:
             raise cherrypy.HTTPError(status=403)
 
-        info = PostUpload.do_select().where(PostUpload.key == key).get_or_none()
+        info = PostUpload.get_or_none(PostUpload.key == key)
         if info is None:
             raise cherrypy.HTTPError(status=403)
 
